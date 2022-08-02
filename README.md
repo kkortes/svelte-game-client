@@ -10,10 +10,19 @@ The stack is:
 - `Node` for backend (https://nodejs.org/)
 - `MongoDB` for database (https://www.mongodb.com/)
 
-## Installation
+## Run the client locally
 
 ```
+vercel env pull (creates .env)
 nvm use
+npm install
+npm run dev
+```
+
+## Run the server locally
+
+```
+cd svelte-game-server
 npm install
 npm run dev
 ```

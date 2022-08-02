@@ -2,8 +2,8 @@
 	"name": "svelte-game-client",
 	"version": "0.0.1",
 	"engines": {
-		"node": "16.9.0",
-		"npm": "7.21.1"
+		"node": "16.15.0",
+		"npm": "8.5.5"
 	},
 	"scripts": {
 		"dev": "vite dev --port 3000",
