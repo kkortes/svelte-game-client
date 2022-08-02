@@ -7,4 +7,4 @@
 	};
 </script>
 
-<button on:click={ping}>Ping</button>
+<button on:click={ping}>Pingy</button>
