@@ -1,5 +1,3 @@
-# Game stack
-
 ## Information
 
 This is an opinionated mono repo for game dev using web tech.
@@ -29,10 +27,10 @@ npm run dev
 
 ## Features
 
-✅ Socket server to handle any request (https://github.com/kkortes/async-await-websockets)
-✅ Heroku backend hosting setup (https://www.heroku.com)
-✅ Vercel frontend hosting setup (https://vercel.com)
-❌
+- ✅ Socket server to handle any request (https://github.com/kkortes/async-await-websockets)
+- ✅ Heroku backend hosting setup (https://www.heroku.com)
+- ✅ Vercel frontend hosting setup (https://vercel.com)
+- ❌
 
 ## Todo
 
