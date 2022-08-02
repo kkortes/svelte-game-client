@@ -1,0 +1,32 @@
+{
+	"name": "svelte-game-server",
+	"version": "0.0.1",
+	"description": "",
+	"main": "index.js",
+	"engines": {
+		"node": "16.9.0",
+		"npm": "7.21.1"
+	},
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"dev": "nodemon --experimental-json-modules index.js",
+		"start": "node --experimental-json-modules index.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/kkortes/svelte-game-stack.git"
+	},
+	"author": "Kortes",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/kkortes/svelte-game-stack/issues"
+	},
+	"homepage": "https://github.com/kkortes/svelte-game-stack#readme",
+	"dependencies": {
+		"async-await-websockets": "^1.2.3"
+	},
+	"devDependencies": {
+		"nodemon": "^2.0.19"
+	},
+	"type": "module"
+}

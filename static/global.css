@@ -1,0 +1,11 @@
+html {
+  font-family: 'Trebuchet MS', sans-serif;
+  background: linear-gradient(to bottom right, rgba(224,240,246), rgba(117,133,181));
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}

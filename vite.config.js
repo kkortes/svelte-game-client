@@ -1,8 +1,20 @@
 import { sveltekit } from '@sveltejs/kit/vite';
+import autoImport from 'sveltekit-autoimport';
 
-/** @type {import('vite').UserConfig} */
-const config = {
-	plugins: [sveltekit()]
+export default {
+	plugins: [
+		autoImport({
+			components: [{ name: './src/components', flat: true }],
+			mapping: {
+				ENV: `import ENV from '$src/env'`,
+				STORES: `import STORES from '$src/store/abs/stores'`,
+				ACTIONS: `import ACTIONS from '$src/store/abs/actions'`
+			},
+			module: {
+				svelte: ['onMount', 'onDestroy']
+			},
+			include: ['**/*.svelte']
+		}),
+		sveltekit()
+	]
 };
-
-export default config;
