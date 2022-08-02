@@ -23,7 +23,8 @@
 	},
 	"homepage": "https://github.com/kkortes/svelte-game-stack#readme",
 	"dependencies": {
-		"async-await-websockets": "^1.2.3"
+		"async-await-websockets": "^1.2.3",
+		"dotenv": "^16.0.1"
 	},
 	"devDependencies": {
 		"nodemon": "^2.0.19"
