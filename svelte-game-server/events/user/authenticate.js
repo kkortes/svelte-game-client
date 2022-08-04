@@ -1,9 +1,9 @@
 import json from '../../package.json' assert { type: 'json' };
-import lodashFp from 'lodash/fp.js';
+// import lodashFp from 'lodash/fp.js';
 import { filledSlot, isNewerVersion } from '../../helpers.js';
 // import checkAppOwnership from '../iap/steam/checkAppOwnership.js';
 const { version: serverVersion } = json;
-const { mergeWith } = lodashFp;
+// const { mergeWith } = lodashFp;
 
 export default async (
 	{ token, clientVersion, isDev }, // , platform: { steamid }
