@@ -4,6 +4,7 @@
 
 <style>
 	.frame {
-		background: rgba(0, 0, 0, 0.75);
+		background-color: hsl(var(--bg-color-form));
+		padding: 8px;
 	}
 </style>

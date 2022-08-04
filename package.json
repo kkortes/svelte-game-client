@@ -28,6 +28,8 @@
 	"type": "module",
 	"dependencies": {
 		"async-await-websockets": "^1.2.4",
+		"lodash": "^4.17.21",
+		"svelte-component-kit": "^1.4.7",
 		"svelte-global-store": "^1.0.3",
 		"sveltekit-autoimport": "^1.6.9"
 	}
