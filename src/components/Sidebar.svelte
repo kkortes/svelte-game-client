@@ -14,9 +14,9 @@
 <div class="sidebar">
 	<Crow vertical up gutter={8}>
 		{#each links as { url, text }}
-			<div on:click={() => console.log(url)}>
+			<div on:click={() => console.info(url)}>
 				<Icon name="crow" />
-				{text}
+				Long name like this
 			</div>
 		{/each}
 	</Crow>
@@ -30,5 +30,6 @@
 		background-color: hsl(var(--bg-color-form));
 		height: 100%;
 		width: 50px;
+		padding-top: 50px;
 	}
 </style>

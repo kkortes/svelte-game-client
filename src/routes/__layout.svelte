@@ -7,16 +7,17 @@
 <ConnectSocket />
 <Keystrokes />
 
-{#if isDev}
+{#if isDev && false}
 	<Sidebar />
 {/if}
 
 <div class="content">
-	<Crow>
+	<Crow vertical>
 		<slot />
 	</Crow>
 </div>
 
+<Overlay />
 <Notifications />
 
 <style>

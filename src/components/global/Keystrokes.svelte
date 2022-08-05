@@ -9,6 +9,7 @@
 		if (!(c instanceof KeyboardEvent)) return; // Password auto-filler fires `Event` which is missing `code` for example
 		const { type, code, metaKey, ctrlKey } = c;
 		const lcKey = code.toLowerCase();
+		if ($keys[lcKey] && type === 'keydown') return;
 
 		if (metaKey || ctrlKey) {
 			localKeys = { ...AVAILABLE_KEYS };

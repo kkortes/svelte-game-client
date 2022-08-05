@@ -256,6 +256,12 @@ const reorder = (array, index) => array.slice(index).concat(array.slice(0, index
 
 const onlyUnique = (value, index, self) => self.indexOf(value) === index;
 
+const camelCaseToDashed = (string) =>
+	string
+		.split(/\.?(?=[A-Z])/)
+		.join('-')
+		.toLowerCase();
+
 export {
 	generateStyles,
 	formatProps,
@@ -290,5 +296,6 @@ export {
 	byKeys,
 	notByKeys,
 	reorder,
-	onlyUnique
+	onlyUnique,
+	camelCaseToDashed
 };

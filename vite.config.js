@@ -2,6 +2,15 @@ import { sveltekit } from '@sveltejs/kit/vite';
 import autoImport from 'sveltekit-autoimport';
 
 export default {
+	build: {
+		sourcemap: true
+	},
+	// Allows us to read data from `package.json`
+	server: {
+		fs: {
+			allow: ['..']
+		}
+	},
 	plugins: [
 		autoImport({
 			components: [{ name: './src/components', flat: true }],
@@ -18,4 +27,7 @@ export default {
 		}),
 		sveltekit()
 	]
+	// resolve: {
+	// 	mainFields: ['module', 'jsnext:main', 'jsnext', 'browser']
+	// },
 };

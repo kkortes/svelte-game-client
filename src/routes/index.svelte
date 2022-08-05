@@ -1,7 +1,10 @@
 <script>
 	import { getCookie } from '$src/helpers';
+	import { version } from '../../package.json';
 
+	const { isDev } = ENV;
 	const { socket, token } = STORES;
+	const { notify } = ACTIONS;
 
 	let connected = false,
 		authorized = false;
@@ -10,11 +13,20 @@
 
 	onMount(() => ($token = getCookie()?.token));
 
-	$: $token,
-		connected &&
-			(async () => {
-				authorized = await $socket.asyncEmit('user/authenticate', { token: $token });
-			})();
+	$: $token && connected
+		? (async () => {
+				try {
+					authorized = await $socket.asyncEmit('user/authenticate', {
+						token: $token,
+						clientVersion: version,
+						isDev
+					});
+				} catch (e) {
+					notify(e);
+					$token = undefined;
+				}
+		  })()
+		: (authorized = false);
 </script>
 
 {#if !connected}
