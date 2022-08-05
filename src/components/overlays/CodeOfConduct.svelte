@@ -45,18 +45,12 @@
       Moderators reserve the right to <span>mute</span> players who consistently violate the rules above.
     </h3>
   </Frame>
-  <div class="close">
-    <Close on:click />
-  </div>
+
+  <Close on:click />
 </div>
 
 <style>
   span {
-    color: red;
-  }
-  .close {
-    position: absolute;
-    top: 2px;
-    right: 2px;
+    color: hsl(var(--red));
   }
 </style>

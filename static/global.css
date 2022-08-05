@@ -22,11 +22,15 @@ button, input {
   font-family: 'Fira Sans Condensed', 'Trebuchet MS', sans-serif;
 }
 h1, h2, h3, h4, h5, h6 {
-  margin: 0;
+  margin: 0 0 12px 0;
 }
 a {
   color: hsl(var(--blue))
 }
 a:hover {
   text-decoration: none;
+}
+.tooltip {
+  opacity: 0;
+  pointer-events: none;
 }

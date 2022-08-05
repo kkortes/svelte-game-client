@@ -17,7 +17,9 @@
   </Crow>
 </div>
 
+<Logo />
 <Overlay />
+<MouseTracker />
 <Notifications />
 
 <style>

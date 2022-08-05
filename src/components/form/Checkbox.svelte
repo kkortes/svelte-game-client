@@ -39,7 +39,7 @@
     display: grid;
     place-items: center;
     margin-right: 4px;
-    background: hsl(var(--bg-color-form));
+    background: hsl(var(--form-bg-color));
     float: left;
   }
   :global(.checkbox .box .icon.icon) {

@@ -16,5 +16,14 @@ export default {
   },
   removeFirstNotification: (_, { notifications: [_first, ...notifications] }) => ({
     notifications: new Set(notifications)
-  })
+  }),
+  showTooltip: ([tip, direction = 'up', props = {}]) => ({
+    tooltip: {
+      tip,
+      props,
+      direction,
+      visible: true
+    }
+  }),
+  hideTooltip: (_, { tooltip }) => ({ tooltip: { ...tooltip, visible: false } })
 };

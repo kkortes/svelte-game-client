@@ -41,7 +41,7 @@
     bottom: calc(100% + 6px);
     font-size: 14px;
     left: 0px;
-    background-color: hsl(var(--bg-color-form));
+    background-color: hsl(var(--form-bg-color));
   }
   .placeholder {
     position: absolute;

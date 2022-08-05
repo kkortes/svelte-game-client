@@ -11,15 +11,6 @@
       {/if}
     </Crow>
   </Frame>
-  <div class="close">
-    <Close on:click />
-  </div>
-</div>
 
-<style>
-  .close {
-    position: absolute;
-    top: 2px;
-    right: 2px;
-  }
-</style>
+  <Close on:click />
+</div>

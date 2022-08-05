@@ -27,7 +27,7 @@
     position: fixed;
     top: 0;
     left: 0;
-    background-color: hsl(var(--bg-color-form));
+    background-color: hsl(var(--form-bg-color));
     height: 100%;
     width: 50px;
     padding-top: 50px;

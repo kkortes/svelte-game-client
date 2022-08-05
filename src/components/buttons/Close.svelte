@@ -4,6 +4,9 @@
 
 <style>
   .close {
+    position: absolute;
+    top: 2px;
+    right: 2px;
     background: rgba(0, 0, 0, 0.75);
     display: grid;
     place-items: center;

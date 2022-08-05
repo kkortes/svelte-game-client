@@ -2,14 +2,14 @@
   import { recursiveLookup, camelCaseToDashed } from '$src/helpers';
   // import mediaQuery from '$lib/stores/mediaQuery';
 
-  const { overlay, keys } = STORES;
+  const { overlay, keys, keyLock } = STORES;
 
   const setOverlay = (to) => ($overlay = to);
   const close = ({ target }) => recursiveLookup(target, ['close']) && setOverlay('');
   const closeSelf = ({ target }) => target.classList.contains('overlay') && setOverlay('');
 
   $: ({ escape } = $keys); // This is != $keys.escape on next row (due to how Svelte dirtychecks)
-  $: escape && setOverlay($overlay ? '' : 'GameMenu');
+  $: escape && !$keyLock && setOverlay($overlay ? '' : 'GameMenu');
 </script>
 
 <!--class="overlay {classes}"-->

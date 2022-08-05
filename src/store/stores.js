@@ -4,6 +4,12 @@ export default {
   token: undefined,
   socket: undefined,
   notifications: new Set(),
+  tooltip: {
+    tip: '',
+    direction: 'up',
+    props: {},
+    visible: false
+  },
   keys: [],
   keyLock: '',
   overlay: '',

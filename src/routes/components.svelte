@@ -15,13 +15,13 @@
         blur={escape}
       />
     </div>
-    <!-- <div>
-			<h2>Dropdown</h2>
-			<Dropdown
-				options={['Option 1', 'Option 2']}
-				on:change={({ target: { value } }) => console.info(value)}
-			/>
-		</div> -->
+    <div>
+      <h2>Dropdown</h2>
+      <Dropdown
+        options={['Option 1', 'Option 2']}
+        on:change={({ target: { value } }) => console.info(value)}
+      />
+    </div>
     <div>
       <h2>Button</h2>
       <Crow gutter={8}>

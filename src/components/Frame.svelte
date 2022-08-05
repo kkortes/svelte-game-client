@@ -1,10 +1,12 @@
 <div class="frame">
-  <slot />
+  <div class="content">
+    <slot />
+  </div>
 </div>
 
 <style>
   .frame {
-    background-color: hsl(var(--bg-color-form));
+    background-color: hsl(var(--form-bg-color));
     padding: 8px;
   }
 </style>

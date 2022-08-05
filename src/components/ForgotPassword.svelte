@@ -24,18 +24,16 @@
 </script>
 
 <form on:submit|preventDefault={forgotPassword}>
-  <Crow vertical gutter={4} left>
-    <Crow gutter={4}>
-      <Input
-        placeholder="Email"
-        type="email"
-        on:focus={lockKeys}
-        on:blur={unlockKeys}
-        bind:value={email}
-        blur={escape}
-      />
+  <Crow gutter={4}>
+    <Input
+      placeholder="Email"
+      type="email"
+      on:focus={lockKeys}
+      on:blur={unlockKeys}
+      bind:value={email}
+      blur={escape}
+    />
 
-      <Button primary type="submit" blur={escape}>Submit</Button>
-    </Crow>
+    <Button primary type="submit" blur={escape}>Submit</Button>
   </Crow>
 </form>
