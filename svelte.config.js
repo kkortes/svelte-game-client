@@ -1,10 +1,10 @@
 import vercel from '@sveltejs/adapter-vercel';
 
 export default {
-	kit: {
-		adapter: vercel(),
-		alias: {
-			$src: 'src/*'
-		}
-	}
+  kit: {
+    adapter: vercel(),
+    alias: {
+      $src: 'src/*'
+    }
+  }
 };

@@ -1,27 +1,27 @@
 <script>
-	import AVAILABLE_KEYS from '$src/constants/AVAILABLE_KEYS';
+  import AVAILABLE_KEYS from '$src/constants/AVAILABLE_KEYS';
 
-	const { keys, keyLock } = STORES;
+  const { keys, keyLock } = STORES;
 
-	let localKeys = { ...AVAILABLE_KEYS };
+  let localKeys = { ...AVAILABLE_KEYS };
 
-	const toggleKey = (c) => {
-		if (!(c instanceof KeyboardEvent)) return; // Password auto-filler fires `Event` which is missing `code` for example
-		const { type, code, metaKey, ctrlKey } = c;
-		const lcKey = code.toLowerCase();
-		if ($keys[lcKey] && type === 'keydown') return;
+  const toggleKey = (c) => {
+    if (!(c instanceof KeyboardEvent)) return; // Password auto-filler fires `Event` which is missing `code` for example
+    const { type, code, metaKey, ctrlKey } = c;
+    const lcKey = code.toLowerCase();
+    if ($keys[lcKey] && type === 'keydown') return;
 
-		if (metaKey || ctrlKey) {
-			localKeys = { ...AVAILABLE_KEYS };
-			return;
-		}
+    if (metaKey || ctrlKey) {
+      localKeys = { ...AVAILABLE_KEYS };
+      return;
+    }
 
-		if ($keyLock && !['enter', 'escape', 'shiftleft', 'shiftright'].includes(lcKey)) return;
+    if ($keyLock && !['enter', 'escape', 'shiftleft', 'shiftright'].includes(lcKey)) return;
 
-		if (lcKey in localKeys) localKeys[lcKey] = type === 'keydown';
-	};
+    if (lcKey in localKeys) localKeys[lcKey] = type === 'keydown';
+  };
 
-	$: $keys = localKeys;
+  $: $keys = localKeys;
 </script>
 
 <svelte:window on:keydown={toggleKey} on:keyup={toggleKey} />
