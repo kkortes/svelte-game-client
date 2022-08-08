@@ -21,7 +21,6 @@
 
   const removeFirst = (items) => {
     if (items.length && !animating) {
-      console.log(ref.getBoundingClientRect());
       animation = ref.animate(
         {
           transform: 'translateY(-72px)'
@@ -59,11 +58,13 @@
           <div class="notification {type}">
             <Crow gutter={4}>
               <div class="icon {type}">
-                <Icon name={type} size={20} />
+                <Icon name={type} size={20} color="#fff" />
               </div>
               <div>
-                <strong>{titleByType(type)}</strong><br />
-                {message.replace('Error: ', '')}
+                <strong>{titleByType(type)}</strong>
+                <div class="message">
+                  {message.replace('Error: ', '')}
+                </div>
               </div>
             </Crow>
           </div>
@@ -74,6 +75,17 @@
 </div>
 
 <style>
+  .message {
+    max-width: 200px;
+  }
+  .message::first-letter {
+    text-transform: uppercase;
+  }
+  strong {
+    color: #000;
+    font-size: 16px;
+    letter-spacing: 0.5px;
+  }
   .icon {
     width: 30px;
     height: 30px;
@@ -92,10 +104,6 @@
   }
   .icon.success {
     background-color: hsl(var(--green));
-  }
-  :global(.notification .icon .icon.icon) {
-    color: #fff;
-    text-shadow: none;
   }
   :global(.notifications.animating > .crow > div:first-child) {
     transition: opacity 400ms ease 3000ms;

@@ -32,7 +32,7 @@
         {:else}
           {value || 'N/A'}
         {/if}
-        <Icon name="down" size={14} color="hsl(var(--gray))" />
+        <Icon name="down" size={14} color="hsl(var(--blue))" />
       </div>
     </Crow>
   </Frame>

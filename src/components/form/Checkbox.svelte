@@ -45,6 +45,5 @@
   }
   :global(.checkbox .box .icon.icon) {
     display: none !important;
-    text-shadow: none;
   }
 </style>

@@ -62,7 +62,6 @@
     background: rgba(0, 0, 0, 0.25);
   }
   h1 {
-    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
     margin: 30px 0 0 0;
   }
   .lds-ellipsis {

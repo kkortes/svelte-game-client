@@ -15,7 +15,4 @@
   .close:active {
     transform: translateY(1px);
   }
-  .close :global(.icon) {
-    text-shadow: none;
-  }
 </style>

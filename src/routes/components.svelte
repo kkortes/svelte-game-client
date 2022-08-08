@@ -1,5 +1,5 @@
 <script>
-  const { notify } = ACTIONS;
+  const { notify, unlockKeys, lockKeys } = ACTIONS;
   const { keys } = STORES;
 
   $: ({ escape } = $keys);
@@ -12,6 +12,8 @@
       <Input
         placeholder="Type something"
         on:keyup={(e) => console.info(e.target.value)}
+        on:blur={unlockKeys}
+        on:focus={lockKeys}
         blur={escape}
       />
     </div>
@@ -42,7 +44,9 @@
         </Button>
         <Button
           tertiary
-          on:click={notify.bind(undefined, { warning: 'this is a warning toast' })}
+          on:click={notify.bind(undefined, {
+            warning: 'this is a warning toast'
+          })}
           style="color: hsl(var(--orange));"
         >
           Warning

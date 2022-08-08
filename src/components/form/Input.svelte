@@ -51,6 +51,7 @@
     pointer-events: none;
     padding: 2px 6px 0 6px;
     color: hsl(var(--gray));
+    border-radius: 3px;
   }
   .input .placeholder {
     transition: bottom 150ms ease, color 150ms ease, font-size 150ms ease, left 150ms ease,
