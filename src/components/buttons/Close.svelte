@@ -1,20 +1,21 @@
 <div on:click class="close">
-  <Icon name="cross" color="red" size={18} />
+  <Icon name="cross" color="hsla(var(--gray), .5)" size={14} />
 </div>
 
 <style>
   .close {
     position: absolute;
-    top: 2px;
-    right: 2px;
-    background: rgba(0, 0, 0, 0.75);
+    top: 0;
+    right: 0;
     display: grid;
     place-items: center;
     width: 30px;
     height: 30px;
-    border-radius: 3px;
   }
   .close:active {
     transform: translateY(1px);
+  }
+  .close :global(.icon) {
+    text-shadow: none;
   }
 </style>

@@ -29,6 +29,7 @@
     padding: 8px 12px;
     font-weight: 600;
     letter-spacing: 0.5px;
+    border-radius: 3px;
   }
   button:hover {
     text-decoration: none;

@@ -8,5 +8,6 @@
   .frame {
     background-color: hsl(var(--form-bg-color));
     padding: 8px;
+    border-radius: 3px;
   }
 </style>

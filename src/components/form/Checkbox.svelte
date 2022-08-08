@@ -41,6 +41,7 @@
     margin-right: 4px;
     background: hsl(var(--form-bg-color));
     float: left;
+    border-radius: 3px;
   }
   :global(.checkbox .box .icon.icon) {
     display: none !important;

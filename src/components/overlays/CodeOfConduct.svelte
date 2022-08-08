@@ -1,8 +1,5 @@
 <div class="code-of-conduct">
   <Frame>
-    <Crow slot="title" class="title" left>
-      <div class="headline">Code of Conduct</div>
-    </Crow>
     By playing the game you agree to the following rules and regulations.
     <br />
     <br />
