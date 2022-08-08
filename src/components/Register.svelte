@@ -1,5 +1,5 @@
 <script>
-  const { keys, socket, settings } = STORES;
+  const { keys, socket, settings, mqs } = STORES;
   const { lockKeys, unlockKeys, notify } = ACTIONS;
 
   let email = '';
@@ -22,11 +22,12 @@
     }
   };
 
+  $: ({ smartphone } = $mqs);
   $: ({ escape } = $keys);
 </script>
 
 <form on:submit|preventDefault={register}>
-  <Crow gutter={4}>
+  <Crow gutter={4} vertical={smartphone}>
     <Input
       placeholder="Email"
       type="email"

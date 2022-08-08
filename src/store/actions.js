@@ -1,4 +1,5 @@
 export default {
+  setOverlay: ([to], { keyLock, overlay }) => ({ overlay: keyLock ? overlay : to }),
   lockKeys: () => ({ keyLock: true }),
   unlockKeys: () => ({ keyLock: false }),
   notify: ([payload], { notifications }) => {

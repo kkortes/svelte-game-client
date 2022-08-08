@@ -1,26 +1,22 @@
 <script>
   import { recursiveLookup, camelCaseToDashed } from '$src/helpers';
-  // import mediaQuery from '$lib/stores/mediaQuery';
 
-  const { overlay, keys, keyLock } = STORES;
-
-  const setOverlay = (to) => ($overlay = to);
+  const { overlay, keys, mqs } = STORES;
+  const { setOverlay } = ACTIONS;
   const close = ({ target }) => recursiveLookup(target, ['close']) && setOverlay('');
   const closeSelf = ({ target }) => target.classList.contains('overlay') && setOverlay('');
 
-  $: ({ escape } = $keys); // This is != $keys.escape on next row (due to how Svelte dirtychecks)
-  $: escape && !$keyLock && setOverlay($overlay ? '' : 'GameMenu');
+  $: ({ classes } = $mqs);
+  $: ({ escape } = $keys); // This is != $keys.escape on next row (due to how Svelte dirty checks)
+  $: escape && setOverlay($overlay ? '' : 'GameMenu');
 </script>
 
-<!--class="overlay {classes}"-->
-<div on:click={closeSelf} class="overlay" class:show={$overlay}>
+<div on:click={closeSelf} class="overlay {classes}" class:show={$overlay}>
   <div />
   <div class="content {camelCaseToDashed($overlay)}">
-    {#key $overlay}
-      {#if $overlay}
-        <Async component={`./overlays/${$overlay}.svelte`} on:click={close} />
-      {/if}
-    {/key}
+    {#if $overlay}
+      <Async component={`./overlays/${$overlay}.svelte`} on:click={close} />
+    {/if}
   </div>
   <div />
 </div>
@@ -43,12 +39,18 @@
     pointer-events: none;
     transform: translateY(10px);
   }
+  .smartphone {
+    grid-template-rows: 10px 1fr 10px;
+  }
   .content {
     position: relative;
     margin: 0 auto;
     padding-bottom: 50px;
     max-width: calc(100% - 100px);
     min-width: 700px;
+  }
+  .smartphone .content {
+    min-width: calc(100% - 20px);
   }
   .content.game-menu {
     min-width: 300px;

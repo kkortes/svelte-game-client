@@ -1,6 +1,6 @@
 <script>
   const { isDev, AUTO_EMAIL, AUTO_PASSWORD } = ENV;
-  const { keys, overlay, socket, token } = STORES;
+  const { keys, overlay, socket, token, mqs } = STORES;
   const { lockKeys, unlockKeys, notify } = ACTIONS;
 
   let email = isDev ? AUTO_EMAIL : '';
@@ -34,12 +34,13 @@
     }
   };
 
+  $: ({ smartphone } = $mqs);
   $: ({ escape } = $keys);
 </script>
 
 <form on:submit|preventDefault={login}>
   <Crow vertical gutter={4} left>
-    <Crow gutter={4}>
+    <Crow gutter={4} vertical={smartphone}>
       <Input
         placeholder="Email"
         type="email"
