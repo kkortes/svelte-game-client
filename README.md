@@ -1,6 +1,10 @@
+## My personal repo
+
+This repo is a work in progress and is currently my personal thing. Feel free to fork or ask questions about it, but expect things to change drastically. I have no current plans of making a "official release" ever :P
+
 ## Information
 
-This is an opinionated mono repo for game dev using web tech.
+This is a highly opinionated mono repo for game dev using web tech.
 
 The stack is:
 
