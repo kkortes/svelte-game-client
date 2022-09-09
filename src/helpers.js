@@ -1,8 +1,7 @@
 import lodash from 'lodash';
-import ENV from '$src/constants/ENV_VARS';
+import { IS_DEV } from '$src/constants/ENV_VARS';
 
 const { isEqual, merge } = lodash;
-const { isDev } = ENV;
 
 const wrapBasedOnType = (value) => (typeof value !== 'string' ? `{${value}}` : `"${value}"`);
 
@@ -197,11 +196,11 @@ const parseVersion = (versionString) => {
 const dayAfter = (time) => {
   const tomorrow = new Date(time || null);
 
-  tomorrow.setHours(isDev ? tomorrow.getHours() : 0);
-  // tomorrow.setMinutes(tomorrow.getMinutes() + +isDev);
-  tomorrow.setMinutes(isDev ? tomorrow.getMinutes() : 0);
-  tomorrow.setSeconds(isDev ? tomorrow.getSeconds() + 10 : 0);
-  tomorrow.setDate(tomorrow.getDate() + +!isDev);
+  tomorrow.setHours(IS_DEV ? tomorrow.getHours() : 0);
+  // tomorrow.setMinutes(tomorrow.getMinutes() + +IS_DEV);
+  tomorrow.setMinutes(IS_DEV ? tomorrow.getMinutes() : 0);
+  tomorrow.setSeconds(IS_DEV ? tomorrow.getSeconds() + 10 : 0);
+  tomorrow.setDate(tomorrow.getDate() + +!IS_DEV);
 
   return tomorrow;
 };

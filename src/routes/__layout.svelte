@@ -1,13 +1,12 @@
 <script>
   import '$src/store/settings';
-
-  const { isDev } = ENV;
+  const { IS_DEV } = ENV;
 </script>
 
 <ConnectSocket />
 <Keystrokes />
 
-{#if isDev && false}
+{#if IS_DEV && false}
   <Sidebar />
 {/if}
 

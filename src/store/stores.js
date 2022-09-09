@@ -1,5 +1,5 @@
-import loadLocalStorage from '$src/store/abs/loadLocalStorage';
-import mediaQuery from '$src/store/abs/mediaQuery';
+import loadLocalStorage from '$src/store/loadLocalStorage';
+import mediaQuery from '$src/store/mediaQuery';
 
 export default {
   token: undefined,

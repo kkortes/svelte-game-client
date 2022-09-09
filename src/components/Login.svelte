@@ -1,12 +1,12 @@
 <script>
-  const { isDev, AUTO_EMAIL, AUTO_PASSWORD } = ENV;
   const { keys, overlay, socket, token, mqs } = STORES;
   const { lockKeys, unlockKeys, notify } = ACTIONS;
+  const { IS_DEV, AUTO_EMAIL, AUTO_PASSWORD } = ENV;
 
-  let email = isDev ? AUTO_EMAIL : '';
-  let password = isDev ? AUTO_PASSWORD : '';
-  let rememberMe = isDev ? true : false;
-  let codeOfConduct = isDev ? true : false;
+  let email = IS_DEV ? AUTO_EMAIL : '';
+  let password = IS_DEV ? AUTO_PASSWORD : '';
+  let rememberMe = IS_DEV ? true : false;
+  let codeOfConduct = IS_DEV ? true : false;
 
   const login = async () => {
     if (!codeOfConduct) {

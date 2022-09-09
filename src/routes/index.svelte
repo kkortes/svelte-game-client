@@ -2,7 +2,7 @@
   import { getCookie } from '$src/helpers';
   import { version } from '../../package.json';
 
-  const { isDev } = ENV;
+  const { IS_DEV } = ENV;
   const { socket, token } = STORES;
   const { notify } = ACTIONS;
 
@@ -19,7 +19,7 @@
           authorized = await $socket.asyncEmit('user/authenticate', {
             token: $token,
             clientVersion: version,
-            isDev
+            IS_DEV
           });
         } catch (e) {
           notify(e);

@@ -15,13 +15,12 @@ export default {
     autoImport({
       components: [{ name: './src/components', flat: true }],
       mapping: {
-        ENV: `import ENV from '$src/constants/ENV_VARS'`,
-        STORES: `import STORES from '$src/store/abs/stores'`,
-        ACTIONS: `import ACTIONS from '$src/store/abs/actions'`
+        ENV: `import ENV from '$src/constants/ENV_VARS'`
       },
       module: {
         svelte: ['onMount', 'onDestroy'],
-        'svelte-component-kit': ['Crow', 'Icon', 'Tooltip']
+        'svelte-component-kit': ['Crow', 'Icon', 'Tooltip'],
+        '$src/store': ['STORES', 'ACTIONS']
       },
       include: ['**/*.svelte']
     }),

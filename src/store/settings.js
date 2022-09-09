@@ -1,4 +1,4 @@
-import STORES from '$src/store/abs/stores';
+import { STORES } from '$src/store';
 import { browser } from '$app/env';
 
 const { settings } = STORES;
