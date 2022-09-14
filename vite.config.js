@@ -5,7 +5,6 @@ export default {
   build: {
     sourcemap: true
   },
-  // Allows us to read data from `package.json`
   server: {
     fs: {
       allow: ['..']
@@ -26,7 +25,4 @@ export default {
     }),
     sveltekit()
   ]
-  // resolve: {
-  // 	mainFields: ['module', 'jsnext:main', 'jsnext', 'browser']
-  // },
 };

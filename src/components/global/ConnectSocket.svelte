@@ -1,6 +1,6 @@
 <script>
   import aaw from 'async-await-websockets';
-  import { browser } from '$app/env';
+  import { browser } from '$app/environment';
 
   const { WEBSOCKET_CONNECT } = ENV;
   const { socket } = STORES;

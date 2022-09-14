@@ -1,5 +1,5 @@
 import { STORES } from '$src/store';
-import { browser } from '$app/env';
+import { browser } from '$app/environment';
 
 const { settings } = STORES;
 

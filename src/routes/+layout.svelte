@@ -11,8 +11,10 @@
 {/if}
 
 <div class="content">
-  <Crow vertical>
-    <slot />
+  <Crow>
+    <Crow left vertical>
+      <slot />
+    </Crow>
   </Crow>
 </div>
 
