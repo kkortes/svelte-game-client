@@ -23,6 +23,17 @@ npm run dev
 
 ## Run the server locally
 
+`touch .env` and add:
+
+```
+PORT=1337
+CORS_ORIGIN=*
+NODE_ENV=development
+MONGO_CONNECT=mongodb://wsadmin:qwe123@localhost:27017
+SUPPORT_EMAIL_PASSWORD=<password>
+PASSWORD_RESET_HASH<custom_hash>
+```
+
 ```
 cd svelte-game-server
 npm install
