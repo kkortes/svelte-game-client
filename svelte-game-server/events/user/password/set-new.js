@@ -6,7 +6,7 @@ dotenv.config();
 const { PASSWORD_RESET_HASH } = process.env;
 const hash = new hashids(PASSWORD_RESET_HASH);
 
-export default async ({ password, secret }, _io, _socket, { mongo }) => {
+export default async ({ password, secret }, { mongo }) => {
   const collection = mongo.collection('users');
 
   const [pwr] = hash.decode(secret);

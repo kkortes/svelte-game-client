@@ -7,7 +7,7 @@ const { SUPPORT_EMAIL_PASSWORD, PASSWORD_RESET_HASH } = process.env;
 
 const hash = new hashids(PASSWORD_RESET_HASH);
 
-export default async ({ email, url }, _io, _socket, { mongo }) => {
+export default async ({ email, url }, { mongo }) => {
   const collection = mongo.collection('users');
 
   const LCemail = email.toLowerCase().trim();

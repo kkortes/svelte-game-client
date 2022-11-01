@@ -7,7 +7,7 @@
 
   const register = async () => {
     try {
-      await $socket.asyncEmit('user/register', {
+      await $socket.sendAsync('user/register', {
         email,
         password
       });
@@ -27,7 +27,7 @@
 </script>
 
 <form on:submit|preventDefault={register}>
-  <Crow gutter={4} vertical={smartphone}>
+  <Crow gap={4} vertical={smartphone}>
     <Input
       placeholder="Email"
       type="email"

@@ -6,13 +6,21 @@
   const { socket } = STORES;
   const { notify } = ACTIONS;
 
+  let connections = 0;
+
   onMount(() => {
     if (browser && !window.socket) {
-      window.socket = aaw(WEBSOCKET_CONNECT);
-      window.socket.on('connect', () => ($socket = window.socket));
-      window.socket.on('connect_error', () =>
-        notify({ error: 'Game server unreachable, trying again soon' })
+      window.ws = aaw(WEBSOCKET_CONNECT);
+
+      ws.on(
+        'open',
+        () => (
+          ($socket = ws),
+          connections && notify({ success: 'Connected to game server' }),
+          (connections += 1)
+        )
       );
+      ws.on('close', () => notify({ error: `Can't connect to game server` }));
     }
   });
 </script>

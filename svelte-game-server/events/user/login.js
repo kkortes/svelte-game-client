@@ -1,10 +1,9 @@
 import sha1 from 'sha1';
-import shortUuid from 'short-uuid';
 
-export default async ({ email, password }, _io, _socket, { mongo }) => {
+export default async ({ email, password }, { ws, mongo }) => {
   if (!email || !password) throw Error('Invalid login credentials');
 
-  const token = shortUuid.generate();
+  const token = ws.sid;
   const users = mongo.collection('users');
   const correctEmailFormat = email.toLowerCase().trim();
 

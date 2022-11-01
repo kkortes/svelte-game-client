@@ -6,7 +6,7 @@
 
   const forgotPassword = async () => {
     try {
-      await $socket.asyncEmit('user/password/request-reset', {
+      await $socket.sendAsync('user/password/request-reset', {
         email,
         url: window.location.origin
       });
@@ -24,7 +24,7 @@
 </script>
 
 <form on:submit|preventDefault={forgotPassword}>
-  <Crow gutter={4}>
+  <Crow gap={4}>
     <Input
       placeholder="Email"
       type="email"

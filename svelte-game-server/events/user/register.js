@@ -1,7 +1,7 @@
 import sha1 from 'sha1';
 import { validateEmail } from '../../helpers.js';
 
-export default async ({ email, password }, _io, _socket, { mongo }) => {
+export default async ({ email, password }, { mongo }) => {
   const collection = mongo.collection('users');
   const correctEmailFormat = email.toLowerCase().trim();
 

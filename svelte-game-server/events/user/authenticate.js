@@ -2,7 +2,7 @@ import json from '../../package.json' assert { type: 'json' };
 import { isNewerVersion } from '../../helpers.js';
 const { version: serverVersion } = json;
 
-export default async ({ token, clientVersion, isDev }, _io, _socket, { mongo }) => {
+export default async ({ token, clientVersion, isDev }, { mongo }) => {
   if (isNewerVersion(clientVersion, serverVersion) && !isDev)
     throw Error(
       `Your client is outdated, please try again soon (${clientVersion} < ${serverVersion})`

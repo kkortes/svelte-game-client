@@ -6,7 +6,7 @@
 </script>
 
 <div class="unauthorized">
-  <Crow vertical gutter={4}>
+  <Crow vertical gap={4}>
     {#if loginPageMode === 0}
       <Login />
     {/if}

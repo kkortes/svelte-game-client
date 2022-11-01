@@ -26,6 +26,8 @@
 
 <style>
   .content {
+    display: grid;
+    justify-content: center;
     padding: 75px 20px;
     width: 100%;
     height: 100%;

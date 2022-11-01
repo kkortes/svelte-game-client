@@ -16,7 +16,7 @@
       return;
     }
     try {
-      const t = await $socket.asyncEmit('user/login', {
+      const t = await $socket.sendAsync('user/login', {
         email,
         password
       });
@@ -39,8 +39,8 @@
 </script>
 
 <form on:submit|preventDefault={login}>
-  <Crow vertical gutter={4} left>
-    <Crow gutter={4} vertical={smartphone}>
+  <Crow vertical gap={4} left>
+    <Crow gap={4} vertical={smartphone}>
       <Input
         placeholder="Email"
         type="email"

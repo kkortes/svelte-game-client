@@ -1,4 +1,5 @@
 <script>
+  import { tick } from 'svelte';
   import { fly } from 'svelte/transition';
 
   const { notifications } = STORES;
@@ -13,17 +14,16 @@
     ({
       error: 'Ops, something went wrong!',
       information: 'Did you know?',
-      success: "Let's go!",
-      warning: 'Heads up!'
+      success: 'Good news',
+      warning: 'Heads up'
     }[type]);
 
-  const reset = () => ((animating = false), removeFirstNotification());
-
-  const removeFirst = (items) => {
-    if (items.length && !animating) {
+  const removeFirst = async (items) => {
+    const { height } = ref.getBoundingClientRect();
+    if (items.length && !animating && height) {
       animation = ref.animate(
         {
-          transform: 'translateY(-72px)'
+          transform: `translateY(-${height}px)`
         },
         {
           delay: 3000,
@@ -31,13 +31,20 @@
           easing: 'ease'
         }
       );
-      requestAnimationFrame(() => (animating = true));
+      animating = true;
 
-      animation.onfinish = reset;
+      animation.onfinish = () => {
+        animating = false;
+        removeFirstNotification();
+      };
     }
   };
 
-  $: ref && removeFirst([...$notifications]);
+  $: ref &&
+    (async () => {
+      await tick();
+      removeFirst([...$notifications]);
+    })();
 
   const hover = (enter) => ((freeze = enter), animation[enter ? 'pause' : 'play']());
 </script>
@@ -50,13 +57,13 @@
   on:mouseenter={hover.bind(undefined, true)}
   on:mouseleave={hover.bind(undefined, false)}
 >
-  <Crow vertical gutter={4} right>
+  <Crow vertical right>
     {#each [...$notifications] as notification (notification)}
       {@const { type, message } = JSON.parse(notification)}
       <div>
         <div in:fly={{ x: 50 }}>
           <div class="notification {type}">
-            <Crow gutter={4}>
+            <Crow gap={4}>
               <div class="icon {type}">
                 <Icon name={type} size={20} color="#fff" />
               </div>
@@ -122,6 +129,7 @@
   .notification {
     background-color: #fff;
     padding: 12px;
+    margin-bottom: 8px;
     border-left: 4px solid #fff;
     font-size: 14px;
     border-radius: 3px;

@@ -10,7 +10,7 @@
 
   const reset = async () => {
     try {
-      await $socket.asyncEmit('user/password/set-new', {
+      await $socket.sendAsync('user/password/set-new', {
         secret: $page.params.secret,
         password
       });
@@ -24,7 +24,7 @@
   $: $socket &&
     (async () => {
       try {
-        await $socket.asyncEmit('user/password/reset-eligibility', {
+        await $socket.sendAsync('user/password/reset-eligibility', {
           secret: $page.params.secret
         });
         error = false;

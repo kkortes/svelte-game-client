@@ -6,7 +6,7 @@
 </script>
 
 <div class="components">
-  <Crow vertical left gutter={20}>
+  <Crow vertical left gap={20}>
     <div>
       <h2>Input</h2>
       <Input
@@ -26,7 +26,7 @@
     </div>
     <div>
       <h2>Button</h2>
-      <Crow gutter={8}>
+      <Crow gap={8}>
         <Button primary on:click={console.info}>Primary</Button>
         <Button secondary on:click={console.info}>Secondary</Button>
         <Button tertiary on:click={console.info}>Tertiary</Button>
@@ -34,7 +34,7 @@
     </div>
     <div>
       <h2>Toasts</h2>
-      <Crow gutter={8}>
+      <Crow gap={8}>
         <Button
           tertiary
           on:click={notify.bind(undefined, { error: 'this is a error toast' })}

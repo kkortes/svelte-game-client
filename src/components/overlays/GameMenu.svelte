@@ -4,7 +4,7 @@
 
 <div class="game-menu">
   <Frame>
-    <Crow vertical gutter={4}>
+    <Crow vertical gap={4}>
       <Button secondary on:click={() => ($overlay = 'ReleaseNotes')}>Release notes</Button>
       {#if $token}
         <Logout />

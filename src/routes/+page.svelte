@@ -16,7 +16,7 @@
   $: $token && connected
     ? (async () => {
         try {
-          authorized = await $socket.asyncEmit('user/authenticate', {
+          authorized = await $socket.sendAsync('user/authenticate', {
             token: $token,
             clientVersion: version,
             IS_DEV

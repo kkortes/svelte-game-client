@@ -12,7 +12,7 @@
 </script>
 
 <div class="sidebar">
-  <Crow vertical up gutter={8}>
+  <Crow vertical up gap={8}>
     {#each links as { url, text }}
       <div on:click={() => console.info(url)}>
         <Icon name="crow" />
