@@ -14,10 +14,10 @@
 <div class="sidebar">
   <Crow vertical up gap={8}>
     {#each links as { url, text }}
-      <div on:click={() => console.info(url)}>
+      <button on:click={() => console.info(url)}>
         <Icon name="crow" />
         Long name like this
-      </div>
+      </button>
     {/each}
   </Crow>
 </div>

@@ -1,6 +1,6 @@
-<div on:click class="close">
+<button on:click class="close strip-defaults">
   <Icon name="cross" color="hsla(var(--gray), .5)" size={14} />
-</div>
+</button>
 
 <style>
   .close {

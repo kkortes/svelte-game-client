@@ -11,7 +11,7 @@
   $: escape && setOverlay($overlay ? '' : 'GameMenu');
 </script>
 
-<div on:click={closeSelf} class="overlay {classes}" class:show={$overlay}>
+<button on:click={closeSelf} class="overlay {classes} strip-defaults" class:show={$overlay}>
   <div />
   <div class="content {camelCaseToDashed($overlay)}">
     {#if $overlay}
@@ -19,7 +19,7 @@
     {/if}
   </div>
   <div />
-</div>
+</button>
 
 <style>
   .overlay {

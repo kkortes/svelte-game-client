@@ -3,9 +3,9 @@
 </script>
 
 <div class="top-bar">
-  <div class="game-menu-button" on:click={setOverlay.bind(undefined, 'GameMenu')}>
+  <button class="game-menu-button strip-defaults" on:click={setOverlay.bind(undefined, 'GameMenu')}>
     <Icon name="menu" size={20} />
-  </div>
+  </button>
 </div>
 
 <style>
