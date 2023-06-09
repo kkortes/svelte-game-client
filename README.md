@@ -1,6 +1,6 @@
 ## My personal repo
 
-This repo is a work in progress and is currently my personal thing. Feel free to fork or ask questions about it, but expect things to change drastically. I have no current plans of making a "official release" ever :P
+This repo is a work in progress and is currently my personal thing. Feel free to fork or ask questions about it, but expect things to change drastically.
 
 ## Information
 
@@ -31,7 +31,7 @@ CORS_ORIGIN=*
 NODE_ENV=development
 MONGO_CONNECT=mongodb://wsadmin:qwe123@localhost:27017
 SUPPORT_EMAIL_PASSWORD=<password>
-PASSWORD_RESET_HASH<custom_hash>
+PASSWORD_RESET_HASH=<custom_hash>
 ```
 
 ```
@@ -54,6 +54,6 @@ npm run dev
 
 - Global styling is done like so: `:global(.anElement .anotherElement.anotherElement)`. It has to do with how Svelte is applying their automatic classes for scoping. It might be possible to skip the extra `.anotherElement` in the future. Skipping it now makes `development` and `production` run differentiating CSS.
 
-- `.env (development) & .env.production (production)` are injected into `src/constants/ENV_VARS.js`. Trying to parse `import.meta.X` won't work in Svelte files, due to vite crashing when there is CSS in the files that they parse..
+- `.env (development) & .env.production (production)` are injected into `src/constants/ENV_VARS.js`. Trying to parse `import.meta.X` won't work in Svelte files, due to vite crashing when there is CSS in the files that they parse.
 
-- This repo utilizes `sveltekit-autoimport` (https://github.com/yuanchuan/sveltekit-autoimport) hence some `.svelte` and `.js` imports seem to magically appear out of nowhere. See `vite.config.js` to see what's going on. Furthermore for `const { someStoryProperty } = STORES` to work properly a bunch of code has weirdly been abstracted to `store` for ease of use.
+- This repo utilizes `sveltekit-autoimport` (https://github.com/yuanchuan/sveltekit-autoimport) hence some `.svelte` and `.js` imports seem to magically appear out of nowhere. See `vite.config.js` to see what's going on. Furthermore for `const { someStoreProperty } = STORES` to work properly, a bunch of code has been abstracted into `/src/store` for ease of use.
