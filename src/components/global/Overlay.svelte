@@ -43,6 +43,7 @@
     grid-template-rows: 10px 1fr 10px;
   }
   .content {
+    text-align: left;
     position: relative;
     margin: 0 auto;
     padding-bottom: 50px;

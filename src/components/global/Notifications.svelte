@@ -50,7 +50,7 @@
 </script>
 
 <div
-  class="notifications"
+  class="fixed top-8 right-2 text-gray-500"
   class:animating
   class:freeze
   bind:this={ref}
@@ -62,14 +62,30 @@
       {@const { type, message } = JSON.parse(notification)}
       <div>
         <div in:fly={{ x: 50 }}>
-          <div class="notification {type}">
-            <Crow gap={4}>
-              <div class="icon {type}">
-                <Icon name={type} size={20} color="#fff" />
+          <div
+            class={tw(
+              'notification mb-2 p-3 glass',
+              type === 'error' && 'border-red-500',
+              type === 'warning' && 'border-orange-500',
+              type === 'information' && 'border-blue-500',
+              type === 'success' && 'border-green-500'
+            )}
+          >
+            <Crow gap={6}>
+              <div
+                class={tw(
+                  'icon w-8 h-8 cx rounded-full',
+                  type === 'error' && 'bg-red-500',
+                  type === 'warning' && 'bg-orange-500',
+                  type === 'information' && 'bg-blue-500',
+                  type === 'success' && 'bg-green-500'
+                )}
+              >
+                <Icon class="text-white text-lg" name={type} />
               </div>
               <div>
-                <strong>{titleByType(type)}</strong>
-                <div class="message">
+                <strong class="text-black text-base">{titleByType(type)}</strong>
+                <div class="max-w-xs first-letter:capitalize">
                   {message.replace('Error: ', '')}
                 </div>
               </div>
@@ -82,36 +98,6 @@
 </div>
 
 <style>
-  .message {
-    max-width: 200px;
-  }
-  .message::first-letter {
-    text-transform: uppercase;
-  }
-  strong {
-    color: #000;
-    font-size: 16px;
-    letter-spacing: 0.5px;
-  }
-  .icon {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    display: grid;
-    place-items: center;
-  }
-  .icon.error {
-    background-color: hsl(var(--red));
-  }
-  .icon.warning {
-    background-color: hsl(var(--orange));
-  }
-  .icon.information {
-    background-color: hsl(var(--blue));
-  }
-  .icon.success {
-    background-color: hsl(var(--green));
-  }
   :global(.notifications.animating > .crow > div:first-child) {
     transition: opacity 400ms ease 3000ms;
     opacity: 0;
@@ -119,35 +105,5 @@
   :global(.notifications.freeze > .crow > div:first-child) {
     transition: opacity 150ms ease;
     opacity: 1;
-  }
-  .notifications {
-    position: fixed;
-    top: 8px;
-    right: 8px;
-    color: hsl(var(--gray));
-  }
-  .notification {
-    background-color: #fff;
-    padding: 12px;
-    margin-bottom: 8px;
-    border-left: 4px solid #fff;
-    font-size: 14px;
-    border-radius: 3px;
-    box-shadow: 1px 1px 20px rgba(0, 0, 0, 0.15);
-  }
-  .notification:first-letter {
-    text-transform: uppercase;
-  }
-  .error {
-    border-color: hsl(var(--red));
-  }
-  .warning {
-    border-color: hsl(var(--orange));
-  }
-  .success {
-    border-color: hsl(var(--green));
-  }
-  .information {
-    border-color: hsl(var(--blue));
   }
 </style>

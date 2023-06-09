@@ -6,7 +6,6 @@
 </script>
 
 <div class="dropdown">
-  <!-- svelte-ignore a11y-no-onchange -->
   <select bind:value on:change>
     <optgroup label="Choose one">
       {#each options as option, i}
@@ -32,7 +31,7 @@
         {:else}
           {value || 'N/A'}
         {/if}
-        <Icon name="down" size={14} color="hsl(var(--blue))" />
+        <Icon class="text-black" name="down" />
       </div>
     </Crow>
   </Frame>

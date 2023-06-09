@@ -38,7 +38,7 @@
         <Button
           tertiary
           on:click={notify.bind(undefined, { error: 'this is a error toast' })}
-          style="color: hsl(var(--red));"
+          class="text-red-500"
         >
           Error
         </Button>
@@ -47,21 +47,21 @@
           on:click={notify.bind(undefined, {
             warning: 'this is a warning toast'
           })}
-          style="color: hsl(var(--orange));"
+          class="text-orange-500"
         >
           Warning
         </Button>
         <Button
           tertiary
           on:click={notify.bind(undefined, { information: 'this is a information toast' })}
-          style="color: hsl(var(--blue));"
+          class="text-blue-500"
         >
           Information
         </Button>
         <Button
           tertiary
           on:click={notify.bind(undefined, { success: 'this is a success toast' })}
-          style="color: hsl(var(--green));"
+          class="text-green-500"
         >
           Success
         </Button>

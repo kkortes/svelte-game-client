@@ -5,7 +5,7 @@
   $: ({ loginPageMode } = $settings);
 </script>
 
-<div class="unauthorized">
+<div class="relative p-10 glass">
   <Crow vertical gap={4}>
     {#if loginPageMode === 0}
       <Login />
@@ -33,9 +33,3 @@
     </Crow>
   </Crow>
 </div>
-
-<style>
-  .unauthorized {
-    position: relative;
-  }
-</style>

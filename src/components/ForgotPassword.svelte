@@ -34,6 +34,6 @@
       blur={escape}
     />
 
-    <Button primary type="submit" blur={escape}>Submit</Button>
+    <Button type="submit" blur={escape}>Submit</Button>
   </Crow>
 </form>

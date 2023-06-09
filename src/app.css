@@ -1,0 +1,114 @@
+@import '../static/icomoon/style.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: Fira Sans Condensed, Trebuchet MS, sans-serif;
+  }
+  body {
+    @apply text-black dark:text-white;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply rounded-md backdrop-blur-xl bg-white/50 shadow-lg border border-white/50;
+  }
+  .cx-up-left {
+    @apply flex flex-wrap content-start justify-start;
+  }
+  .cx-up {
+    @apply flex flex-wrap content-start justify-center;
+  }
+  .cx-up-right {
+    @apply flex flex-wrap content-start justify-end;
+  }
+  .cx-left {
+    @apply flex flex-wrap content-center items-center justify-start;
+  }
+  .cx {
+    @apply flex flex-wrap content-center items-center justify-center;
+  }
+  .cx-right {
+    @apply flex flex-wrap content-center items-center justify-end;
+  }
+  .cx-down-left {
+    @apply flex flex-wrap items-end justify-start;
+  }
+  .cx-down {
+    @apply flex flex-wrap items-end justify-center;
+  }
+  .cx-down-right {
+    @apply flex flex-wrap items-end justify-end;
+  }
+  .cy-up-left {
+    @apply flex flex-col items-start;
+  }
+  .cy-up {
+    @apply flex flex-col items-center justify-start;
+  }
+  .cy-up-right {
+    @apply flex flex-col items-end;
+  }
+  .cy-left {
+    @apply flex flex-col items-start justify-center;
+  }
+  .cy {
+    @apply flex flex-col items-center justify-center;
+  }
+  .cy-right {
+    @apply flex flex-col items-end justify-center;
+  }
+  .cy-down {
+    @apply flex flex-col items-center justify-end;
+  }
+  .cy-down-left {
+    @apply flex flex-col items-start justify-end;
+  }
+  .cy-down-right {
+    @apply flex flex-col items-end justify-end;
+  }
+
+  h1 {
+    @apply text-2xl font-medium sm:text-4xl sm:tracking-[-0.0625rem] md:text-5xl md:tracking-[-0.0625rem];
+  }
+  h2 {
+    @apply text-xl font-medium sm:text-3xl sm:tracking-normal md:text-4xl md:tracking-[-0.0625rem];
+  }
+  h3 {
+    @apply text-lg font-medium sm:text-2xl md:text-3xl;
+  }
+  h4 {
+    @apply text-base font-medium sm:text-lg md:text-2xl;
+  }
+  h5 {
+    @apply text-sm font-medium sm:text-base md:text-lg;
+  }
+  h6 {
+    @apply text-xs font-medium sm:text-sm md:text-base;
+  }
+}
+
+:root {
+  --orange: 27, 87%, 70%;
+  --red: 0, 100%, 45%;
+  --green: 116, 81%, 45%;
+  --blue: 216, 74%, 43%;
+  --gray: 216, 0%, 35%;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0 0 12px 0;
+}
+.tooltip {
+  opacity: 0;
+  pointer-events: none;
+}

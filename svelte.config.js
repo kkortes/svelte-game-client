@@ -1,10 +1,20 @@
-import vercel from '@sveltejs/adapter-vercel';
+import adapter from '@sveltejs/adapter-vercel';
+import { vitePreprocess } from '@sveltejs/kit/vite';
 
 export default {
   kit: {
-    adapter: vercel(),
+    adapter: adapter(),
     alias: {
       $src: 'src/*'
+    }
+  },
+  preprocess: vitePreprocess(),
+  vitePlugin: {
+    // set to true for defaults or customize with object
+    inspector: {
+      toggleKeyCombo: 'meta-shift',
+      showToggleButton: 'never',
+      holdMode: true
     }
   }
 };

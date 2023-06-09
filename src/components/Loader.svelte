@@ -13,111 +13,24 @@
 </script>
 
 {#if show}
-  <div class="loader" in:fade={{ duration: 250, delay: 500 }}>
-    <div class="stripe">
+  <div class="cy fixed bg-black/25 inset-0" in:fade={{ duration: 250, delay: 500 }}>
+    <div
+      class="
+        cy gap-4 py-6 text-white dark:text-black relative bg-black/70 dark:bg-white/70 w-full
+        before:absolute before:content-[''] before:bg-black/50 dark:before:bg-white/50 before:left-0 before:right-0 before:h-1 before:bottom-[calc(100%+theme(space.1))]
+        after:absolute after:content-[''] after:bg-black/50 dark:after:bg-white/50 after:left-0 after:right-0 after:h-1 after:top-[calc(100%+theme(space.1))]
+      "
+    >
       <h1>
         <slot />
       </h1>
-      <div class="lds-ellipsis">
-        <div />
-        <div />
-        <div />
-        <div />
+      <div class="relative leading-[0]">
+        <Icon class="text-4xl text-white/20 dark:text-black/20" name="spinner-circle" />
+        <Icon
+          class="text-4xl text-white dark:text-black absolute inset-0 animate-spin"
+          name="spinner-inner"
+        />
       </div>
     </div>
   </div>
 {/if}
-
-<style>
-  .stripe {
-    position: relative;
-    background: rgba(0, 0, 0, 0.7);
-    color: #fff;
-    width: 100%;
-  }
-  .stripe:before,
-  .stripe:after {
-    position: absolute;
-    content: '';
-    background: rgba(0, 0, 0, 0.5);
-    left: 0;
-    right: 0;
-    height: 4px;
-  }
-  .stripe:before {
-    bottom: calc(100% + 4px);
-  }
-  .stripe:after {
-    top: calc(100% + 4px);
-  }
-  h1 {
-    font-size: 28px;
-  }
-  .loader {
-    position: fixed;
-    inset: 0 -4px;
-    display: grid;
-    place-items: center;
-    text-align: center;
-    background: rgba(0, 0, 0, 0.25);
-  }
-  h1 {
-    margin: 30px 0 0 0;
-  }
-  .lds-ellipsis {
-    display: inline-block;
-    position: relative;
-    width: 64px;
-    height: 64px;
-  }
-  .lds-ellipsis div {
-    position: absolute;
-    top: 27px;
-    width: 11px;
-    height: 11px;
-    border-radius: 50%;
-    background: #fff;
-    animation-timing-function: cubic-bezier(0, 1, 1, 0);
-    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.75);
-  }
-  .lds-ellipsis div:nth-child(1) {
-    left: 6px;
-    animation: lds-ellipsis1 0.6s infinite;
-  }
-  .lds-ellipsis div:nth-child(2) {
-    left: 6px;
-    animation: lds-ellipsis2 0.6s infinite;
-  }
-  .lds-ellipsis div:nth-child(3) {
-    left: 26px;
-    animation: lds-ellipsis2 0.6s infinite;
-  }
-  .lds-ellipsis div:nth-child(4) {
-    left: 45px;
-    animation: lds-ellipsis3 0.6s infinite;
-  }
-  @keyframes lds-ellipsis1 {
-    0% {
-      transform: scale(0);
-    }
-    100% {
-      transform: scale(1);
-    }
-  }
-  @keyframes lds-ellipsis3 {
-    0% {
-      transform: scale(1);
-    }
-    100% {
-      transform: scale(0);
-    }
-  }
-  @keyframes lds-ellipsis2 {
-    0% {
-      transform: translate(0, 0);
-    }
-    100% {
-      transform: translate(19px, 0);
-    }
-  }
-</style>

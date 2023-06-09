@@ -29,11 +29,11 @@
 </script>
 
 <div
+  bind:this={parent}
+  style={`left: calc(${left}px + ${offsetLeft}px); top: calc(${top}px + ${offsetTop}px);`}
   class:visible
   class:freeze
-  class="mouse-tracker"
-  style={`left: calc(${left}px + ${offsetLeft}px); top: calc(${top}px + ${offsetTop}px);`}
-  bind:this={parent}
+  class="fixed top-1/2 left-1/2 w-0 h-0"
 >
   <Tooltip {parent} {direction}>
     {#if tip}
@@ -45,13 +45,6 @@
 <svelte:window on:mousemove={trackCursor} />
 
 <style>
-  .mouse-tracker {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-  }
   :global(.visible .tooltip.tooltip) {
     opacity: 1;
   }
