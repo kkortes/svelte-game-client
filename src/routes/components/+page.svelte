@@ -5,7 +5,7 @@
   $: ({ escape } = $keys);
 </script>
 
-<div class="components">
+<div class="grid p-10 rounded-md w-[43.75rem]">
   <Crow vertical left gap={20}>
     <div>
       <h2>Input</h2>
@@ -69,14 +69,3 @@
     </div>
   </Crow>
 </div>
-
-<style>
-  .components {
-    margin: 0 auto;
-    width: 700px;
-    display: grid;
-    padding: 40px;
-    margin-top: 40px;
-    border-radius: 5px;
-  }
-</style>

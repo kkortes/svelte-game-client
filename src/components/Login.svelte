@@ -49,7 +49,14 @@
         bind:value={email}
         blur={escape}
       />
-      <Input placeholder="Password" type="password" bind:value={password} blur={escape} />
+      <Input
+        placeholder="Password"
+        type="password"
+        bind:value={password}
+        on:focus={lockKeys}
+        on:blur={unlockKeys}
+        blur={escape}
+      />
 
       <Button primary type="submit" blur={escape}>Log&nbsp;in</Button>
     </Crow>
@@ -59,7 +66,11 @@
       bind:value={codeOfConduct}
       on:change={({ target: { checked } }) => (codeOfConduct = checked)}
     >
-      I agree to the <a href="/" on:click|preventDefault={() => ($overlay = 'CodeOfConduct')}>
+      I agree to the <a
+        class="text-blue-500 underline hover:no-underline"
+        href="/"
+        on:click|preventDefault={() => ($overlay = 'CodeOfConduct')}
+      >
         Code of Conduct
       </a>
     </Checkbox>

@@ -9,60 +9,36 @@
   $: blur && inputRef && inputRef === document.activeElement && ((value = ''), inputRef.blur());
 </script>
 
-<div class="input" class:active={value} class:small>
-  <Frame>
-    <input
-      type="text"
-      {...props}
-      autocomplete="off"
-      bind:this={inputRef}
-      on:keyup
-      on:focus
-      on:blur
-      bind:value
-    />
+<div
+  class="input relative inline-block border-none bg-none outline-none text-black dark:text-white"
+  class:active={value}
+  class:small
+>
+  <input
+    class="p-2 rounded-md bg-white dark:bg-black"
+    type="text"
+    {...props}
+    autocomplete="off"
+    bind:this={inputRef}
+    on:keyup
+    on:focus
+    on:blur
+    bind:value
+  />
 
-    {#if placeholder}
-      <div class="placeholder">
-        {placeholder}
-      </div>
-    {/if}
-  </Frame>
+  {#if placeholder}
+    <div
+      class="placeholder absolute transition-all bottom-1/2 left-2 rounded-sm translate-y-1/2 pointer-events-none px-1.5 pt-px text-gray-600 dark:text-gray-400 bg-white dark:bg-black"
+    >
+      {placeholder}
+    </div>
+  {/if}
 </div>
 
 <style>
-  .input {
-    position: relative;
-    display: inline-block;
-    border: 0;
-  }
   input:focus + .placeholder,
   .input.active .placeholder {
     bottom: calc(100% + 6px);
-    font-size: 14px;
     left: 0px;
-    background-color: hsl(var(--form-bg-color));
-  }
-  .placeholder {
-    position: absolute;
-    bottom: 50%;
-    left: 4px;
-    transform: translateY(50%);
-    pointer-events: none;
-    padding: 2px 6px 0 6px;
-    color: hsl(var(--gray));
-    border-radius: 3px;
-  }
-  .input .placeholder {
-    transition: bottom 150ms ease, color 150ms ease, font-size 150ms ease, left 150ms ease,
-      background-color 150ms ease;
-  }
-  input {
-    border: none;
-    background: none;
-    outline: 0;
-    font-size: 16px;
-    line-height: 20px;
-    color: #000;
   }
 </style>

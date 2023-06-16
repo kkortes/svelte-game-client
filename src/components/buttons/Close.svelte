@@ -1,18 +1,3 @@
-<button on:click class="close strip-defaults">
-  <Icon name="cross" color="hsla(var(--gray), .5)" size={14} />
+<button on:click class="close cx absolute top-0 right-0 w-8 h-8 active:translate-y-px">
+  <Icon class="text-red-500" name="cross" />
 </button>
-
-<style>
-  .close {
-    position: absolute;
-    top: 0;
-    right: 0;
-    display: grid;
-    place-items: center;
-    width: 30px;
-    height: 30px;
-  }
-  .close:active {
-    transform: translateY(1px);
-  }
-</style>

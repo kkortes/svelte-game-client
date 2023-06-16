@@ -14,8 +14,8 @@
 <button
   on:click={closeSelf}
   class={tw(
-    'xs:grid-rows-[theme(spacing.8)_1fr_theme(spacing.8)] fixed grid duration-0 overflow-y-auto overflow-x-hidden transition-[opacity,transform] translate-y-6 pointer-events-none place-items-center opacity-0 grid-rows-[theme(spacing.20)_1fr_theme(spacing.20)] h-full bg-black/50 inset-[0_0_auto_0] overlay border-0 outline-none',
-    $overlay && 'opacity-1 pointer-events-auto duration-200 delay-75 translate-y-0'
+    'xs:grid-rows-[theme(spacing.8)_1fr_theme(spacing.8)] fixed grid duration-0 overflow-y-auto overflow-x-hidden transition-[opacity,transform] scale-95 pointer-events-none place-items-center opacity-0 grid-rows-[theme(spacing.20)_1fr_theme(spacing.20)] h-full bg-black/50 inset-[0_0_auto_0] overlay border-0 outline-none',
+    $overlay && 'opacity-1 pointer-events-auto duration-200 delay-75 scale-100'
   )}
 >
   <div />
