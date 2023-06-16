@@ -64,7 +64,7 @@
         <div in:fly={{ x: 50 }}>
           <div
             class={tw(
-              'notification mb-2 p-3 glass',
+              'notification mb-2 pl-3 pr-5 py-3 glass',
               type === 'error' && 'border-red-500',
               type === 'warning' && 'border-orange-500',
               type === 'information' && 'border-blue-500',
@@ -85,7 +85,7 @@
               </div>
               <div>
                 <strong class="text-black text-base">{titleByType(type)}</strong>
-                <div class="max-w-xs first-letter:capitalize">
+                <div class="text-gray-700 max-w-xs first-letter:capitalize">
                   {message.replace('Error: ', '')}
                 </div>
               </div>
