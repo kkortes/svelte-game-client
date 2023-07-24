@@ -13,10 +13,10 @@
   on:click
   bind:this={inputRef}
   class={tw(
-    'rounded leading-1 font-bold px-3 py-2 active:translate-y-px',
+    'rounded leading-1 px-3 py-2 active:translate-y-px',
     primary && 'bg-blue-500 text-white',
     secondary && 'bg-blue-200 text-blue-500',
-    tertiary && 'text-blue-500 underline bg-transparent hover:no-underline',
+    tertiary && 'text-blue-500 bg-transparent hover:underline',
     $$restProps.class
   )}
 >

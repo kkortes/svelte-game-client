@@ -9,5 +9,5 @@
   on:mouseenter={showTooltip.bind(undefined, 'Info', 'right')}
   on:mouseleave={({ toElement }) => !recursiveLookup(toElement, ['mouse-tracker']) && hideTooltip()}
 >
-  <Icon class="text-7xl" name="logo-apeegg" />
+  <Icon class="text-black dark:text-white text-7xl" name="logo-apeegg" />
 </a>

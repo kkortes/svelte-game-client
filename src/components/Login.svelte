@@ -29,6 +29,7 @@
       document.cookie = `token=${t};${expiration}`;
 
       $token = t;
+      notify({ success: 'Logged in successfully' });
     } catch (error) {
       notify(error);
     }
@@ -66,7 +67,7 @@
     on:change={({ target: { checked } }) => (codeOfConduct = checked)}
   >
     I agree to the <a
-      class="text-blue-500 underline hover:no-underline"
+      class="text-blue-500 hover:underline"
       href="/"
       on:click|preventDefault={() => ($overlay = 'CodeOfConduct')}
     >

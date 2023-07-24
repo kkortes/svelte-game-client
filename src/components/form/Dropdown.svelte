@@ -17,7 +17,7 @@
       {/each}
     </optgroup>
   </select>
-  <Frame>
+  <Frame class="dark:bg-black">
     <div class="cx !justify-between">
       {#if options.find(emptySlot)}
         <span class="first-letter:uppercase" class:default={value === 'Choose one'}>{value}</span>
@@ -26,7 +26,7 @@
       {:else}
         {value || 'N/A'}
       {/if}
-      <Icon class="text-black" name="down" />
+      <Icon class="text-gray-800 dark:text-white" name="down" />
     </div>
   </Frame>
 </div>

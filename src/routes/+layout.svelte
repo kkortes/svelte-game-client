@@ -10,9 +10,9 @@
 
 <div
   class={tw(
-    'grid justify-center w-screen h-screen bg-no-repeat bg-cover',
+    'grid justify-center w-screen min-h-screen bg-no-repeat bg-cover bg-center bg-blur',
     $page.route.id === '/' && !$token
-      ? 'bg-[url("/images/lush-fantasy-forest.png")]'
+      ? 'bg-[url("/images/desktop-1920x1080.jpg")]'
       : 'bg-gray-200 dark:bg-gray-800'
   )}
 >
@@ -28,3 +28,11 @@
 <Overlay />
 <MouseTracker />
 <Notifications />
+
+<!-- <style>
+  :global(body) {
+    background-size: 40px 40px;
+    background-image: radial-gradient(circle, black 1px, rgba(0, 0, 0, 0) 1px);
+    background-position: center;
+  }
+</style> -->

@@ -1,1 +1,1 @@
-Logged in! Press `escape` to see the game menu
+Press `escape` to see the game menu

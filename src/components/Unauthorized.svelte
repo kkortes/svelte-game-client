@@ -5,7 +5,7 @@
   $: ({ loginPageMode } = $settings);
 </script>
 
-<div class="relative p-10 glass">
+<div class="relative p-10 pb-6 glass cy gap-2">
   {#if loginPageMode === 0}
     <Login />
   {/if}

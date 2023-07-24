@@ -9,7 +9,7 @@
     font-family: Fira Sans Condensed, Trebuchet MS, sans-serif;
   }
   body {
-    @apply text-black dark:text-white;
+    @apply text-gray-800 dark:text-white;
   }
 }
 

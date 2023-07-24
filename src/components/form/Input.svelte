@@ -10,7 +10,7 @@
 </script>
 
 <div
-  class="input relative inline-block border-none bg-none outline-none text-black dark:text-white"
+  class="input relative inline-block border-none bg-none outline-none text-gray-800 dark:text-white"
   class:active={value}
   class:small
 >
@@ -28,7 +28,7 @@
 
   {#if placeholder}
     <div
-      class="placeholder absolute transition-all bottom-1/2 left-2 rounded translate-y-1/2 pointer-events-none px-1.5 pt-px text-gray-600 dark:text-gray-400 bg-white dark:bg-black"
+      class="placeholder absolute transition-[bottom,left] bottom-1/2 left-2 rounded translate-y-1/2 pointer-events-none px-1.5 pt-px text-gray-600 dark:text-gray-400 bg-white dark:bg-black"
     >
       {placeholder}
     </div>

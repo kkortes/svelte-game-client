@@ -6,7 +6,7 @@
   const { removeFirstNotification } = ACTIONS;
 
   let ref;
-  let animation = {};
+  let animations = [];
   let animating = false;
   let freeze = false;
 
@@ -19,21 +19,34 @@
     }[type]);
 
   const removeFirst = async (items) => {
-    const { height } = ref.getBoundingClientRect();
+    if (!ref.children.length) return;
+    const { height } = ref.children[0].getBoundingClientRect();
     if (items.length && !animating && height) {
-      animation = ref.animate(
-        {
-          transform: `translateY(-${height}px)`
-        },
-        {
-          delay: 3000,
-          duration: 600,
-          easing: 'ease'
-        }
+      const timing = {
+        delay: 3000,
+        duration: 600,
+        easing: 'ease'
+      };
+      animations.push(
+        ref.animate(
+          {
+            transform: `translateY(-${height}px)`
+          },
+          timing
+        )
+      );
+      animations.push(
+        ref.children[0].animate(
+          {
+            opacity: 0
+          },
+          timing
+        )
       );
       animating = true;
 
-      animation.onfinish = () => {
+      animations[0].onfinish = () => {
+        animations = [];
         animating = false;
         removeFirstNotification();
       };
@@ -46,18 +59,19 @@
       removeFirst([...$notifications]);
     })();
 
-  const hover = (enter) => ((freeze = enter), animation[enter ? 'pause' : 'play']());
+  const hover = (enter) => (
+    (freeze = enter), animations.map((animation) => animation[enter ? 'pause' : 'play']())
+  );
 </script>
 
 <div
   class="fixed top-8 right-2 text-gray-500"
   class:animating
   class:freeze
-  bind:this={ref}
   on:mouseenter={hover.bind(undefined, true)}
   on:mouseleave={hover.bind(undefined, false)}
 >
-  <div class="cy-right">
+  <div class="cy-right" bind:this={ref}>
     {#each [...$notifications] as notification (notification)}
       {@const { type, message } = JSON.parse(notification)}
       <div>
@@ -84,7 +98,7 @@
                 <Icon class="text-white text-lg" name={type} />
               </div>
               <div>
-                <strong class="text-black text-base">{titleByType(type)}</strong>
+                <strong class="text-gray-800 text-base">{titleByType(type)}</strong>
                 <div class="text-gray-700 max-w-xs first-letter:capitalize">
                   {message.replace('Error: ', '')}
                 </div>
