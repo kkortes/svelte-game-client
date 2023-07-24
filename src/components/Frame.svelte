@@ -1,5 +1,3 @@
-<div class="rounded p-2 bg-white">
-  <div class="content">
-    <slot />
-  </div>
+<div class={tw('rounded p-2 bg-white', $$restProps.class)}>
+  <slot />
 </div>

@@ -4,8 +4,7 @@
 </script>
 
 <a
-  href="https://apeegg.com"
-  target="_blank"
+  href="/"
   class="fixed top-3 left-3 block"
   on:mouseenter={showTooltip.bind(undefined, 'Info', 'right')}
   on:mouseleave={({ toElement }) => !recursiveLookup(toElement, ['mouse-tracker']) && hideTooltip()}

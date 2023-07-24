@@ -15,7 +15,7 @@
   class:small
 >
   <input
-    class="p-2 rounded-md bg-white dark:bg-black"
+    class="p-2 rounded bg-white dark:bg-black"
     type="text"
     {...props}
     autocomplete="off"
@@ -28,7 +28,7 @@
 
   {#if placeholder}
     <div
-      class="placeholder absolute transition-all bottom-1/2 left-2 rounded-sm translate-y-1/2 pointer-events-none px-1.5 pt-px text-gray-600 dark:text-gray-400 bg-white dark:bg-black"
+      class="placeholder absolute transition-all bottom-1/2 left-2 rounded translate-y-1/2 pointer-events-none px-1.5 pt-px text-gray-600 dark:text-gray-400 bg-white dark:bg-black"
     >
       {placeholder}
     </div>

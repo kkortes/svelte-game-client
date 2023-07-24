@@ -2,7 +2,6 @@
   import { page } from '$app/stores';
   import '../app.css';
   import '$src/store/settings';
-  const { IS_DEV } = ENV;
   const { token } = STORES;
 </script>
 
@@ -17,11 +16,11 @@
       : 'bg-gray-200 dark:bg-gray-800'
   )}
 >
-  <Crow>
-    <Crow left vertical>
+  <div class="cx">
+    <div class="cy-left">
       <slot />
-    </Crow>
-  </Crow>
+    </div>
+  </div>
 </div>
 
 <Topbar />

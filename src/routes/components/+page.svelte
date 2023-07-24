@@ -6,7 +6,7 @@
 </script>
 
 <div class="grid p-10 rounded-md w-[43.75rem]">
-  <Crow vertical left gap={20}>
+  <div class="cy-up-left gap-10">
     <div>
       <h2>Input</h2>
       <Input
@@ -18,23 +18,27 @@
       />
     </div>
     <div>
+      <h2>Checkbox</h2>
+      <Checkbox id="check-me">Check me</Checkbox>
+    </div>
+    <div>
       <h2>Dropdown</h2>
       <Dropdown
-        options={['Option 1', 'Option 2']}
+        options={['option 1', 'option 2']}
         on:change={({ target: { value } }) => console.info(value)}
       />
     </div>
     <div>
       <h2>Button</h2>
-      <Crow gap={8}>
+      <div class="cx gap-2">
         <Button primary on:click={console.info}>Primary</Button>
         <Button secondary on:click={console.info}>Secondary</Button>
         <Button tertiary on:click={console.info}>Tertiary</Button>
-      </Crow>
+      </div>
     </div>
     <div>
       <h2>Toasts</h2>
-      <Crow gap={8}>
+      <div class="cx gap-2">
         <Button
           tertiary
           on:click={notify.bind(undefined, { error: 'this is a error toast' })}
@@ -65,7 +69,7 @@
         >
           Success
         </Button>
-      </Crow>
+      </div>
     </div>
-  </Crow>
+  </div>
 </div>

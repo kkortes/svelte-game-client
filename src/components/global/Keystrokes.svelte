@@ -26,18 +26,6 @@
 
 <svelte:window on:keydown={toggleKey} on:keyup={toggleKey} />
 
-<!-- <div class="keys">
+<!-- <div class="fixed bottom-0 right-0 bg-white text-black p-8 text-xs">
   <pre>{JSON.stringify($keys, null, 2)}</pre>
-</div>
-
-<style>
-  .keys {
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    background: #fff;
-    color: #000;
-    padding: 10px;
-    text-align: left;
-  }
-</style> -->
+</div> -->

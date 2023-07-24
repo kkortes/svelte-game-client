@@ -38,49 +38,47 @@
   $: ({ escape } = $keys);
 </script>
 
-<form on:submit|preventDefault={login}>
-  <Crow vertical gap={4} left>
-    <Crow gap={4} vertical={smartphone}>
-      <Input
-        placeholder="Email"
-        type="email"
-        on:focus={lockKeys}
-        on:blur={unlockKeys}
-        bind:value={email}
-        blur={escape}
-      />
-      <Input
-        placeholder="Password"
-        type="password"
-        bind:value={password}
-        on:focus={lockKeys}
-        on:blur={unlockKeys}
-        blur={escape}
-      />
+<form class="cy-left gap-2" on:submit|preventDefault={login}>
+  <div class={tw('cx gap-2', smartphone && 'cy')}>
+    <Input
+      placeholder="Email"
+      type="email"
+      on:focus={lockKeys}
+      on:blur={unlockKeys}
+      bind:value={email}
+      blur={escape}
+    />
+    <Input
+      placeholder="Password"
+      type="password"
+      bind:value={password}
+      on:focus={lockKeys}
+      on:blur={unlockKeys}
+      blur={escape}
+    />
 
-      <Button primary type="submit" blur={escape}>Log&nbsp;in</Button>
-    </Crow>
+    <Button primary type="submit" blur={escape}>Log&nbsp;in</Button>
+  </div>
 
-    <Checkbox
-      id="codeOfConduct"
-      bind:value={codeOfConduct}
-      on:change={({ target: { checked } }) => (codeOfConduct = checked)}
+  <Checkbox
+    id="codeOfConduct"
+    bind:value={codeOfConduct}
+    on:change={({ target: { checked } }) => (codeOfConduct = checked)}
+  >
+    I agree to the <a
+      class="text-blue-500 underline hover:no-underline"
+      href="/"
+      on:click|preventDefault={() => ($overlay = 'CodeOfConduct')}
     >
-      I agree to the <a
-        class="text-blue-500 underline hover:no-underline"
-        href="/"
-        on:click|preventDefault={() => ($overlay = 'CodeOfConduct')}
-      >
-        Code of Conduct
-      </a>
-    </Checkbox>
+      Code of Conduct
+    </a>
+  </Checkbox>
 
-    <Checkbox
-      id="rememberMe"
-      bind:value={rememberMe}
-      on:change={({ target: { checked } }) => (rememberMe = checked)}
-    >
-      Remember me
-    </Checkbox>
-  </Crow>
+  <Checkbox
+    id="rememberMe"
+    bind:value={rememberMe}
+    on:change={({ target: { checked } }) => (rememberMe = checked)}
+  >
+    Remember me
+  </Checkbox>
 </form>

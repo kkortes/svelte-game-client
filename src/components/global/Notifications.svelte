@@ -57,7 +57,7 @@
   on:mouseenter={hover.bind(undefined, true)}
   on:mouseleave={hover.bind(undefined, false)}
 >
-  <Crow vertical right>
+  <div class="cy-right">
     {#each [...$notifications] as notification (notification)}
       {@const { type, message } = JSON.parse(notification)}
       <div>
@@ -71,7 +71,7 @@
               type === 'success' && 'border-green-500'
             )}
           >
-            <Crow gap={6}>
+            <div class="cx gap-2">
               <div
                 class={tw(
                   'icon w-8 h-8 cx rounded-full',
@@ -89,21 +89,10 @@
                   {message.replace('Error: ', '')}
                 </div>
               </div>
-            </Crow>
+            </div>
           </div>
         </div>
       </div>
     {/each}
-  </Crow>
+  </div>
 </div>
-
-<style>
-  :global(.notifications.animating > .crow > div:first-child) {
-    transition: opacity 400ms ease 3000ms;
-    opacity: 0;
-  }
-  :global(.notifications.freeze > .crow > div:first-child) {
-    transition: opacity 150ms ease;
-    opacity: 1;
-  }
-</style>

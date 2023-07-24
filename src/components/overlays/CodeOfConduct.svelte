@@ -48,6 +48,6 @@
 
 <style>
   span {
-    color: hsl(var(--red));
+    @apply text-red-500;
   }
 </style>

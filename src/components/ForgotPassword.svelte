@@ -23,17 +23,15 @@
   $: ({ escape } = $keys);
 </script>
 
-<form on:submit|preventDefault={forgotPassword}>
-  <Crow gap={4}>
-    <Input
-      placeholder="Email"
-      type="email"
-      on:focus={lockKeys}
-      on:blur={unlockKeys}
-      bind:value={email}
-      blur={escape}
-    />
+<form class="cx gap-2" on:submit|preventDefault={forgotPassword}>
+  <Input
+    placeholder="Email"
+    type="email"
+    on:focus={lockKeys}
+    on:blur={unlockKeys}
+    bind:value={email}
+    blur={escape}
+  />
 
-    <Button type="submit" blur={escape}>Submit</Button>
-  </Crow>
+  <Button type="submit" blur={escape}>Submit</Button>
 </form>

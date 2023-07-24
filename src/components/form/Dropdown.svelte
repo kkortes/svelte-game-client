@@ -5,8 +5,8 @@
   export let options = [];
 </script>
 
-<div class="dropdown">
-  <select bind:value on:change>
+<div class="relative">
+  <select class="absolute w-full h-full inset-0 opacity-0" bind:value on:change>
     <optgroup label="Choose one">
       {#each options as option, i}
         {#if emptySlot(option)}
@@ -18,55 +18,15 @@
     </optgroup>
   </select>
   <Frame>
-    <Crow left>
-      <div>
-        {#if options.find(emptySlot)}
-          <span class:default={value === 'Choose one'}>{value}</span>
-        {:else if options[value]?.color}
-          <span style={`color: ${options[value].color};`}>
-            {options[value].name}
-          </span>
-        {:else if options[value]?.icon}
-          <Icon name={options[value].icon} />
-        {:else}
-          {value || 'N/A'}
-        {/if}
-        <Icon class="text-black" name="down" />
-      </div>
-    </Crow>
+    <div class="cx !justify-between">
+      {#if options.find(emptySlot)}
+        <span class="first-letter:uppercase" class:default={value === 'Choose one'}>{value}</span>
+      {:else if options[value]?.icon}
+        <Icon name={options[value].icon} />
+      {:else}
+        {value || 'N/A'}
+      {/if}
+      <Icon class="text-black" name="down" />
+    </div>
   </Frame>
 </div>
-
-<style>
-  span {
-    display: inline-block;
-  }
-  span::first-letter {
-    text-transform: uppercase;
-  }
-  .dropdown {
-    position: relative;
-  }
-  select {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    inset: 0;
-    opacity: 0;
-  }
-  select:focus {
-    outline: 0.5px solid rgba(255, 255, 255, 0.5);
-  }
-  :global(.dropdown .frame .content.content) {
-    padding-right: 36px;
-  }
-  :global(.dropdown .frame .icon-down.icon-down) {
-    position: absolute;
-    top: 50%;
-    right: 8px;
-    transform: translate(0, -50%);
-  }
-  .default {
-    color: hsl(var(--gray));
-  }
-</style>

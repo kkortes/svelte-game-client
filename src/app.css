@@ -92,22 +92,6 @@
   }
 }
 
-:root {
-  --orange: 27, 87%, 70%;
-  --red: 0, 100%, 45%;
-  --green: 116, 81%, 45%;
-  --blue: 216, 74%, 43%;
-  --gray: 216, 0%, 35%;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  margin: 0 0 12px 0;
-}
 .tooltip {
   opacity: 0;
   pointer-events: none;

@@ -1,1 +1,1 @@
-<Frame>Click to visit https://apeegg.com!</Frame>
+<Frame>Click to go to homepage</Frame>

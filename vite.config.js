@@ -19,7 +19,7 @@ export default defineConfig({
       },
       module: {
         svelte: ['onMount', 'onDestroy'],
-        'svelte-component-kit': ['Crow', 'Tooltip'],
+        'svelte-component-kit': ['Tooltip'],
         '$src/store': ['STORES', 'ACTIONS'],
         'tailwind-merge': ['twMerge as tw']
       },
