@@ -4,7 +4,7 @@ This repo is a work in progress and is currently my personal thing. Feel free to
 
 ## Information
 
-This is a highly opinionated mono repo for game dev using web tech.
+This is a highly opinionated monorepo for game dev using web tech.
 
 The stack is:
 
@@ -15,7 +15,6 @@ The stack is:
 ## Run the client locally
 
 ```
-vercel env pull (creates .env)
 nvm use
 npm install
 npm run dev
@@ -47,8 +46,9 @@ npm run dev
 - ✅ Account creation
 - ✅ Account password recovery
 - ✅ Notification center
-- ✅ Heroku backend hosting setup (https://www.heroku.com)
+- ✅ Render backend hosting setup (https://render.com)
 - ✅ Vercel frontend hosting setup (https://vercel.com)
+- ✅ Tailwind CSS for styling (https://tailwindcss.com)
 
 ## Code base quirks
 
