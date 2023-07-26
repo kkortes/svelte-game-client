@@ -6,6 +6,8 @@
 
   let inputRef;
 
+  let { class: _class } = $$props;
+
   $: blur && inputRef && inputRef === document.activeElement && inputRef.blur();
 </script>
 
@@ -17,7 +19,7 @@
     primary && 'bg-blue-500 text-white',
     secondary && 'bg-blue-200 text-blue-500',
     tertiary && 'text-blue-500 bg-transparent hover:underline',
-    $$restProps.class
+    _class
   )}
 >
   <slot />

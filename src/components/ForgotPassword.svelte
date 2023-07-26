@@ -23,8 +23,9 @@
   $: ({ escape } = $keys);
 </script>
 
-<form class="cx gap-2" on:submit|preventDefault={forgotPassword}>
+<form class="w-full cx gap-2" on:submit|preventDefault={forgotPassword}>
   <Input
+    class="xs:w-full"
     placeholder="Email"
     type="email"
     on:focus={lockKeys}

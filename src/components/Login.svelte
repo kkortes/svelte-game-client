@@ -1,5 +1,5 @@
 <script>
-  const { keys, overlay, socket, token, mqs } = STORES;
+  const { keys, overlay, socket, token } = STORES;
   const { lockKeys, unlockKeys, notify } = ACTIONS;
   const { IS_DEV, AUTO_EMAIL, AUTO_PASSWORD } = ENV;
 
@@ -35,13 +35,13 @@
     }
   };
 
-  $: ({ smartphone } = $mqs);
   $: ({ escape } = $keys);
 </script>
 
-<form class="cy-left gap-2" on:submit|preventDefault={login}>
-  <div class={tw('cx gap-2', smartphone && 'cy')}>
+<form class="w-full cy-left gap-2" on:submit|preventDefault={login}>
+  <div class="cx gap-2 w-full">
     <Input
+      class="xs:w-full"
       placeholder="Email"
       type="email"
       on:focus={lockKeys}
@@ -50,6 +50,7 @@
       blur={escape}
     />
     <Input
+      class="xs:w-full"
       placeholder="Password"
       type="password"
       bind:value={password}
@@ -58,7 +59,7 @@
       blur={escape}
     />
 
-    <Button primary type="submit" blur={escape}>Log&nbsp;in</Button>
+    <Button class="xs:w-full" primary type="submit" blur={escape}>Log&nbsp;in</Button>
   </div>
 
   <Checkbox

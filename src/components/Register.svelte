@@ -1,5 +1,5 @@
 <script>
-  const { keys, socket, settings, mqs } = STORES;
+  const { keys, socket, settings } = STORES;
   const { lockKeys, unlockKeys, notify } = ACTIONS;
 
   let email = '';
@@ -22,12 +22,12 @@
     }
   };
 
-  $: ({ smartphone } = $mqs);
   $: ({ escape } = $keys);
 </script>
 
-<form class={tw('cx gap-2', smartphone && 'cy')} on:submit|preventDefault={register}>
+<form class="cx gap-2 w-full" on:submit|preventDefault={register}>
   <Input
+    class="xs:w-full"
     placeholder="Email"
     type="email"
     on:focus={lockKeys}
@@ -35,7 +35,13 @@
     bind:value={email}
     blur={escape}
   />
-  <Input placeholder="Password" type="password" bind:value={password} blur={escape} />
+  <Input
+    class="xs:w-full"
+    placeholder="Password"
+    type="password"
+    bind:value={password}
+    blur={escape}
+  />
 
   <Button primary type="submit" blur={escape}>Register</Button>
 </form>

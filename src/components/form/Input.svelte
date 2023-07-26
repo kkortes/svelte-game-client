@@ -4,18 +4,28 @@
   export let placeholder;
   export let blur;
 
-  let { placeholder: _placeholder, value: _value, inputRef: _inputRef, small, ...props } = $$props;
+  let {
+    placeholder: _placeholder,
+    value: _value,
+    inputRef: _inputRef,
+    small,
+    class: _class,
+    ...props
+  } = $$props;
 
   $: blur && inputRef && inputRef === document.activeElement && ((value = ''), inputRef.blur());
 </script>
 
 <div
-  class="input relative inline-block border-none bg-none outline-none text-gray-800 dark:text-white"
+  class={tw(
+    'input relative inline-block border-none bg-none outline-none text-gray-800 dark:text-white',
+    _class
+  )}
   class:active={value}
   class:small
 >
   <input
-    class="p-2 rounded bg-white dark:bg-black"
+    class="p-2 rounded bg-white dark:bg-black w-full"
     type="text"
     {...props}
     autocomplete="off"
