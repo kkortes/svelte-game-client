@@ -5,7 +5,8 @@ export default {
   kit: {
     adapter: adapter(),
     alias: {
-      $src: 'src/*'
+      $src: 'src/*',
+      '$svelte-game-engine': 'svelte-game-engine/*'
     }
   },
   preprocess: vitePreprocess(),
