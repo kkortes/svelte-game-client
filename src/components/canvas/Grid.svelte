@@ -1,12 +1,11 @@
 <script>
   import { renderable } from '$svelte-game-engine';
 
-  export let color = 'black';
+  export let color = 'green';
   export let divisions = 20;
   export let pointSize = 1;
 
-  renderable((props) => {
-    const { context, width, height } = props;
+  renderable(({ context, width, height }) => {
     const aspect = width / height;
 
     context.save();
@@ -33,5 +32,4 @@
   });
 </script>
 
-<!-- The following allows this component to nest children -->
 <slot />

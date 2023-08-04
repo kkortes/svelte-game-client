@@ -12,8 +12,7 @@
   export let fontSize = 16;
   export let fontFamily = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica';
 
-  renderable((props) => {
-    const { context, width, height } = props;
+  renderable(({ context }) => {
     if (text) {
       context.fillStyle = color;
       context.font = `${fontSize}px ${fontFamily}`;
@@ -24,5 +23,4 @@
   });
 </script>
 
-<!-- The following allows this component to nest children -->
 <slot />

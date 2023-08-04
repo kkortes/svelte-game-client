@@ -1,7 +1,6 @@
 <script>
   import { renderable, width, height } from '$svelte-game-engine';
   import vec2 from 'gl-vec2';
-  console.log(vec2);
 
   export let color = '#ffe554';
   export let size = 10;
@@ -19,12 +18,9 @@
   const velocity = [0, 0];
 
   let mouse = null;
-  let pointer;
   let mouseDown = false;
 
-  renderable(async (props, dt) => {
-    const { context, width, height } = props;
-
+  renderable(({ context, width, height }) => {
     let position = [x, y];
     if (mouseDown) {
       const delta = vec2.sub([], mouse, position);
@@ -98,14 +94,6 @@
     handleMouseMove(ev);
     mouseDown = false;
   }
-
-  function lerp(min, max, t) {
-    return min * (1 - t) + max * t;
-  }
-
-  function damp(a, b, lambda, dt) {
-    return lerp(a, b, 1 - Math.exp(-lambda * dt));
-  }
 </script>
 
 <svelte:window
@@ -116,5 +104,4 @@
 
 <Text fontSize={8} baseline="top" bind:this={text} />
 
-<!-- The following allows this component to nest children -->
 <slot />

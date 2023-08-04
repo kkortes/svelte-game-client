@@ -2,10 +2,10 @@
   import { renderable, height } from '$svelte-game-engine';
 
   let text = '';
-
   let frames = 0;
   let prevTime = performance.now();
-  renderable((state, dt) => {
+
+  renderable(() => {
     let time = performance.now();
     frames++;
     if (time >= prevTime + 1000) {
@@ -27,5 +27,4 @@
   y={$height - 20}
 />
 
-<!-- The following allows this component to nest children -->
 <slot />
