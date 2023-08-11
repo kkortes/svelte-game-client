@@ -5,12 +5,12 @@
   export let divisions = 20;
   export let pointSize = 1;
 
-  renderable(({ context, width, height }) => {
+  renderable(({ ctx, width, height }) => {
     const aspect = width / height;
 
-    context.save();
+    ctx.save();
     for (let y = 0; y < divisions; y++) {
-      context.beginPath();
+      ctx.beginPath();
       for (let x = 0; x < divisions; x++) {
         const u = divisions <= 1 ? 0.5 : x / (divisions - 1);
         const v = divisions <= 1 ? 0.5 : y / (divisions - 1);
@@ -23,12 +23,12 @@
           px = (u / aspect) * width;
           py = v * height;
         }
-        context.arc(px, py, pointSize, 0, Math.PI * 2);
+        ctx.arc(px, py, pointSize, 0, Math.PI * 2);
       }
-      context.fillStyle = color;
-      context.fill();
+      ctx.fillStyle = color;
+      ctx.fill();
     }
-    context.restore();
+    ctx.restore();
   });
 </script>
 

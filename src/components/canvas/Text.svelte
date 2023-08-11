@@ -12,13 +12,13 @@
   export let fontSize = 16;
   export let fontFamily = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica';
 
-  renderable(({ context }) => {
+  renderable(({ ctx }) => {
     if (text) {
-      context.fillStyle = color;
-      context.font = `${fontSize}px ${fontFamily}`;
-      context.textAlign = align;
-      context.textBaseline = baseline;
-      context.fillText(text, x, y);
+      ctx.fillStyle = color;
+      ctx.font = `${fontSize}px ${fontFamily}`;
+      ctx.textAlign = align;
+      ctx.textBaseline = baseline;
+      ctx.fillText(text, x, y);
     }
   });
 </script>

@@ -6,7 +6,7 @@
     width,
     height,
     canvas as canvasStore,
-    context as contextStore,
+    ctx as contextStore,
     pixelRatio,
     props,
     time
@@ -19,6 +19,17 @@
   let canvas;
   let context;
   let frame;
+  let id = Math.random();
+
+  const makeReady = () =>
+    listeners.forEach(async (entity) => {
+      if (entity.ready) return;
+      if (entity.setup) {
+        let p = entity.setup($props);
+        if (p && p.then) await p;
+      }
+      entity.ready = true;
+    });
 
   onMount(() => {
     // prepare canvas stores
@@ -27,16 +38,12 @@
     contextStore.set(context);
 
     // setup entities
-    listeners.forEach(async (entity) => {
-      if (entity.setup) {
-        let p = entity.setup($props);
-        if (p && p.then) await p;
-      }
-      entity.ready = true;
-    });
+    makeReady();
 
     // start game loop
     return createLoop((elapsed, dt) => {
+      // Run this to make sure components reloading on HMR runs their code again
+      makeReady();
       time.set(elapsed);
       render(dt);
     });
@@ -53,7 +60,7 @@
     }
   });
 
-  function render(dt) {
+  const render = (dt) => {
     context.save();
     context.scale($pixelRatio, $pixelRatio);
     listeners.forEach((entity) => {
@@ -70,15 +77,15 @@
       }
     });
     context.restore();
-  }
+  };
 
-  function handleResize() {
+  const handleResize = () => {
     width.set(window.innerWidth);
     height.set(window.innerHeight);
     pixelRatio.set(window.devicePixelRatio);
-  }
+  };
 
-  function createLoop(fn) {
+  const createLoop = (fn) => {
     let elapsed = 0;
     let lastTime = performance.now();
     (function loop() {
@@ -92,7 +99,7 @@
     return () => {
       cancelAnimationFrame(frame);
     };
-  }
+  };
 </script>
 
 <canvas

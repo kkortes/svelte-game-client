@@ -2,13 +2,11 @@
   import { renderable } from '$svelte-game-engine';
   export let color = null;
 
-  renderable(({ context, width, height }) => {
-    context.clearRect(0, 0, width, height);
+  renderable(({ ctx, width, height }) => {
+    ctx.clearRect(0, 0, width, height);
     if (color) {
-      context.fillStyle = color;
-      context.fillRect(0, 0, width, height);
+      ctx.fillStyle = color;
+      ctx.fillRect(0, 0, width, height);
     }
   });
 </script>
-
-<slot />

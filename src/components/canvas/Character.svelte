@@ -20,7 +20,7 @@
   let mouse = null;
   let mouseDown = false;
 
-  renderable(({ context, width, height }) => {
+  renderable(({ ctx, width, height }) => {
     let position = [x, y];
     if (mouseDown) {
       const delta = vec2.sub([], mouse, position);
@@ -49,19 +49,19 @@
     position[0] = x;
     position[1] = y;
 
-    context.lineCap = 'round';
+    ctx.lineCap = 'round';
 
-    context.beginPath();
-    context.fillStyle = color;
-    context.strokeStyle = color;
-    context.lineWidth = thickness;
-    context.arc(x, y, size, 0, Math.PI * 2);
-    context.stroke();
+    ctx.beginPath();
+    ctx.fillStyle = color;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = thickness;
+    ctx.arc(x, y, size, 0, Math.PI * 2);
+    ctx.stroke();
 
     if (vec2.squaredLength(velocity) > 0) {
       const normal = vec2.normalize([], velocity);
-      context.lineWidth = thickness;
-      drawNormal(context, position, normal, size);
+      ctx.lineWidth = thickness;
+      drawNormal(ctx, position, normal, size);
     }
 
     // We use this to make sure the text is in sync with the character
@@ -73,12 +73,12 @@
     });
   });
 
-  function drawNormal(context, position, normal, length) {
+  function drawNormal(ctx, position, normal, length) {
     const point = vec2.scaleAndAdd([], position, normal, length);
-    context.beginPath();
-    context.moveTo(position[0], position[1]);
-    context.lineTo(point[0], point[1]);
-    context.stroke();
+    ctx.beginPath();
+    ctx.moveTo(position[0], position[1]);
+    ctx.lineTo(point[0], point[1]);
+    ctx.stroke();
   }
 
   function handleMouseMove({ clientX, clientY }) {
