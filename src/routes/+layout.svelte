@@ -1,5 +1,4 @@
 <script>
-  export const ssr = false;
   import { page } from '$app/stores';
   import '../app.css';
   import '$src/store/settings';
