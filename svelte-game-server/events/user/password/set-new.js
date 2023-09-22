@@ -1,21 +1,27 @@
-import sha1 from 'sha1';
-import dotenv from 'dotenv';
 import hashids from 'hashids';
-dotenv.config();
+
+const {
+  password: { hash, verify }
+} = Bun;
 
 const { PASSWORD_RESET_HASH } = process.env;
-const hash = new hashids(PASSWORD_RESET_HASH);
+const { decode } = new hashids(PASSWORD_RESET_HASH);
 
 export default async ({ password, secret }, { mongo }) => {
   const collection = mongo.collection('users');
 
-  const [pwr] = hash.decode(secret);
+  const [pwr] = decode(secret);
 
   if (password.length < 3) throw Error('Your password needs to be at least 3 characters long');
 
   const { matchedCount } = await collection.updateOne(
     { pwr },
-    { $set: { password: sha1(password), pwr: null } }
+    {
+      $set: {
+        password: await hash(password),
+        pwr: null
+      }
+    }
   );
 
   if (matchedCount) return;

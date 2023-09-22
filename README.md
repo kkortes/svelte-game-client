@@ -9,7 +9,7 @@ This is a highly opinionated monorepo for game dev using web tech.
 The stack is:
 
 - `Svelte` for frontend (https://svelte.dev)
-- `Node` for backend (https://nodejs.org)
+- `Bun` for backend (https://bun.sh)
 - `MongoDB` for database (https://www.mongodb.com)
 
 ## Run the client locally

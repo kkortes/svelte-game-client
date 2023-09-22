@@ -1,9 +1,9 @@
 {
   "name": "svelte-game-client",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "scripts": {
-    "predev": "vercel env pull",
     "dev": "vite dev",
+    "predev": "vercel env pull",
     "build": "vite build",
     "package": "vite package",
     "preview": "vite preview",

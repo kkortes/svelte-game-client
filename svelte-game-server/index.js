@@ -1,8 +1,6 @@
 import aaw from 'async-await-websockets';
 import { MongoClient } from 'mongodb';
-import dotenv from 'dotenv';
 import { sizeOf } from './helpers.js';
-dotenv.config();
 
 const { PORT, MONGO_CONNECT } = process.env;
 

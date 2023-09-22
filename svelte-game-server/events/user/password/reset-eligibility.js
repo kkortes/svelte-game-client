@@ -1,14 +1,12 @@
-import dotenv from 'dotenv';
 import hashids from 'hashids';
 
-dotenv.config();
 const { PASSWORD_RESET_HASH } = process.env;
-const hash = new hashids(PASSWORD_RESET_HASH);
+const { decode } = new hashids(PASSWORD_RESET_HASH);
 
 export default async ({ secret }, { mongo }) => {
   const collection = mongo.collection('users');
 
-  const [pwr] = hash.decode(secret);
+  const [pwr] = decode(secret);
 
   if (!pwr) throw Error('Reset link is either invalid or expired');
 
