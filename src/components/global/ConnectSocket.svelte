@@ -6,20 +6,11 @@
   const { socket } = STORES;
   const { notify } = ACTIONS;
 
-  let connections = 0;
-
   onMount(() => {
-    if (browser && !window.socket) {
+    if (browser && !window.ws) {
       window.ws = aaw(WEBSOCKET_CONNECT);
-
-      ws.on(
-        'open',
-        () => (
-          ($socket = ws),
-          connections && notify({ success: 'Connected to game server' }),
-          (connections += 1)
-        )
-      );
+      ws.on('broadcast', console.info);
+      ws.on('open', () => ($socket = ws), notify({ success: 'Connected to game server' }));
       ws.on('close', () => notify({ error: `Can't connect to game server` }));
     }
   });

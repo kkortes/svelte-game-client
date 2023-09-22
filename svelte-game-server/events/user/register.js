@@ -1,5 +1,8 @@
-import sha1 from 'sha1';
 import { validateEmail } from '../../helpers.js';
+
+const {
+  password: { hash }
+} = Bun;
 
 export default async ({ email, password }, { mongo }) => {
   const collection = mongo.collection('users');
@@ -20,7 +23,7 @@ export default async ({ email, password }, { mongo }) => {
 
   await collection.insertOne({
     email: correctEmailFormat,
-    password: sha1(password),
+    password: await hash(password),
     token: null,
     pwr: null,
     created: date,

@@ -1,11 +1,10 @@
-import dotenv from 'dotenv';
 import nodemailer from 'nodemailer';
 import hashids from 'hashids';
 import { validateEmail } from '../../../helpers.js';
-dotenv.config();
+
 const { SUPPORT_EMAIL_PASSWORD, PASSWORD_RESET_HASH } = process.env;
 
-const hash = new hashids(PASSWORD_RESET_HASH);
+const { encode } = new hashids(PASSWORD_RESET_HASH);
 
 export default async ({ email, url }, { mongo }) => {
   const collection = mongo.collection('users');
@@ -47,7 +46,7 @@ export default async ({ email, url }, { mongo }) => {
   });
 
   try {
-    const token = hash.encode(pwr);
+    const token = encode(pwr);
     await transporter.sendMail({
       from: '"Ape Egg" <noreply@apeegg.com>',
       to: email,

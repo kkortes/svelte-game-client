@@ -1,23 +1,32 @@
-import sha1 from 'sha1';
+const {
+  password: { hash, verify }
+} = Bun;
 
 export default async ({ email, password }, { ws, mongo }) => {
   if (!email || !password) throw Error('Invalid login credentials');
 
-  const token = ws.sid;
+  const token = ws.data; // Buns .data is the websocket ID
   const users = mongo.collection('users');
-  const correctEmailFormat = email.toLowerCase().trim();
+  const updated = new Date();
 
-  const date = new Date();
+  email = email.toLowerCase().trim();
 
-  const { value: user } = await users.findOneAndUpdate(
-    {
-      email: correctEmailFormat,
-      password: sha1(password)
-    },
-    { $set: { token, updated: date } }
-  );
+  const user = await users.findOne({
+    email
+  });
 
   if (!user) throw Error('Invalid login credentials');
+
+  const correctPassword = await verify(password, user.password);
+
+  if (!correctPassword) throw Error('Invalid login credentials');
+
+  await users.updateOne(
+    {
+      email
+    },
+    { $set: { token, updated } }
+  );
 
   return token;
 };
