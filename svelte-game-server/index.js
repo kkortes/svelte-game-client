@@ -15,18 +15,15 @@ client.connect((error, mongo) => {
   aaw(
     'events',
     { mongo: mongo.db('svelte-game') },
-    PORT,
     undefined,
     ({ event, websocketKey, _async, error, body, _response }, log) => {
-      const { version, accountName, latency } = body || {};
+      const { version } = body || {};
       const toLog = [];
 
       toLog.push(`${error ? '🔴' : '🟢'} ${event}`);
       toLog.push(version || 'n/a');
-      toLog.push(accountName || 'unknown');
       toLog.push(websocketKey);
       toLog.push(sizeOf(body));
-      toLog.push(latency ? `${latency}ms` : 'n/a');
       if (error) toLog.push(error);
 
       log(toLog.join(' | '));
