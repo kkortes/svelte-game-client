@@ -8,7 +8,6 @@
   let ref;
   let animations = [];
   let animating = false;
-  let freeze = false;
 
   const titleByType = (type) =>
     ({
@@ -18,7 +17,7 @@
       warning: 'Heads up'
     }[type]);
 
-  const removeFirst = async (items) => {
+  const removeFirst = (items) => {
     if (!ref.children.length) return;
     const { height } = ref.children[0].getBoundingClientRect();
     if (items.length && !animating && height) {
@@ -59,15 +58,11 @@
       removeFirst([...$notifications]);
     })();
 
-  const hover = (enter) => (
-    (freeze = enter), animations.map((animation) => animation[enter ? 'pause' : 'play']())
-  );
+  const hover = (enter) => animations.map((animation) => animation[enter ? 'pause' : 'play']());
 </script>
 
 <div
   class="fixed top-8 right-2 text-gray-500"
-  class:animating
-  class:freeze
   on:mouseenter={hover.bind(undefined, true)}
   on:mouseleave={hover.bind(undefined, false)}
 >
