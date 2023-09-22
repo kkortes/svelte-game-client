@@ -1,4 +1,5 @@
 <script>
+  export const ssr = false;
   import { page } from '$app/stores';
   import '../app.css';
   import '$src/store/settings';
@@ -26,11 +27,3 @@
 <Overlay />
 <MouseTracker />
 <Notifications />
-
-<!-- <style>
-  :global(body) {
-    background-size: 40px 40px;
-    background-image: radial-gradient(circle, black 1px, rgba(0, 0, 0, 0) 1px);
-    background-position: center;
-  }
-</style> -->
