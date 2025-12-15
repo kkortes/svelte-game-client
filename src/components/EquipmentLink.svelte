@@ -1,5 +1,5 @@
 <script lang="ts">
-  import CHARACTERS from '$src/constants/CHARACTERS';
+  import CHARACTERS from '@/constants/CHARACTERS';
 
   let props = $props();
 

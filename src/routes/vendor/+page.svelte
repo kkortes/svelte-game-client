@@ -1,10 +1,10 @@
 <script lang="ts">
-  import EQUIPMENT, { ALL_EQUIPMENT } from '$src/constants/EQUIPMENT';
-  import type { Equipment } from '$src/types/equipment';
-  import { slotsInPrettyName } from '$src/ts/equipment';
-  import { confirmWithDialog } from '$src/ts/dialog';
-  import { formatCoins } from '$src/ts/coin';
-  import BasicConfirmation from '$src/components/dialog/BasicConfirmation.svelte';
+  import EQUIPMENT, { ALL_EQUIPMENT } from '@/constants/EQUIPMENT';
+  import type { Equipment } from '@/types/equipment';
+  import { slotsInPrettyName } from '@/ts/equipment';
+  import { confirmWithDialog } from '@/ts/dialog';
+  import { formatCoins } from '@/ts/coin';
+  import BasicConfirmation from '@/components/dialog/BasicConfirmation.svelte';
 
   let allEquipment: Equipment[] = $state(
     Object.keys(ALL_EQUIPMENT).map((key) => EQUIPMENT(key, true))

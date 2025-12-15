@@ -1,7 +1,7 @@
-import type { IconName } from '$src/Iconice';
-import type { VFX } from '$src/types/vfx';
-import type { DynamicObject } from '$src/types/common';
-import type { SFX } from '$src/types/sfx';
+import type { IconName } from '@/Iconice';
+import type { VFX } from '@/types/vfx';
+import type { DynamicObject } from '@/types/common';
+import type { SFX } from '@/types/sfx';
 
 export enum AbilityType {
   WindUp = 'windUp',

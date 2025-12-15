@@ -1,9 +1,9 @@
 <script lang="ts">
-  import STATUS_EFFECTS from '$src/constants/STATUS_EFFECTS';
-  import { calculateCombatStatsByCharacter } from '$src/ts/utils';
-  import { AbilityType, type Ability } from '$src/types/ability';
-  import type { Combatant } from '$src/types/combatant';
-  import type { CombatStats } from '$src/types/combatStats';
+  import STATUS_EFFECTS from '@/constants/STATUS_EFFECTS';
+  import { calculateCombatStatsByCharacter } from '@/ts/utils';
+  import { AbilityType, type Ability } from '@/types/ability';
+  import type { Combatant } from '@/types/combatant';
+  import type { CombatStats } from '@/types/combatStats';
 
   let props: Required<Ability> & { character: Combatant } = $derived(app.tooltip?.props);
 

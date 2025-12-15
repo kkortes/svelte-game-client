@@ -1,5 +1,5 @@
 <script lang="ts">
-  import icons from '$src/iconice-icons.json';
+  import icons from '@/iconice-icons.json';
 
   let { outcome }: { outcome: 'victory' | 'defeat' | 'draw' } = $props();
 

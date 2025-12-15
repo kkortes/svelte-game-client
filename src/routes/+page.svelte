@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Headline from '$src/components/Headline.svelte';
+  import Headline from '@/components/Headline.svelte';
 
   // import Portal from 'svelte-portal';
 </script>

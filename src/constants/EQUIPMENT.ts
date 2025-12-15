@@ -1,8 +1,8 @@
-import ABILITIES from '$src/constants/ABILITIES';
-import type { Equipment, EquipmentRef } from '$src/types/equipment';
-import entity from '$src/ts/entity';
-import type { DynamicObject } from '$src/types/common';
-import { deepAdd, deepMerge } from '$src/helpers';
+import ABILITIES from '@/constants/ABILITIES';
+import type { Equipment, EquipmentRef } from '@/types/equipment';
+import entity from '@/ts/entity';
+import type { DynamicObject } from '@/types/common';
+import { deepAdd, deepMerge } from '@/helpers';
 
 const DEFAULT_COST = 100;
 const DEFAULT_LEVEL = 1;

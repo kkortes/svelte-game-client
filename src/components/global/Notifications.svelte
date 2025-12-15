@@ -1,6 +1,6 @@
 <script lang="ts">
   import { fly } from 'svelte/transition';
-  import { removeFirstNotification } from '$src/ts/actions';
+  import { removeFirstNotification } from '@/ts/actions';
 
   let ref: HTMLDivElement;
   let animations: any[] = $state([]);

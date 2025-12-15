@@ -12,8 +12,8 @@ declare module 'seedrandom';
 // declare const Howl: (typeof import('@types/howler'))['Howl'];
 declare const Howler: (typeof import('howler'))['Howler']; // This solves for { Howler, Howl } for some reason
 declare const tw: (typeof import('tailwind-merge'))['default'];
-declare const ENV: (typeof import('$src/constants/ENV_VARS'))['default'];
-declare const app: (typeof import('$src/app.svelte.ts'))['default'];
+declare const ENV: (typeof import('@/constants/ENV_VARS'))['default'];
+declare const app: (typeof import('@/app.svelte.ts'))['default'];
 declare const onMount: import('svelte').LifecycleHook<void>;
 declare const onDestroy: import('svelte').LifecycleHook<void>;
-declare const tooltip: (typeof import('$src/ts/use'))['tooltip'];
+declare const tooltip: (typeof import('@/ts/use'))['tooltip'];

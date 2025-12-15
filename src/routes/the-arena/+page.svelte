@@ -1,9 +1,9 @@
 <script lang="ts">
-  import CHARACTERS from '$src/constants/CHARACTERS';
-  import { ALL_FIGHTS } from '$src/constants/FIGHTS';
-  import { getExperienceReward, getLevelByExperience } from '$src/ts/level';
-  import { runCombatSimulations } from '$src/ts/utils';
-  import type { Character } from '$src/types/character';
+  import CHARACTERS from '@/constants/CHARACTERS';
+  import { ALL_FIGHTS } from '@/constants/FIGHTS';
+  import { getExperienceReward, getLevelByExperience } from '@/ts/level';
+  import { runCombatSimulations } from '@/ts/utils';
+  import type { Character } from '@/types/character';
 
   const { IS_PROD } = ENV;
 

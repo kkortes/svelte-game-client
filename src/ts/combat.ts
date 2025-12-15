@@ -1,16 +1,16 @@
-import { ABILITY_PRIORITY, COMBAT_TICK_TIME } from '$src/constants/APP';
-import type { CombatEvent } from '$src/types/combat';
-import type { Team } from '$src/types/team';
-import { calculateCombatStatsByCharacter, prepareCombatant, seededRandom } from '$src/ts/utils';
-import type { Combatant } from '$src/types/combatant';
-import type { VFX } from '$src/types/vfx';
-import type { SFX } from '$src/types/sfx';
-import _VFX from '$src/constants/VFX';
-import _SFX from '$src/constants/SFX';
-import { AbilityType, type Ability } from '$src/types/ability';
-import type { CharacterRef } from '$src/types/character';
-import CHARACTERS from '$src/constants/CHARACTERS';
-import { ALL_FIGHTS } from '$src/constants/FIGHTS';
+import { ABILITY_PRIORITY, COMBAT_TICK_TIME } from '@/constants/APP';
+import type { CombatEvent } from '@/types/combat';
+import type { Team } from '@/types/team';
+import { calculateCombatStatsByCharacter, prepareCombatant, seededRandom } from '@/ts/utils';
+import type { Combatant } from '@/types/combatant';
+import type { VFX } from '@/types/vfx';
+import type { SFX } from '@/types/sfx';
+import _VFX from '@/constants/VFX';
+import _SFX from '@/constants/SFX';
+import { AbilityType, type Ability } from '@/types/ability';
+import type { CharacterRef } from '@/types/character';
+import CHARACTERS from '@/constants/CHARACTERS';
+import { ALL_FIGHTS } from '@/constants/FIGHTS';
 
 const isLucky = (chance: number, seed: string, luckDisabled: boolean) => {
   if (luckDisabled) return false;

@@ -1,11 +1,11 @@
 import { page } from '$app/stores';
-import type { EquipmentRef, EquipmentType, EquipmentSlot, Equipment } from '$src/types/equipment';
+import type { EquipmentRef, EquipmentType, EquipmentSlot, Equipment } from '@/types/equipment';
 import { get } from 'svelte/store';
-import app from '$src/app.svelte';
-import type { Character, CharacterRef } from '$src/types/character';
-import EQUIPMENT from '$src/constants/EQUIPMENT';
-import CHARACTERS from '$src/constants/CHARACTERS';
-import { calculateCombatStatsByCharacter } from '$src/ts/utils';
+import app from '@/app.svelte';
+import type { Character, CharacterRef } from '@/types/character';
+import EQUIPMENT from '@/constants/EQUIPMENT';
+import CHARACTERS from '@/constants/CHARACTERS';
+import { calculateCombatStatsByCharacter } from '@/ts/utils';
 
 export const correctHealth = (characterRef: Required<CharacterRef>, prevMax?: number) => {
   const character = CHARACTERS(characterRef, true);

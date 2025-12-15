@@ -1,17 +1,17 @@
 import seedRandom from 'seedrandom';
-import type { Combatant } from '$src/types/combatant';
-import type { Character, CharacterRef } from '$src/types/character';
-import { AbilityType, type Ability, type AbilityRef } from '$src/types/ability';
-import { COMBAT_TICK_TIME, COMBAT_RING_BASE_RADIUS } from '$src/constants/APP';
-import EQUIPMENT from '$src/constants/EQUIPMENT';
-import ABILITIES from '$src/constants/ABILITIES';
-import CHARACTERS from '$src/constants/CHARACTERS';
-import { deepAdd } from '$src/helpers';
-import type { DynamicObject } from '$src/types/common';
-import type { CombatStats } from '$src/types/combatStats';
-import { getLevelByExperience } from '$src/ts/level';
-import app from '$src/app.svelte';
-import { generateCombat, prepareTeams } from '$src/ts/combat';
+import type { Combatant } from '@/types/combatant';
+import type { Character, CharacterRef } from '@/types/character';
+import { AbilityType, type Ability, type AbilityRef } from '@/types/ability';
+import { COMBAT_TICK_TIME, COMBAT_RING_BASE_RADIUS } from '@/constants/APP';
+import EQUIPMENT from '@/constants/EQUIPMENT';
+import ABILITIES from '@/constants/ABILITIES';
+import CHARACTERS from '@/constants/CHARACTERS';
+import { deepAdd } from '@/helpers';
+import type { DynamicObject } from '@/types/common';
+import type { CombatStats } from '@/types/combatStats';
+import { getLevelByExperience } from '@/ts/level';
+import app from '@/app.svelte';
+import { generateCombat, prepareTeams } from '@/ts/combat';
 
 export const runCombatSimulations = (
   simulationCount: number,

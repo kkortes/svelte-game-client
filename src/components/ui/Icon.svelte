@@ -1,6 +1,6 @@
 <script lang="ts">
-  import icons from '$src/iconice-icons.json';
-  import type { IconName } from '$src/Iconice.d.ts';
+  import icons from '@/iconice-icons.json';
+  import type { IconName } from '@/Iconice.d.ts';
 
   type Props = {
     name: IconName;

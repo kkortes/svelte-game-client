@@ -1,4 +1,4 @@
-import type { Combatant } from '$src/types/combatant';
+import type { Combatant } from '@/types/combatant';
 
 export type Team = {
   name: string;

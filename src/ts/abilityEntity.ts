@@ -1,4 +1,4 @@
-import ABILITIES from '$src/constants/ABILITIES';
+import ABILITIES from '@/constants/ABILITIES';
 
 const GET = (entities: any, id: string, uuid?: string, fullBody: boolean = false) => ({
   uuid: uuid || crypto.randomUUID(),

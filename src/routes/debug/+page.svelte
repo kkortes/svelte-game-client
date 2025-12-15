@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { calculateCombatStatsByCharacter, prepareCombatant, seededRandom } from '$src/ts/utils';
-  import { generateCombat } from '$src/ts/combat';
-  import CHARACTERS from '$src/constants/CHARACTERS';
-  import type { Team } from '$src/types/team';
-  import type { Character } from '$src/types/character';
-  import { INITIAL_COMBAT } from '$src/app.svelte';
+  import { calculateCombatStatsByCharacter, prepareCombatant, seededRandom } from '@/ts/utils';
+  import { generateCombat } from '@/ts/combat';
+  import CHARACTERS from '@/constants/CHARACTERS';
+  import type { Team } from '@/types/team';
+  import type { Character } from '@/types/character';
+  import { INITIAL_COMBAT } from '@/app.svelte';
 
   let teams = $derived<Team[]>(app.combat.teamsStartState);
   let teamCount = $state(2);

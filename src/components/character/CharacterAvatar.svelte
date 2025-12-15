@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Character } from '$src/types/character';
+  import type { Character } from '@/types/character';
 
   let {
     image,

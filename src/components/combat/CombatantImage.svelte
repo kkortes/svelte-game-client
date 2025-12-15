@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { Combatant } from '$src/types/combatant';
-  import type { VFX } from '$src/types/vfx';
+  import type { Combatant } from '@/types/combatant';
+  import type { VFX } from '@/types/vfx';
   import { untrack } from 'svelte';
 
   let props: Combatant & {

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import AVAILABLE_KEYS from '$src/constants/AVAILABLE_KEYS';
-  import type { DynamicObject } from '$src/types/common';
+  import AVAILABLE_KEYS from '@/constants/AVAILABLE_KEYS';
+  import type { DynamicObject } from '@/types/common';
   import { untrack } from 'svelte';
 
   let localKeys: DynamicObject = $state({ ...AVAILABLE_KEYS });

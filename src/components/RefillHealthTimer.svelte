@@ -1,6 +1,6 @@
 <script lang="ts">
-  import CHARACTERS from '$src/constants/CHARACTERS';
-  import { calculateCombatStatsByCharacter } from '$src/ts/utils';
+  import CHARACTERS from '@/constants/CHARACTERS';
+  import { calculateCombatStatsByCharacter } from '@/ts/utils';
 
   let { IS_DEV } = ENV;
   IS_DEV = false;

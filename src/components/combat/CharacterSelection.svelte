@@ -1,7 +1,7 @@
 <script lang="ts">
   import Portal from 'svelte-portal';
-  import CHARACTERS from '$src/constants/CHARACTERS';
-  import type { Character } from '$src/types/character';
+  import CHARACTERS from '@/constants/CHARACTERS';
+  import type { Character } from '@/types/character';
 
   let {
     runCombat,

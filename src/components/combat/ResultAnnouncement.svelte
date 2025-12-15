@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { AUDIO, INITIAL_COMBAT } from '$src/app.svelte';
-  import type { Reward } from '$src/types/combat';
+  import { AUDIO, INITIAL_COMBAT } from '@/app.svelte';
+  import type { Reward } from '@/types/combat';
   import { backOut } from 'svelte/easing';
   import { scale } from 'svelte/transition';
 

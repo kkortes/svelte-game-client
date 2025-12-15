@@ -1,5 +1,5 @@
 <script lang="ts">
-  import EQUIPMENT, { ALL_EQUIPMENT } from '$src/constants/EQUIPMENT';
+  import EQUIPMENT, { ALL_EQUIPMENT } from '@/constants/EQUIPMENT';
 
   let chosenEquipment = $state('sword');
 

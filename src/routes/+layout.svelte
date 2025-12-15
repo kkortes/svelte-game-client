@@ -3,20 +3,20 @@
   import '../crow.css';
   import { page } from '$app/stores';
   import type { Snippet } from 'svelte';
-  import app from '$src/app.svelte';
+  import app from '@/app.svelte';
   import { overrideItemIdKeyNameBeforeInitialisingDndZones } from 'svelte-dnd-action';
-  import CHARACTERS from '$src/constants/CHARACTERS';
-  import ABILITIES from '$src/constants/ABILITIES';
-  import { calculateCombatStatsByCharacter, calculateTickStart } from '$src/ts/utils';
+  import CHARACTERS from '@/constants/CHARACTERS';
+  import ABILITIES from '@/constants/ABILITIES';
+  import { calculateCombatStatsByCharacter, calculateTickStart } from '@/ts/utils';
   import {
     allowedNumberOfCharacters,
     getCurrentExperienceAtLevel,
     getExperienceForNextLevel,
     getLevelByExperience
-  } from '$src/ts/level';
+  } from '@/ts/level';
   import { goto, onNavigate } from '$app/navigation';
-  import DebugAppData from '$src/components/DebugAppData.svelte';
-  import { notify } from '$src/ts/actions';
+  import DebugAppData from '@/components/DebugAppData.svelte';
+  import { notify } from '@/ts/actions';
   overrideItemIdKeyNameBeforeInitialisingDndZones('uuid');
 
   let { children }: { children: Snippet } = $props();

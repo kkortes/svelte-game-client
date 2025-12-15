@@ -1,16 +1,16 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
-  import { RECRUITABLE_CHARACTERS } from '$src/constants/RECRUITABLE_CHARACTERS';
-  import CHARACTERS, { DEFAULT_LUCKY_STATS, DEFAULT_MODIFIERS } from '$src/constants/CHARACTERS';
-  import { ALL_ELEMENTS } from '$src/constants/ELEMENTS';
-  import type { CharacterRef } from '$src/types/character';
-  import { confirmWithDialog } from '$src/ts/dialog';
-  import { allowedNumberOfCharacters } from '$src/ts/level';
-  import BasicConfirmation from '$src/components/dialog/BasicConfirmation.svelte';
-  import { notify } from '$src/ts/actions';
-  import { correctHealth } from '$src/ts/equipment';
-  import CoreStats from '$src/components/character/CoreStats.svelte';
-  import { deepSubtract } from '$src/helpers';
+  import { RECRUITABLE_CHARACTERS } from '@/constants/RECRUITABLE_CHARACTERS';
+  import CHARACTERS, { DEFAULT_LUCKY_STATS, DEFAULT_MODIFIERS } from '@/constants/CHARACTERS';
+  import { ALL_ELEMENTS } from '@/constants/ELEMENTS';
+  import type { CharacterRef } from '@/types/character';
+  import { confirmWithDialog } from '@/ts/dialog';
+  import { allowedNumberOfCharacters } from '@/ts/level';
+  import BasicConfirmation from '@/components/dialog/BasicConfirmation.svelte';
+  import { notify } from '@/ts/actions';
+  import { correctHealth } from '@/ts/equipment';
+  import CoreStats from '@/components/character/CoreStats.svelte';
+  import { deepSubtract } from '@/helpers';
 
   let characters = RECRUITABLE_CHARACTERS;
 

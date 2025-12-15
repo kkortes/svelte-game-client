@@ -1,5 +1,5 @@
-import { IS_DEV } from '$src/constants/ENV_VARS';
-import type { DynamicObject } from '$src/types/common';
+import { IS_DEV } from '@/constants/ENV_VARS';
+import type { DynamicObject } from '@/types/common';
 
 const wrapBasedOnType = (value: any) => (typeof value !== 'string' ? `{${value}}` : `"${value}"`);
 

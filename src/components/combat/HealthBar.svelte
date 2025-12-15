@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { VFX } from '$src/types/vfx';
+  import type { VFX } from '@/types/vfx';
   import { untrack } from 'svelte';
 
   let props = $props();

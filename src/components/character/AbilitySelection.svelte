@@ -1,18 +1,18 @@
 <script lang="ts">
   import { untrack } from 'svelte';
   import { page } from '$app/stores';
-  import app from '$src/app.svelte';
-  import type { Ability, AbilityRef } from '$src/types/ability';
+  import app from '@/app.svelte';
+  import type { Ability, AbilityRef } from '@/types/ability';
   import {
     calculateAvailableAbilitiesByCharacter,
     calculateCombatStatsByCharacter
-  } from '$src/ts/utils';
-  import EQUIPMENT from '$src/constants/EQUIPMENT';
-  import ABILITIES from '$src/constants/ABILITIES';
-  import type { Character } from '$src/types/character';
-  import Button from '$src/components/form/Button.svelte';
-  import { generateCombat, healFull, prepareTeams } from '$src/ts/combat';
-  import CHARACTERS from '$src/constants/CHARACTERS';
+  } from '@/ts/utils';
+  import EQUIPMENT from '@/constants/EQUIPMENT';
+  import ABILITIES from '@/constants/ABILITIES';
+  import type { Character } from '@/types/character';
+  import Button from '@/components/form/Button.svelte';
+  import { generateCombat, healFull, prepareTeams } from '@/ts/combat';
+  import CHARACTERS from '@/constants/CHARACTERS';
   import CoreStats from './CoreStats.svelte';
   import { goto } from '$app/navigation';
 

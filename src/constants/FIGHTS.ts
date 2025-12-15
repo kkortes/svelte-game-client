@@ -1,4 +1,4 @@
-import CHARACTERS from '$src/constants/CHARACTERS';
+import CHARACTERS from '@/constants/CHARACTERS';
 
 export const ALL_FIGHTS = [
   {

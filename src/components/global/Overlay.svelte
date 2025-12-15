@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { recursiveLookup } from '$src/helpers';
+  import { recursiveLookup } from '@/helpers';
   import { untrack } from 'svelte';
 
   const close = ({ target }: any) => recursiveLookup(target, ['close']) && (app.overlay = '');

@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { Equipment } from '$src/types/equipment';
-  import ABILITIES from '$src/constants/ABILITIES';
-  import type { Character } from '$src/types/character';
-  import { prettyCombatStatKey, prettyCombatStatValue } from '$src/types/combatStats';
+  import type { Equipment } from '@/types/equipment';
+  import ABILITIES from '@/constants/ABILITIES';
+  import type { Character } from '@/types/character';
+  import { prettyCombatStatKey, prettyCombatStatValue } from '@/types/combatStats';
 
   let {
     name,

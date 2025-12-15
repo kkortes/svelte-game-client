@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { COMBAT_TICK_TIME, COMBAT_RING_BASE_RADIUS } from '$src/constants/APP';
-  import { ALL_FIGHTS } from '$src/constants/FIGHTS';
-  import { getExperienceReward, getLevelByExperience } from '$src/ts/level';
-  import type { Reward } from '$src/types/combat';
-  import type { Team } from '$src/types/team';
+  import { COMBAT_TICK_TIME, COMBAT_RING_BASE_RADIUS } from '@/constants/APP';
+  import { ALL_FIGHTS } from '@/constants/FIGHTS';
+  import { getExperienceReward, getLevelByExperience } from '@/ts/level';
+  import type { Reward } from '@/types/combat';
+  import type { Team } from '@/types/team';
   import CombatAudioPlayer from '../combat/CombatAudioPlayer.svelte';
 
   const getGeometry = (N: number, { baseRadius = 250, itemWidth = 140, gap = 0 } = {}) => {

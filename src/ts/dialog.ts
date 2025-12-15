@@ -1,4 +1,4 @@
-import app from '$src/app.svelte';
+import app from '@/app.svelte';
 import type { Component, ComponentProps } from 'svelte';
 
 export type Dialog = {

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { prettyCombatStatKey, prettyCombatStatValue } from '$src/types/combatStats';
+  import { prettyCombatStatKey, prettyCombatStatValue } from '@/types/combatStats';
 
   let {
     stats,

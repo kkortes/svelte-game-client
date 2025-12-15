@@ -1,9 +1,9 @@
-import { AbilityType, type Ability, type AbilityRef } from '$src/types/ability';
-import VFX from '$src/constants/VFX';
-import SFX from '$src/constants/SFX';
-import entity from '$src/ts/entity';
-import type { DynamicObject } from '$src/types/common';
-import { deepMerge } from '$src/helpers';
+import { AbilityType, type Ability, type AbilityRef } from '@/types/ability';
+import VFX from '@/constants/VFX';
+import SFX from '@/constants/SFX';
+import entity from '@/ts/entity';
+import type { DynamicObject } from '@/types/common';
+import { deepMerge } from '@/helpers';
 
 export const ALL_ABILITIES = {
   stab: {

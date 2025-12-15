@@ -1,9 +1,9 @@
-import type { Character, CharacterRef, Race } from '$src/types/character';
-import ABILITIES from '$src/constants/ABILITIES';
-import type { DynamicObject } from '$src/types/common';
-import entity from '$src/ts/entity';
-import { deepMerge } from '$src/helpers';
-import EQUIPMENT from '$src/constants/EQUIPMENT';
+import type { Character, CharacterRef, Race } from '@/types/character';
+import ABILITIES from '@/constants/ABILITIES';
+import type { DynamicObject } from '@/types/common';
+import entity from '@/ts/entity';
+import { deepMerge } from '@/helpers';
+import EQUIPMENT from '@/constants/EQUIPMENT';
 
 export type CharacterKey = Race | 'creature';
 

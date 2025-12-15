@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { AUDIO } from '$src/app.svelte';
-  import type { SFX } from '$src/types/sfx';
+  import { AUDIO } from '@/app.svelte';
+  import type { SFX } from '@/types/sfx';
 
   let {
     audio,

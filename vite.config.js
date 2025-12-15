@@ -18,13 +18,13 @@ export default defineConfig({
     autoImport({
       components: [{ name: './src/components', flat: true }],
       mapping: {
-        ENV: `import ENV from '$src/constants/ENV_VARS'`,
-        app: `import app from '$src/app.svelte'`,
+        ENV: `import ENV from '@/constants/ENV_VARS'`,
+        app: `import app from '@/app.svelte'`,
         Howl: `import { Howl, Howler } from 'howler'`
       },
       module: {
         svelte: ['onMount', 'onDestroy'],
-        '$src/ts/use': ['tooltip'],
+        '@/ts/use': ['tooltip'],
         'tailwind-merge': ['twMerge as tw']
       },
       include: ['**/*.svelte']

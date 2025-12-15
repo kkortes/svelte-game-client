@@ -1,6 +1,6 @@
 <script lang="ts">
-  import STATUS_EFFECTS from '$src/constants/STATUS_EFFECTS';
-  import type { Ability } from '$src/types/ability';
+  import STATUS_EFFECTS from '@/constants/STATUS_EFFECTS';
+  import type { Ability } from '@/types/ability';
 
   let {
     small,

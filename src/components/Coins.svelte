@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { formatCoins } from '$src/ts/coin';
+  import { formatCoins } from '@/ts/coin';
 
   let {
     class: classes = '',

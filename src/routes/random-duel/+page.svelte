@@ -1,6 +1,6 @@
 <script>
-  import { generateCombat, healFull, prepareTeams } from '$src/ts/combat';
-  import { getExperienceRangeForLevel, getLevelByExperience } from '$src/ts/level';
+  import { generateCombat, healFull, prepareTeams } from '@/ts/combat';
+  import { getExperienceRangeForLevel, getLevelByExperience } from '@/ts/level';
 
   let count = $derived(Math.floor(getLevelByExperience(app.experience) / 5) + 1);
   let selectedBrawlersPretty = $derived(

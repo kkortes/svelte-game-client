@@ -1,15 +1,15 @@
-import type { Combat } from '$src/types/combat';
-import type { CharacterRef } from '$src/types/character';
+import type { Combat } from '@/types/combat';
+import type { CharacterRef } from '@/types/character';
 import type { AsyncAwaitWebsocket } from 'async-await-websockets';
-import app from '$src/app.svelte';
-import type { EquipmentRef } from '$src/types/equipment';
-import type { Tooltip } from '$src/ts/use';
-import type { Team } from '$src/types/team';
-import type { Dialog } from '$src/ts/dialog';
-import type { DynamicObject } from '$src/types/common';
-import loadLocalStorage from '$src/ts/loadLocalStorage';
+import app from '@/app.svelte';
+import type { EquipmentRef } from '@/types/equipment';
+import type { Tooltip } from '@/ts/use';
+import type { Team } from '@/types/team';
+import type { Dialog } from '@/ts/dialog';
+import type { DynamicObject } from '@/types/common';
+import loadLocalStorage from '@/ts/loadLocalStorage';
 import { browser } from '$app/environment';
-import mediaQuery from '$src/ts/mediaQuery';
+import mediaQuery from '@/ts/mediaQuery';
 
 const audioModules = import.meta.glob('/static/audio/**/*.*', { eager: true });
 export const AUDIO: Record<string, string> = {};

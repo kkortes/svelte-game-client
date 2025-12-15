@@ -1,6 +1,6 @@
-import type { Team } from '$src/types/team';
-import type { Combatant } from '$src/types/combatant';
-import type { SFX } from '$src/types/sfx';
+import type { Team } from '@/types/team';
+import type { Combatant } from '@/types/combatant';
+import type { SFX } from '@/types/sfx';
 
 type RewardType = 'experience' | 'bossHighscore';
 

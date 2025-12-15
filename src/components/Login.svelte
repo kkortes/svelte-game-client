@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { preventDefault } from '$src/helpers';
-  import { enableGameKeyboard, disableGameKeyboard, notify } from '$src/ts/actions';
+  import { preventDefault } from '@/helpers';
+  import { enableGameKeyboard, disableGameKeyboard, notify } from '@/ts/actions';
 
   const { IS_DEV, AUTO_EMAIL, AUTO_PASSWORD } = ENV;
 

@@ -1,7 +1,7 @@
 <script lang="ts">
-  import CoreStats from '$src/components/character/CoreStats.svelte';
-  import CHARACTER, { ALL_CHARACTERS } from '$src/constants/CHARACTERS';
-  import { calculateCombatStatsByCharacter } from '$src/ts/utils';
+  import CoreStats from '@/components/character/CoreStats.svelte';
+  import CHARACTER, { ALL_CHARACTERS } from '@/constants/CHARACTERS';
+  import { calculateCombatStatsByCharacter } from '@/ts/utils';
 
   let chosenCharacter = $state('elfMale');
   let equipmentScaling = $state(true);

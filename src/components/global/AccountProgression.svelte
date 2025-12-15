@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { AUDIO } from '$src/app.svelte';
-  import { correctHealth } from '$src/ts/equipment';
-  import { getLevelByExperience } from '$src/ts/level';
+  import { AUDIO } from '@/app.svelte';
+  import { correctHealth } from '@/ts/equipment';
+  import { getLevelByExperience } from '@/ts/level';
 
   let previousLevel: number | null = $state(null);
 

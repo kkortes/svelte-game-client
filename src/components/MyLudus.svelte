@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { AUDIO } from '$src/app.svelte';
-  import { getLevelByExperience } from '$src/ts/level';
+  import { AUDIO } from '@/app.svelte';
+  import { getLevelByExperience } from '@/ts/level';
   import { untrack } from 'svelte';
 
   let { closeSelf } = $props();

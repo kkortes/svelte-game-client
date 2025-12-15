@@ -1,7 +1,7 @@
 <script lang="ts">
-  import CHARACTERS from '$src/constants/CHARACTERS';
-  import customEvent from '$src/ts/customEvent';
-  import { calculateCombatStatsByCharacter } from '$src/ts/utils';
+  import CHARACTERS from '@/constants/CHARACTERS';
+  import customEvent from '@/ts/customEvent';
+  import { calculateCombatStatsByCharacter } from '@/ts/utils';
   import { page } from '$app/stores';
 
   let expGain = $state(40);

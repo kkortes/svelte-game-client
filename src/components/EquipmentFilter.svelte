@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { slotsInPrettyName } from '$src/ts/equipment';
-  import type { Equipment, EquipmentType } from '$src/types/equipment';
+  import { slotsInPrettyName } from '@/ts/equipment';
+  import type { Equipment, EquipmentType } from '@/types/equipment';
 
   type EquipmentFilterType = 'all' | EquipmentType;
 

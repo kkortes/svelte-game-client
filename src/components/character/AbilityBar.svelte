@@ -1,11 +1,11 @@
 <script lang="ts">
   import { dndzone } from 'svelte-dnd-action';
-  import { calculateTickStart } from '$src/ts/utils';
+  import { calculateTickStart } from '@/ts/utils';
   import { flip } from 'svelte/animate';
-  import type { AbilityRef } from '$src/types/ability';
-  import ABILITIES from '$src/constants/ABILITIES';
-  import type { CharacterRef } from '$src/types/character';
-  import CHARACTERS from '$src/constants/CHARACTERS';
+  import type { AbilityRef } from '@/types/ability';
+  import ABILITIES from '@/constants/ABILITIES';
+  import type { CharacterRef } from '@/types/character';
+  import CHARACTERS from '@/constants/CHARACTERS';
 
   let flipDurationMs = 300;
   let dragDisabled = $state(false);

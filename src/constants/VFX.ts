@@ -1,4 +1,4 @@
-import type { VFX } from '$src/types/vfx';
+import type { VFX } from '@/types/vfx';
 
 export default {
   basicAttackFast: {

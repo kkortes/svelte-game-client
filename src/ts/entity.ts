@@ -1,5 +1,5 @@
-import { deepMerge } from '$src/helpers';
-import type { DynamicObject } from '$src/types/common';
+import { deepMerge } from '@/helpers';
+import type { DynamicObject } from '@/types/common';
 
 export default (
   entities: any,

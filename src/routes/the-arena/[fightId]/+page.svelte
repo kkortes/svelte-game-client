@@ -1,12 +1,12 @@
 <script lang="ts">
   import { page } from '$app/stores';
-  import { generateCombat, prepareTeams } from '$src/ts/combat';
+  import { generateCombat, prepareTeams } from '@/ts/combat';
   import { goto } from '$app/navigation';
-  import { ALL_FIGHTS } from '$src/constants/FIGHTS';
-  import CHARACTERS from '$src/constants/CHARACTERS';
-  import { allowedNumberOfCharacters, getExperienceReward } from '$src/ts/level';
-  import { calculateCombatStatsByCharacter, runCombatSimulations } from '$src/ts/utils';
-  import type { Character, CharacterRef } from '$src/types/character';
+  import { ALL_FIGHTS } from '@/constants/FIGHTS';
+  import CHARACTERS from '@/constants/CHARACTERS';
+  import { allowedNumberOfCharacters, getExperienceReward } from '@/ts/level';
+  import { calculateCombatStatsByCharacter, runCombatSimulations } from '@/ts/utils';
+  import type { Character, CharacterRef } from '@/types/character';
 
   const { IS_PROD } = ENV;
 

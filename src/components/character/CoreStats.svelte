@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { CombatStats } from '$src/types/combatStats';
+  import type { CombatStats } from '@/types/combatStats';
 
   let {
     combatStats,

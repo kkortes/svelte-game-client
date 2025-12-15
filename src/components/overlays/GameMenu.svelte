@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { SETTINGS_DEFAULT_VOLUME } from '$src/app.svelte';
+  import { SETTINGS_DEFAULT_VOLUME } from '@/app.svelte';
 
   let { onclick } = $props();
 

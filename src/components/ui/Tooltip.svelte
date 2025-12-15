@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Tooltip } from '$src/ts/use';
+  import type { Tooltip } from '@/ts/use';
   import { tick } from 'svelte';
 
   let { targetX, targetY, direction, lockInPlace, x, y, visible, children }: Tooltip = $props();

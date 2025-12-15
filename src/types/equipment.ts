@@ -1,6 +1,6 @@
-import type { AbilityRef } from '$src/types/ability';
-import type { CombatStats } from '$src/types/combatStats';
-import type { DynamicObject } from '$src/types/common';
+import type { AbilityRef } from '@/types/ability';
+import type { CombatStats } from '@/types/combatStats';
+import type { DynamicObject } from '@/types/common';
 
 export type EquipmentSlot = 'mainHand' | 'offHand' | 'armor' | 'accessory' | 'trinket';
 export type EquipmentType = EquipmentSlot | 'oneHand' | 'twoHand';

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { emptySlot } from '$src/helpers';
-  import type { ChangeEvent } from '$src/types/common';
+  import { emptySlot } from '@/helpers';
+  import type { ChangeEvent } from '@/types/common';
 
   type Option =
     | {

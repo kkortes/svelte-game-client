@@ -1,4 +1,4 @@
-import type { DynamicObject } from '$src/types/common';
+import type { DynamicObject } from '@/types/common';
 import { writable } from 'svelte/store';
 
 const calculateMedia = (mqls: any) => {

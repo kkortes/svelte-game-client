@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { AUDIO } from '$src/app.svelte';
+  import { AUDIO } from '@/app.svelte';
   import { untrack } from 'svelte';
 
   type CustomHowl = Howl & { _src?: string };

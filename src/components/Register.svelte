@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { enableGameKeyboard, disableGameKeyboard, notify } from '$src/ts/actions';
+  import { enableGameKeyboard, disableGameKeyboard, notify } from '@/ts/actions';
 
   let email = $state('');
   let password = $state('');

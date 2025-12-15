@@ -1,11 +1,11 @@
 <script lang="ts">
-  import EQUIPMENT from '$src/constants/EQUIPMENT';
-  import { confirmWithDialog } from '$src/ts/dialog';
-  import { dismantle, equip } from '$src/ts/equipment';
-  import type { Equipment } from '$src/types/equipment';
+  import EQUIPMENT from '@/constants/EQUIPMENT';
+  import { confirmWithDialog } from '@/ts/dialog';
+  import { dismantle, equip } from '@/ts/equipment';
+  import type { Equipment } from '@/types/equipment';
   import type { Component } from 'svelte';
-  import BasicConfirmation from '$src/components/dialog/BasicConfirmation.svelte';
-  import { formatCoins } from '$src/ts/coin';
+  import BasicConfirmation from '@/components/dialog/BasicConfirmation.svelte';
+  import { formatCoins } from '@/ts/coin';
 
   let { type } = $props();
   let items = $state(app.inventory);

@@ -6,7 +6,7 @@ export default {
   kit: {
     adapter: adapter(),
     alias: {
-      $src: 'src/*'
+      '@': 'src/*'
     }
   },
   compilerOptions: {

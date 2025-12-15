@@ -1,15 +1,15 @@
 <script lang="ts">
-  import app from '$src/app.svelte';
+  import app from '@/app.svelte';
   import { page } from '$app/stores';
-  import CHARACTERS from '$src/constants/CHARACTERS';
-  import { calculateCombatStatsByCharacter } from '$src/ts/utils';
+  import CHARACTERS from '@/constants/CHARACTERS';
+  import { calculateCombatStatsByCharacter } from '@/ts/utils';
   import { goto } from '$app/navigation';
-  import { getLevelByExperience } from '$src/ts/level';
-  import { confirmWithDialog } from '$src/ts/dialog';
-  import type { Character } from '$src/types/character';
-  import BasicConfirmation from '$src/components/dialog/BasicConfirmation.svelte';
-  import CoreStats from '$src/components/character/CoreStats.svelte';
-  import Accordion from '$src/components/Accordion.svelte';
+  import { getLevelByExperience } from '@/ts/level';
+  import { confirmWithDialog } from '@/ts/dialog';
+  import type { Character } from '@/types/character';
+  import BasicConfirmation from '@/components/dialog/BasicConfirmation.svelte';
+  import CoreStats from '@/components/character/CoreStats.svelte';
+  import Accordion from '@/components/Accordion.svelte';
 
   const retireCharacter = async (character: Character) => {
     confirmWithDialog(BasicConfirmation as any, {

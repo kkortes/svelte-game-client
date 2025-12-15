@@ -1,8 +1,8 @@
 <script lang="ts">
-  import EQUIPMENT from '$src/constants/EQUIPMENT';
-  import { slotsInPrettyName, unequip } from '$src/ts/equipment';
-  import type { Character } from '$src/types/character';
-  import type { EquipmentSlot } from '$src/types/equipment';
+  import EQUIPMENT from '@/constants/EQUIPMENT';
+  import { slotsInPrettyName, unequip } from '@/ts/equipment';
+  import type { Character } from '@/types/character';
+  import type { EquipmentSlot } from '@/types/equipment';
 
   let { character }: { character: Character } = $props();
 </script>

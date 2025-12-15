@@ -1,5 +1,5 @@
 <script lang="ts">
-  import ABILITIES, { ALL_ABILITIES } from '$src/constants/ABILITIES';
+  import ABILITIES, { ALL_ABILITIES } from '@/constants/ABILITIES';
 
   let chosenAbility = $state('punch');
 

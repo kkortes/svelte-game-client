@@ -1,6 +1,6 @@
-import ABILITIES from '$src/constants/ABILITIES';
-import EQUIPMENT from '$src/constants/EQUIPMENT';
-import CHARACTERS, { DEFAULT_EQUIPMENT } from '$src/constants/CHARACTERS';
+import ABILITIES from '@/constants/ABILITIES';
+import EQUIPMENT from '@/constants/EQUIPMENT';
+import CHARACTERS, { DEFAULT_EQUIPMENT } from '@/constants/CHARACTERS';
 
 const DEFAULT_ABILITIES = [
   ABILITIES('punch'),

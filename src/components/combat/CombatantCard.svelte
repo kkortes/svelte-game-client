@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { Combatant, StatusStack, StatusEffect } from '$src/types/combatant';
-  import STATUS_EFFECTS from '$src/constants/STATUS_EFFECTS';
+  import type { Combatant, StatusStack, StatusEffect } from '@/types/combatant';
+  import STATUS_EFFECTS from '@/constants/STATUS_EFFECTS';
   import { flip } from 'svelte/animate';
 
   let props: Combatant & {

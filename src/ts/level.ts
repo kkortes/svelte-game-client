@@ -1,4 +1,4 @@
-import app from '$src/app.svelte';
+import app from '@/app.svelte';
 
 const SCALING = 1.6;
 const MAX_LEVEL = 25;

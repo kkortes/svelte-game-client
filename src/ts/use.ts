@@ -1,4 +1,4 @@
-import app from '$src/app.svelte';
+import app from '@/app.svelte';
 
 export type Tooltip = {
   children: () => any;

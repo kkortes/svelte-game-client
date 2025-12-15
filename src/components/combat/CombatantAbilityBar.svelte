@@ -1,8 +1,8 @@
 <script lang="ts">
   import TooltipAbility from '../tooltips/TooltipAbility.svelte';
-  import type { Ability } from '$src/types/ability';
-  import ABILITIES from '$src/constants/ABILITIES';
-  import CHARACTERS from '$src/constants/CHARACTERS';
+  import type { Ability } from '@/types/ability';
+  import ABILITIES from '@/constants/ABILITIES';
+  import CHARACTERS from '@/constants/CHARACTERS';
 
   let props = $props();
   let preview = $derived(!!props.preview);

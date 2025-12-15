@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { notify, enableGameKeyboard, disableGameKeyboard } from '$src/ts/actions';
+  import { notify, enableGameKeyboard, disableGameKeyboard } from '@/ts/actions';
 </script>
 
 <crow vertical class="gap-10" left up>

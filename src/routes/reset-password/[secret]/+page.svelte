@@ -1,7 +1,7 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
-  import { notify } from '$src/ts/actions';
+  import { notify } from '@/ts/actions';
 
   let password = $state('');
   let error: boolean | string | undefined = $state(undefined);

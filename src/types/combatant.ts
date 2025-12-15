@@ -1,8 +1,8 @@
-import type { Character } from '$src/types/character';
-import type { CombatStats } from '$src/types/combatStats';
-import type { Ability } from '$src/types/ability';
-import type { VFX } from '$src/types/vfx';
-import type { SFX } from '$src/types/sfx';
+import type { Character } from '@/types/character';
+import type { CombatStats } from '@/types/combatStats';
+import type { Ability } from '@/types/ability';
+import type { VFX } from '@/types/vfx';
+import type { SFX } from '@/types/sfx';
 
 export type StatusStack = {
   max: number;
