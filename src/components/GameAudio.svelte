@@ -7,18 +7,8 @@
   let currentTrack: CustomHowl | undefined = $state();
 
   let tracks: Record<string, CustomHowl> = {
-    combat: new Howl({
-      src: AUDIO['combat-drums'],
-      volume: 0,
-      loop: true
-    }),
     ambientArena: new Howl({
       src: AUDIO['Pure Desert Wind'],
-      volume: 0,
-      loop: true
-    }),
-    ambientWilderness: new Howl({
-      src: AUDIO['Summer Day In Nature'],
       volume: 0,
       loop: true
     })
@@ -33,22 +23,8 @@
   });
 
   $effect(() => {
-    $state.snapshot(app.combat.duration);
-    $state.snapshot(app.bossHighscore);
-
     untrack(() => {
-      const enteredCombat = app.combat.duration !== 0;
-      const inWilderness = app.bossHighscore >= 15;
-
-      let trackToPlay;
-
-      if (enteredCombat) {
-        trackToPlay = 'combat';
-      } else if (inWilderness) {
-        trackToPlay = 'ambientWilderness';
-      } else {
-        trackToPlay = 'ambientArena';
-      }
+      let trackToPlay = 'ambientArena';
 
       const volume = app.settings.volume.master * app.settings.volume.ambient;
       const prevTrack = currentTrack;

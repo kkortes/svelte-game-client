@@ -79,8 +79,6 @@
     // position is relative to tooltip’s top, compensate for arrow center
     return clamp(fy - tooltipY - ARROW_HALF, ARROW_HALF, Math.max(ARROW_HALF, h - ARROW_HALF));
   });
-
-  const hasEquipmentLevel = $derived(app.tooltip?.props?.level);
 </script>
 
 <div
@@ -100,12 +98,7 @@
       direction === 'left' && 'top-0 left-full [clip-path:polygon(0%_0%,50%_50%,0%_100%)]',
       direction === 'right' && 'top-0 right-full [clip-path:polygon(100%_0%,100%_100%,50%_50%)]',
       direction === 'up' && 'top-full left-0 [clip-path:polygon(0%_0%,100%_0%,50%_50%)]',
-      direction === 'down' && 'bottom-full left-0 [clip-path:polygon(100%_100%,0%_100%,50%_50%)]',
-      hasEquipmentLevel >= 5 && 'bg-green-700',
-      hasEquipmentLevel >= 10 && 'bg-blue-700',
-      hasEquipmentLevel >= 15 && 'bg-purple-700',
-      hasEquipmentLevel >= 20 && 'bg-orange-700',
-      hasEquipmentLevel >= 25 && 'bg-red-700'
+      direction === 'down' && 'bottom-full left-0 [clip-path:polygon(100%_100%,0%_100%,50%_50%)]'
     )}
     style={['left', 'right'].includes(direction ?? '')
       ? `top:${arrowTop}px;`
