@@ -52,7 +52,7 @@ export default async ({ email, url }, { mongo }) => {
     const result = await transporter.sendMail({
       from: '"Ape Egg" <noreply@apeegg.com>',
       to: email,
-      subject: 'Battle-brawlers password reset request',
+      subject: 'Generic game password reset request',
       text: `Hello ${user.email}!\n\nHere is your link to reset your password:\n${url}/reset-password/${token}\nThe link expires in 10 minutes.\n\nYou can't reply to this email.`
     });
     console.info(result);

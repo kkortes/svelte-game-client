@@ -1,5 +1,5 @@
 {
-  "name": "battle-brawlers",
+  "name": "svelte-game-client",
   "version": "0.0.3",
   "scripts": {
     "dev": "vite dev",
