@@ -50,7 +50,7 @@ npm run dev
 - ✅ Vercel frontend hosting setup (https://vercel.com)
 - ✅ Tailwind CSS for styling (https://tailwindcss.com)
 
-## Code base quirks
+## Code-base quirks
 
 - `.env (development) & .env.production (production)` are injected into `src/constants/ENV_VARS.ts`. Trying to parse `import.meta.X` won't work in Svelte files, due to vite crashing when there is CSS in the files that they parse.
 
