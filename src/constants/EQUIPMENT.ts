@@ -1,8 +1,7 @@
-import ABILITIES from '@/constants/ABILITIES';
 import type { Equipment, EquipmentRef } from '@/types/equipment';
 import entity from '@/ts/entity';
 import type { DynamicObject } from '@/types/common';
-import { deepAdd, deepMerge } from '@/helpers';
+import { deepMerge } from '@/helpers';
 
 const DEFAULT_COST = 100;
 const DEFAULT_LEVEL = 1;
@@ -16,8 +15,7 @@ export const ALL_EQUIPMENT = {
     level: DEFAULT_LEVEL,
     combatStats: {
       damage: 0
-    },
-    abilities: [ABILITIES('swing'), ABILITIES('swing')]
+    }
   },
   axe: {
     name: 'Axe',
@@ -27,8 +25,7 @@ export const ALL_EQUIPMENT = {
     level: DEFAULT_LEVEL,
     combatStats: {
       damage: 0
-    },
-    abilities: [ABILITIES('swing'), ABILITIES('swing')]
+    }
   },
   hammer: {
     name: 'Hammer',
@@ -38,11 +35,7 @@ export const ALL_EQUIPMENT = {
     level: DEFAULT_LEVEL,
     combatStats: {
       damage: 0
-    },
-    abilities: [
-      ABILITIES('slam', false, { overrides: { ticks: 3 } }),
-      ABILITIES('slam', false, { overrides: { ticks: 3 } })
-    ]
+    }
   },
   improvedHammer: {
     name: 'Improved Hammer',
@@ -52,11 +45,7 @@ export const ALL_EQUIPMENT = {
     level: 3,
     combatStats: {
       damage: 10
-    },
-    abilities: [
-      ABILITIES('slam', false, { overrides: { ticks: 3 } }),
-      ABILITIES('slam', false, { overrides: { ticks: 3 } })
-    ]
+    }
   },
   shield: {
     name: 'Shield',
@@ -66,8 +55,7 @@ export const ALL_EQUIPMENT = {
     level: DEFAULT_LEVEL,
     combatStats: {
       blockChance: 0.3
-    },
-    abilities: [ABILITIES('block'), ABILITIES('shieldBash')]
+    }
   },
   twoHandedAxe: {
     name: 'Great Axe',
@@ -77,13 +65,7 @@ export const ALL_EQUIPMENT = {
     level: DEFAULT_LEVEL,
     combatStats: {
       damage: 0
-    },
-    abilities: [
-      ABILITIES('swing', false, { overrides: { ticks: 4 } }),
-      ABILITIES('swing', false, { overrides: { ticks: 4 } }),
-      ABILITIES('swing', false, { overrides: { ticks: 4 } }),
-      ABILITIES('whirlwind', false, { overrides: { ticks: 4, chainLink: 4 } })
-    ]
+    }
   },
   twoHandedSpear: {
     name: 'Spear',
@@ -93,12 +75,7 @@ export const ALL_EQUIPMENT = {
     level: DEFAULT_LEVEL,
     combatStats: {
       damage: 0
-    },
-    abilities: [
-      ABILITIES('stab', false, { overrides: { ticks: 4 } }),
-      ABILITIES('stab', false, { overrides: { ticks: 4 } }),
-      ABILITIES('stab', false, { overrides: { ticks: 4 } })
-    ]
+    }
   },
   heavyClub: {
     name: 'Heavy Club',
@@ -108,8 +85,7 @@ export const ALL_EQUIPMENT = {
     level: DEFAULT_LEVEL,
     combatStats: {
       damage: 0
-    },
-    abilities: [ABILITIES('slam'), ABILITIES('slam'), ABILITIES('slam')]
+    }
   },
   club: {
     name: 'Club',
@@ -119,11 +95,7 @@ export const ALL_EQUIPMENT = {
     level: DEFAULT_LEVEL,
     combatStats: {
       damage: 0
-    },
-    abilities: [
-      ABILITIES('slam', false, { overrides: { ticks: 3 } }),
-      ABILITIES('slam', false, { overrides: { ticks: 3 } })
-    ]
+    }
   },
   greatSword: {
     name: 'Greatsword',
@@ -133,12 +105,7 @@ export const ALL_EQUIPMENT = {
     level: DEFAULT_LEVEL,
     combatStats: {
       damage: 0
-    },
-    abilities: [
-      ABILITIES('swing', false, { overrides: { ticks: 12 } })
-      // ABILITIES('swing', false, { overrides: { ticks: 4 } }),
-      // ABILITIES('swing', false, { overrides: { ticks: 4 } })
-    ]
+    }
   },
   bow: {
     name: 'Bow',
@@ -148,8 +115,7 @@ export const ALL_EQUIPMENT = {
     level: DEFAULT_LEVEL,
     combatStats: {
       damage: 0
-    },
-    abilities: [ABILITIES('pierce'), ABILITIES('pierce'), ABILITIES('pierce'), ABILITIES('pierce')]
+    }
   },
   dagger: {
     name: 'Dagger',
@@ -159,8 +125,7 @@ export const ALL_EQUIPMENT = {
     level: DEFAULT_LEVEL,
     combatStats: {
       damage: 0
-    },
-    abilities: [ABILITIES('stab'), ABILITIES('stab'), ABILITIES('stab'), ABILITIES('lacerate')]
+    }
   },
   giantsHeart: {
     name: "Giant's Heart",
@@ -172,8 +137,7 @@ export const ALL_EQUIPMENT = {
       maxHealth: 1,
       damage: 1,
       maxArmor: 1
-    },
-    abilities: [ABILITIES('demoralizingShout')]
+    }
   },
   leatherBoots: {
     name: 'Leather Boots',
@@ -183,8 +147,7 @@ export const ALL_EQUIPMENT = {
     level: DEFAULT_LEVEL,
     combatStats: {
       maxArmor: 0
-    },
-    abilities: [ABILITIES('kick')]
+    }
   },
   ring: {
     name: 'Ring',
@@ -200,34 +163,8 @@ export const ALL_EQUIPMENT = {
   }
 };
 
-// export default (id: string | EquipmentRef, fullBody: boolean = false) =>
-//   entity(
-//     ALL_EQUIPMENT,
-//     typeof id === 'string' ? id : id.id,
-//     typeof id === 'string' ? undefined : id.uuid,
-//     fullBody
-//   ) as Equipment;
-
 const applyScaling = (equipment: Equipment) => {
-  const isWeapon = ['oneHand', 'twoHand'].includes(equipment?.slotsIn);
-  if (isWeapon) {
-    const multiplier = equipment?.slotsIn === 'twoHand' ? 2 : 1;
-    const level = equipment.level || 0;
-    const combatStats = {
-      damage: level * multiplier
-    };
-
-    equipment.combatStats = deepAdd(equipment.combatStats, combatStats);
-  }
-  const isArmor = ['armor'].includes(equipment?.slotsIn);
-  if (isArmor) {
-    const level = equipment.level || 0;
-    const combatStats = {
-      maxArmor: level * 1
-    };
-
-    equipment.combatStats = deepAdd(equipment.combatStats, combatStats);
-  }
+  // Do stuff
   return equipment;
 };
 

@@ -24,11 +24,7 @@
           });
 
           if (response?.gameState) {
-            app.characters = response.gameState.characters;
-            app.inventory = response.gameState.inventory;
             app.experience = response.gameState.experience;
-            app.coins = response.gameState.coins;
-            app.accountRewards = response.gameState.accountRewards;
           }
 
           if (response?.serverTimestampSnapshot) {

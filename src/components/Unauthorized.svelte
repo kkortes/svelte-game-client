@@ -3,8 +3,6 @@
 </script>
 
 <crow down>
-  <img src="/images/races/troll/male-01.png" class="pointer-events-none max-w-80" />
-
   <crow vertical class="glass relative -mr-18 mb-10 -ml-24 w-full gap-2 p-10 pb-6">
     {#if loginPageMode === 0}
       <Login />
@@ -27,9 +25,4 @@
       {/if}
     </crow>
   </crow>
-
-  <img
-    src="/images/races/elf/female-01.png"
-    class="pointer-events-none z-1 max-w-32 scale-x-[-1]"
-  />
 </crow>

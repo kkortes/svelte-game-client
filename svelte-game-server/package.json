@@ -1,5 +1,5 @@
 {
-  "name": "battle-brawlers-server",
+  "name": "svelte-game-server",
   "version": "0.0.3",
   "description": "",
   "main": "index.js",
