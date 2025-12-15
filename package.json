@@ -43,8 +43,5 @@
     "svelte-portal": "^2.2.1",
     "sveltekit-autoimport": "^1.8.1"
   },
-  "type": "module",
-  "patchedDependencies": {
-    "svelte-dnd-action@0.9.64": "patches/svelte-dnd-action@0.9.64.patch"
-  }
+  "type": "module"
 }
