@@ -16,8 +16,8 @@ The stack is:
 
 ```
 nvm use
-npm install
-npm run dev
+bun install
+bun dev
 ```
 
 ## Run the server locally
@@ -35,8 +35,8 @@ PASSWORD_RESET_HASH=<custom_hash>
 
 ```
 cd svelte-game-server
-npm install
-npm run dev
+bun install
+bun dev
 ```
 
 ## Features
