@@ -12,13 +12,10 @@
   <!-- <Clickable class="crow h-8 w-8 hover:bg-black/5 dark:hidden" onclick={toggleDarkMode}>
     <Icon class="text-yellow-500" name="light" />
   </Clickable> -->
-  <Clickable
-    class="dark:row hidden h-8 w-8 -translate-y-px hover:bg-black/5"
-    onclick={toggleDarkMode}
-  >
+  <Clickable class="crow h-8 w-8" onclick={toggleDarkMode}>
     <Icon class="text-blue-500" name="dark" />
   </Clickable>
-  <Clickable class="crow h-8 w-8 hover:bg-black/5" onclick={() => (app.overlay = 'GameMenu')}>
+  <Clickable class="crow h-8 w-8" onclick={() => (app.overlay = 'GameMenu')}>
     <Icon name="menu" />
   </Clickable>
 </crow>

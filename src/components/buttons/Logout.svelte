@@ -7,4 +7,4 @@
   };
 </script>
 
-<Button onclick={logout}>Log out</Button>
+<Button primary onclick={logout}>Log out</Button>

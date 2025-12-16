@@ -59,7 +59,7 @@
       onblur={enableGameKeyboard}
     />
 
-    <Button primary class="xs:w-full" type="submit">Log&nbsp;in</Button>
+    <Button primary type="submit">Log&nbsp;in</Button>
   </crow>
 
   <div>

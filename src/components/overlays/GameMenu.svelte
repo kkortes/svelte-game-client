@@ -23,7 +23,7 @@
     <span class="cinzel">Audio settings</span>
 
     <Button
-      secondary
+      primary
       disabled={JSON.stringify(app.settings.volume) === JSON.stringify(SETTINGS_DEFAULT_VOLUME)}
       onclick={() => {
         app.settings.volume = SETTINGS_DEFAULT_VOLUME;
@@ -83,7 +83,7 @@
 
   <Hr class="via-white/20" />
 
-  <Button secondary onclick={() => (app.overlay = 'ReleaseNotes')}>Release notes</Button>
+  <Button primary onclick={() => (app.overlay = 'ReleaseNotes')}>Release notes</Button>
   {#if app.token}
     <Logout />
   {/if}

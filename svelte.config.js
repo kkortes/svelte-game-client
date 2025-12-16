@@ -15,11 +15,11 @@ export default {
   preprocess: vitePreprocess(),
   vitePlugin: {
     // set to true for defaults or customize with object
-    inspector: {
-      toggleKeyCombo: 'meta-shift',
-      showToggleButton: 'never',
-      holdMode: true
-    },
+    // inspector: {
+    //   toggleKeyCombo: 'meta-shift',
+    //   showToggleButton: 'never',
+    //   holdMode: true
+    // },
     // This ignores "compilerOptions.runes = true" for external packages
     // Ideally this is removed once third party packages supports Svelte 5 runes
     dynamicCompileOptions({ filename }) {

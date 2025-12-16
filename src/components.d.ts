@@ -7,6 +7,7 @@ declare global {
     const Bar: typeof import("./components/ui/Bar.svelte")["default"]
     const BasicConfirmation: typeof import("./components/dialog/BasicConfirmation.svelte")["default"]
     const Button: typeof import("./components/form/Button.svelte")["default"]
+    const Card: typeof import("./components/Card.svelte")["default"]
     const Checkbox: typeof import("./components/form/Checkbox.svelte")["default"]
     const Clickable: typeof import("./components/buttons/Clickable.svelte")["default"]
     const ClientClock: typeof import("./components/global/ClientClock.svelte")["default"]

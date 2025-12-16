@@ -1,5 +1,37 @@
 @import 'tailwindcss';
+@import './crow.css';
+@import './stylecheat.css';
+@import './Iconice.css';
+
 @custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: 'Viga', sans-serif;
+  --font-cinzel: 'Cinzel', serif;
+  --font-cabin: 'Cabin', sans-serif;
+  --font-berkshire: 'Berkshire Swash', sans-serif;
+  --font-viga: 'Viga', sans-serif;
+  --font-antonio: 'Antonio', sans-serif;
+  --font-quantico: 'Quantico', sans-serif;
+  --font-merienda: 'Merienda', cursive;
+  --font-belanosima: 'Belanosima', sans-serif;
+  --font-averia: 'Averia Serif Libre', serif;
+  --font-spectral: 'Spectral SC', serif;
+  --font-skranji: 'Skranji', cursive;
+  --font-stoke: 'Stoke', serif;
+  --font-finlandica: 'Finlandica', sans-serif;
+
+  --color-brown-50: #efebe9;
+  --color-brown-100: #d7ccc8;
+  --color-brown-200: #bcaaa4;
+  --color-brown-300: #a1887f;
+  --color-brown-400: #8d6e63;
+  --color-brown-500: #795548;
+  --color-brown-600: #6d4c41;
+  --color-brown-700: #5d4037;
+  --color-brown-800: #4e342e;
+  --color-brown-900: #3e2723;
+}
 
 @layer base {
   #sticky-bottom > div {
