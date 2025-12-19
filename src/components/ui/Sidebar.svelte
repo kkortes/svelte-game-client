@@ -1,12 +1,12 @@
 <div class="group/sidebar h-full">
   <div
     class={tw(
-      'sticky top-0 w-18 transition-[width] duration-300 group-hover/sidebar:w-72',
+      'sticky top-0 w-18 transition-[width] duration-300 group-hover/sidebar:w-60',
       app.settings.lockSidebar && 'w-60'
     )}
   >
     <div class="crow vertical up gap-6 px-4">
-      <a href="/" class="leading-0">
+      <a href="/" class="leading-0" title="Home">
         <icon
           style={`--icon: var(--icon-logo-apeegg); color: var(--color-contrast);`}
           class={tw(
