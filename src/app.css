@@ -37,11 +37,8 @@
   #sticky-bottom > div {
     display: contents;
   }
-  html {
-    @apply overflow-x-hidden overflow-y-scroll;
-  }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground flex min-h-screen overflow-x-hidden overflow-y-scroll;
   }
 
   h1,

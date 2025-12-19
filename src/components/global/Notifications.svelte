@@ -14,6 +14,14 @@
       warning: 'Heads up'
     })[type];
 
+  const iconByType = (type: string) =>
+    ({
+      error: 'error',
+      info: 'info',
+      success: 'checkmark',
+      warning: 'warning'
+    })[type];
+
   const removeFirst = (items: any[]) => {
     if (!ref.children.length) return;
     const { height } = ref.children[0].getBoundingClientRect();
@@ -89,7 +97,7 @@
                   type === 'success' && 'bg-green-500'
                 )}
               >
-                <Icon class="text-lg text-white" name={type} />
+                <Icon class="text-lg text-white" name={iconByType(type)} />
               </crow>
               <div>
                 <strong class="text-base text-gray-800">{titleByType(type)}</strong>

@@ -1,20 +1,20 @@
 <script lang="ts">
   import '../app.css';
   import { page } from '$app/stores';
-  import type { Snippet } from 'svelte';
-  import app from '@/app.svelte';
-  import DebugAppData from '@/components/DebugAppData.svelte';
 
-  let { children }: { children: Snippet } = $props();
+  let { children } = $props();
 
   const { IS_PROD } = ENV;
 
-  let isFrontpage = $derived($page.route.id === '/' && !app.token);
-  let isAuthenticated = $derived(!!app.token);
+  $effect(() => {
+    app.settings.lockSidebar = activePage;
+  });
+
   let activePage = $derived($page.route.id?.split('/')[1] || (!app.token ? 'start' : ''));
 </script>
 
 <svelte:head>
+  <link rel="icon" href="/static/icons/storm.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" />
   <link
@@ -34,83 +34,27 @@
   <DebugAppData />
 {/if}
 
-<crow vertical>
-  <div
-    data-page-id={activePage}
-    class={tw('bg-blur min-h-screen w-screen', isFrontpage ? 'crow' : 'crow up')}
-  >
-    <div class={tw('pt-12 pb-3', !isAuthenticated ? 'crow' : 'flex w-full max-w-7xl')}>
-      <Authorization>
-        <div class="flex min-h-[calc(100vh-theme(spacing.20)-theme(spacing.3))] flex-1 gap-3">
-          <div
-            class={tw(
-              'sticky top-14 h-[calc(100vh-theme(spacing.6))] w-56 rounded border border-transparent bg-white/30 p-4'
-            )}
-          >
-            left side
-          </div>
-          <crow vertical class="h-full flex-1">
-            <div class="grid h-full w-full">
-              <card class="rounded [grid-area:1/1]">
-                <div class="relative w-full flex-1">
-                  <div>
-                    {@render children()}
-                  </div>
-                </div>
-                <div class="sticky bottom-[calc(theme(spacing.3))] left-0 w-full">
-                  <div
-                    id="sticky-bottom"
-                    class="-m-[calc(theme(spacing.4)+1px)] overflow-hidden rounded-b"
-                  ></div>
-                </div>
-              </card>
+<crow data-page-id={activePage} class="w-full">
+  <Authorization>
+    <crow class="h-full w-full pt-4">
+      <Sidebar />
+      <card
+        class="relative min-h-full! flex-1 rounded-xl rounded-tr-none rounded-br-none rounded-bl-none border-b-0 border-r-transparent"
+      >
+        <!-- this is solely to make sticky work -->
+        <crow up left vertical class="flex-1 py-4">
+          {@render children()}
+        </crow>
 
-              <crow up class="-mt-7 !h-7 !justify-between px-3 [grid-area:1/1]">
-                <crow up right class="gap-1">
-                  <a
-                    class={tw(
-                      'text-muted-foreground rounded-lg rounded-b-none border border-b-0 border-transparent px-2 py-0.5',
-                      activePage === '' && 'bg-card border-border text-foreground'
-                    )}
-                    href="/"
-                  >
-                    Game Guide
-                  </a>
-                  <a
-                    class={tw(
-                      'text-muted-foreground rounded-lg rounded-b-none border border-b-0 border-transparent px-2 py-0.5',
-                      activePage === 'components' && 'bg-card border-border text-foreground'
-                    )}
-                    href="/components"
-                  >
-                    Components
-                  </a>
-                  <a
-                    class={tw(
-                      'text-muted-foreground rounded-lg rounded-b-none border border-b-0 border-transparent px-2 py-0.5',
-                      activePage === 'cards' && 'bg-card border-border text-foreground'
-                    )}
-                    href="/cards"
-                  >
-                    Cards
-                  </a>
-                </crow>
-              </crow>
-            </div>
-          </crow>
-          <div
-            class={tw(
-              'sticky top-14 h-[calc(100vh-theme(spacing.6))] w-56 rounded border border-transparent bg-white/30 p-4'
-            )}
-          >
-            right side
-          </div>
+        <div class="sticky bottom-[calc(theme(spacing.3))] left-0 w-full">
+          <div id="sticky-bottom" class="overflow-hidden bg-white/20">Sticky</div>
         </div>
-      </Authorization>
-    </div>
-  </div>
 
-  <Topbar />
+        <Topbar />
+      </card>
+      <div class={tw('sticky top-14 w-0 overflow-hidden bg-white/30')}>asd</div>
+    </crow>
+  </Authorization>
 </crow>
 
 <Overlay />

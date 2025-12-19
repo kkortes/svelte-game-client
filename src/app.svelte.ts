@@ -42,6 +42,8 @@ export default new (class {
   overlay: string = $state('');
   settings: DynamicObject = $state(
     loadLocalStorage({
+      darkMode: true,
+      lockSidebar: false,
       volume: SETTINGS_DEFAULT_VOLUME,
       loginPageMode: 0,
       openProperties: {},

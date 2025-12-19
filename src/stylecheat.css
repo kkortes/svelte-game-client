@@ -1,39 +1,70 @@
 .stylecheat {
   /* ---- A.css ---- */
-  a:is([primary], [secondary]) {
-    outline-width: 0;
+  a:is([primary], [secondary], [tertiary]) {
     transition: all 100ms ease-in-out;
 
     &[primary] {
-      color: oklch(from var(--color-dark) calc(l/2 + 0.3) c h);
+      color: oklch(from var(--primary) calc(l/2 + 0.3) c h);
       text-decoration: none;
-      text-decoration-color: oklch(from var(--color-dark) calc(l/2 + 0.2) c h);
+      text-decoration-color: oklch(from var(--primary) calc(l/2 + 0.2) c h);
 
       &:hover,
       &:focus {
-        color: oklch(from var(--color-dark) calc(l/2 + 0.4) c h);
-        text-decoration-color: oklch(from var(--color-dark) calc(l/2 + 0.4) c h);
+        color: oklch(from var(--primary) calc(l/2 + 0.4) c h);
+        text-decoration-color: oklch(from var(--primary) calc(l/2 + 0.4) c h);
       }
     }
 
     &[secondary] {
-      color: oklch(from var(--color-light) calc(l/2 + 0.15 - 0.1 * var(--theme-sign)) c h);
+      color: oklch(from var(--secondary) calc(l/2 + 0.15 - 0.1 * var(--theme-sign)) c h);
       text-decoration-color: oklch(
-        from var(--color-light) calc(l/2 + 0.15 - 0.1 * var(--theme-sign)) c h
+        from var(--secondary) calc(l/2 + 0.15 - 0.1 * var(--theme-sign)) c h
       );
 
       &:hover,
       &:focus {
-        color: oklch(from var(--color-light) calc(l/2 + 0.3 - 0.1 * var(--theme-sign)) c h);
+        color: oklch(from var(--secondary) calc(l/2 + 0.3 - 0.1 * var(--theme-sign)) c h);
         text-decoration-color: oklch(
-          from var(--color-light) calc(l/2 + 0.3 - 0.1 * var(--theme-sign)) c h
+          from var(--secondary) calc(l/2 + 0.3 - 0.1 * var(--theme-sign)) c h
         );
       }
     }
 
+    &[tertiary] {
+      /* Start - Button tertiary styles */
+      display: flex;
+      border-radius: min(var(--radius-sm), 4px);
+      padding: 6px 12px;
+      outline-offset: 0;
+      /* End - Button tertiary styles */
+
+      background-color: transparent;
+      color: var(--popover-foreground);
+      outline-color: transparent;
+
+      &:hover {
+        background-color: oklch(from var(--background) calc(l * (1 - 0.1 * var(--theme-sign))) c h);
+        color: oklch(from var(--popover-foreground) calc(l * (1 - 0.1 * var(--theme-sign))) c h);
+        outline-color: oklch(from var(--background) calc(l * (1 - 0.075 * var(--theme-sign))) c h);
+      }
+
+      &:active {
+        outline-color: transparent;
+      }
+
+      &:focus-visible {
+        outline-width: 3px;
+        outline-color: oklch(from var(--primary) calc(l * (1 - 0.075 * var(--theme-sign))) c h);
+      }
+    }
+
+    &:active {
+      transform: translateY(1px);
+    }
+
     &:focus-visible {
       outline-width: 3px;
-      outline-color: oklch(from var(--color-dark) calc(l/2 + 0.4) c h);
+      outline-color: oklch(from var(--primary) calc(l/2 + 0.4) c h);
     }
   }
   /* ---- Accordion.css ---- */
@@ -62,15 +93,15 @@
 
     background-color: transparent;
 
-    border-radius: var(--radius);
+    border-radius: min(var(--radius-sm), 4px);
     padding: 6px 12px;
     outline-width: 1px;
 
     cursor: pointer;
 
     > * {
-      margin-left: -8px;
-      margin-right: -8px;
+      margin-left: -6px;
+      margin-right: -6px;
     }
 
     &[primary] {
@@ -111,7 +142,8 @@
       background-color: transparent;
       color: var(--popover-foreground);
       outline-color: transparent;
-      text-decoration: underline;
+      outline-width: 0;
+      /* text-decoration: underline; */
 
       &:enabled:hover {
         background-color: oklch(from var(--background) calc(l * (1 - 0.1 * var(--theme-sign))) c h);
@@ -120,7 +152,7 @@
       }
 
       &:enabled:active {
-        text-decoration: none;
+        /* text-decoration: none; */
         outline-color: transparent;
       }
 
@@ -134,10 +166,10 @@
       transform: translateY(1px);
     }
 
-    &:enabled:active {
-      outline-width: 1px;
-      outline-color: var(--primary);
-    }
+    /* &:not([tertiary]):enabled:active {
+    outline-width: 1px;
+    outline-color: var(--primary);
+  } */
 
     &:disabled {
       color: oklch(from var(--popover) calc(l * (1 - 0.5 * var(--theme-sign))) c h);
@@ -153,7 +185,7 @@
 
       background-color: var(--card);
       color: var(--card-foreground);
-      border-radius: calc(var(--radius) + 7px);
+      border-radius: var(--radius-sm);
     }
   }
   /* ---- Checkbox.css ---- */
@@ -161,7 +193,7 @@
     appearance: none;
 
     background-color: var(--input);
-    border-radius: var(--radius);
+    border-radius: min(var(--radius-sm), 4px);
 
     width: 24px;
     height: 24px;
@@ -174,7 +206,7 @@
       display: block;
       aspect-ratio: 1;
       height: 100%;
-      border-radius: var(--radius);
+      border-radius: min(var(--radius-sm), 4px);
       background-color: oklch(
         from var(--primary) calc(l + (1 - (var(--theme-sign) + 1) / 2))
           calc(c * (1 * (var(--theme-sign) + 1) / 2)) h
@@ -211,12 +243,18 @@
     &:disabled {
       background-color: oklch(from var(--background) calc(l * (1 - 0.1 * var(--theme-sign))) c h);
       color: oklch(from var(--popover) calc(l * (1 - 0.5 * var(--theme-sign))) c h);
+      outline-color: transparent;
+      cursor: not-allowed;
+    }
+  }
+
+  input:not([type='checkbox'], [type='radio'], [type='range'], [type='file']),
+  textarea {
+    &:disabled {
       /* This is needed for Input & Textarea, to actually respect the color in chrome */
       -webkit-text-fill-color: oklch(
         from var(--popover) calc(l * (1 - 0.5 * var(--theme-sign))) c h
       );
-      outline-color: transparent;
-      cursor: not-allowed;
     }
   }
 
@@ -238,7 +276,7 @@
     --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 0 0' %3E%3Cpath fill='rgb(0,0,0)' d=''/%3E%3C/svg%3E");
     display: inline-block;
     width: 1em;
-    aspect-ratio: 1;
+    height: 1em;
     background-color: var(--color, currentColor);
     mask-image: var(--icon);
     mask-repeat: no-repeat;
@@ -390,7 +428,7 @@
 
     background-color: var(--input);
     color: var(--popover-foreground);
-    border-radius: var(--radius);
+    border-radius: min(var(--radius-sm), 4px);
 
     padding: 6px 8px;
 
@@ -445,7 +483,7 @@
     min-width: calc(216px + 18px);
 
     background-color: var(--input);
-    border-radius: var(--radius);
+    border-radius: min(var(--radius-sm), 4px);
     color: oklch(calc((1 - var(--theme-sign)) * 0.5) 0 0);
     padding: 6px 8px;
 
@@ -458,7 +496,7 @@
     min-width: 216px !important;
 
     background-color: var(--input);
-    border-radius: var(--radius);
+    border-radius: min(var(--radius-sm), 4px);
     color: var(--popover-foreground);
     padding: 6px 8px;
 
@@ -514,7 +552,7 @@
   --font-sans: 'Geist', Inter, sans-serif;
   --font-serif: Source Serif 4, serif;
   --font-mono: JetBrains Mono, monospace;
-  --radius: 4px;
+  --radius: 0.75rem;
   --shadow-x: 0px;
   --shadow-y: 1px;
   --shadow-blur: 3px;
@@ -569,7 +607,7 @@
   --font-sans: 'Geist', sans-serif;
   --font-serif: Source Serif 4, serif;
   --font-mono: JetBrains Mono, monospace;
-  --radius: 3px;
+  --radius: 0.75rem;
   --shadow-x: 0px;
   --shadow-y: 1px;
   --shadow-blur: 3px;
@@ -623,6 +661,11 @@
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
   --font-serif: var(--font-serif);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
 
   --shadow-2xs: var(--shadow-2xs);
   --shadow-xs: var(--shadow-xs);

@@ -2,7 +2,7 @@
   let { loginPageMode } = $derived(app.settings);
 </script>
 
-<crow vertical class="glass gap-2 p-10">
+<card class="crow vertical gap-2 p-10">
   {#if loginPageMode === 0}
     <Login />
   {/if}
@@ -23,4 +23,4 @@
       <Button tertiary onclick={() => (app.settings.loginPageMode = 2)}>Forgot password</Button>
     {/if}
   </crow>
-</crow>
+</card>

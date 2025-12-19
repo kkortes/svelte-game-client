@@ -1,27 +1,29 @@
 <script lang="ts">
-  const toggleDarkMode = () => {
-    const classes = [...document.getElementsByTagName('body')[0].classList];
+  $effect(() => {
+    $state.snapshot(app.settings.darkMode);
 
-    document.getElementsByTagName('body')[0].className = classes.includes('dark')
-      ? classes.filter((className) => className !== 'dark').join(' ')
-      : [...classes, 'dark'].join(' ');
-  };
+    const classes = [...document.getElementsByTagName('html')[0].classList];
+    document.getElementsByTagName('html')[0].className = app.settings.darkMode
+      ? [...classes, 'dark'].join(' ')
+      : classes.filter((className) => className !== 'dark').join(' ');
+  });
 </script>
 
-<crow class="glass sticky inset-0 -order-1 w-full justify-between! rounded-none! bg-white p-2">
-  <a href="/" class="block">
-    <Icon class="text-4xl text-black dark:text-white" name="logo-apeegg" />
-  </a>
+<crow
+  class="bg-card border-b-border sticky top-0 -order-1 -mx-2 -mt-[calc(theme(spacing.6)-1px)] w-auto! justify-between! rounded-t-xl border-t border-b border-t-transparent p-2"
+>
+  <div />
 
-  <!-- <Clickable class="crow h-8 w-8 hover:bg-black/5 dark:hidden" onclick={toggleDarkMode}>
-    <Icon class="text-yellow-500" name="light" />
-  </Clickable> -->
-  <crow>
-    <Clickable tertiary onclick={toggleDarkMode}>
-      <Icon class="text-blue-500" name="dark" />
+  <crow class="gap-2">
+    <Clickable tertiary onclick={() => (app.settings.darkMode = !app.settings.darkMode)}>
+      {#if app.settings.darkMode}
+        <Icon name="light" class="text-2xl text-yellow-400" />
+      {:else}
+        <Icon name="dark" class="text-2xl text-blue-400" />
+      {/if}
     </Clickable>
     <Clickable tertiary onclick={() => (app.overlay = 'GameMenu')}>
-      <Icon name="menu" />
+      <Icon name="menu" class="text-2xl" />
     </Clickable>
   </crow>
 </crow>
