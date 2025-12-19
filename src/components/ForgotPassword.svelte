@@ -31,5 +31,5 @@
     bind:value={email}
   />
 
-  <Button type="submit">Submit</Button>
+  <Button primary type="submit">Submit</Button>
 </form>

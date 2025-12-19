@@ -38,31 +38,19 @@
     display: contents;
   }
   html {
-    font-family: 'Fira Sans Condensed', 'Trebuchet MS', 'sans-serif';
     @apply overflow-x-hidden overflow-y-scroll;
   }
   body {
-    @apply text-gray-800 dark:text-white;
+    @apply bg-background text-foreground;
   }
-  .alfa-slab-one {
-    @apply font-['Alfa_Slab_One'];
-  }
-  .cinzel {
-    @apply font-['Cinzel'];
-  }
-  .bree-serif {
-    @apply font-['Bree_Serif'];
-  }
-  .fat-number {
-    @apply drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] [-webkit-text-stroke:_0.5px_black];
-  }
+
   h1,
   h2,
   h3,
   h4,
   h5,
   h6 {
-    @apply font-['Cinzel'];
+    @apply text-foreground font-['Cinzel'];
   }
 
   /* width */

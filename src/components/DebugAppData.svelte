@@ -24,7 +24,7 @@
   vertical
   up
   class={tw(
-    'fixed top-20 bottom-0 left-[calc(100%-theme(spacing.2))] z-100 max-w-100 !flex-none overflow-hidden overflow-y-scroll pl-2 transition-transform duration-200',
+    'fixed top-20 bottom-0 left-[calc(100%-theme(spacing.2))] max-w-100 !flex-none overflow-hidden overflow-y-scroll pl-2 transition-transform duration-200',
     (showSidebar || app.settings.debugOpen) && '-translate-x-[calc(100%-theme(spacing.2))]'
   )}
   role="none"
@@ -63,9 +63,9 @@
         <crow vertical left class="w-full">
           <crow class="w-full !justify-between" up left>
             <div class="px-2 py-1 font-bold">{key}</div>
-            <crow class="!flex-none">
+            <crow>
               {#if isOpenable}
-                <span class="">
+                <span>
                   {Math.max(
                     0,
                     Array.isArray(value) ? value.length : Object.keys(value || {}).length
@@ -74,7 +74,7 @@
               {:else}
                 {value || value === 0 ? value : '-'}
               {/if}
-              <crow class={tw('aspect-square w-8 !flex-none')}>
+              <crow class={tw('aspect-square w-8')}>
                 {#if isOpenable}
                   <Icon
                     name="down"

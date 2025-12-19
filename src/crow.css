@@ -1,7 +1,10 @@
+crow:not(:has(> crow)) > crow,
+.crow:not(:has(> .crow)) > .crow {
+  flex: 1;
+}
 crow,
 .crow {
   display: flex;
-  flex: 1;
   align-items: center;
   justify-content: center;
 }

@@ -61,7 +61,7 @@
 
 <div
   role="status"
-  class="fixed top-8 right-2 text-gray-500"
+  class="pointer-events-none fixed top-8 right-2 text-gray-500"
   onmouseenter={hover.bind(undefined, true)}
   onmouseleave={hover.bind(undefined, false)}
 >

@@ -6,9 +6,9 @@
   let hidden = $state(true);
 </script>
 
-<!-- <button onclick={() => (hidden = !hidden)}>
+<button onclick={() => (hidden = !hidden)}>
   {hidden ? 'Show' : 'Hide'}
-</button> -->
+</button>
 
 <div
   class={tw(
@@ -87,7 +87,7 @@
 
                 <card-name
                   class={tw(
-                    'crow font-averia! font-regular w-full -translate-y-1.5 p-2 px-3 text-2xl text-white capitalize',
+                    'crow font-averia w-full -translate-y-1.5 p-2 px-3 text-2xl text-white capitalize',
                     icon && 'left',
                     !icon && 'text-center'
                   )}
@@ -180,7 +180,7 @@
               >
                 <div
                   class={tw(
-                    '-mx-[0.75px] bg-black/65 pr-2 pl-1.5 text-white capitalize italic drop-shadow-lg [clip-path:polygon(5px_0%,100%_0%,calc(100%-5px)_100%,0%_100%)]'
+                    'font-viga -mx-[0.75px] bg-black/65 pr-2 pl-1.5 text-white capitalize italic drop-shadow-lg [clip-path:polygon(5px_0%,100%_0%,calc(100%-5px)_100%,0%_100%)]'
                   )}
                 >
                   {type}
@@ -188,7 +188,7 @@
                 {#each subtypes as subtype, i}
                   <div
                     class={tw(
-                      '-mx-[0.75px] pr-2 pl-1.5 capitalize italic [clip-path:polygon(5px_0%,100%_0%,calc(100%-5px)_100%,0%_100%)]',
+                      'font-viga -mx-[0.75px] pr-2 pl-1.5 capitalize italic [clip-path:polygon(5px_0%,100%_0%,calc(100%-5px)_100%,0%_100%)]',
                       ['relic'].includes(type) ? darkestBg : regularBg
                     )}
                   >

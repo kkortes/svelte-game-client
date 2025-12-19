@@ -68,12 +68,4 @@
       </Button>
     </crow>
   </div>
-  <div>
-    <h2>Pills</h2>
-    <crow class="gap-2">
-      <Pill text="1&nbsp;vs&nbsp;1" />
-      <Pill text="2&nbsp;vs&nbsp;2" />
-      <Pill text="3&nbsp;vs&nbsp;3" />
-    </crow>
-  </div>
 </crow>

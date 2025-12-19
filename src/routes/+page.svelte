@@ -1,7 +1,3 @@
-<script lang="ts">
-  import Headline from '@/components/Headline.svelte';
-</script>
-
 <Headline text="Game guide" />
-
 Svelte game client
+<div class="h-[2000px]"></div>

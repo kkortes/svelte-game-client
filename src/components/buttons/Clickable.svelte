@@ -6,22 +6,24 @@
     class: classes,
     onclick,
     href,
-    style
+    style,
+    ...rest
   }: {
     class?: string;
     onclick?: (e: Event) => void;
     href?: string;
     children: Snippet;
     style?: string;
+    [key: string]: any;
   } = $props();
 </script>
 
 {#if href}
-  <a {href} {onclick} class={tw('border-0 bg-none outline-none', classes)} {style}>
+  <a {href} {onclick} class={classes} {style} {...rest}>
     {@render children()}
   </a>
 {:else}
-  <button {onclick} class={tw('border-0 bg-none outline-none', classes)} {style}>
+  <button {onclick} class={classes} {style} {...rest}>
     {@render children()}
   </button>
 {/if}
