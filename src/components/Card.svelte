@@ -4,9 +4,9 @@
 
   const regularBg = $derived(`background-color: var(--color-${tailwindColor}-600);`);
   const darkestBg = $derived(`background-color: var(--color-${tailwindColor}-700);`);
-  const radialFrom = $derived(`from-${tailwindColor}-900`);
-  const radialVia = $derived(`via-${tailwindColor}-300`);
-  const radialTo = $derived(`to-${tailwindColor}-600`);
+  const radialFrom = $derived(`--tw-gradient-from: var(--color-${tailwindColor}-900);`);
+  const radialVia = $derived(`--tw-gradient-via: var(--color-${tailwindColor}-300);`);
+  const radialTo = $derived(`--tw-gradient-to: var(--color-${tailwindColor}-600);`);
   const border = $derived(`border-color: var(--color-${tailwindColor}-800);`);
   const textBright = $derived(`color: var(--color-${tailwindColor}-300);`);
 
@@ -26,12 +26,8 @@
   <div class={tw('grid! h-full w-full mix-blend-multiply')}>
     <div class="grid! [grid-area:1/1]">
       <div
-        class={tw(
-          'grid! aspect-[0.714/1] rounded-xl bg-radial p-3 [grid-area:1/1]',
-          radialFrom,
-          radialVia,
-          radialTo
-        )}
+        class={tw('grid! aspect-[0.714/1] rounded-xl bg-radial p-3 [grid-area:1/1]')}
+        style="{radialFrom}{radialVia}{radialTo}"
       >
         <inner-frame
           class={tw('relative rounded-sm border-2 [grid-area:1/1]', hidden && 'overflow-hidden')}
@@ -267,49 +263,39 @@
       {#if icon}
         <circle-mask
           class={tw(
-            'crow pointer-events-none bg-radial mask-(--icon-circle) mask-size-[60px] mask-position-[calc(100%-4px)_calc(0%+4px)] mask-no-repeat [grid-area:1/1]',
-            radialFrom,
-            radialVia,
-            radialTo
+            'crow pointer-events-none bg-radial mask-(--icon-circle) mask-size-[60px] mask-position-[calc(100%-4px)_calc(0%+4px)] mask-no-repeat [grid-area:1/1]'
           )}
+          style="{radialFrom}{radialVia}{radialTo}"
         >
         </circle-mask>
       {:else}
         <circle-mask
           class={tw(
-            'crow pointer-events-none bg-radial mask-(--icon-circle) mask-size-[36px] mask-position-[calc(100%+12px)_calc(0%-12px)] mask-no-repeat [grid-area:1/1]',
-            radialFrom,
-            radialVia,
-            radialTo
+            'crow pointer-events-none bg-radial mask-(--icon-circle) mask-size-[36px] mask-position-[calc(100%+12px)_calc(0%-12px)] mask-no-repeat [grid-area:1/1]'
           )}
+          style="{radialFrom}{radialVia}{radialTo}"
         >
         </circle-mask>
       {/if}
       <circle-mask
         class={tw(
-          'crow pointer-events-none bg-radial mask-(--icon-circle) mask-size-[36px] mask-position-[calc(0%-12px)_calc(0%-12px)] mask-no-repeat [grid-area:1/1]',
-          radialFrom,
-          radialVia,
-          radialTo
+          'crow pointer-events-none bg-radial mask-(--icon-circle) mask-size-[36px] mask-position-[calc(0%-12px)_calc(0%-12px)] mask-no-repeat [grid-area:1/1]'
         )}
+        style="{radialFrom}{radialVia}{radialTo}"
       >
       </circle-mask>
       <circle-mask
         class={tw(
-          'crow pointer-events-none bg-radial mask-(--icon-circle) mask-size-[36px] mask-position-[calc(0%-12px)_calc(100%+12px)] mask-no-repeat [grid-area:1/1]',
-          radialFrom,
-          radialVia,
-          radialTo
+          'crow pointer-events-none bg-radial mask-(--icon-circle) mask-size-[36px] mask-position-[calc(0%-12px)_calc(100%+12px)] mask-no-repeat [grid-area:1/1]'
         )}
+        style="{radialFrom}{radialVia}{radialTo}"
       >
       </circle-mask>
       <circle-mask
         class={tw(
-          'crow pointer-events-none bg-radial mask-(--icon-circle) mask-size-[36px] mask-position-[calc(100%+12px)_calc(100%+12px)] mask-no-repeat [grid-area:1/1]',
-          radialFrom,
-          radialVia,
-          radialTo
+          'crow pointer-events-none bg-radial mask-(--icon-circle) mask-size-[36px] mask-position-[calc(100%+12px)_calc(100%+12px)] mask-no-repeat [grid-area:1/1]'
         )}
+        style="{radialFrom}{radialVia}{radialTo}"
       >
       </circle-mask>
       {#if icon}
