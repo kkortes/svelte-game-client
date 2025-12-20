@@ -362,4 +362,6 @@
   --color-beige-800: oklch(0.34 0.03 69);
   --color-beige-900: oklch(0.24 0.02 67);
   --color-beige-950: oklch(0.11 0.01 71);
+
+  /* https://htmlcolorcodes.com/colors/parchment/ */
 }
