@@ -19,7 +19,7 @@
 
 <div
   class={tw(
-    'crow relative aspect-[0.714/1] w-70 rounded-xl bg-[url(/static/images/grid.png)] bg-size-[40px_100px] [grid-area:1/1]',
+    'crow relative aspect-[0.714/1] w-70 rounded-xl bg-[url(/images/grid.png)] bg-size-[40px_100px] [grid-area:1/1]',
     hidden && 'overflow-hidden'
   )}
 >
@@ -154,7 +154,7 @@
                   type === 'relic' && 'bg-size-[auto_80%] bg-position-[center_calc(50%-10px)]',
                   type !== 'relic' && 'bg-cover'
                 )}
-                style="background-image: url('/static/images/{image}');{border}"
+                style="background-image: url('/images/{image}');{border}"
               >
               </card-image>
               <div class={tw('absolute inset-y-0 left-0 w-1')} style={regularBg}></div>
