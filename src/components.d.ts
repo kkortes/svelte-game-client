@@ -36,6 +36,7 @@ declare global {
     const Overlay: typeof import("./components/global/Overlay.svelte")["default"]
     const Register: typeof import("./components/Register.svelte")["default"]
     const ReleaseNotes: typeof import("./components/overlays/ReleaseNotes.svelte")["default"]
+    const Shape: typeof import("./components/ui/Shape.svelte")["default"]
     const Sidebar: typeof import("./components/ui/Sidebar.svelte")["default"]
     const SidebarNav: typeof import("./components/ui/SidebarNav.svelte")["default"]
     const Spinner: typeof import("./components/ui/Spinner.svelte")["default"]

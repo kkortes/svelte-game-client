@@ -1,6 +1,8 @@
 <script lang="ts">
+  import Shape from './ui/Shape.svelte';
+
   let { card, tailwindColor } = $props();
-  let { name, image, type, subtypes, keywords, text, cost, icon } = $derived(card);
+  let { name, image, type, subtypes, keywords, text, cost, icon, rarity } = $derived(card);
 
   const regularBg = $derived(`background-color: var(--color-${tailwindColor}-600);`);
   const darkestBg = $derived(`background-color: var(--color-${tailwindColor}-700);`);
@@ -188,42 +190,47 @@
                 {/each}
               </crow>
 
-              {#if keywords.length > 0 || text}
-                <div
-                  class={tw(
-                    'crow left vertical font-finlandica gap-2 p-4 pt-2 text-xs',
-                    type === 'god' &&
-                      'mx-1.5 mb-1.5 w-auto! bg-linear-to-t from-black/50 via-black/75 to-transparent px-2.5 pt-12 pb-2.5'
-                  )}
-                  style={type === 'god' ? border : ''}
-                >
-                  {#if keywords.length > 0}
-                    <div>
-                      <crow class="text-xs text-white">
-                        {#each keywords as keyword}
-                          {@const color =
-                            (
-                              {
-                                aggressive: 'bg-red-600',
-                                swift: 'bg-yellow-600'
-                              } as any
-                            )[keyword] || 'bg-black/65 text-white'}
-                          <div
-                            class={tw(
-                              'font-viga -mx-[0.75px] pr-2 pl-1.5 capitalize italic [clip-path:polygon(5px_0%,100%_0%,calc(100%-5px)_100%,0%_100%)]',
-                              color
-                            )}
-                          >
-                            {keyword}
-                          </div>
-                        {/each}
-                      </crow>
-                    </div>
-                  {/if}
+              <div
+                class={tw(
+                  'crow left vertical font-finlandica text-xs',
+                  type === 'god' &&
+                    'mx-1.5 mb-1.5 w-[calc(100%-theme(spacing.3))]! bg-linear-to-t from-black/50 via-black/75 to-transparent pt-12'
+                )}
+                style={type === 'god' ? border : ''}
+              >
+                {#if keywords.length > 0 || text}
+                  <crow
+                    vertical
+                    class={tw('gap-2 p-4 pt-2 w-full', type === 'god' && 'px-2.5 pb-2.5 pt-0')}
+                  >
+                    {#if keywords.length > 0}
+                      <div>
+                        <crow class="text-xs text-white pr-2">
+                          {#each keywords as keyword}
+                            {@const color =
+                              (
+                                {
+                                  aggressive: 'bg-red-600',
+                                  swift: 'bg-yellow-600'
+                                } as any
+                              )[keyword] || 'bg-black/65 text-white'}
+                            <div
+                              class={tw(
+                                'font-viga -mx-[0.75px] pr-2 pl-1.5 capitalize italic [clip-path:polygon(5px_0%,100%_0%,calc(100%-5px)_100%,0%_100%)]',
+                                color
+                              )}
+                            >
+                              {keyword}
+                            </div>
+                          {/each}
+                        </crow>
+                      </div>
+                    {/if}
 
-                  {@html text}
-                </div>
-              {/if}
+                    {@html text}
+                  </crow>
+                {/if}
+              </div>
             </card-text-box>
           </card-content>
 
@@ -232,6 +239,18 @@
               class={tw('crow absolute aspect-square w-16 flex-none! rounded-full border-2')}
               style="top: -12px; right: -12px;{regularBg}{border}"
             ></circle-border>
+            <!-- <circle-border
+              class={tw(
+                'crow absolute aspect-square w-16 flex-none! mask-(--icon-hexagon) mask-size-[64px] mask-position-[calc(0%-0px)_calc(0%-0px)] mask-no-repeat'
+              )}
+              style="top: -10px; right: -16px;{darkestBg}"
+            ></circle-border>
+            <circle-border
+              class={tw(
+                'crow absolute aspect-square w-16 flex-none! mask-(--icon-hexagon) mask-size-[64px] mask-position-[calc(0%-0px)_calc(0%-0px)] mask-no-repeat'
+              )}
+              style="top: 34px; right: 14px;{darkestBg}"
+            ></circle-border> -->
           {:else}
             <circle-border
               class={tw(
@@ -270,6 +289,29 @@
           style="{radialFrom}{radialVia}{radialTo}"
         >
         </circle-mask>
+
+        <!-- <circle-mask
+          class={tw(
+            'crow pointer-events-none bg-radial from-transparent via-transparent to-transparent mask-(--icon-hexagon) mask-size-[60px] mask-position-[calc(100%-0px)_calc(0%+6px)] mask-no-repeat [grid-area:1/1]'
+          )}
+          style="{radialFrom}{radialVia}{radialTo}"
+        >
+        </circle-mask>
+        <circle-mask
+          class={tw(
+            'crow pointer-events-none bg-radial from-transparent via-transparent to-transparent mask-(--icon-hexagon) mask-size-[60px] mask-position-[calc(100%-30px)_calc(0%+50px)] mask-no-repeat [grid-area:1/1]'
+          )}
+          style="{radialFrom}{radialVia}{radialTo}"
+        >
+        </circle-mask> -->
+
+        <!-- <circle-mask
+          class={tw(
+            'crow pointer-events-none bg-radial from-transparent via-transparent to-transparent mask-(--icon-flathex) mask-size-[60px] mask-position-[calc(100%-4px)_calc(0%+114px)] mask-no-repeat [grid-area:1/1]'
+          )}
+          style="{radialFrom}{radialVia}{radialTo}"
+        >
+        </circle-mask> -->
       {:else}
         <circle-mask
           class={tw(
@@ -316,7 +358,88 @@
             ></icon>
           {/if}
         </circle-mana>
+
+        <!-- <circle-mana
+          class={tw(
+            'crow absolute top-3 right-1 aspect-square w-13 mask-(--icon-hexagon) mask-size-[50px] mask-position-[calc(0%-0px)_calc(0%-0px)] mask-no-repeat'
+          )}
+          style="{darkestBg}{border}"
+        >
+          {#if Number.isInteger(cost)}
+            <span class={tw('font-cabin text-4xl leading-0 font-bold text-white')}>
+              {cost}
+            </span>
+          {:else}
+            <icon
+              class={tw('aspect-square w-10 text-4xl')}
+              style="--icon: var(--icon-{icon});{textBright}"
+            ></icon>
+          {/if}
+        </circle-mana>
+
+        <circle-mana
+          class={tw(
+            'crow absolute top-14 right-8 aspect-square w-13 mask-(--icon-hexagon) mask-size-[50px] mask-position-[calc(0%-0px)_calc(0%-0px)] mask-no-repeat'
+          )}
+          style="{darkestBg}{border}"
+        >
+          {#if Number.isInteger(cost)}
+            <span class={tw('font-cabin text-4xl leading-0 font-bold text-white')}>
+              {cost}
+            </span>
+          {:else}
+            <icon
+              class={tw('aspect-square w-10 text-4xl')}
+              style="--icon: var(--icon-{icon});{textBright}"
+            ></icon>
+          {/if}
+        </circle-mana> -->
+
+        <!-- <circle-mana
+          class={tw(
+            'crow absolute top-30 right-2.5 aspect-square w-12 mask-(--icon-flathex) mask-size-[50px] mask-position-[calc(0%-1px)_calc(0%-1px)] mask-no-repeat'
+          )}
+          style="{darkestBg}{border}"
+        >
+          {#if Number.isInteger(cost)}
+            <span class={tw('font-cabin text-4xl leading-0 font-bold text-white')}>
+              {cost}
+            </span>
+          {:else}
+            <icon
+              class={tw('aspect-square w-10 text-4xl')}
+              style="--icon: var(--icon-{icon});{textBright}"
+            ></icon>
+          {/if}
+        </circle-mana> -->
       {/if}
+
+      <crow
+        class="absolute border-1 border-b-0 border-l-0 rounded-full w-7 h-7 bottom-px left-0"
+        style="{border}background-color: var(--color-{tailwindColor}-500);"
+      >
+        <icon class="text-lg text-black" style="--icon: var(--icon-plant);"></icon>
+      </crow>
+
+      <crow
+        class="absolute border-1 border-b-0 rounded-full w-6 h-6 bottom-0 left-1/2 -translate-x-1/2"
+        style="{border}background-color: var(--color-{tailwindColor}-500);"
+      >
+        <Shape {rarity} />
+      </crow>
+
+      <crow
+        class="gap-2 absolute justify-between! -bottom-[1.5px] inset-x-6 text-[10px] text-black/50 font-viga"
+      >
+        <crow class="gap-2 ml-1.5">
+          <crow class="gap-0.5"> [CS] 1/137 </crow>
+          <crow class="gap-0.5"> </crow>
+        </crow>
+        <crow class="gap-0.5">
+          <icon class="text-[8px]" style="--icon: var(--icon-quill);"></icon>
+          Wyndagger
+        </crow>
+      </crow>
     </div>
   </div>
 </div>
