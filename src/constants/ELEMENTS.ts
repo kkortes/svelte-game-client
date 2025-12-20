@@ -69,7 +69,7 @@ export const ALL_ELEMENTS = {
   },
   physical: {
     name: 'Physical',
-    tailwindColor: 'neutral'
+    tailwindColor: 'beige'
   }
 } as Record<string, any>;
 

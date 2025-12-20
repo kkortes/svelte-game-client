@@ -158,6 +158,19 @@
                 )}
                 style="background-image: url('/images/{image}');{border}"
               >
+                <crow
+                  class="absolute z-10 border-r-0 border-b-0 rounded-br-sm rounded-tl-md -bottom-px -right-px pt-1 pl-1 h-12 border-1"
+                  style="{regularBg}{border}"
+                >
+                  <crow
+                    class="w-full h-full px-1 border rounded-tl-sm rounded-br-md"
+                    style="{darkestBg}{border}"
+                  >
+                    <span class={tw('font-cabin text-4xl leading-0 font-bold text-white')}>
+                      13
+                    </span>
+                  </crow>
+                </crow>
               </card-image>
               <div class={tw('absolute inset-y-0 left-0 w-1')} style={regularBg}></div>
               <div class={tw('absolute inset-y-0 right-0 w-1')} style={regularBg}></div>
