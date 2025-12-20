@@ -26,7 +26,9 @@
   <div class={tw('grid! h-full w-full mix-blend-multiply')}>
     <div class="grid! [grid-area:1/1]">
       <div
-        class={tw('grid! aspect-[0.714/1] rounded-xl bg-radial p-3 [grid-area:1/1]')}
+        class={tw(
+          'grid! aspect-[0.714/1] rounded-xl bg-radial from-transparent via-transparent to-green p-3 [grid-area:1/1]'
+        )}
         style="{radialFrom}{radialVia}{radialTo}"
       >
         <inner-frame
@@ -263,7 +265,7 @@
       {#if icon}
         <circle-mask
           class={tw(
-            'crow pointer-events-none bg-radial mask-(--icon-circle) mask-size-[60px] mask-position-[calc(100%-4px)_calc(0%+4px)] mask-no-repeat [grid-area:1/1]'
+            'crow pointer-events-none bg-radial from-transparent via-transparent to-transparent mask-(--icon-circle) mask-size-[60px] mask-position-[calc(100%-4px)_calc(0%+4px)] mask-no-repeat [grid-area:1/1]'
           )}
           style="{radialFrom}{radialVia}{radialTo}"
         >
@@ -271,7 +273,7 @@
       {:else}
         <circle-mask
           class={tw(
-            'crow pointer-events-none bg-radial mask-(--icon-circle) mask-size-[36px] mask-position-[calc(100%+12px)_calc(0%-12px)] mask-no-repeat [grid-area:1/1]'
+            'crow pointer-events-none bg-radial from-transparent via-transparent to-transparent mask-(--icon-circle) mask-size-[36px] mask-position-[calc(100%+12px)_calc(0%-12px)] mask-no-repeat [grid-area:1/1]'
           )}
           style="{radialFrom}{radialVia}{radialTo}"
         >
@@ -279,21 +281,21 @@
       {/if}
       <circle-mask
         class={tw(
-          'crow pointer-events-none bg-radial mask-(--icon-circle) mask-size-[36px] mask-position-[calc(0%-12px)_calc(0%-12px)] mask-no-repeat [grid-area:1/1]'
+          'crow pointer-events-none bg-radial from-transparent via-transparent to-transparent mask-(--icon-circle) mask-size-[36px] mask-position-[calc(0%-12px)_calc(0%-12px)] mask-no-repeat [grid-area:1/1]'
         )}
         style="{radialFrom}{radialVia}{radialTo}"
       >
       </circle-mask>
       <circle-mask
         class={tw(
-          'crow pointer-events-none bg-radial mask-(--icon-circle) mask-size-[36px] mask-position-[calc(0%-12px)_calc(100%+12px)] mask-no-repeat [grid-area:1/1]'
+          'crow pointer-events-none bg-radial from-transparent via-transparent to-transparent mask-(--icon-circle) mask-size-[36px] mask-position-[calc(0%-12px)_calc(100%+12px)] mask-no-repeat [grid-area:1/1]'
         )}
         style="{radialFrom}{radialVia}{radialTo}"
       >
       </circle-mask>
       <circle-mask
         class={tw(
-          'crow pointer-events-none bg-radial mask-(--icon-circle) mask-size-[36px] mask-position-[calc(100%+12px)_calc(100%+12px)] mask-no-repeat [grid-area:1/1]'
+          'crow pointer-events-none bg-radial from-transparent via-transparent to-transparent mask-(--icon-circle) mask-size-[36px] mask-position-[calc(100%+12px)_calc(100%+12px)] mask-no-repeat [grid-area:1/1]'
         )}
         style="{radialFrom}{radialVia}{radialTo}"
       >
