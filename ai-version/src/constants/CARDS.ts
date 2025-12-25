@@ -449,6 +449,38 @@ export const ALL_CARDS = {
     rarity: 1,
     damage: 2,
     health: 0
+  },
+  tidecaller: {
+    name: 'Tidecaller',
+    image: 'creature/frost/elemental.jpg',
+    element: 'frost',
+    icon: 'frost',
+    cost: 5,
+    type: 'unit',
+    subtypes: ['merfolk', 'mage'],
+    keywords: ['flashfreeze', 'still'],
+    text: 'When this unit arrives, draw a card.',
+    flavourText: 'The storm answers to those who listen.',
+    internalNote: 'Using placeholder - generate unique tidecaller.jpg when API quota available',
+    rarity: 2,
+    damage: 3,
+    health: 4
+  },
+  emberwing: {
+    name: 'Emberwing',
+    image: 'creature/fire/ember-fiend.jpg',
+    element: 'fire',
+    icon: 'fire',
+    cost: 7,
+    type: 'unit',
+    subtypes: ['phoenix', 'immortal'],
+    keywords: ['flying', 'reborn'],
+    text: 'When this unit is defeated, return it to your hand.',
+    flavourText: 'From ashes, it rises eternal.',
+    internalNote: 'Using placeholder - generate unique emberwing.jpg when API quota available',
+    rarity: 3,
+    damage: 4,
+    health: 3
   }
 };
 
