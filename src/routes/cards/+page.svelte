@@ -63,6 +63,10 @@
   </crow>
 </Portal>
 
+<Portal target="#sticky-bottom">
+  <crow class="bg-card w-full border-t border-border h-full">&nbsp;</crow>
+</Portal>
+
 <crow left class="gap-6 flex-wrap">
   {#each cardsByElement as [element, cards] (element)}
     {@const tailwindColor = ALL_ELEMENTS[element]?.tailwindColor || 'gray'}

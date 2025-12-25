@@ -24,44 +24,61 @@ export const ALL_CARDS = {
     type: 'god',
     subtypes: ['fire'],
     keywords: [],
+    text: 'Friendly units that arrived this turn has +1 damage.',
+    flavourText: '',
+    internalNote: '',
+    rarity: 3,
+    damage: 0,
+    health: 0
+  },
+  fireball: {
+    name: 'Scorchling',
+    image: 'creature/fire/scorchling.jpg',
+    element: 'fire',
+    icon: 'fire',
+    cost: 2,
+    type: 'unit',
+    subtypes: ['elemental'],
+    keywords: ['wildfire', 'aggressive'],
     text: '',
-    rarity: 3
+    flavourText: '',
+    internalNote: '',
+    rarity: 1,
+    damage: 1,
+    health: 2
   },
   cerberus: {
     name: 'Cerberus',
     image: 'creature/fire/cerberus.jpg',
     element: 'fire',
     icon: 'fire',
-    cost: DEFAULT_COST,
+    cost: 6,
     type: 'unit',
     subtypes: ['hound', 'dweller'],
-    keywords: [],
-    text: 'A three-headed hound from the underworld.',
-    rarity: 2
+    keywords: ['triple-strike'],
+    text: '',
+    flavourText: 'This ferious beast makes you look t.. thrice!',
+    internalNote: '',
+    rarity: 2,
+    damage: 1,
+    health: 4
   },
   monsIgneus: {
     name: 'Mons Igneus',
     image: 'creature/fire/mons-igneus.jpg',
     element: 'fire',
     icon: 'fire',
-    cost: DEFAULT_COST,
+    cost: 10,
     type: 'unit',
     subtypes: ['dragon'],
     keywords: ['flying'],
-    text: '',
-    rarity: 4
+    text: 'When this unit arrives, deal its damage to target unit.',
+    flavourText: '',
+    internalNote: '',
+    rarity: 4,
+    damage: 6,
+    health: 10
   },
-  // infernus: {
-  //   name: 'Infernus',
-  //   image: 'creature/fire/giant.jpg',
-  //   element: 'lava',
-  //   icon: 'lava',
-  //   cost: DEFAULT_COST,
-  //   type: 'unit',
-  //   subtypes: ['elemental'],
-  //   keywords: [],
-  //   text: 'A towering giant wreathed in flames.'
-  // },
   oskar: {
     name: 'Oskar',
     image: 'creature/lightning/oskar-god-of-lightning.jpg',
@@ -71,8 +88,29 @@ export const ALL_CARDS = {
     type: 'god',
     subtypes: ['lightning'],
     keywords: [],
-    text: "Yet another lightning bolt strikes the top of the mountain. A mad-man appears. He refers to himself as, 'God of Lightning.'<br /><br />“Mwhahaha, it tickles!”",
-    rarity: 3
+    text: 'I always start the game.',
+    flavourText: '',
+    internalNote:
+      "Yet another lightning bolt strikes the top of the mountain. A mad-man appears. He refers to himself as, 'God of Lightning.'<br /><br />“Mwhahaha, it tickles!”",
+    rarity: 3,
+    damage: 0,
+    health: 0
+  },
+  shockling: {
+    name: 'Shockling',
+    image: 'creature/lightning/shockling.jpg',
+    element: 'lightning',
+    icon: 'lightning',
+    cost: 2,
+    type: 'unit',
+    subtypes: ['elemental'],
+    keywords: ['tempest', 'swift'],
+    text: '',
+    flavourText: '',
+    internalNote: '',
+    rarity: 1,
+    damage: 1,
+    health: 2
   },
   lightingGiant: {
     name: 'Giant',
@@ -84,7 +122,11 @@ export const ALL_CARDS = {
     subtypes: ['giant'],
     keywords: [],
     text: '',
-    rarity: 3
+    flavourText: '',
+    internalNote: '',
+    rarity: 3,
+    damage: 0,
+    health: 0
   },
   ventoMico: {
     name: 'Vento Mico',
@@ -96,7 +138,11 @@ export const ALL_CARDS = {
     subtypes: ['dragon'],
     keywords: ['flying', 'swift'],
     text: '',
-    rarity: 4
+    flavourText: '',
+    internalNote: '',
+    rarity: 4,
+    damage: 0,
+    health: 0
   },
   alora: {
     name: 'Alora',
@@ -107,8 +153,29 @@ export const ALL_CARDS = {
     type: 'god',
     subtypes: ['nature'],
     keywords: [],
-    text: 'A soft breeze stirs the leaves, and the forest seems to breathe. A gentle figure steps forward, smiling kindly. She is known as “Mother of Nature.”',
-    rarity: 3
+    text: 'Whenever a friendly immortal is reborn, I heal a target friendly unit for 1.',
+    flavourText: '',
+    internalNote:
+      'A soft breeze stirs the leaves, and the forest seems to breathe. A gentle figure steps forward, smiling kindly. She is known as “Mother of Nature.”',
+    rarity: 3,
+    damage: 0,
+    health: 0
+  },
+  healling: {
+    name: 'Healling',
+    image: 'creature/nature/healling.jpg',
+    element: 'nature',
+    icon: 'nature',
+    cost: 2,
+    type: 'unit',
+    subtypes: ['elemental'],
+    keywords: ['overgrowth', 'regenerative'],
+    text: '',
+    flavourText: '',
+    internalNote: '',
+    rarity: 1,
+    damage: 2,
+    health: 2
   },
   eratHerba: {
     name: 'Erat Herba',
@@ -120,30 +187,12 @@ export const ALL_CARDS = {
     subtypes: ['dragon'],
     keywords: ['flying', 'aggressive', 'swift'],
     text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.',
-    rarity: 4
+    flavourText: '',
+    internalNote: '',
+    rarity: 4,
+    damage: 0,
+    health: 0
   },
-  // skysplitter: {
-  //   name: 'Skysplitter',
-  //   image: 'creature/earth/giant.jpg',
-  //   element: 'wind',
-  //   icon: 'wind',
-  //   cost: DEFAULT_COST,
-  //   type: 'unit',
-  //   subtypes: ['giant'],
-  //   keywords: [],
-  //   text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.'
-  // },
-  // yeti: {
-  //   name: 'Yeti',
-  //   image: 'creature/frost/yeti.jpg',
-  //   element: 'cold',
-  //   icon: 'storm',
-  //   cost: DEFAULT_COST,
-  //   type: 'unit',
-  //   subtypes: ['beast'],
-  //   keywords: [],
-  //   text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.'
-  // },
   kyl: {
     name: 'Kyl',
     image: 'creature/frost/kyl-god-of-frost.jpg',
@@ -153,8 +202,28 @@ export const ALL_CARDS = {
     type: 'god',
     subtypes: ['frost'],
     keywords: [],
+    text: 'Whenever an enemy unit hurts me the turn it arrived, I permanently freeze it.',
+    flavourText: '',
+    internalNote: '',
+    rarity: 3,
+    damage: 0,
+    health: 0
+  },
+  freezeling: {
+    name: 'Freezeling',
+    image: 'creature/frost/freezeling.jpg',
+    element: 'frost',
+    icon: 'frost',
+    cost: DEFAULT_COST,
+    type: 'unit',
+    subtypes: ['elemental'],
+    keywords: ['flashfreeze', 'still'],
     text: '',
-    rarity: 3
+    flavourText: '',
+    internalNote: '',
+    rarity: 1,
+    damage: 1,
+    health: 2
   },
   frigus: {
     name: 'Frigus Mortis',
@@ -166,30 +235,12 @@ export const ALL_CARDS = {
     subtypes: ['dragon'],
     keywords: ['flying'],
     text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.',
-    rarity: 4
+    flavourText: '',
+    internalNote: '',
+    rarity: 4,
+    damage: 0,
+    health: 0
   },
-  // shellter: {
-  //   name: 'Shellter',
-  //   image: 'creature/water/turtle.jpg',
-  //   element: 'water',
-  //   icon: 'water',
-  //   cost: DEFAULT_COST,
-  //   type: 'unit',
-  //   subtypes: ['turtle'],
-  //   keywords: [],
-  //   text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.'
-  // },
-  // leviathan: {
-  //   name: 'Leviathan',
-  //   image: 'creature/water/leviathan.jpg',
-  //   element: 'deep',
-  //   icon: 'deep',
-  //   cost: DEFAULT_COST,
-  //   type: 'unit',
-  //   subtypes: ['beast', 'dweller'],
-  //   keywords: [],
-  //   text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.'
-  // },
   apollyon: {
     name: 'Apollyon',
     image: 'creature/void/apollyon.jpg',
@@ -199,20 +250,28 @@ export const ALL_CARDS = {
     type: 'god',
     subtypes: ['void'],
     keywords: [],
-    text: '',
-    rarity: 3
+    text: "When I'm defeated, I turn target friendly mortal into a god.",
+    flavourText: '',
+    internalNote: '',
+    rarity: 3,
+    damage: 0,
+    health: 0
   },
-  siphonLife: {
-    name: 'Siphon Life',
+  drainling: {
+    name: 'Drainling',
     image: 'creature/void/drainling.jpg',
     element: 'void',
     icon: 'void',
-    cost: DEFAULT_COST,
-    type: 'spell',
-    subtypes: ['void'],
-    keywords: ['swift'],
-    text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.',
-    rarity: 1
+    cost: 2,
+    type: 'unit',
+    subtypes: ['elemental'],
+    keywords: ['rupture', 'echoing'],
+    text: '',
+    flavourText: '',
+    internalNote: '',
+    rarity: 1,
+    damage: 1,
+    health: 2
   },
   terram: {
     name: 'Nullius Terram',
@@ -224,19 +283,12 @@ export const ALL_CARDS = {
     subtypes: ['dragon'],
     keywords: ['flying'],
     text: '',
-    rarity: 4
+    flavourText: '',
+    internalNote: '',
+    rarity: 4,
+    damage: 0,
+    health: 0
   },
-  // demona: {
-  //   name: 'Demona',
-  //   image: 'creature/fire/demon.jpg',
-  //   element: 'arcane',
-  //   icon: 'arcane',
-  //   cost: DEFAULT_COST,
-  //   type: 'unit',
-  //   subtypes: ['demon'],
-  //   keywords: [],
-  //   text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.'
-  // },
   elise: {
     name: 'Elise',
     image: 'creature/earth/elise-goddess-of-earth.jpg',
@@ -246,8 +298,28 @@ export const ALL_CARDS = {
     type: 'god',
     subtypes: ['earth'],
     keywords: [],
+    text: 'My armor is equal to the amount of friendly immortals I command.',
+    flavourText: '',
+    internalNote: '',
+    rarity: 3,
+    damage: 0,
+    health: 0
+  },
+  crushling: {
+    name: 'Crushling',
+    image: 'creature/earth/crushling.jpg',
+    element: 'earth',
+    icon: 'earth',
+    cost: 2,
+    type: 'unit',
+    subtypes: ['elemental'],
+    keywords: ['landslide', 'sturdy'],
     text: '',
-    rarity: 3
+    flavourText: '',
+    internalNote: '',
+    rarity: 1,
+    damage: 1,
+    health: 2
   },
   armorillo: {
     name: 'Armorillo',
@@ -259,8 +331,13 @@ export const ALL_CARDS = {
     subtypes: ['armorillo'],
     keywords: [],
     text: '',
-    rarity: 1
+    flavourText: '',
+    internalNote: '',
+    rarity: 1,
+    damage: 0,
+    health: 0
   },
+
   earthGiant: {
     name: 'Giant',
     image: 'creature/earth/giant.jpg',
@@ -271,7 +348,11 @@ export const ALL_CARDS = {
     subtypes: ['giant'],
     keywords: [],
     text: '',
-    rarity: 3
+    flavourText: '',
+    internalNote: '',
+    rarity: 3,
+    damage: 0,
+    health: 0
   },
   vitaDeserto: {
     name: 'Vita Deserto',
@@ -283,7 +364,11 @@ export const ALL_CARDS = {
     subtypes: ['dragon'],
     keywords: ['flying'],
     text: '',
-    rarity: 4
+    flavourText: '',
+    internalNote: '',
+    rarity: 4,
+    damage: 0,
+    health: 0
   },
   herald: {
     name: 'Herald',
@@ -295,7 +380,11 @@ export const ALL_CARDS = {
     subtypes: ['beast'],
     keywords: [],
     text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.',
-    rarity: 2
+    flavourText: '',
+    internalNote: '',
+    rarity: 2,
+    damage: 0,
+    health: 0
   },
   ulwar: {
     name: 'Ulwar',
@@ -307,7 +396,11 @@ export const ALL_CARDS = {
     subtypes: ['werewolf'],
     keywords: [],
     text: '',
-    rarity: 2
+    flavourText: '',
+    internalNote: '',
+    rarity: 2,
+    damage: 0,
+    health: 0
   },
   dither: {
     name: 'Dither',
@@ -319,7 +412,11 @@ export const ALL_CARDS = {
     subtypes: ['giant'],
     keywords: [],
     text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.',
-    rarity: 3
+    flavourText: '',
+    internalNote: '',
+    rarity: 3,
+    damage: 0,
+    health: 0
   },
   bulton: {
     name: 'Bulton',
@@ -328,10 +425,14 @@ export const ALL_CARDS = {
     icon: 'earth',
     cost: 4,
     type: 'unit',
-    subtypes: ['mortal', 'humanoid'],
-    keywords: [],
+    subtypes: ['mortal', 'humanoid', 'troll'],
+    keywords: ['Single-Strike'],
     text: '',
-    rarity: 1
+    flavourText: '',
+    internalNote: '',
+    rarity: 1,
+    damage: 4,
+    health: 2
   },
   steelSword: {
     name: 'Steel Sword',
@@ -341,9 +442,13 @@ export const ALL_CARDS = {
     cost: undefined,
     type: 'relic',
     subtypes: ['equipment', 'one-handed'],
-    keywords: [],
-    text: 'A finely crafted steel sword.',
-    rarity: 1
+    keywords: ['Equip 1', 'Single-Strike'],
+    text: '',
+    flavourText: '',
+    internalNote: '',
+    rarity: 1,
+    damage: 2,
+    health: 0
   }
 };
 
