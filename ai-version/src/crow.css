@@ -1,0 +1,77 @@
+crow:not(:has(> crow)) > crow,
+.crow:not(:has(> .crow)) > .crow {
+  flex: 1;
+}
+crow,
+.crow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.up,
+[up],
+.down,
+[down] {
+  height: 100%;
+}
+.up,
+[up] {
+  align-items: flex-start;
+}
+.down,
+[down] {
+  align-items: flex-end;
+}
+.left,
+[left] {
+  justify-content: flex-start;
+}
+.right,
+[right] {
+  justify-content: flex-end;
+}
+.vertical,
+[vertical] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.vertical > .up,
+[vertical] > [up],
+.vertical > .down,
+[vertical] > [down] {
+  height: auto;
+}
+.vertical.up,
+[vertical][up] {
+  justify-content: flex-start;
+}
+.vertical.down,
+[vertical][down] {
+  justify-content: flex-end;
+}
+.crow.vertical.left,
+crow[vertical][left],
+.crow.vertical > .left,
+crow[vertical] > [left],
+.crow.vertical.right,
+crow[vertical][right],
+.crow.vertical > .right,
+crow[vertical] > [right] {
+  width: 100%;
+}
+.vertical.left,
+[vertical][left] {
+  align-items: flex-start;
+}
+.vertical.right,
+[vertical][right] {
+  align-items: flex-end;
+}
+.vertical > .left,
+[vertical] > [left],
+.vertical > .right,
+[vertical] > [right] {
+  display: flex;
+}

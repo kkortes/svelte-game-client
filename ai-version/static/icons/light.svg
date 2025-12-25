@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  version="1.1" viewBox="0 0 96.2 96.2">
+  <circle fill="#000" cx="48.1" cy="48.1" r="23.8" />
+  <polyline fill="#000" points="37.2 20.1 48.3 16.2 59.3 20.1 48.3 0" />
+  <polyline fill="#000" points="20.6 36 25.7 25.5 36.3 20.4 14.2 14" />
+  <polyline fill="#000" points="20.1 59 16.2 48 20.1 36.9 0 48" />
+  <polyline fill="#000" points="36 75.6 25.5 70.6 20.4 60 14 82" />
+  <polyline fill="#000" points="59 76.1 48 80 36.9 76.1 48 96.2" />
+  <polyline fill="#000" points="75.6 60.2 70.6 70.8 60 75.8 82 82.3" />
+  <polyline fill="#000" points="76.1 37.2 80 48.3 76.1 59.3 96.2 48.3" />
+  <polyline fill="#000" points="60.2 20.6 70.8 25.7 75.8 36.3 82.3 14.2" />
+</svg>
