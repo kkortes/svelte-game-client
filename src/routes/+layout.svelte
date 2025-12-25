@@ -30,7 +30,7 @@
 <GameAudio />
 
 {#if !IS_PROD}
-  <!-- <DevBar /> -->
+  <DevBar />
   <DebugAppData />
 {/if}
 
