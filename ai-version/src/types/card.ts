@@ -10,4 +10,5 @@ export type Card = CardRef & {
   name: string;
   cost: number;
   description: string;
+  aiPrompt?: string;
 };

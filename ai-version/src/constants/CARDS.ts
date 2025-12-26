@@ -27,6 +27,7 @@ export const ALL_CARDS = {
     text: 'Friendly units that arrived this turn has +1 damage.',
     flavourText: '',
     internalNote: '',
+    aiPrompt: '',
     rarity: 3,
     damage: 0,
     health: 0
@@ -43,6 +44,7 @@ export const ALL_CARDS = {
     text: '',
     flavourText: '',
     internalNote: '',
+    aiPrompt: '',
     rarity: 1,
     damage: 1,
     health: 2
@@ -59,6 +61,7 @@ export const ALL_CARDS = {
     text: '',
     flavourText: 'This ferious beast makes you look t.. thrice!',
     internalNote: '',
+    aiPrompt: '',
     rarity: 2,
     damage: 1,
     health: 4
@@ -75,6 +78,7 @@ export const ALL_CARDS = {
     text: 'When this unit arrives, deal its damage to target unit.',
     flavourText: '',
     internalNote: '',
+    aiPrompt: '',
     rarity: 4,
     damage: 6,
     health: 10
@@ -90,8 +94,8 @@ export const ALL_CARDS = {
     keywords: [],
     text: 'I always start the game.',
     flavourText: '',
-    internalNote:
-      "Yet another lightning bolt strikes the top of the mountain. A mad-man appears. He refers to himself as, 'God of Lightning.'<br /><br />“Mwhahaha, it tickles!”",
+    internalNote: `Yet another lightning bolt strikes the top of the mountain. A mad-man appears. He refers to himself as, 'God of Lightning.'<br /><br />"Mwhahaha, it tickles!"`,
+    aiPrompt: '',
     rarity: 3,
     damage: 0,
     health: 0
@@ -108,6 +112,7 @@ export const ALL_CARDS = {
     text: '',
     flavourText: '',
     internalNote: '',
+    aiPrompt: '',
     rarity: 1,
     damage: 1,
     health: 2
@@ -124,6 +129,7 @@ export const ALL_CARDS = {
     text: '',
     flavourText: '',
     internalNote: '',
+    aiPrompt: '',
     rarity: 3,
     damage: 0,
     health: 0
@@ -140,6 +146,7 @@ export const ALL_CARDS = {
     text: '',
     flavourText: '',
     internalNote: '',
+    aiPrompt: '',
     rarity: 4,
     damage: 0,
     health: 0
@@ -156,7 +163,8 @@ export const ALL_CARDS = {
     text: 'Whenever a friendly immortal is reborn, I heal a target friendly unit for 1.',
     flavourText: '',
     internalNote:
-      'A soft breeze stirs the leaves, and the forest seems to breathe. A gentle figure steps forward, smiling kindly. She is known as “Mother of Nature.”',
+      'A soft breeze stirs the leaves, and the forest seems to breathe. A gentle figure steps forward, smiling kindly. She is known as "Mother of Nature."',
+    aiPrompt: '',
     rarity: 3,
     damage: 0,
     health: 0
@@ -173,6 +181,7 @@ export const ALL_CARDS = {
     text: '',
     flavourText: '',
     internalNote: '',
+    aiPrompt: '',
     rarity: 1,
     damage: 2,
     health: 2
@@ -189,9 +198,64 @@ export const ALL_CARDS = {
     text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.',
     flavourText: '',
     internalNote: '',
+    aiPrompt: '',
     rarity: 4,
     damage: 0,
     health: 0
+  },
+  verdantStag: {
+    name: 'Verdant Stag',
+    image: 'creature/nature/verdant-stag.jpg',
+    element: 'nature',
+    icon: 'nature',
+    cost: 3,
+    type: 'unit',
+    subtypes: ['beast'],
+    keywords: ['swift', 'regenerative'],
+    text: '',
+    flavourText: 'Where the stag walks, the forest blooms.',
+    internalNote: '',
+    aiPrompt:
+      'A majestic forest stag with glowing green antlers covered in vines and flowers, moss and leaves growing on its body, ethereal green mist surrounding it, standing proudly in an ancient forest, sunlight filtering through trees, bioluminescent plants glowing around it, epic fantasy creature art, highly detailed digital painting, mystical forest lighting, serene and powerful, no text',
+    rarity: 2,
+    damage: 2,
+    health: 3
+  },
+  ironbarkTreant: {
+    name: 'Ironbark Treant',
+    image: 'creature/nature/ironbark-treant.jpg',
+    element: 'nature',
+    icon: 'nature',
+    cost: 7,
+    type: 'unit',
+    subtypes: ['treant'],
+    keywords: ['sturdy', 'regenerative'],
+    text: '',
+    flavourText: 'Ancient as the forest itself, patient as the seasons.',
+    internalNote: '',
+    aiPrompt:
+      'A massive ancient treant with thick bark-covered body, roots as legs, branches as arms with glowing green leaves, wise glowing eyes in the trunk, mushrooms and vines growing on its body, standing in a mystical forest, magical green energy emanating from it, moss-covered stones around it, epic fantasy creature art, highly detailed digital painting, magical forest lighting, ancient and powerful, no text',
+    rarity: 3,
+    damage: 3,
+    health: 7
+  },
+  bloomwisp: {
+    name: 'Bloomwisp',
+    image: 'creature/nature/bloomwisp.jpg',
+    element: 'nature',
+    icon: 'nature',
+    cost: 1,
+    type: 'unit',
+    subtypes: ['spirit', 'elemental'],
+    keywords: ['flying', 'overgrowth'],
+    text: '',
+    flavourText: 'A whisper of life on the wind.',
+    internalNote: '',
+    aiPrompt:
+      'A small ethereal nature sprite made of swirling green energy and flower petals, translucent glowing form, trailing magical sparkles, delicate wings made of leaves and light, playful expression, floating above wildflowers in a sunlit forest glade, butterflies and fireflies around it, epic fantasy creature art, highly detailed digital painting, soft magical lighting, whimsical and enchanting, no text',
+    rarity: 1,
+    damage: 1,
+    health: 1
   },
   kyl: {
     name: 'Kyl',
@@ -205,6 +269,7 @@ export const ALL_CARDS = {
     text: 'Whenever an enemy unit hurts me the turn it arrived, I permanently freeze it.',
     flavourText: '',
     internalNote: '',
+    aiPrompt: '',
     rarity: 3,
     damage: 0,
     health: 0
@@ -221,6 +286,7 @@ export const ALL_CARDS = {
     text: '',
     flavourText: '',
     internalNote: '',
+    aiPrompt: '',
     rarity: 1,
     damage: 1,
     health: 2
@@ -237,9 +303,28 @@ export const ALL_CARDS = {
     text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.',
     flavourText: '',
     internalNote: '',
+    aiPrompt: '',
     rarity: 4,
     damage: 0,
     health: 0
+  },
+  hammersnout: {
+    name: 'Hammersnout',
+    image: 'creature/frost/hammersnout.jpg',
+    element: 'frost',
+    icon: 'frost',
+    cost: 5,
+    type: 'unit',
+    subtypes: ['beast', 'aquatic'],
+    keywords: ['aggressive'],
+    text: '',
+    flavourText: "The ocean's hammer strikes without warning.",
+    internalNote: '',
+    aiPrompt:
+      'A fierce hammerhead swordfish creature with a broad hammer-shaped snout, sleek metallic scales with blue and silver tones, swimming in dynamic attacking pose, water splashing around it, glowing bioluminescent patterns on fins, sharp teeth visible, storm clouds and turbulent ocean waves in background, underwater light rays piercing through water, epic fantasy creature art, highly detailed digital painting, dramatic oceanic lighting, powerful and menacing, no text, no titles, no words, artwork only',
+    rarity: 2,
+    damage: 4,
+    health: 3
   },
   apollyon: {
     name: 'Apollyon',
@@ -253,6 +338,7 @@ export const ALL_CARDS = {
     text: "When I'm defeated, I turn target friendly mortal into a god.",
     flavourText: '',
     internalNote: '',
+    aiPrompt: '',
     rarity: 3,
     damage: 0,
     health: 0
@@ -269,6 +355,7 @@ export const ALL_CARDS = {
     text: '',
     flavourText: '',
     internalNote: '',
+    aiPrompt: '',
     rarity: 1,
     damage: 1,
     health: 2
@@ -285,6 +372,7 @@ export const ALL_CARDS = {
     text: '',
     flavourText: '',
     internalNote: '',
+    aiPrompt: '',
     rarity: 4,
     damage: 0,
     health: 0
@@ -301,6 +389,7 @@ export const ALL_CARDS = {
     text: 'My armor is equal to the amount of friendly immortals I command.',
     flavourText: '',
     internalNote: '',
+    aiPrompt: '',
     rarity: 3,
     damage: 0,
     health: 0
@@ -317,6 +406,7 @@ export const ALL_CARDS = {
     text: '',
     flavourText: '',
     internalNote: '',
+    aiPrompt: '',
     rarity: 1,
     damage: 1,
     health: 2
@@ -333,6 +423,7 @@ export const ALL_CARDS = {
     text: '',
     flavourText: '',
     internalNote: '',
+    aiPrompt: '',
     rarity: 1,
     damage: 0,
     health: 0
@@ -350,6 +441,7 @@ export const ALL_CARDS = {
     text: '',
     flavourText: '',
     internalNote: '',
+    aiPrompt: '',
     rarity: 3,
     damage: 0,
     health: 0
@@ -366,6 +458,7 @@ export const ALL_CARDS = {
     text: '',
     flavourText: '',
     internalNote: '',
+    aiPrompt: '',
     rarity: 4,
     damage: 0,
     health: 0
@@ -382,6 +475,7 @@ export const ALL_CARDS = {
     text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.',
     flavourText: '',
     internalNote: '',
+    aiPrompt: '',
     rarity: 2,
     damage: 0,
     health: 0
@@ -398,6 +492,7 @@ export const ALL_CARDS = {
     text: '',
     flavourText: '',
     internalNote: '',
+    aiPrompt: '',
     rarity: 2,
     damage: 0,
     health: 0
@@ -414,6 +509,7 @@ export const ALL_CARDS = {
     text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.',
     flavourText: '',
     internalNote: '',
+    aiPrompt: '',
     rarity: 3,
     damage: 0,
     health: 0
@@ -430,6 +526,7 @@ export const ALL_CARDS = {
     text: '',
     flavourText: '',
     internalNote: '',
+    aiPrompt: '',
     rarity: 1,
     damage: 4,
     health: 2
@@ -446,6 +543,7 @@ export const ALL_CARDS = {
     text: '',
     flavourText: '',
     internalNote: '',
+    aiPrompt: '',
     rarity: 1,
     damage: 2,
     health: 0
@@ -462,6 +560,7 @@ export const ALL_CARDS = {
     text: 'When this unit arrives, draw a card.',
     flavourText: 'The storm answers to those who listen.',
     internalNote: 'Using placeholder - generate unique tidecaller.jpg when API quota available',
+    aiPrompt: '',
     rarity: 2,
     damage: 3,
     health: 4
@@ -478,6 +577,7 @@ export const ALL_CARDS = {
     text: 'When this unit is defeated, return it to your hand.',
     flavourText: 'From ashes, it rises eternal.',
     internalNote: 'Using placeholder - generate unique emberwing.jpg when API quota available',
+    aiPrompt: '',
     rarity: 3,
     damage: 4,
     health: 3

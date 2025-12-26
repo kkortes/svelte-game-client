@@ -78,7 +78,7 @@ Examples:
 
     try:
         response = client.models.generate_content(
-            model="gemini-2.5-flash-image",
+            model="gemini-3-pro-image-preview",
             contents=args.prompt
         )
     except Exception as e:
@@ -87,15 +87,32 @@ Examples:
 
     # Process response - Nano banana format
     image_saved = False
-    for part in response.parts:
+    print(f"Response parts count: {len(response.parts)}")
+    for i, part in enumerate(response.parts):
+        print(f"Part {i}: inline_data={part.inline_data is not None}, text={part.text is not None}")
         if part.inline_data is not None:
-            # Decode image data and save
-            image_data = base64.b64decode(part.inline_data.data)
-            generated_image = Image.open(io.BytesIO(image_data))
-            generated_image.save(args.output)
-            print(f"Image saved to: {args.output}")
-            image_saved = True
-            break
+            print(f"  MIME type: {part.inline_data.mime_type}")
+            print(f"  Data length: {len(part.inline_data.data)}")
+            # The data might be already in bytes or base64-encoded
+            try:
+                # First try to use the data directly (as bytes)
+                if isinstance(part.inline_data.data, bytes):
+                    image_data = part.inline_data.data
+                    print(f"  Using data directly as bytes")
+                else:
+                    # If it's a string, decode from base64
+                    image_data = base64.b64decode(part.inline_data.data)
+                    print(f"  Decoded data from base64")
+
+                print(f"  Image data length: {len(image_data)}")
+                print(f"  First 20 bytes: {image_data[:20]}")
+                generated_image = Image.open(io.BytesIO(image_data))
+                generated_image.save(args.output)
+                print(f"Image saved to: {args.output}")
+                image_saved = True
+                break
+            except Exception as e:
+                print(f"  Error processing image data: {e}")
         elif part.text is not None:
             print(f"Model response: {part.text}")
 
