@@ -1,5 +1,3 @@
-<Headline text="Game guide" />
-
 <!-- Unit, Gear, Spell, Rune, Legend - God (immortal)<br />
 
 - Unit (mortal/immortal)<br />

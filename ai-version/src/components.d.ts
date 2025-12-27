@@ -24,7 +24,6 @@ declare global {
     const GameAudio: typeof import("./components/GameAudio.svelte")["default"]
     const GameMenu: typeof import("./components/overlays/GameMenu.svelte")["default"]
     const GoBack: typeof import("./components/buttons/GoBack.svelte")["default"]
-    const Headline: typeof import("./components/Headline.svelte")["default"]
     const Hr: typeof import("./components/Hr.svelte")["default"]
     const Icon: typeof import("./components/ui/Icon.svelte")["default"]
     const Input: typeof import("./components/form/Input.svelte")["default"]

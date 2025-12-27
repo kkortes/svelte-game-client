@@ -2,6 +2,10 @@
   import { notify, enableGameKeyboard, disableGameKeyboard } from '@/ts/actions';
 </script>
 
+<Portal target="#sticky-top">
+  <span class="font-cinzel text-2xl"> Components </span>
+</Portal>
+
 <crow vertical class="gap-10" left up>
   <div>
     <h2>Input</h2>

@@ -28,7 +28,7 @@
   );
 </script>
 
-<Portal target="#topbar">
+<Portal target="#sticky-top">
   <crow class="gap-1">
     {#each Object.entries(selectedElements) as [key, element]}
       {@const tailwindColor = ALL_ELEMENTS[key]?.tailwindColor || 'gray'}

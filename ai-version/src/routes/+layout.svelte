@@ -54,7 +54,7 @@
 
         <Topbar />
       </card>
-      <div class={tw('sticky top-14 w-0 overflow-hidden bg-white/30')}>asd</div>
+      <div class={tw('sticky top-14 w-0 overflow-hidden bg-white/30')}></div>
     </crow>
   </Authorization>
 </crow>

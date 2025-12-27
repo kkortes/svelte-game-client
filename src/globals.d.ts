@@ -8,6 +8,7 @@ declare module 'async-await-websockets/client';
 declare module 'sveltekit-autoimport';
 declare module 'seedrandom';
 
+declare const Portal: (typeof import('svelte-portal'))['default'];
 declare const Howler: (typeof import('howler'))['Howler']; // This solves for { Howler, Howl } for some reason
 declare const tw: (typeof import('tailwind-merge'))['default'];
 declare const ENV: (typeof import('@/constants/ENV_VARS'))['default'];

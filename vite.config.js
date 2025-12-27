@@ -20,7 +20,8 @@ export default defineConfig({
       mapping: {
         ENV: `import ENV from '@/constants/ENV_VARS'`,
         app: `import app from '@/app.svelte'`,
-        Howl: `import { Howl, Howler } from 'howler'`
+        Howl: `import { Howl, Howler } from 'howler'`,
+        Portal: `import Portal from 'svelte-portal'`
       },
       module: {
         svelte: ['onMount', 'onDestroy'],

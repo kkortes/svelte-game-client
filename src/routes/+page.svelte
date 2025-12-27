@@ -1,4 +1,6 @@
-<Headline text="Game guide" />
+<Portal target="#sticky-top">
+  <span class="font-cinzel text-2xl"> Game Guide </span>
+</Portal>
 
 <!-- Unit, Gear, Spell, Rune, Legend - God (immortal)<br />
 

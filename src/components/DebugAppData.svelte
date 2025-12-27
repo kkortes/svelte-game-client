@@ -33,17 +33,16 @@
 >
   <crow left vertical up class={tw('glass')}>
     <div class="mb-0 w-full p-2 pb-0">
-      <Headline text="Debug" small>
-        <div>
-          <Checkbox
-            id="keepOpen"
-            bind:value={app.settings.debugOpen}
-            onchange={({ target: { checked } }: any) => (app.settings.debugOpen = checked)}
-          >
-            Keep open
-          </Checkbox>
-        </div>
-      </Headline>
+      <div>
+        Debug
+        <Checkbox
+          id="keepOpen"
+          bind:value={app.settings.debugOpen}
+          onchange={({ target: { checked } }: any) => (app.settings.debugOpen = checked)}
+        >
+          Keep open
+        </Checkbox>
+      </div>
     </div>
 
     {#each Object.entries(app.dump()) as [key, value]}
