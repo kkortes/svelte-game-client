@@ -24,15 +24,3 @@ vite.config.ts.timestamp-*
 # Stuff
 _potential
 _unused
-
-# AI version build artifacts
-/ai-version/node_modules
-/ai-version/.svelte-kit
-/ai-version/build
-/ai-version/.vercel
-/ai-version/.env
-/ai-version/.env.local
-/ai-version/.env.production
-/ai-version/svelte-game-server/node_modules
-/ai-version/svelte-game-server/.env
-/ai-version/bun.lockb
