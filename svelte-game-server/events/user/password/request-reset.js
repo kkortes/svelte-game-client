@@ -1,14 +1,12 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 import hashids from 'hashids';
 import { validateEmail } from '../../../helpers';
 
-const { SUPPORT_EMAIL_PASSWORD, PASSWORD_RESET_HASH } = process.env;
+const { RESEND_API_KEY, PASSWORD_RESET_HASH } = process.env;
 
 const Hashids = new hashids(PASSWORD_RESET_HASH);
 
 export default async ({ email, url }, { mongo }) => {
-  throw Error('Error feature not implemented');
-
   const collection = mongo.collection('users');
 
   const LCemail = email.toLowerCase().trim();
@@ -19,16 +17,11 @@ export default async ({ email, url }, { mongo }) => {
     email: LCemail
   });
 
-  // Check user exists
-  // Return is equal to a success, so that the user can't fish for valid emails
   if (!user) return;
 
-  // Check if it's been more than 1 minute since last attempt
-  // Return is equal to a success, so that the user can't fish for valid emails
   if (user.pwr > new Date().getTime()) return;
 
   const pwr = new Date().getTime() + 60000;
-  // Set "password reset timestamp" to one minute into the future in a non-blocking way
   collection.updateOne(
     { email: LCemail },
     {
@@ -38,24 +31,14 @@ export default async ({ email, url }, { mongo }) => {
     }
   );
 
-  const transporter = nodemailer.createTransport({
-    host: 'mailcluster.loopia.se',
-    port: 587,
-    auth: {
-      user: 'noreply@worldseed.eu',
-      pass: SUPPORT_EMAIL_PASSWORD
-    }
-  });
-
   try {
     const token = Hashids.encode(pwr);
-    const result = await transporter.sendMail({
-      from: '"Ape Egg" <noreply@apeegg.com>',
+    await new Resend(RESEND_API_KEY).emails.send({
+      from: '"Battle Brawlers" <noreply@worldseed.eu>',
       to: email,
       subject: 'Battle-brawlers password reset request',
-      text: `Hello ${user.email}!\n\nHere is your link to reset your password:\n${url}/reset-password/${token}\nThe link expires in 10 minutes.\n\nYou can't reply to this email.`
+      html: `<p>Hello ${user.email}!</p><p>Here is your link to reset your password:<br><a href="${url}/reset-password/${token}">${url}/reset-password/${token}</a><br>The link expires in 10 minutes.</p><p>You can't reply to this email.</p>`
     });
-    console.info(result);
   } catch (e) {
     console.error(e);
     throw Error('Failed to send mail');
