@@ -16,10 +16,10 @@
 
   const iconByType = (type: string) =>
     ({
-      error: 'error',
-      info: 'info',
+      error: 'cross',
+      info: 'circle',
       success: 'checkmark',
-      warning: 'warning'
+      warning: 'circle'
     })[type];
 
   const removeFirst = (items: any[]) => {
