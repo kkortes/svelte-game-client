@@ -46,8 +46,10 @@
           {@render children()}
         </crow>
 
-        <div class="sticky bottom-[calc(theme(spacing.3))] left-0 w-full">
-          <div id="sticky-bottom" class="overflow-hidden bg-white/20">Sticky</div>
+        <div
+          class="sticky bottom-[calc(theme(spacing.0))] w-[calc(100%+theme(spacing.4))] -left-2 -right-2 w-full"
+        >
+          <div id="sticky-bottom" class="overflow-hidden bg-white/20"></div>
         </div>
 
         <Topbar />

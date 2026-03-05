@@ -12,7 +12,7 @@
 <crow
   class="bg-card border-b-border sticky top-0 -order-1 -mx-2 -mt-[calc(theme(spacing.6)-1px)] w-auto! justify-between! rounded-t-xl border-t border-b border-t-transparent p-2"
 >
-  <div />
+  <crow id="topbar"></crow>
 
   <crow class="gap-2">
     <Clickable tertiary onclick={() => (app.settings.darkMode = !app.settings.darkMode)}>
