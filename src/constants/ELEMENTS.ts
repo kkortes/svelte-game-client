@@ -1,38 +1,75 @@
 export const ALL_ELEMENTS = {
-  nature: {
-    name: 'Nature',
-    color: {
-      primary: '#8bb737',
-      secondary: '#a0ce3e'
-    }
-  },
-  earth: {
-    name: 'Earth',
-    color: {
-      primary: '#7f5322',
-      secondary: '#c68533'
-    }
-  },
-  lightning: {
-    name: 'Lightning',
-    color: {
-      primary: '#eac303',
-      secondary: '#fced60'
-    }
-  },
-  frost: {
-    name: 'Frost',
-    color: {
-      primary: '#88c6cb',
-      secondary: '#eaffff'
-    }
-  },
   fire: {
     name: 'Fire',
-    color: {
-      primary: '#f45f31',
-      secondary: '#f4a031'
-    }
+    tailwindColor: 'red'
+  },
+  // lava: {
+  //   name: 'Lava',
+  //   tailwindColor: 'orange'
+  // },
+  lightning: {
+    name: 'Lightning',
+    tailwindColor: 'yellow'
+  },
+  nature: {
+    name: 'Nature',
+    tailwindColor: 'lime'
+  },
+  // growth: {
+  //   name: 'Growth',
+  //   tailwindColor: 'green'
+  // },
+  // wind: {
+  //   name: 'Wind',
+  //   tailwindColor: 'teal'
+  // },
+  // cold: {
+  //   name: 'Cold',
+  //   tailwindColor: 'cyan'
+  // },
+  frost: {
+    name: 'Storm',
+    tailwindColor: 'sky'
+  },
+  // water: {
+  //   name: 'Water',
+  //   tailwindColor: 'blue'
+  // },
+  // deep: {
+  //   name: 'Deep',
+  //   tailwindColor: 'indigo'
+  // },
+  void: {
+    name: 'Void',
+    tailwindColor: 'violet'
+  },
+  // corruption: {
+  //   name: 'Corruption',
+  //   tailwindColor: 'purple'
+  // },
+  // arcane: {
+  //   name: 'Arcane',
+  //   tailwindColor: 'pink'
+  // },
+  // blood: {
+  //   name: 'Blood',
+  //   tailwindColor: 'rose'
+  // }
+  earth: {
+    name: 'Earth',
+    tailwindColor: 'brown'
+  },
+  light: {
+    name: 'Light',
+    tailwindColor: 'amber'
+  },
+  dark: {
+    name: 'Dark',
+    tailwindColor: 'gray'
+  },
+  physical: {
+    name: 'Physical',
+    tailwindColor: 'beige'
   }
 } as Record<string, any>;
 

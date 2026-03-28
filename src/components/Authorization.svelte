@@ -3,6 +3,7 @@
   import type { Snippet } from 'svelte';
   import { version } from '../../package.json';
   import { notify } from '@/ts/actions';
+  import { page } from '$app/state';
 
   const { IS_DEV } = ENV;
 
@@ -43,9 +44,10 @@
   });
 </script>
 
-{#if !connected}
+<!-- remove page.route.id in the future -->
+{#if !connected && page.route.id !== '/cards'}
   <Loader>Connecting to server</Loader>
-{:else if authorized}
+{:else if authorized || page.route.id === '/cards'}
   {@render children?.()}
 {:else if !app.token}
   <Unauthorized />
