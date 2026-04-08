@@ -1,0 +1,343 @@
+<script type="module">
+  import CHARACTERS from '/js/constants/CHARACTERS.js';
+  import EQUIPMENT from '/js/constants/EQUIPMENT.js';
+  import ABILITIES from '/js/constants/ABILITIES.js';
+  import { calculateCombatStatsByCharacter, calculateAvailableAbilitiesByCharacter, calculateTickStart } from '/js/utils.js';
+  import { slotsInPrettyName, unequip } from '/js/equipment.js';
+  import { getLevelByExperience } from '/js/level.js';
+  import { generateCombat, healFull, prepareTeams } from '/js/combat.js';
+  import { navigate } from '/js/router.js';
+
+  const index = Number($.routeParams.characterIndex) || 0;
+  const characterRef = $.characters[index];
+
+  if (characterRef) {
+    const char = CHARACTERS(characterRef, true);
+    const combatStats = calculateCombatStatsByCharacter(char);
+    const isTwoHanded = char.equipment.mainHand && EQUIPMENT(char.equipment.mainHand, true).slotsIn === 'twoHand';
+
+    const slots = ['mainHand', 'offHand', 'armor', 'accessory', 'trinket'].map(slot => {
+      const eq = char.equipment[slot];
+      const item = eq ? EQUIPMENT(eq, true) : null;
+      const isTwoHandOffHand = slot === 'offHand' && isTwoHanded;
+      return {
+        slot,
+        prettyName: slotsInPrettyName(slot),
+        itemName: isTwoHandOffHand
+          ? EQUIPMENT(char.equipment.mainHand, true).name
+          : item ? item.name : ['mainHand', 'offHand'].includes(slot) ? 'Fist' : '-',
+        hasItem: !!eq,
+        disabled: isTwoHandOffHand
+      };
+    });
+
+    const availableAbilities = calculateAvailableAbilitiesByCharacter(char);
+    const activeAbilities = (char.overrides?.abilities || []).map(a => ABILITIES(a, true));
+    const usedUuids = new Set(activeAbilities.map(a => a.uuid));
+
+    const availableNonBasic = availableAbilities
+      .filter(a => !ABILITIES(a, true).basic && !usedUuids.has(a.uuid))
+      .map(a => ABILITIES(a, true))
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .sort((a, b) => a.ticks - b.ticks);
+
+    const tickCells = 15;
+    const abilityBarItems = activeAbilities.map((ability, i) => {
+      const tickStart = calculateTickStart(activeAbilities, i);
+      const widthPct = (ability.ticks / tickCells) * 100;
+      return { ...ability, tickStart, widthPct, overTick: tickStart > 11 };
+    });
+
+    const lastTick = abilityBarItems.filter(a => a.tickStart < char.maxTicks).at(-1);
+    const lastTickEnd = lastTick ? lastTick.tickStart + lastTick.ticks : 0;
+
+    const canRetire = getLevelByExperience($.experience) <= 4;
+
+    $.currentCharacter = { ...char, slots, _canRetire: canRetire };
+    $.currentCombatStats = {
+      maxHealth: combatStats.maxHealth || 0,
+      maxArmor: combatStats.maxArmor || 0,
+      damage: combatStats.damage || 0,
+      criticalChance: combatStats.criticalChance || 0,
+      criticalDamage: combatStats.criticalDamage || 0,
+      blockChance: combatStats.blockChance || 0,
+      dodgeChance: combatStats.dodgeChance || 0,
+      magicChance: combatStats.magicChance || 0,
+      modifiers: combatStats.modifiers || {},
+      limits: combatStats.limits || {}
+    };
+    $.currentSlots = slots;
+    $.currentAbilities = abilityBarItems;
+    $.currentAvailableAbilities = availableNonBasic;
+    $.currentLastTickEnd = lastTickEnd;
+  }
+
+  window.toggleDetailedView = () => {
+    $.settings.showDetailedCharacterView = !$.settings.showDetailedCharacterView;
+  };
+
+  window.retireCharacter = () => {
+    const char = $.currentCharacter;
+    $.dialog = {
+      dialogId: 'confirm',
+      props: {
+        text: `You are retiring <span text-white>${char.name}</span>.<br /><br />Do you wish to proceed?`,
+        confirm: () => {
+          $.selectedBrawlers = $.selectedBrawlers.filter(uuid => uuid !== char.uuid);
+          navigate('/brawlers');
+          $.characters = [];
+        }
+      }
+    };
+  };
+
+  window.tryOutBuild = () => {
+    const selected = $.characters[Number($.routeParams.characterIndex)];
+    if (!selected) return;
+    const creature = CHARACTERS('trainingDummy', true);
+    $.combat = generateCombat(prepareTeams(healFull([selected]), [creature]));
+    $.overlay = 'Combat';
+  };
+
+  window.unequipSlot = (slot) => {
+    const characterRef = $.characters[Number($.routeParams.characterIndex)];
+    const eq = characterRef?.overrides?.equipment?.[slot];
+    if (eq) unequip(eq, slot);
+  };
+</script>
+
+<div page-brawler-detail>
+<!-- if currentCharacter -->
+<crow vertical g-4 left>
+  <a href="/brawlers">&larr; Back to Brawlers</a>
+
+  <crow justify-between w-full headline-row>
+    <crow g-4 left>
+      <h3 cinzel m-0>@[currentCharacter.name]</h3>
+
+      <!-- if !settings.showDetailedCharacterView -->
+      <crow core-stats g-2 left>
+        <crow g-1>
+          <span stat-icon>&#x2764;</span>
+          <span>@[currentCombatStats.maxHealth]</span>
+        </crow>
+        <span stat-sep>/</span>
+        <crow g-1>
+          <span stat-icon>&#x1F6E1;</span>
+          <span>@[currentCombatStats.maxArmor]</span>
+        </crow>
+        <span stat-sep>/</span>
+        <crow g-1>
+          <span stat-icon>&#x2694;</span>
+          <span>@[currentCombatStats.damage]</span>
+        </crow>
+      </crow>
+      <!-- /if -->
+    </crow>
+
+    <crow g-2 right>
+      <button tertiary toggle-btn onclick="toggleDetailedView()">
+        <!-- if settings.showDetailedCharacterView -->
+        &#x25B2; Simple view
+        <!-- /if -->
+        <!-- if !settings.showDetailedCharacterView -->
+        &#x25BC; Show stats
+        <!-- /if -->
+      </button>
+
+      <!-- if currentCharacter._canRetire -->
+      <button tertiary retire-btn onclick="retireCharacter()">Retire</button>
+      <!-- /if -->
+    </crow>
+  </crow>
+
+  <crow left up g-4 main-content>
+    <crow left vertical avatar-col>
+      <crow avatar-frame>
+        <img src="/static/images/races/@[currentCharacter.image]" alt="@[currentCharacter.name]" portrait-img onerror="this.style.display='none'" />
+      </crow>
+    </crow>
+
+    <crow vertical up left detail-col>
+      <!-- if settings.showDetailedCharacterView -->
+      <crow up left g-8 stats-panel>
+        <crow up left vertical>
+          <h5 cinzel m-0>Base Stats</h5>
+          <crow stat-list vertical left g-1>
+            <crow justify-between w-full><span text-muted>maxHealth</span><span>@[currentCombatStats.maxHealth]</span></crow>
+            <crow justify-between w-full><span text-muted>maxArmor</span><span>@[currentCombatStats.maxArmor]</span></crow>
+            <crow justify-between w-full><span text-muted>damage</span><span>@[currentCombatStats.damage]</span></crow>
+          </crow>
+
+          <div spacer-lg></div>
+
+          <h5 cinzel m-0 lucky-heading>Lucky Stats</h5>
+          <crow stat-list vertical left g-1>
+            <crow justify-between w-full><span text-muted>criticalChance</span><span>@[currentCombatStats.criticalChance]</span></crow>
+            <crow justify-between w-full><span text-muted>criticalDamage</span><span>@[currentCombatStats.criticalDamage]</span></crow>
+            <crow justify-between w-full><span text-muted>blockChance</span><span>@[currentCombatStats.blockChance]</span></crow>
+            <crow justify-between w-full><span text-muted>dodgeChance</span><span>@[currentCombatStats.dodgeChance]</span></crow>
+            <crow justify-between w-full><span text-muted>magicChance</span><span>@[currentCombatStats.magicChance]</span></crow>
+          </crow>
+        </crow>
+
+        <crow up left vertical>
+          <h5 cinzel m-0>Modifiers</h5>
+          <crow stat-list vertical left g-1>
+            <crow justify-between w-full><span text-muted>maxHealth</span><span>@[currentCombatStats.modifiers.maxHealth]</span></crow>
+            <crow justify-between w-full><span text-muted>maxArmor</span><span>@[currentCombatStats.modifiers.maxArmor]</span></crow>
+            <crow justify-between w-full><span text-muted>damage</span><span>@[currentCombatStats.modifiers.damage]</span></crow>
+            <crow justify-between w-full><span text-muted>resistance</span><span>@[currentCombatStats.modifiers.resistance]</span></crow>
+          </crow>
+
+          <div spacer-sm></div>
+
+          <h5 cinzel m-0>Resistances</h5>
+          <crow stat-list vertical left g-1>
+            <crow justify-between w-full><span text-muted>wounded</span><span>@[currentCombatStats.limits.wounded]</span></crow>
+            <crow justify-between w-full><span text-muted>concussed</span><span>@[currentCombatStats.limits.concussed]</span></crow>
+            <crow justify-between w-full><span text-muted>exposed</span><span>@[currentCombatStats.limits.exposed]</span></crow>
+          </crow>
+        </crow>
+      </crow>
+
+      <!-- if settings.showDetailedCharacterView -->
+      <div spacer-sm></div>
+      <h5 cinzel m-0>Equipment</h5>
+      <!-- /if -->
+      <!-- /if -->
+
+      <crow vertical left w-full g-2 eq-section>
+        <!-- each currentSlots as eq -->
+        <crow left justify-between w-full g-2 eq-row>
+          <crow left g-2>
+            <span eq-slot-label>@[eq.prettyName]</span>
+            <!-- if eq.disabled -->
+            <span text-muted>@[eq.itemName]</span>
+            <!-- /if -->
+            <!-- if !eq.disabled -->
+            <!-- if eq.hasItem -->
+            <span>@[eq.itemName]</span>
+            <!-- /if -->
+            <!-- if !eq.hasItem -->
+            <span text-muted>@[eq.itemName]</span>
+            <!-- /if -->
+            <!-- /if -->
+          </crow>
+          <!-- if eq.hasItem -->
+          <!-- if !eq.disabled -->
+          <button tertiary text-xs unequip-btn onclick="unequipSlot('@[eq.slot]')">Unequip</button>
+          <!-- /if -->
+          <!-- /if -->
+        </crow>
+        <!-- /each -->
+      </crow>
+    </crow>
+  </crow>
+
+  <div spacer-lg></div>
+
+  <crow vertical left w-full ability-section>
+    <crow justify-between w-full>
+      <h5 cinzel m-0>Active Abilities</h5>
+      <button tertiary onclick="tryOutBuild()">Try out build</button>
+    </crow>
+
+    <div ability-bar>
+      <crow tick-grid>
+        <!-- each Array(15) as _, i -->
+        <div tick-cell></div>
+        <!-- /each -->
+      </crow>
+
+      <div tick-marker-12></div>
+
+      <div tick-marker-last style="left: calc((100% / 15) * @[currentLastTickEnd])">
+        <crow vertical right tick-label>
+          <strong>Ability&nbsp;sequence</strong>
+          <span>@[currentLastTickEnd]&nbsp;ticks</span>
+        </crow>
+      </div>
+
+      <crow ability-overlay left up>
+        <!-- each currentAbilities as ability -->
+        <div
+          ability-cell
+          style="width: calc(((100% / 15) * @[ability.ticks]) + 1px)"
+          @[ability.basic ? 'basic' : '']
+          @[ability.overTick ? 'over-tick' : '']
+        >
+          <span ability-name>@[ability.name]</span>
+          <span ability-ticks>@[ability.ticks]t</span>
+        </div>
+        <!-- /each -->
+      </crow>
+    </div>
+
+    <div spacer-sm></div>
+
+    <h5 cinzel m-0>Available Abilities</h5>
+    <crow available-grid>
+      <!-- each currentAvailableAbilities as ability -->
+      <div available-ability>
+        <span>@[ability.name]</span>
+        <span text-muted text-xs>@[ability.ticks]t</span>
+      </div>
+      <!-- /each -->
+      <!-- if currentAvailableAbilities.length === 0 -->
+      <span text-muted text-sm>No additional abilities available. Equip items to unlock more.</span>
+      <!-- /if -->
+    </crow>
+  </crow>
+</crow>
+<!-- /if -->
+
+<!-- if !currentCharacter -->
+<crow vertical g-4 detail-empty>
+  <p text-muted>No brawler found.</p>
+  <a href="/brawlers">&larr; Back to Brawlers</a>
+</crow>
+<!-- /if -->
+</div>
+
+<style>
+[page-brawler-detail] [headline-row] { align-items: center; }
+[page-brawler-detail] [core-stats] { font-size: 1.125rem; color: var(--text-muted); translate: 0 1px; }
+[page-brawler-detail] [stat-icon] { font-size: 0.875rem; }
+[page-brawler-detail] [stat-sep] { color: var(--border); }
+[page-brawler-detail] [toggle-btn] { padding: 4px 8px; }
+[page-brawler-detail] [retire-btn] { padding: 4px 8px; background: rgba(248, 113, 113, 0.2); color: rgb(248, 113, 113); }
+[page-brawler-detail] [avatar-col] { flex: none; }
+[page-brawler-detail] [avatar-frame] { aspect-ratio: 11/12; width: 100%; max-width: 280px; border-radius: var(--radius); overflow: hidden; border: 1px solid rgba(0,0,0,0.1); }
+[page-brawler-detail] [portrait-img] { width: 100%; height: 100%; object-fit: cover; }
+[page-brawler-detail] [detail-col] { flex: 2; }
+[page-brawler-detail] [stats-panel] { flex: none; }
+[page-brawler-detail] [stat-list] { min-width: 180px; }
+[page-brawler-detail] [lucky-heading] { color: rgb(34, 197, 94); }
+[page-brawler-detail] [lucky-heading] ~ [stat-list] span:not([text-muted]) { color: rgb(34, 197, 94); }
+[page-brawler-detail] [spacer-lg] { height: 16px; }
+[page-brawler-detail] [spacer-sm] { height: 8px; }
+[page-brawler-detail] [eq-slot-label] { width: 80px; flex: none; }
+[page-brawler-detail] [eq-row] { min-height: 28px; }
+[page-brawler-detail] [unequip-btn] { padding: 2px 6px; }
+[page-brawler-detail] [detail-empty] { align-items: center; }
+
+[page-brawler-detail] [ability-bar] { position: relative; width: 100%; padding: 8px 4px; }
+[page-brawler-detail] [tick-grid] { width: 100%; }
+[page-brawler-detail] [tick-cell] { flex: 1; aspect-ratio: 2/3; border: 1px dashed var(--border); margin-left: -1px; }
+[page-brawler-detail] [tick-cell]:first-child { margin-left: 0; }
+[page-brawler-detail] [tick-marker-12] { position: absolute; top: 0; bottom: -8px; left: calc((100% / 15) * 12); width: 1px; border-right: 1px solid var(--text); translate: -1px 0; }
+[page-brawler-detail] [tick-marker-last] { position: absolute; top: 0; bottom: 0; width: 1px; border-right: 1px dashed var(--text-muted); translate: -1px 0; }
+[page-brawler-detail] [tick-label] { position: absolute; bottom: 100%; right: 0; text-align: right; font-size: 0.75rem; white-space: nowrap; }
+[page-brawler-detail] [tick-label] strong { line-height: 1; color: var(--text); }
+[page-brawler-detail] [ability-overlay] { position: absolute; inset: 8px 4px; width: calc(100% - 8px); border-radius: var(--radius); }
+[page-brawler-detail] [ability-cell] { flex: none; height: 100%; margin-left: -1px; border: 1px solid var(--text-muted); background: var(--bg-card, rgba(255,255,255,1)); border-radius: var(--radius-sm, 4px); display: flex; align-items: center; justify-content: center; gap: 4px; overflow: hidden; font-size: 0.75rem; }
+[page-brawler-detail] [ability-cell][basic] { background: var(--bg-muted, rgba(243,244,246,1)); border-color: var(--border); color: var(--text-muted); }
+[page-brawler-detail] [ability-cell][over-tick] { background: rgba(254,202,202,1); border-color: rgba(252,165,165,1); }
+[page-brawler-detail] [ability-cell]:not([basic]) { z-index: 1; }
+[page-brawler-detail] [ability-name] { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+[page-brawler-detail] [ability-ticks] { flex: none; font-size: 0.625rem; opacity: 0.6; }
+
+[page-brawler-detail] [available-grid] { flex-wrap: wrap; gap: 8px; align-items: flex-start; }
+[page-brawler-detail] [available-ability] { padding: 6px 10px; border: 1px solid var(--border); border-radius: var(--radius-sm, 4px); display: flex; align-items: center; gap: 6px; font-size: 0.875rem; }
+</style>

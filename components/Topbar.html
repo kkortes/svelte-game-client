@@ -1,0 +1,31 @@
+<crow topbar right>
+  <button topbar-btn onclick="$.overlay = 'GameMenu'">
+    <icon menu></icon>
+  </button>
+</crow>
+
+<style>
+  [topbar] {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 30;
+  }
+
+  [topbar] [topbar-btn] {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--foreground);
+    font-size: 1rem;
+  }
+
+  [topbar] [topbar-btn]:hover {
+    background: rgba(0, 0, 0, 0.05);
+  }
+</style>

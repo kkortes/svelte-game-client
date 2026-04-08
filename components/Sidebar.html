@@ -1,0 +1,285 @@
+<div sidebar>
+  <!-- Combat status -->
+  <div combat-status>
+    <!-- if elapsedMilliseconds < combat.duration -->
+    <a href="#" onclick="event.preventDefault(); $.overlay = 'Combat'" combat-link>
+      <spinner></spinner>
+      <span>Fighting..</span>
+    </a>
+    <!-- /if -->
+    <!-- if elapsedMilliseconds >= combat.duration && combat.duration !== 0 -->
+    <a href="#" onclick="event.preventDefault(); $.overlay = 'Combat'" combat-link>
+      <span>View outcome</span>
+    </a>
+    <!-- /if -->
+  </div>
+
+  <!-- MY LUDUS -->
+  <crow justify-between>
+    <h5>MY LUDUS</h5>
+    <span cinzel flex-none>level @[sidebarLevel]</span>
+  </crow>
+  <hr sidebar-hr />
+
+  <crow vertical left w-full g-2>
+    <!-- Coins -->
+    <crow justify-between w-full>
+      <span text-sm>Coins</span>
+      <!-- if coins === 0 -->
+      <span>-</span>
+      <!-- /if -->
+      <!-- if coins > 0 -->
+      <crow coin-stack>
+        <!-- if Math.floor(coins / 100) > 0 -->
+        <crow g-0 flex-none>@[Math.floor(coins / 100)]×<span coin-icon coin-silver></span></crow>
+        <!-- /if -->
+        <!-- if coins % 100 > 0 -->
+        <crow g-0 flex-none>@[coins % 100]×<span coin-icon coin-copper></span></crow>
+        <!-- /if -->
+      </crow>
+      <!-- /if -->
+    </crow>
+
+    <!-- Experience -->
+    <crow vertical left w-full>
+      <crow justify-between w-full>
+        <span text-sm>Experience</span>
+        <button tertiary text-xs onclick="$.showAccountProgression = true">See progress</button>
+      </crow>
+      <!-- if sidebarLevel < 25 -->
+      <div bar xp-bar>
+        <div bar-fill xp-fill style="width: @[sidebarXpPct]%"></div>
+        <crow bar-text text-sm>@[sidebarXpCurrent] / @[sidebarXpNeeded]</crow>
+      </div>
+      <!-- /if -->
+    </crow>
+
+    <!-- Medical area -->
+    <crow vertical left w-full>
+      <crow justify-between w-full>
+        <span text-sm>Medical area</span>
+        <button tertiary text-xs onclick="
+          $.characters.forEach(c => {
+            try {
+              const ch = CHARACTERS(c, true);
+              const stats = calculateCombatStatsByCharacter(ch);
+              const heal = Math.ceil(stats.maxHealth * 0.33);
+              c.overrides.combatStats.currentHealth = Math.min(ch.combatStats.currentHealth + heal, stats.maxHealth);
+            } catch {}
+          });
+          $.healTimer = 120;
+        ">Heal now</button>
+      </crow>
+      <div bar heal-timer-bar>
+        <div bar-fill heal-timer-fill style="width: @[healTimerPct]%"></div>
+        <crow bar-text text-sm>@[String(Math.floor(healTimer / 60)).padStart(2, '0')]:@[String(healTimer % 60).padStart(2, '0')]</crow>
+      </div>
+    </crow>
+  </crow>
+
+  <div spacer></div>
+
+  <!-- MY BRAWLERS -->
+  <crow justify-between>
+    <h5>MY BRAWLERS</h5>
+    <span cinzel flex-none>@[sidebarChars.length]</span>
+  </crow>
+  <hr sidebar-hr />
+
+  <div brawler-list>
+    <crow vertical up left>
+      <!-- if characters.length === 0 -->
+      <crow vertical w-full g-2 text-sm text-muted>
+        You have no brawlers yet.
+        <button tertiary onclick="navigate('/brawlers')">Recruit brawler</button>
+      </crow>
+      <!-- /if -->
+
+      <!-- each sidebarChars as schar, i -->
+      <a href="/brawlers/@[i]" onclick="selectBrawler(event, characters[@[i]]?.uuid, @[i])" brawler-link>
+        <crow left brawler-row data-active="@[Number(routeParams.characterIndex) === i || selectedBrawlers.includes(characters[i]?.uuid)]">
+          <div brawler-avatar-wrap>
+            <div brawler-avatar glass>
+              <img src="/static/images/races/@[schar.image.replace('.png', '-mugshot.png')]" alt="" brawler-img onerror="this.style.display='none'" />
+            </div>
+          </div>
+          <crow vertical left brawler-info>
+            <div w-full>
+              <div bar hp-bar>
+                <div bar-fill hp-fill style="width: @[schar.healthPct]%"></div>
+                <crow bar-text text-sm justify-between>
+                  <span>@[schar.name]</span>
+                  <span>@[schar.healthPct]%</span>
+                </crow>
+              </div>
+            </div>
+          </crow>
+        </crow>
+      </a>
+      <!-- /each -->
+    </crow>
+  </div>
+
+  <style>
+    [sidebar] [combat-status] {
+      position: absolute;
+      top: -24px;
+      left: 0;
+    }
+
+    [sidebar] [combat-link] {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    [sidebar] [sidebar-hr] {
+      height: 1px;
+      border: 0;
+      background: linear-gradient(to right, rgba(0,0,0,0.25), transparent);
+      margin: 4px 0 12px;
+    }
+
+    [sidebar] [spacer] {
+      height: 32px;
+    }
+
+    /* Bar component - shared */
+    [sidebar] [bar] {
+      position: relative;
+      display: grid;
+      height: 28px;
+      width: 100%;
+      background: rgba(0,0,0,0.2);
+      color: white;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.15);
+    }
+
+    [sidebar] [bar-fill] {
+      height: 100%;
+      transition: width 200ms ease;
+      grid-area: 1/1;
+    }
+
+    [sidebar] [bar-text] {
+      grid-area: 1/1;
+      padding: 0 8px;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+      z-index: 1;
+    }
+
+    /* XP bar */
+    [sidebar] [xp-bar] {
+      height: 24px;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    [sidebar] [xp-fill] {
+      background: oklch(0.5 0.15 65);
+    }
+
+    /* Heal timer */
+    [sidebar] [heal-timer-bar] {
+      height: 24px;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    [sidebar] [heal-timer-fill] {
+      background: rgba(100, 100, 100, 0.6);
+      transition: width 1s linear;
+    }
+
+    /* HP bar */
+    [sidebar] [hp-bar] {
+      height: 28px;
+    }
+
+    [sidebar] [hp-fill] {
+      background: oklch(0.35 0.08 20);
+    }
+
+    /* Coins */
+    [sidebar] [coin-stack] {
+      gap: 8px;
+      flex-wrap: wrap-reverse;
+      justify-content: flex-end;
+    }
+
+    [sidebar] [coin-icon] {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 0.5px solid rgba(0,0,0,0.3);
+      box-shadow: 0.5px 0.5px 0 rgba(0,0,0,0.5);
+      vertical-align: middle;
+    }
+
+    [sidebar] [coin-silver] {
+      background: oklch(0.7 0.1 200);
+    }
+
+    [sidebar] [coin-copper] {
+      background: oklch(0.65 0.12 60);
+    }
+
+    /* Brawler list */
+    [sidebar] [brawler-list] {
+      margin: 8px -16px;
+    }
+
+    [sidebar] [brawler-link] {
+      display: block;
+      width: 100%;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    [sidebar] [brawler-row] {
+      transition: all 75ms;
+    }
+
+    [sidebar] [brawler-row][data-active="true"] {
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 2px;
+      margin: -4px -6px;
+      padding: 4px 6px;
+      width: auto;
+      border: none;
+      backdrop-filter: blur(4px);
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    }
+
+    [sidebar] [brawler-avatar-wrap] {
+      width: 64px;
+      height: 64px;
+      padding: 4px;
+      flex: none;
+    }
+
+    [sidebar] [brawler-avatar] {
+      width: 100%;
+      height: 100%;
+      border-radius: 2px;
+      overflow: hidden;
+      border: 1px solid rgba(75, 85, 99, 1);
+    }
+
+    [sidebar] [brawler-img] {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    [sidebar] [brawler-info] {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      padding: 4px;
+    }
+  </style>
+</div>

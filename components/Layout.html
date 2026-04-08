@@ -1,0 +1,215 @@
+<game-layout layout>
+  <!-- if !socket -->
+  <div center-full>
+    <p text-muted>Connecting to server...</p>
+  </div>
+  <!-- /if -->
+
+  <!-- if socket && !token -->
+  <div center-full auth-padding>
+    <div auth-scene>
+      <img src="/static/images/races/troll/male-01.png" alt="" auth-char-left />
+
+      <div auth-form glass>
+        <!-- if authError -->
+        <div auth-error text-sm mb-4>
+          @[authError]
+        </div>
+        <!-- /if -->
+
+        <!-- if authMode === 'login' -->
+        <form onsubmit="event.preventDefault(); authLogin();">
+          <crow g-2 mb-3>
+            <input type="email" placeholder="Email" value="@[authEmail]" oninput="$.authEmail = this.value" required auth-input />
+            <input type="password" placeholder="Password" value="@[authPassword]" oninput="$.authPassword = this.value" required auth-input />
+            <button primary type="submit">Log in</button>
+          </crow>
+          <crow g-2 mb-2>
+            <input type="checkbox" id="codeOfConduct" />
+            <label for="codeOfConduct" text-sm>I agree to the <a href="#" onclick="event.stopPropagation()">Code of Conduct</a></label>
+          </crow>
+          <crow g-2 mb-2>
+            <input type="checkbox" id="rememberMe" onchange="$.authRememberMe = this.checked" />
+            <label for="rememberMe" text-sm>Remember me</label>
+          </crow>
+          <crow g-2>
+            <button tertiary type="button" onclick="$.authMode = 'register'">Register</button>
+            <button tertiary type="button">Forgot password</button>
+          </crow>
+        </form>
+        <!-- /if -->
+
+        <!-- if authMode === 'register' -->
+        <form onsubmit="event.preventDefault(); authRegister();">
+          <crow g-2 mb-3>
+            <input type="email" placeholder="Email" value="@[authEmail]" oninput="$.authEmail = this.value" required auth-input />
+            <input type="password" placeholder="Password" value="@[authPassword]" oninput="$.authPassword = this.value" required auth-input />
+            <button primary type="submit">Register</button>
+          </crow>
+          <p text-sm text-muted>
+            Already have an account? <a href="#" onclick="event.preventDefault(); $.authMode = 'login';">Log in</a>
+          </p>
+        </form>
+        <!-- /if -->
+      </div>
+
+      <img src="/static/images/races/elf/female-01.png" alt="" auth-char-right />
+    </div>
+  </div>
+  <!-- /if -->
+
+  <!-- if token -->
+  <crow game-shell>
+    <aside game-sidebar sm-hide>
+      <component src="/components/Sidebar.html"></component>
+    </aside>
+
+    <div game-main>
+      <nav data-active="@[route ? route.split('/')[1] || '' : '']" tab-nav>
+        <a href="/" data-tab="" tab-link>Game Guide</a>
+        <a href="/the-arena" data-tab="the-arena" tab-link>The Arena</a>
+        <a href="/random-duel" data-tab="random-duel" tab-link>Random duel</a>
+        <a href="/vendor" data-tab="vendor" tab-link>Vendor</a>
+        <a href="/brawlers" data-tab="brawlers" tab-link>Brawlers</a>
+      </nav>
+
+      <div content-area>
+        <page-content>
+          <p text-muted>Loading...</p>
+        </page-content>
+      </div>
+    </div>
+
+    <!-- if routeParams.characterIndex !== undefined || route === '/vendor' -->
+    <aside game-sidebar sm-hide armory-aside>
+      <component src="/components/Armory.html"></component>
+    </aside>
+    <!-- /if -->
+  </crow>
+  <!-- /if -->
+
+  <style>
+    [layout] [center-full] {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    [layout] [auth-padding] {
+      padding: 40px 16px 16px;
+    }
+
+    [layout] [auth-scene] {
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 0;
+    }
+
+    [layout] [auth-char-left] {
+      width: 280px;
+      height: auto;
+      object-fit: contain;
+      position: relative;
+      z-index: 1;
+      margin-right: -40px;
+      margin-bottom: -20px;
+    }
+
+    [layout] [auth-char-right] {
+      width: 180px;
+      height: auto;
+      object-fit: contain;
+      position: relative;
+      z-index: 1;
+      margin-left: -20px;
+      margin-bottom: -20px;
+    }
+
+    [layout] [auth-form] {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 440px;
+      padding: 16px;
+    }
+
+    [layout] [auth-error] {
+      background: var(--destructive);
+      color: white;
+      padding: 8px 12px;
+      border-radius: var(--radius);
+    }
+
+    [layout] [auth-input] {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      flex: 1;
+      min-width: 0;
+    }
+
+    [layout] [game-shell] {
+      align-items: flex-start;
+      min-height: 100vh;
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 80px 12px 12px;
+      gap: 12px;
+    }
+
+    [layout] [game-sidebar] {
+      width: 224px;
+      flex: none;
+      position: sticky;
+      top: 12px;
+      height: calc(100vh - 24px);
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: var(--radius);
+      padding: 16px;
+      overflow-y: auto;
+    }
+
+    [layout] [armory-aside] {
+      transition: all 200ms;
+    }
+
+    [layout] [game-main] {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    [layout] [tab-nav] {
+      margin-top: -28px;
+      height: 28px;
+      display: flex;
+      flex: none;
+      gap: 1px;
+      justify-content: flex-end;
+      padding: 0 4px;
+    }
+
+    [layout] [tab-link] {
+      padding: 2px 8px;
+      font-size: 0.8rem;
+      border: 1px solid transparent;
+      border-bottom: none;
+      border-radius: var(--radius) var(--radius) 0 0;
+      color: var(--muted-foreground);
+      text-decoration: none;
+    }
+
+    [layout] [content-area] {
+      background: white;
+      border-radius: var(--radius);
+      padding: 16px;
+      flex: 1;
+      position: relative;
+    }
+  </style>
+</game-layout>

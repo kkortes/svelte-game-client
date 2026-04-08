@@ -1,0 +1,71 @@
+<script type="module">
+  import { ALL_ABILITIES } from '/js/constants/ABILITIES.js';
+  import ABILITIES from '/js/constants/ABILITIES.js';
+
+  $.scalingAbilities = Object.entries(ALL_ABILITIES).map(([id, raw]) => {
+    const ability = ABILITIES(id, true);
+    const damage = ability.calc.damage();
+    const healing = ability.calc.healing();
+
+    return {
+      id,
+      name: raw.name,
+      ticks: raw.ticks,
+      chainLink: raw.chainLink || null,
+      damageModifier: raw.damageModifier,
+      healingModifier: raw.healingModifier,
+      damageResult: damage?.result ?? '-',
+      damagePow: damage?.pow ?? '-',
+      healingResult: healing?.result ?? '-',
+      healingPow: healing?.pow ?? '-'
+    };
+  });
+</script>
+
+<div page-ability-scaling>
+<crow vertical g-4 left>
+  <h3 cinzel m-0>Ability Scaling</h3>
+
+  <div table-scroll>
+    <table scaling-table>
+      <thead>
+        <tr>
+          <th text-sm th-left>Name</th>
+          <th text-sm>Ticks</th>
+          <th text-sm>Chain</th>
+          <th text-sm>Dmg Mod</th>
+          <th text-sm>Dmg Pow</th>
+          <th text-sm>Dmg Result</th>
+          <th text-sm>Heal Mod</th>
+          <th text-sm>Heal Pow</th>
+          <th text-sm>Heal Result</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- each scalingAbilities as a -->
+        <tr>
+          <td text-sm font-medium>@[a.name]</td>
+          <td text-sm>@[a.ticks]</td>
+          <td text-sm>@[a.chainLink ?? '-']</td>
+          <td text-sm>@[a.damageModifier ?? '-']</td>
+          <td text-sm>@[a.damagePow]</td>
+          <td text-sm font-bold>@[a.damageResult]</td>
+          <td text-sm>@[a.healingModifier ?? '-']</td>
+          <td text-sm>@[a.healingPow]</td>
+          <td text-sm font-bold>@[a.healingResult]</td>
+        </tr>
+        <!-- /each -->
+      </tbody>
+    </table>
+  </div>
+</crow>
+</div>
+
+<style>
+[page-ability-scaling] [table-scroll] { overflow-x: auto; width: 100%; }
+[page-ability-scaling] [scaling-table] { width: 100%; border-collapse: collapse; }
+[page-ability-scaling] th,
+[page-ability-scaling] td { padding: 6px 8px; text-align: center; border-bottom: 1px solid var(--border); }
+[page-ability-scaling] [th-left],
+[page-ability-scaling] td:first-child { text-align: left; }
+</style>

@@ -1,0 +1,262 @@
+<script type="module">
+  import { ALL_FIGHTS } from '/js/constants/FIGHTS.js';
+  import CHARACTERS from '/js/constants/CHARACTERS.js';
+  import { getExperienceReward, getLevelByExperience } from '/js/level.js';
+
+  const fights = [...ALL_FIGHTS].sort((a, b) => {
+    if (a.minLevel !== b.minLevel) return a.minLevel - b.minLevel;
+    if (a.boss !== b.boss) return a.boss ? 1 : -1;
+    return a.maxLevel - b.maxLevel;
+  });
+
+  $.arenaFights = fights.map((fight, i) => {
+    const hideTreshold = $.bossHighscore + 5;
+    const ludusLevel = getLevelByExperience($.experience);
+    const isLocked = hideTreshold < fight.minLevel;
+    const bossCompleted = fight.boss && $.bossHighscore >= fight.minLevel;
+
+    const enemies = fight.characters.map(charRef => {
+      const withLevel = {
+        ...charRef,
+        overrides: {
+          ...charRef?.overrides,
+          level: fight.minLevel,
+          equipment: {
+            mainHand: { overrides: { level: fight.minLevel } },
+            offHand: { overrides: { level: fight.minLevel } },
+            armor: { overrides: { level: fight.minLevel } }
+          }
+        }
+      };
+      try {
+        const hydrated = CHARACTERS(withLevel, true);
+        return { image: hydrated.image, name: hydrated.name };
+      } catch {
+        return { image: '', name: '?' };
+      }
+    });
+
+    const xp = getExperienceReward(fight.characters.length, fight.minLevel, fight.maxLevel, fight.boss);
+    const xpDimmed = ludusLevel > fight.maxLevel;
+
+    return {
+      id: fight.id,
+      name: fight.name,
+      minLevel: fight.minLevel,
+      maxLevel: fight.maxLevel,
+      boss: fight.boss,
+      isLocked,
+      bossCompleted,
+      enemies,
+      xp,
+      xpDimmed,
+      even: i % 2 === 0
+    };
+  });
+
+  window.arenaClick = (e, id, isLocked, bossCompleted) => {
+    if (isLocked || bossCompleted) {
+      e.preventDefault();
+      return;
+    }
+  };
+</script>
+
+<div page-arena>
+
+<crow justify-between left>
+  <h3>The arena</h3>
+</crow>
+<hr arena-headline-hr />
+
+<crow vertical up left arena-table>
+  <crow up left g-4 arena-header>
+    <div cinzel arena-col-name>name</div>
+    <div cinzel arena-col-level text-center>level</div>
+    <div cinzel arena-col-loot>loot</div>
+    <crow arena-col-preview right></crow>
+  </crow>
+
+  <!-- each arenaFights as fight, i -->
+  <a
+    href="/the-arena/@[fight.id]"
+    onclick="arenaClick(event, '@[fight.id]', @[fight.isLocked], @[fight.bossCompleted])"
+    arena-row
+    data-even="@[fight.even]"
+    data-boss="@[fight.boss]"
+    data-locked="@[fight.isLocked]"
+    data-completed="@[fight.bossCompleted]"
+  >
+    <crow left arena-col-name cinzel g-2>
+      <!-- if fight.isLocked -->
+      <span>?</span>
+      <!-- /if -->
+      <!-- if !fight.isLocked -->
+      <span>@[fight.name]</span>
+      <!-- /if -->
+      <!-- if fight.boss -->
+      <badge arena-pill>Bossfight</badge>
+      <!-- /if -->
+    </crow>
+
+    <div arena-col-level text-center text-sm>
+      @[fight.minLevel]@[fight.minLevel === fight.maxLevel ? '' : ' - ' + fight.maxLevel]
+    </div>
+
+    <div arena-col-loot text-sm>
+      <!-- if fight.xpDimmed -->
+      <span arena-xp-dimmed>@[fight.xp] XP</span>
+      <!-- /if -->
+      <!-- if !fight.xpDimmed -->
+      <span>@[fight.xp] XP</span>
+      <!-- /if -->
+    </div>
+
+    <crow arena-col-preview right>
+      <!-- each fight.enemies as enemy -->
+      <div arena-enemy-wrap data-boss="@[fight.boss]">
+        <crow arena-enemy-box glass data-locked="@[fight.isLocked]">
+          <!-- if fight.isLocked -->
+          <crow arena-enemy-locked>?</crow>
+          <!-- /if -->
+          <!-- if !fight.isLocked -->
+          <img
+            src="/static/images/races/@[enemy.image]"
+            alt=""
+            arena-enemy-img
+            data-completed="@[fight.bossCompleted]"
+            onerror="this.style.display='none'"
+          />
+          <!-- /if -->
+        </crow>
+      </div>
+      <!-- /each -->
+    </crow>
+  </a>
+  <!-- /each -->
+</crow>
+
+</div>
+
+<style>
+[page-arena] [arena-headline-hr] {
+  height: 1px;
+  border: 0;
+  background: linear-gradient(to right, rgba(0,0,0,0.25), transparent);
+  margin: 8px 0 16px;
+}
+
+[page-arena] [arena-table] {
+  margin: 0 -16px;
+  width: calc(100% + 32px);
+}
+
+[page-arena] [arena-header] {
+  padding: 8px 24px;
+  color: var(--foreground);
+}
+
+[page-arena] [arena-col-name] { flex: 1; white-space: nowrap; }
+[page-arena] [arena-col-level] { width: 48px; flex: none; }
+[page-arena] [arena-col-loot] { width: 48px; flex: none; }
+[page-arena] [arena-col-preview] { width: 120px; flex: none; }
+
+[page-arena] [arena-row] {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 24px;
+  text-decoration: none;
+  color: inherit;
+  font-size: 0.875rem;
+  transition: all 500ms;
+  width: 100%;
+}
+
+[page-arena] [arena-row][data-even="true"] { background: rgba(120, 110, 100, 0.05); }
+[page-arena] [arena-row][data-even="false"] { background: rgba(120, 110, 100, 0.1); }
+
+[page-arena] [arena-row][data-boss="true"] {
+  margin-top: 48px;
+  padding-top: 32px;
+  padding-bottom: 32px;
+}
+
+[page-arena] [arena-row][data-boss="true"] + [arena-row][data-boss="true"] {
+  margin-top: 0;
+}
+
+[page-arena] [arena-row]:not([data-locked="true"]):not([data-completed="true"]):hover {
+  background: linear-gradient(to right, transparent, rgba(120, 110, 100, 0.15), transparent);
+}
+
+[page-arena] [arena-row][data-locked="true"] {
+  opacity: 0.5;
+  cursor: default;
+}
+
+[page-arena] [arena-row][data-completed="true"] {
+  cursor: default;
+}
+
+[page-arena] [arena-pill] {
+  font-size: 0.65rem;
+  padding: 1px 6px;
+}
+
+[page-arena] [arena-xp-dimmed] {
+  color: var(--muted-foreground);
+  text-decoration: line-through;
+}
+
+[page-arena] [arena-enemy-wrap] {
+  width: 16px;
+  flex: none;
+}
+
+[page-arena] [arena-enemy-wrap][data-boss="true"] {
+  width: 48px;
+}
+
+[page-arena] [arena-enemy-box] {
+  width: 40px;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 0;
+  margin: -8px -24px -8px 0;
+  position: relative;
+}
+
+[page-arena] [arena-enemy-wrap][data-boss="true"] [arena-enemy-box] {
+  width: 80px;
+}
+
+[page-arena] [arena-enemy-box]:not([data-locked="true"]) {
+  align-items: flex-start;
+}
+
+[page-arena] [arena-enemy-locked] {
+  width: 20px;
+  flex: none;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.25);
+  font-weight: bold;
+  color: white;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+}
+
+[page-arena] [arena-enemy-img] {
+  width: 120%;
+  max-width: none;
+  height: auto;
+  transform: scaleX(-1);
+}
+
+[page-arena] [arena-enemy-img][data-completed="true"] {
+  filter: grayscale(1);
+}
+</style>

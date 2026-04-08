@@ -1,0 +1,55 @@
+<div armory>
+  <h5 cinzel m-0>ARMORY</h5>
+  <p text-sm text-muted mt-2>@[inventory.length] item@[inventory.length !== 1 ? 's' : '']</p>
+
+  <!-- each inventory as item, idx -->
+  <crow g-2 mt-2 justify-between armory-item style="--eq-level: @[item.overrides?.level >= 25 ? '#dc2626' : item.overrides?.level >= 20 ? '#ea580c' : item.overrides?.level >= 15 ? '#9333ea' : item.overrides?.level >= 10 ? '#2563eb' : item.overrides?.level >= 5 ? '#16a34a' : '#9ca3af']">
+    <span text-sm armory-item-name>@[item.overrides?.name || item.id]</span>
+    <!-- if routeParams.characterIndex !== undefined -->
+    <button tertiary text-xs equip-btn onclick="import('/js/equipment.js').then(m => m.equip($.inventory[@[idx]]))">Equip</button>
+    <!-- /if -->
+    <!-- if route === '/vendor' -->
+    <crow g-1>
+      <!-- if item.overrides?.cost > 0 -->
+      <button tertiary text-xs refund-btn onclick="
+        $.dialog = { dialogId: 'confirm', props: { text: 'Refund this item for ' + Math.floor(($.inventory[@[idx]].overrides?.cost || 0) / 100) + 's ' + (($.inventory[@[idx]].overrides?.cost || 0) % 100) + 'c?', confirm: () => { $.coins += $.inventory[@[idx]].overrides?.cost || 0; $.inventory.splice(@[idx], 1); $.inventory = [...$.inventory]; } } }
+      ">Refund</button>
+      <!-- /if -->
+      <!-- if !item.overrides?.cost -->
+      <button tertiary text-xs refund-btn onclick="
+        $.dialog = { dialogId: 'confirm', props: { text: 'Dismantle this item? It has no coin value.', confirm: () => { $.inventory.splice(@[idx], 1); $.inventory = [...$.inventory]; } } }
+      ">Dismantle</button>
+      <!-- /if -->
+    </crow>
+    <!-- /if -->
+  </crow>
+  <!-- /each -->
+
+  <!-- if inventory.length === 0 -->
+  <p text-sm text-muted mt-2>No items</p>
+  <!-- /if -->
+
+  <style>
+    [armory] [armory-item] {
+      padding: 6px 8px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer;
+    }
+
+    [armory] [armory-item-name] {
+      border-bottom: 2px solid var(--eq-level, #9ca3af);
+      padding-bottom: 1px;
+      line-height: 1.25;
+    }
+
+    [armory] [equip-btn] {
+      padding: 2px 6px;
+    }
+
+    [armory] [refund-btn] {
+      padding: 2px 6px;
+      color: var(--destructive);
+    }
+  </style>
+</div>

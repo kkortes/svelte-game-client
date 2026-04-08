@@ -1,0 +1,218 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans+Condensed:wght@300;400;500;600;700&family=Cinzel:wght@400;500;600;700&family=Alfa+Slab+One&family=Bree+Serif&display=swap');
+@import url('/css/stylecheat.css');
+@import url('/css/icons.css');
+
+/* Game theme — overrides stylecheat's default theme tokens */
+:root {
+  --unit: 4px;
+  --font-sans: 'Fira Sans Condensed', 'Trebuchet MS', sans-serif;
+  --radius: 6px;
+
+  --background: oklch(0.94 0.02 60);
+  --foreground: oklch(0.2 0 0);
+  --muted: oklch(0.7 0.03 50);
+  --muted-foreground: oklch(0.5 0.03 50);
+  --border: oklch(0.85 0.02 60);
+  --card: oklch(0.97 0.01 60);
+  --card-foreground: oklch(0.2 0 0);
+
+  --primary: oklch(0.6 0.15 70);
+  --primary-foreground: #fff;
+  --secondary: oklch(0.55 0.05 50);
+  --destructive: oklch(0.55 0.2 25);
+
+  --sidebar: oklch(0.2 0.03 50);
+  --sidebar-foreground: oklch(0.85 0.02 60);
+  --sidebar-primary: oklch(0.6 0.15 70);
+
+  /* Game-specific tokens */
+  --font-heading: 'Cinzel', serif;
+  --font-display: 'Alfa Slab One', cursive;
+  --font-accent: 'Bree Serif', serif;
+}
+
+[dark] {
+  --background: oklch(0.15 0.01 60);
+  --foreground: oklch(0.9 0 0);
+  --muted-foreground: oklch(0.6 0.02 50);
+  --border: oklch(0.3 0.02 60);
+  --card: oklch(0.2 0.01 60);
+  --card-foreground: oklch(0.9 0 0);
+}
+
+/* Base overrides — game uses Cinzel for headings, not stylecheat default */
+html {
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+body {
+  background-image: url('/static/images/parchment-bg-2250x1500.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Game-specific font attributes */
+[cinzel] { font-family: var(--font-heading); }
+[alfa-slab] { font-family: var(--font-display); }
+[bree-serif] { font-family: var(--font-accent); }
+
+/* Game-specific modifiers */
+[glass] {
+  border-radius: var(--radius);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(4px);
+}
+
+[fat-number] {
+  filter: drop-shadow(0 1.2px 1.2px rgba(0, 0, 0, 0.8));
+  -webkit-text-stroke: 0.5px black;
+}
+
+/* Text utilities (not in Stylecheat) */
+[text-sm] { font-size: 0.875rem; }
+[text-xs] { font-size: 0.75rem; }
+[text-lg] { font-size: 1.125rem; }
+[text-muted] { color: var(--muted-foreground); }
+[text-center] { text-align: center; }
+
+/* Font utilities */
+[font-bold] { font-weight: 700; }
+[font-medium] { font-weight: 500; }
+
+/* Flex utilities */
+[flex-none] { flex: none; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: oklch(0.85 0.01 50); }
+::-webkit-scrollbar-thumb { background: oklch(0.55 0.01 50); }
+::-webkit-scrollbar-thumb:hover { opacity: 0.9; }
+
+/* Custom game elements */
+page-content {
+  display: block;
+  width: 100%;
+}
+
+spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 600ms linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Health bar — game custom */
+health-bar {
+  display: block;
+  height: 6px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+health-bar > div {
+  height: 100%;
+  background: oklch(0.65 0.2 145);
+  transition: width 200ms ease;
+}
+
+/* Progress bar */
+progress-bar {
+  display: block;
+  height: 8px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+progress-bar > div {
+  height: 100%;
+  background: var(--primary);
+  transition: width 200ms ease;
+}
+
+/* Combat ring */
+[combat-ring] {
+  position: relative;
+  width: 500px;
+  height: 500px;
+  margin: 0 auto;
+}
+
+/* Notification/overlay animations */
+@keyframes slide-in {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Tab styling — active tab matches nav[data-active] to a[data-tab] */
+nav[data-active=""] a[data-tab=""],
+nav[data-active="the-arena"] a[data-tab="the-arena"],
+nav[data-active="random-duel"] a[data-tab="random-duel"],
+nav[data-active="vendor"] a[data-tab="vendor"],
+nav[data-active="brawlers"] a[data-tab="brawlers"] {
+  background: white;
+  color: var(--foreground);
+  border-color: var(--border);
+}
+
+/* DnD-specific styles */
+[dnd-zone] {
+  min-height: 40px;
+}
+
+[dnd-item] {
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+
+[dnd-item]:active {
+  cursor: grabbing;
+}
+
+[dnd-ghost] {
+  cursor: grabbing;
+}
+
+[dnd-placeholder] {
+  pointer-events: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  [sm-hide] { display: none; }
+}
+

@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Battle Brawlers</title>
+  <link rel="icon" href="/static/favicon.png" />
+  <link rel="stylesheet" href="/css/index.css" />
+
+  <script type="module">
+    import vibe from '/nodemodules/@ape-egg/vibe/index.js';
+    import appState from '/js/app.js';
+    import config from '/js/config.js';
+    import { getCookie } from '/js/helpers.js';
+    import { init as initRouter, navigate, retryNavigation } from '/js/router.js';
+    import { init as initKeystrokes } from '/js/keystrokes.js';
+    import { init as initCombatLoop } from '/js/combat-loop.js';
+    import { init as initSocket } from '/js/connectSocket.js';
+    import CHARACTERS from '/js/constants/CHARACTERS.js';
+    import { calculateCombatStatsByCharacter } from '/js/utils.js';
+    import { getLevelByExperience, getCurrentExperienceAtLevel, getExperienceForNextLevel, getExperienceReward } from '/js/level.js';
+    import { ALL_FIGHTS } from '/js/constants/FIGHTS.js';
+    import { INITIAL_COMBAT } from '/js/app.js';
+    import { Howl } from '/js/lib/howler.js';
+    import AUDIO from '/js/audio.js';
+
+    // Make navigate, audio, and game functions available globally
+    window.navigate = navigate;
+    window.Howl = Howl;
+    window.AUDIO = AUDIO;
+    window.CHARACTERS = CHARACTERS;
+    window.calculateCombatStatsByCharacter = calculateCombatStatsByCharacter;
+
+    window.claimCombatReward = () => {
+      const combat = $.combat;
+      if (!combat?.duration || combat._rewarded) return;
+
+      const fight = ALL_FIGHTS.find(f => f.id === combat.fightId);
+      if (fight) {
+        const xp = getExperienceReward(fight.characters.length, fight.minLevel, fight.maxLevel, fight.boss);
+        $.experience += xp;
+
+        if (fight.boss && combat.winningTeam?.index === 0) {
+          const score = combat.teamsEndState[0].combatants.filter(c => c.combatStats.currentHealth > 0).length;
+          if (score > $.bossHighscore) $.bossHighscore = score;
+        }
+      }
+
+      // Sync character health from combat end state
+      if (combat.teamsEndState?.[0]) {
+        $.characters = $.characters.map(char => {
+          const endCombatant = combat.teamsEndState[0].combatants.find(c => c.uuid === char.uuid);
+          if (!endCombatant) return char;
+          return {
+            ...char,
+            overrides: {
+              ...char.overrides,
+              combatStats: {
+                ...char.overrides?.combatStats,
+                currentHealth: Math.max(0, endCombatant.combatStats.currentHealth)
+              }
+            }
+          };
+        });
+      }
+
+      try {
+        new Howl({ src: [AUDIO['Victory Stinger 1']], volume: $.settings.volume.sfx * $.settings.volume.master }).play();
+      } catch {}
+
+      combat._rewarded = true;
+      $.overlay = '';
+      $.combat = JSON.parse(JSON.stringify(INITIAL_COMBAT));
+      $.liveTeams = [];
+      $.elapsedMilliseconds = 0;
+    };
+
+    window.closeCombatOverlay = () => {
+      try {
+        new Howl({ src: [AUDIO['Stinger - Ominous Timpani']], volume: $.settings.volume.sfx * $.settings.volume.master }).play();
+      } catch {}
+      $.overlay = '';
+      $.combat = JSON.parse(JSON.stringify(INITIAL_COMBAT));
+      $.liveTeams = [];
+      $.elapsedMilliseconds = 0;
+    };
+
+    window.selectBrawler = (e, uuid, index) => {
+      if ($.maxBrawlers) {
+        e.preventDefault();
+        if ($.selectedBrawlers.includes(uuid)) {
+          $.selectedBrawlers = $.selectedBrawlers.filter(id => id !== uuid);
+        } else if ($.selectedBrawlers.length < $.maxBrawlers) {
+          $.selectedBrawlers.push(uuid);
+        }
+        if (window.updateFightSlots) updateFightSlots();
+      }
+    };
+
+    window.$ = vibe({
+      ...appState,
+      showSequence: false,
+      authMode: 'login',
+      authEmail: config.IS_DEV ? config.AUTO_EMAIL : '',
+      authPassword: config.IS_DEV ? config.AUTO_PASSWORD : '',
+      authRememberMe: config.IS_DEV,
+      authError: '',
+      sidebarLevel: 1,
+      sidebarXpCurrent: 0,
+      sidebarXpNeeded: 100,
+      sidebarXpPct: 0,
+      sidebarChars: [],
+      healTimer: 120,
+      healTimerPct: 0,
+      isDev: config.IS_DEV,
+      audio: AUDIO
+    }, { debug: true });
+
+    // Media queries
+    const queries = {
+      desktop: '(min-width: 1200px)',
+      tablet: '(min-width: 768px) and (max-width: 1199px)',
+      smartphone: '(max-width: 767px)',
+      landscape: '(orientation: landscape)',
+      portrait: '(orientation: portrait)',
+      hoverable: '(hover: hover)'
+    };
+
+    const mqls = {};
+    const updateMedia = () => {
+      const media = {};
+      Object.keys(mqls).forEach(key => { media[key] = mqls[key].matches; });
+      try { $.mqs = media; } catch { }
+    };
+    Object.keys(queries).forEach(key => {
+      mqls[key] = window.matchMedia(queries[key]);
+      mqls[key].addEventListener('change', updateMedia);
+    });
+
+    // Clear selection on route change — handled in router instead of afterUpdate
+
+    // Initialize services
+    initKeystrokes();
+    initCombatLoop();
+    initSocket();
+
+    // Restore token from cookie after boot, load game state once socket connects
+    const cookie = getCookie();
+    $.on('ready', () => {
+      updateMedia();
+      if (cookie?.token) $.token = cookie.token;
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          if ($.overlay) { $.overlay = ''; return; }
+          if ($.dialog) { $.dialog = undefined; return; }
+          if ($.showAccountProgression) { $.showAccountProgression = false; return; }
+        }
+      });
+
+      setInterval(() => {
+        if (!$.token || $.characters.length === 0) return;
+        $.healTimer = Math.max(0, $.healTimer - 1);
+        $.healTimerPct = Math.round(((120 - $.healTimer) / 120) * 100);
+        if ($.healTimer <= 0) {
+          $.characters.forEach(ref => {
+            try {
+              const char = CHARACTERS(ref, true);
+              const stats = calculateCombatStatsByCharacter(char);
+              const heal = Math.ceil(stats.maxHealth * 0.33);
+              ref.overrides.combatStats.currentHealth = Math.min(char.combatStats.currentHealth + heal, stats.maxHealth);
+            } catch {}
+          });
+          $.healTimer = 120;
+        }
+      }, 1000);
+    });
+    $.on('afterUpdate', (current, prev) => {
+      // Load game state when socket first connects
+      if (current.socket && !prev.socket && current.token) {
+        loadGameState(current.token);
+      }
+
+      // When token changes (login), retry router navigation
+      // (page-content is inside <!-- if token --> and may not have existed earlier)
+      if (current.token && !prev.token) {
+        retryNavigation();
+      }
+
+      // Hydrate sidebar derived values
+      try {
+        const level = getLevelByExperience(current.experience || 0);
+        if (level !== current.sidebarLevel) $.sidebarLevel = level;
+
+        const xpCur = getCurrentExperienceAtLevel(current.experience || 0);
+        const xpNeeded = getExperienceForNextLevel(level);
+        if (xpCur !== current.sidebarXpCurrent) $.sidebarXpCurrent = xpCur;
+        if (xpNeeded !== current.sidebarXpNeeded) $.sidebarXpNeeded = xpNeeded;
+
+        const xpPct = level >= 25 ? 100 : Math.round((xpCur / Math.max(1, xpNeeded)) * 100);
+        if (xpPct !== current.sidebarXpPct) $.sidebarXpPct = xpPct;
+
+        const chars = (current.characters || []).map(ref => {
+          try {
+            const char = CHARACTERS(ref, true);
+            const stats = calculateCombatStatsByCharacter(char);
+            return {
+              name: char.name, image: char.image,
+              healthPct: Math.max(0, Math.round((char.combatStats.currentHealth / stats.maxHealth) * 100))
+            };
+          } catch { return null; }
+        }).filter(Boolean);
+
+        if (JSON.stringify(chars) !== JSON.stringify(current.sidebarChars)) {
+          $.sidebarChars = chars;
+        }
+        // Level-up detection — auto-show account progression
+        const prevLevel = getLevelByExperience(prev.experience || 0);
+        if (level > prevLevel && prev.experience > 0) {
+          $.showAccountProgression = true;
+        }
+      } catch {}
+    });
+
+    window.claimAccountReward = (lvl) => {
+      if (lvl > $.accountRewards && lvl <= $.sidebarLevel) {
+        $.coins += 100;
+        $.accountRewards = lvl;
+      }
+    };
+
+    // Auth handlers
+    window.loadGameState = async (token) => {
+      try {
+        const { gameState, serverTimestampSnapshot } = await $.socket.sendAsync('user/authenticate', {
+          token, clientVersion: '0.1.0', isDev: config.IS_DEV
+        });
+        if (gameState) {
+          if (gameState.characters) $.characters = gameState.characters;
+          if (gameState.inventory) $.inventory = gameState.inventory;
+          if (gameState.experience) $.experience = gameState.experience;
+          if (gameState.coins !== undefined) $.coins = gameState.coins;
+          if (gameState.accountRewards) $.accountRewards = gameState.accountRewards;
+        }
+        if (serverTimestampSnapshot) $.serverTimestampSnapshot = serverTimestampSnapshot;
+      } catch (e) {
+        console.info('Failed to load game state:', e?.message || e);
+      }
+    };
+
+    window.authLogin = async () => {
+      $.authError = '';
+      try {
+        const t = await $.socket.sendAsync('user/login', { email: $.authEmail, password: $.authPassword });
+        if ($.authRememberMe) {
+          const future = new Date();
+          future.setDate(future.getDate() + 30);
+          document.cookie = `token=${t}; Expires=${future};`;
+        } else {
+          document.cookie = `token=${t};`;
+        }
+        $.token = t;
+        await loadGameState(t);
+      } catch (e) {
+        $.authError = e?.message || e?.error || 'Login failed';
+      }
+    };
+
+    window.authRegister = async () => {
+      $.authError = '';
+      try {
+        await $.socket.sendAsync('user/register', { email: $.authEmail, password: $.authPassword });
+        $.authMode = 'login';
+        $.authError = '';
+      } catch (e) {
+        $.authError = e?.message || e?.error || 'Registration failed';
+      }
+    };
+
+    $.on('ready', () => {
+      initRouter();
+    });
+  </script>
+</head>
+
+<body battle-brawlers vibe stylecheat>
+  <!-- DEVBAR -->
+  <!-- if isDev -->
+  <crow up devbar glass>
+    <crow vertical left g-1 p-2>
+      <button devbar-btn onclick="document.dispatchEvent(new CustomEvent('pauseCombat'))">Pause combat</button>
+      <button devbar-btn onclick="document.dispatchEvent(new CustomEvent('resumeCombat'))">Resume combat</button>
+      <span text-xs>Elapsed ms: @[elapsedMilliseconds.toFixed(0)]</span>
+      <span text-xs>Duration: @[combat.duration]</span>
+    </crow>
+    <crow vertical left p-2>
+      <span text-xs>Server: @[new Date(serverTimestampSnapshot).toLocaleString()]</span>
+      <crow vertical up left mt-2>
+        <a href="/debug" devbar-link>Debug</a>
+        <a href="/ability-scaling" devbar-link>Ability Scaling</a>
+        <a href="/equipment-scaling" devbar-link>Equipment Scaling</a>
+        <a href="/character-scaling" devbar-link>Character Scaling</a>
+      </crow>
+    </crow>
+    <crow vertical left g-1 p-2>
+      <crow g-1>
+        <button devbar-btn onclick="$.characters.forEach(c => { try { const ch = CHARACTERS(c, true); const s = calculateCombatStatsByCharacter(ch); c.overrides.combatStats.currentHealth = s.maxHealth; } catch {} }); $.characters = [...$.characters]">Heal party</button>
+        <button devbar-btn onclick="$.characters.forEach(c => { try { const ch = CHARACTERS(c, true); c.overrides.combatStats.currentHealth = ch.combatStats.currentHealth - 5; } catch {} }); $.characters = [...$.characters]">Damage party</button>
+      </crow>
+      <crow g-1>
+        <button devbar-btn onclick="$.experience += 40">Gain exp</button>
+        <button devbar-btn onclick="$.experience = 0">Reset exp</button>
+      </crow>
+      <crow g-1>
+        <button devbar-btn onclick="$.coins += 100">Gain coins</button>
+        <button devbar-btn onclick="$.coins = 0">Reset coins</button>
+      </crow>
+      <crow g-1>
+        <button devbar-btn onclick="$.bossHighscore += 1">Increase boss</button>
+        <button devbar-btn onclick="$.bossHighscore = 0">Reset boss</button>
+      </crow>
+      <button devbar-btn onclick="$.characters = []">Reset characters</button>
+      <button devbar-btn onclick="$.accountRewards = 1">Reset rewards</button>
+    </crow>
+  </crow>
+  <!-- /if -->
+
+  <component src="/components/Layout.html"></component>
+
+  <!-- OVERLAY LAYER -->
+  <!-- if overlay === 'Combat' -->
+  <div overlay-backdrop>
+    <div combat-panel onclick="event.stopPropagation()">
+
+      <!-- COMBAT IN PROGRESS -->
+      <!-- if elapsedMilliseconds < combat.duration -->
+      <crow justify-between mb-3>
+        <h3 m-0>Combat</h3>
+        <span text-sm text-muted>@[Math.floor(elapsedMilliseconds / 1000)]s / @[Math.floor(combat.duration / 1000)]s</span>
+      </crow>
+      <div progress-track mb-4>
+        <div progress-fill style="width: @[Math.min(100, (elapsedMilliseconds / combat.duration) * 100)]%"></div>
+      </div>
+
+      <!-- if liveTeams.length >= 2 -->
+      <crow justify-between mb-3>
+        <span combat-team-label>Your Team</span>
+        <span text-sm text-muted>vs</span>
+        <span combat-team-label>Enemy</span>
+      </crow>
+
+      <crow combat-teams g-4>
+        <!-- Team 0 (player) -->
+        <div combat-team-col>
+          <!-- each liveTeams[0].combatants as c -->
+          <div combat-card>
+            <crow justify-between mb-1>
+              <span text-sm font-medium>@[c.name]</span>
+              <span combat-hp-num>@[Math.max(0, c.combatStats.currentHealth)] / @[c.combatStats.maxHealth]</span>
+            </crow>
+            <div hp-track>
+              <div hp-fill style="width: @[Math.max(0, Math.min(100, (c.combatStats.currentHealth / c.combatStats.maxHealth) * 100))]%"></div>
+            </div>
+            <!-- if c.combatStats.maxArmor > 0 -->
+            <div armor-track>
+              <div armor-fill style="width: @[Math.max(0, Math.min(100, (c.combatStats.currentArmor / c.combatStats.maxArmor) * 100))]%"></div>
+            </div>
+            <!-- /if -->
+            <!-- if c.statuses.knockedOut -->
+            <span combat-ko>KO</span>
+            <!-- /if -->
+            <!-- if c.statuses.isStunned.value > 0 -->
+            <span combat-status stunned>Stunned @[c.statuses.isStunned.ticks]</span>
+            <!-- /if -->
+            <!-- if c.statuses.isBleeding.ticks > 0 -->
+            <span combat-status bleeding>Bleed @[c.statuses.isBleeding.ticks]</span>
+            <!-- /if -->
+            <!-- if c.statuses.isVulnerable.ticks > 0 -->
+            <span combat-status vulnerable>Vuln @[c.statuses.isVulnerable.ticks]</span>
+            <!-- /if -->
+          </div>
+          <!-- /each -->
+        </div>
+
+        <!-- Team 1 (enemy) -->
+        <div combat-team-col>
+          <!-- each liveTeams[1].combatants as c -->
+          <div combat-card>
+            <crow justify-between mb-1>
+              <span text-sm font-medium>@[c.name]</span>
+              <span combat-hp-num>@[Math.max(0, c.combatStats.currentHealth)] / @[c.combatStats.maxHealth]</span>
+            </crow>
+            <div hp-track>
+              <div hp-fill style="width: @[Math.max(0, Math.min(100, (c.combatStats.currentHealth / c.combatStats.maxHealth) * 100))]%"></div>
+            </div>
+            <!-- if c.combatStats.maxArmor > 0 -->
+            <div armor-track>
+              <div armor-fill style="width: @[Math.max(0, Math.min(100, (c.combatStats.currentArmor / c.combatStats.maxArmor) * 100))]%"></div>
+            </div>
+            <!-- /if -->
+            <!-- if c.statuses.knockedOut -->
+            <span combat-ko>KO</span>
+            <!-- /if -->
+            <!-- if c.statuses.isStunned.value > 0 -->
+            <span combat-status stunned>Stunned @[c.statuses.isStunned.ticks]</span>
+            <!-- /if -->
+            <!-- if c.statuses.isBleeding.ticks > 0 -->
+            <span combat-status bleeding>Bleed @[c.statuses.isBleeding.ticks]</span>
+            <!-- /if -->
+            <!-- if c.statuses.isVulnerable.ticks > 0 -->
+            <span combat-status vulnerable>Vuln @[c.statuses.isVulnerable.ticks]</span>
+            <!-- /if -->
+          </div>
+          <!-- /each -->
+        </div>
+      </crow>
+      <!-- /if -->
+      <!-- /if -->
+
+      <!-- RESULT: VICTORY -->
+      <!-- if elapsedMilliseconds >= combat.duration && combat.duration > 0 && combat.winningTeam && combat.winningTeam.index === 0 -->
+      <div combat-result>
+        <h2 victory-text m-0 mb-2>Victory!</h2>
+        <p text-muted mb-3>Your brawlers won the fight.</p>
+        <div combat-rewards>
+          <span text-sm>XP earned</span>
+        </div>
+        <button primary mt-4 onclick="claimCombatReward()">Claim</button>
+      </div>
+      <!-- /if -->
+
+      <!-- RESULT: DEFEAT -->
+      <!-- if elapsedMilliseconds >= combat.duration && combat.duration > 0 && combat.winningTeam && combat.winningTeam.index !== 0 -->
+      <div combat-result>
+        <h2 defeat-text m-0 mb-2>Defeat</h2>
+        <p text-muted mb-3>Your brawlers were knocked out.</p>
+        <button secondary mt-4 onclick="closeCombatOverlay()">Go back</button>
+      </div>
+      <!-- /if -->
+
+    </div>
+  </div>
+  <!-- /if -->
+
+  <!-- if overlay === 'GameMenu' -->
+  <div overlay-backdrop onclick="$.overlay = ''">
+    <div overlay-panel overlay-sm onclick="event.stopPropagation()">
+      <crow justify-between mb-4>
+        <h3 m-0>Game Menu</h3>
+        <button tertiary onclick="$.overlay = ''">Close</button>
+      </crow>
+
+      <h5 cinzel m-0 mb-2>VOLUME</h5>
+      <crow vertical g-3 mb-4 stretch>
+        <crow justify-between>
+          <label text-sm>Master</label>
+          <input type="range" min="0" max="1" step="0.05" value="@[settings.volume.master]"
+            oninput="$.settings = { ...$.settings, volume: { ...$.settings.volume, master: +this.value } }"
+            range-input />
+        </crow>
+        <crow justify-between>
+          <label text-sm>Ambient</label>
+          <input type="range" min="0" max="1" step="0.05" value="@[settings.volume.ambient]"
+            oninput="$.settings = { ...$.settings, volume: { ...$.settings.volume, ambient: +this.value } }"
+            range-input />
+        </crow>
+        <crow justify-between>
+          <label text-sm>SFX</label>
+          <input type="range" min="0" max="1" step="0.05" value="@[settings.volume.sfx]"
+            oninput="$.settings = { ...$.settings, volume: { ...$.settings.volume, sfx: +this.value } }"
+            range-input />
+        </crow>
+        <crow justify-between>
+          <label text-sm>Combat</label>
+          <input type="range" min="0" max="1" step="0.05" value="@[settings.volume.combat]"
+            oninput="$.settings = { ...$.settings, volume: { ...$.settings.volume, combat: +this.value } }"
+            range-input />
+        </crow>
+      </crow>
+
+      <h5 cinzel m-0 mb-2>SETTINGS</h5>
+      <crow g-2 mb-4>
+        <input type="checkbox" id="detailed-view"
+          onchange="$.settings = { ...$.settings, showDetailedCharacterView: this.checked }" />
+        <label for="detailed-view" text-sm>Show detailed character view</label>
+      </crow>
+
+      <crow vertical g-2>
+        <button secondary w-full onclick="$.overlay = 'ReleaseNotes'">Release Notes</button>
+        <button secondary w-full onclick="document.cookie = 'token=; Max-Age=0'; $.token = undefined; $.characters = []; $.inventory = []; $.overlay = ''">Logout</button>
+      </crow>
+    </div>
+  </div>
+  <!-- /if -->
+
+  <!-- if overlay === 'CodeOfConduct' -->
+  <div overlay-backdrop onclick="$.overlay = ''">
+    <div overlay-panel onclick="event.stopPropagation()">
+      <crow justify-between mb-4>
+        <h3 m-0>Code of Conduct</h3>
+        <button tertiary onclick="$.overlay = ''">Close</button>
+      </crow>
+      <p mb-3>Be respectful to other players.</p>
+      <p mb-3>No harassment, hate speech, or toxic behavior.</p>
+      <p mb-3>Play fair — no exploits or cheating.</p>
+      <p>Have fun!</p>
+    </div>
+  </div>
+  <!-- /if -->
+
+  <!-- if overlay === 'ReleaseNotes' -->
+  <div overlay-backdrop onclick="$.overlay = ''">
+    <div overlay-panel onclick="event.stopPropagation()">
+      <crow justify-between mb-4>
+        <h3 m-0>Release Notes</h3>
+        <button tertiary onclick="$.overlay = ''">Close</button>
+      </crow>
+      <h5 cinzel m-0>v0.1.0</h5>
+      <p text-sm text-muted mt-2>Initial Vibe + Stylecheat rewrite.</p>
+    </div>
+  </div>
+  <!-- /if -->
+
+  <!-- DIALOG LAYER -->
+  <!-- if dialog -->
+  <div dialog-backdrop>
+    <card dialog-card>
+      <p mb-4>@[dialog.props?.text || 'Are you sure?']</p>
+      <crow g-2 dialog-actions>
+        <button tertiary onclick="$.dialog = undefined">Cancel</button>
+        <button primary
+          onclick="if($.dialog?.props?.confirm) $.dialog.props.confirm(); $.dialog = undefined;">Confirm</button>
+      </crow>
+    </card>
+  </div>
+  <!-- /if -->
+
+  <!-- ACCOUNT PROGRESSION OVERLAY -->
+  <!-- if showAccountProgression -->
+  <div overlay-backdrop onclick="$.showAccountProgression = false">
+    <div progression-panel onclick="event.stopPropagation()">
+      <crow justify-between mb-4>
+        <h3 m-0>Account Progression</h3>
+        <button tertiary onclick="$.showAccountProgression = false">Close</button>
+      </crow>
+      <div progression-scroll>
+        <!-- each Array.from({length: 25}, (_, i) => i + 1) as lvl -->
+        <card progression-card data-claimed="@[lvl <= accountRewards ? 'yes' : 'no']" data-reached="@[lvl <= sidebarLevel ? 'yes' : 'no']">
+          <h4 m-0 mb-1>Lv @[lvl]</h4>
+          <div progression-rewards>
+            <span progression-reward>+100 coins</span>
+            <!-- if lvl % 5 === 0 -->
+            <span progression-reward>+1 brawler slot</span>
+            <!-- /if -->
+            <span progression-reward>+4 maxHealth</span>
+            <span progression-reward>+2 damage</span>
+          </div>
+          <!-- if lvl <= accountRewards -->
+          <span progression-claimed>Claimed</span>
+          <!-- /if -->
+          <!-- if lvl > accountRewards && lvl <= sidebarLevel -->
+          <button primary progression-claim onclick="claimAccountReward(@[lvl])">Claim</button>
+          <!-- /if -->
+          <!-- if lvl > sidebarLevel -->
+          <button primary progression-claim disabled>Locked</button>
+          <!-- /if -->
+        </card>
+        <!-- /each -->
+      </div>
+    </div>
+  </div>
+  <!-- /if -->
+
+  <!-- TOOLTIP LAYER -->
+  <!-- if tooltip && tooltip.visible -->
+  <div tooltip-layer style="left: @[tooltip.x + 12]px; top: @[tooltip.y + 12]px;">
+    <card text-sm tooltip-card>
+      <!-- if tooltip.props && tooltip.props.name -->
+      <strong tooltip-name>@[tooltip.props.name]</strong>
+      <!-- /if -->
+      <!-- if tooltip.props && tooltip.props.description -->
+      <p m-0 mt-1 tooltip-desc>@[tooltip.props.description]</p>
+      <!-- /if -->
+      <!-- if tooltip.props && tooltip.props.ticks -->
+      <span tooltip-stat>@[tooltip.props.ticks] ticks</span>
+      <!-- /if -->
+      <!-- if tooltip.props && tooltip.props.damagePercent -->
+      <span tooltip-stat>Damage: @[tooltip.props.damagePercent]%</span>
+      <!-- /if -->
+      <!-- if tooltip.props && tooltip.props.healingPercent -->
+      <span tooltip-stat>Healing: @[tooltip.props.healingPercent]%</span>
+      <!-- /if -->
+      <!-- if tooltip.props && tooltip.props.level -->
+      <span tooltip-stat>Level @[tooltip.props.level]</span>
+      <!-- /if -->
+      <!-- if tooltip.props && tooltip.props.combatStats -->
+      <div tooltip-stats mt-1>
+        <!-- if tooltip.props.combatStats.maxHealth -->
+        <span tooltip-stat>HP: +@[tooltip.props.combatStats.maxHealth]</span>
+        <!-- /if -->
+        <!-- if tooltip.props.combatStats.damage -->
+        <span tooltip-stat>DMG: +@[tooltip.props.combatStats.damage]</span>
+        <!-- /if -->
+        <!-- if tooltip.props.combatStats.maxArmor -->
+        <span tooltip-stat>Armor: +@[tooltip.props.combatStats.maxArmor]</span>
+        <!-- /if -->
+        <!-- if tooltip.props.combatStats.speed -->
+        <span tooltip-stat>Speed: +@[tooltip.props.combatStats.speed]</span>
+        <!-- /if -->
+      </div>
+      <!-- /if -->
+      <!-- if !tooltip.props || !tooltip.props.name -->
+      <span tooltip-fallback>Tooltip</span>
+      <!-- /if -->
+    </card>
+  </div>
+  <!-- /if -->
+
+  <!-- NOTIFICATIONS -->
+  <!-- if notifications.length > 0 -->
+  <div notification-stack>
+    <!-- each notifications as notification -->
+    <card text-sm notification-card data-type="@[notification.type]">
+      @[notification.message]
+    </card>
+    <!-- /each -->
+  </div>
+  <!-- /if -->
+
+  <!-- TOPBAR -->
+  <component src="/components/Topbar.html"></component>
+
+  <style>
+    [battle-brawlers] [overlay-backdrop] {
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+      background: rgba(0, 0, 0, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    [battle-brawlers] [overlay-panel] {
+      background: white;
+      border-radius: var(--radius);
+      padding: 24px;
+      max-width: 600px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    [battle-brawlers] [overlay-sm] {
+      max-width: 400px;
+    }
+
+    [battle-brawlers] [combat-panel] {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 24px;
+      max-width: 720px;
+      width: 92%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    [battle-brawlers] [combat-teams] {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    [battle-brawlers] [combat-team-col] {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    [battle-brawlers] [combat-team-label] {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    [battle-brawlers] [combat-card] {
+      padding: 8px 10px;
+      border-radius: var(--radius);
+      background: var(--muted);
+      position: relative;
+    }
+
+    [battle-brawlers] [combat-hp-num] {
+      font-size: 0.7rem;
+      opacity: 0.7;
+    }
+
+    [battle-brawlers] [hp-track] {
+      width: 100%;
+      height: 8px;
+      background: var(--destructive-foreground);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    [battle-brawlers] [hp-fill] {
+      height: 100%;
+      background: #22c55e;
+      border-radius: 4px;
+      transition: width 150ms;
+    }
+
+    [battle-brawlers] [armor-track] {
+      width: 100%;
+      height: 5px;
+      background: var(--destructive-foreground);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 3px;
+    }
+
+    [battle-brawlers] [armor-fill] {
+      height: 100%;
+      background: #60a5fa;
+      border-radius: 3px;
+      transition: width 150ms;
+    }
+
+    [battle-brawlers] [combat-ko] {
+      position: absolute;
+      top: 6px;
+      right: 8px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--destructive);
+      opacity: 0.8;
+    }
+
+    [battle-brawlers] [combat-status] {
+      display: inline-block;
+      font-size: 0.6rem;
+      padding: 1px 5px;
+      border-radius: 3px;
+      margin-top: 4px;
+      margin-right: 3px;
+    }
+
+    [battle-brawlers] [combat-status][stunned] {
+      background: #fbbf24;
+      color: #000;
+    }
+
+    [battle-brawlers] [combat-status][bleeding] {
+      background: #ef4444;
+      color: #fff;
+    }
+
+    [battle-brawlers] [combat-status][vulnerable] {
+      background: #a855f7;
+      color: #fff;
+    }
+
+    [battle-brawlers] [combat-result] {
+      text-align: center;
+      padding: 32px 16px;
+    }
+
+    [battle-brawlers] [combat-rewards] {
+      padding: 12px;
+      background: var(--muted);
+      border-radius: var(--radius);
+      display: inline-block;
+    }
+
+    [battle-brawlers] [progress-track] {
+      width: 100%;
+      height: 12px;
+      background: var(--muted);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    [battle-brawlers] [progress-fill] {
+      height: 100%;
+      background: var(--primary);
+      border-radius: 6px;
+      transition: width 200ms;
+    }
+
+    [battle-brawlers] [victory-text] {
+      color: var(--primary);
+    }
+
+    [battle-brawlers] [defeat-text] {
+      color: var(--destructive);
+    }
+
+    [battle-brawlers] [stretch] {
+      align-items: stretch;
+    }
+
+    [battle-brawlers] [range-input] {
+      width: 60%;
+    }
+
+    [battle-brawlers] [dialog-backdrop] {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    [battle-brawlers] [dialog-card] {
+      min-width: 300px;
+      max-width: 400px;
+    }
+
+    [battle-brawlers] [dialog-actions] {
+      justify-content: flex-end;
+    }
+
+    [battle-brawlers] [progression-panel] {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 24px;
+      max-width: 860px;
+      width: 94%;
+      max-height: 90vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    [battle-brawlers] [progression-scroll] {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+
+    [battle-brawlers] [progression-card] {
+      min-width: 140px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    [battle-brawlers] [progression-card][data-claimed="yes"] {
+      opacity: 0.5;
+    }
+
+    [battle-brawlers] [progression-card][data-reached="no"]:not([data-claimed="yes"]) {
+      opacity: 0.4;
+    }
+
+    [battle-brawlers] [progression-rewards] {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-bottom: 8px;
+    }
+
+    [battle-brawlers] [progression-reward] {
+      font-size: 0.7rem;
+      color: var(--muted-foreground);
+    }
+
+    [battle-brawlers] [progression-claimed] {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-top: auto;
+    }
+
+    [battle-brawlers] [progression-claim] {
+      font-size: 0.7rem;
+      padding: 4px 12px;
+      margin-top: auto;
+    }
+
+    [battle-brawlers] [tooltip-layer] {
+      position: fixed;
+      z-index: 100;
+      pointer-events: none;
+      transform: translateY(-100%);
+    }
+
+    [battle-brawlers] [tooltip-card] {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      max-width: 240px;
+    }
+
+    [battle-brawlers] [tooltip-name] {
+      display: block;
+      font-size: 0.85rem;
+    }
+
+    [battle-brawlers] [tooltip-desc] {
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+    }
+
+    [battle-brawlers] [tooltip-stat] {
+      display: block;
+      font-size: 0.7rem;
+      color: var(--muted-foreground);
+      margin-top: 2px;
+    }
+
+    [battle-brawlers] [tooltip-fallback] {
+      display: block;
+    }
+
+    [battle-brawlers] [notification-stack] {
+      position: fixed;
+      top: 40px;
+      right: 16px;
+      z-index: 60;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-width: 300px;
+    }
+
+    [battle-brawlers] [notification-card] {
+      animation: slide-in 200ms ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    [battle-brawlers] [notification-card][data-type="error"] {
+      background: #dc2626;
+      color: white;
+    }
+
+    [battle-brawlers] [notification-card][data-type="warning"] {
+      background: #d97706;
+      color: white;
+    }
+
+    [battle-brawlers] [notification-card][data-type="success"] {
+      background: #16a34a;
+      color: white;
+    }
+
+    [battle-brawlers] [notification-card][data-type="info"] {
+      background: #2563eb;
+      color: white;
+    }
+
+    [battle-brawlers] [devbar] {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      font-size: 0.75rem;
+      width: 100%;
+    }
+
+    [battle-brawlers] [devbar-btn] {
+      all: unset;
+      cursor: pointer;
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--card);
+    }
+
+    [battle-brawlers] [devbar-btn]:hover {
+      background: var(--background);
+    }
+
+    [battle-brawlers] [devbar-link] {
+      padding: 2px 8px;
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+      text-decoration: none;
+      border: 1px solid transparent;
+      border-bottom: none;
+    }
+
+    [battle-brawlers] [devbar-link]:hover {
+      color: var(--foreground);
+    }
+
+  </style>
+</body>
+
+</html>

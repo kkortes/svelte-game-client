@@ -1,51 +1,14 @@
 {
   "name": "battle-brawlers",
-  "version": "0.0.3",
+  "version": "0.1.0",
+  "type": "module",
   "scripts": {
-    "dev": "vite dev",
-    "predev": "vercel env pull",
-    "build": "vite build",
-    "preview": "vite preview",
-    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-    "lint": "prettier --check . && eslint .",
-    "format": "prettier --write ."
-  },
-  "devDependencies": {
-    "@sveltejs/adapter-vercel": "^5.4.3",
-    "@sveltejs/kit": "^2.0.0",
-    "@sveltejs/vite-plugin-svelte": "^4.0.0-next.6",
-    "@types/eslint": "^9.6.0",
-    "@types/howler": "^2.2.12",
-    "autoprefixer": "^10.4.14",
-    "bun-types": "^1.1.27",
-    "eslint": "^9.0.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-svelte": "^2.36.0",
-    "globals": "^15.0.0",
-    "postcss": "^8.4.24",
-    "prettier": "^3.1.1",
-    "prettier-plugin-svelte": "^3.1.2",
-    "svelte": "5.38.3",
-    "svelte-check": "^4.0.0",
-    "tailwind-merge": "^1.13.1",
-    "tailwindcss": "^4.1.0",
-    "typescript": "^5.0.0",
-    "typescript-eslint": "^8.0.0",
-    "vite": "^5.0.3"
+    "dev": "bunx live-server --port=3000 --no-browser"
   },
   "dependencies": {
-    "@tailwindcss/vite": "^4.1.12",
+    "@ape-egg/vibe": "latest",
     "async-await-websockets": "^3.0.5",
     "howler": "^2.2.4",
-    "prettier-plugin-tailwindcss": "^0.6.14",
-    "seedrandom": "^3.0.5",
-    "svelte-dnd-action": "^0.9.64",
-    "svelte-portal": "^2.2.1",
-    "sveltekit-autoimport": "^1.8.1"
-  },
-  "type": "module",
-  "patchedDependencies": {
-    "svelte-dnd-action@0.9.64": "patches/svelte-dnd-action@0.9.64.patch"
+    "seedrandom": "^3.0.5"
   }
 }

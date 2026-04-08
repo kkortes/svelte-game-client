@@ -1,0 +1,61 @@
+<script type="module">
+  import { ALL_EQUIPMENT } from '/js/constants/EQUIPMENT.js';
+
+  $.scalingEquipment = Object.entries(ALL_EQUIPMENT).map(([id, item]) => ({
+    id,
+    name: item.name,
+    slot: item.slotsIn,
+    cost: item.cost,
+    level: item.level,
+    damage: item.combatStats?.damage ?? 0,
+    maxHealth: item.combatStats?.maxHealth ?? 0,
+    maxArmor: item.combatStats?.maxArmor ?? 0,
+    resistance: item.combatStats?.resistance ?? 0
+  }));
+</script>
+
+<div page-equip-scaling>
+<crow vertical g-4 left>
+  <h3 cinzel m-0>Equipment Scaling</h3>
+
+  <div table-scroll>
+    <table scaling-table>
+      <thead>
+        <tr>
+          <th text-sm th-left>Name</th>
+          <th text-sm>Slot</th>
+          <th text-sm>Cost</th>
+          <th text-sm>Level</th>
+          <th text-sm>Damage</th>
+          <th text-sm>HP</th>
+          <th text-sm>Armor</th>
+          <th text-sm>Resist</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- each scalingEquipment as item -->
+        <tr>
+          <td text-sm font-medium>@[item.name]</td>
+          <td text-sm>@[item.slot]</td>
+          <td text-sm>@[Math.floor(item.cost / 100)]s @[item.cost % 100]c</td>
+          <td text-sm>@[item.level]</td>
+          <td text-sm>@[item.damage]</td>
+          <td text-sm>@[item.maxHealth]</td>
+          <td text-sm>@[item.maxArmor]</td>
+          <td text-sm>@[item.resistance]</td>
+        </tr>
+        <!-- /each -->
+      </tbody>
+    </table>
+  </div>
+</crow>
+</div>
+
+<style>
+[page-equip-scaling] [table-scroll] { overflow-x: auto; width: 100%; }
+[page-equip-scaling] [scaling-table] { width: 100%; border-collapse: collapse; }
+[page-equip-scaling] th,
+[page-equip-scaling] td { padding: 6px 8px; text-align: center; border-bottom: 1px solid var(--border); }
+[page-equip-scaling] [th-left],
+[page-equip-scaling] td:first-child { text-align: left; }
+</style>

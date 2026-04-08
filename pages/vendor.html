@@ -1,0 +1,150 @@
+<script type="module">
+  import EQUIPMENT, { ALL_EQUIPMENT } from '/js/constants/EQUIPMENT.js';
+  import { slotsInPrettyName } from '/js/equipment.js';
+  import { formatCoins } from '/js/coin.js';
+  import { notify } from '/js/actions.js';
+
+  const EQUIPMENT_TYPES = ['oneHand', 'offHand', 'twoHand', 'armor', 'accessory', 'trinket'];
+
+  $.vendorItems = Object.keys(ALL_EQUIPMENT).map(key => {
+    const item = EQUIPMENT(key, true);
+    return { ...item, id: key, slotLabel: slotsInPrettyName(item.slotsIn) };
+  });
+  $.vendorFilter = 'all';
+  $.vendorFiltered = $.vendorItems;
+
+  window.vendorFilterBy = (type) => {
+    if (type === $.vendorFilter) type = 'all';
+    $.vendorFilter = type;
+    $.vendorFiltered = type === 'all'
+      ? $.vendorItems
+      : $.vendorItems.filter(item => item.slotsIn.includes(type));
+  };
+
+  window.vendorFilterCount = (type) =>
+    type === 'all'
+      ? $.vendorItems.length
+      : $.vendorItems.filter(item => item.slotsIn.includes(type)).length;
+
+  window.vendorAcquire = (itemId) => {
+    const item = EQUIPMENT(itemId, false);
+    const { cost, level } = EQUIPMENT(item, true);
+    item.overrides = { level };
+
+    if ($.coins < cost) {
+      notify({ warning: 'Not enough coins.' });
+      return;
+    }
+
+    const { silver, copper } = formatCoins(cost);
+    const coinText = (silver ? silver + 's ' : '') + copper + 'c';
+
+    $.dialog = {
+      dialogId: 'confirm',
+      props: {
+        text: `Are you sure you want to acquire this equipment for ${coinText}?`,
+        confirm: () => {
+          $.coins -= cost;
+          $.inventory.push(item);
+          notify({ success: 'Equipment acquired!' });
+        }
+      }
+    };
+  };
+</script>
+
+<div page-vendor>
+<h3 cinzel m-0>Vendor</h3>
+
+<crow vendor-filters mt-4 g-1>
+  <button
+    tertiary vendor-filter-btn
+    data-active="@[$.vendorFilter === 'all']"
+    onclick="vendorFilterBy('all')"
+  >All (@[$.vendorItems.length])</button>
+  <button
+    tertiary vendor-filter-btn
+    data-active="@[$.vendorFilter === 'oneHand']"
+    onclick="vendorFilterBy('oneHand')"
+  >One-Handed (@[vendorFilterCount('oneHand')])</button>
+  <button
+    tertiary vendor-filter-btn
+    data-active="@[$.vendorFilter === 'offHand']"
+    onclick="vendorFilterBy('offHand')"
+  >Off-Hand (@[vendorFilterCount('offHand')])</button>
+  <button
+    tertiary vendor-filter-btn
+    data-active="@[$.vendorFilter === 'twoHand']"
+    onclick="vendorFilterBy('twoHand')"
+  >Two-Handed (@[vendorFilterCount('twoHand')])</button>
+  <button
+    tertiary vendor-filter-btn
+    data-active="@[$.vendorFilter === 'armor']"
+    onclick="vendorFilterBy('armor')"
+  >Armor (@[vendorFilterCount('armor')])</button>
+  <button
+    tertiary vendor-filter-btn
+    data-active="@[$.vendorFilter === 'accessory']"
+    onclick="vendorFilterBy('accessory')"
+  >Accessory (@[vendorFilterCount('accessory')])</button>
+  <button
+    tertiary vendor-filter-btn
+    data-active="@[$.vendorFilter === 'trinket']"
+    onclick="vendorFilterBy('trinket')"
+  >Trinket (@[vendorFilterCount('trinket')])</button>
+</crow>
+
+<crow vertical up left vendor-table mt-4>
+  <crow up left vendor-header>
+    <div cinzel vendor-col-name>Name</div>
+    <div cinzel vendor-col-slot>Slots in</div>
+    <div cinzel vendor-col-cost>Cost</div>
+    <div vendor-col-action></div>
+  </crow>
+
+  <!-- each vendorFiltered as item, i -->
+  <crow left vendor-row data-even="@[i % 2 === 0]">
+    <crow left vendor-col-name g-2>
+      <span
+        vendor-item-name
+        data-level-tier="@[item.level >= 25 ? 'red' : item.level >= 20 ? 'orange' : item.level >= 15 ? 'purple' : item.level >= 10 ? 'blue' : item.level >= 5 ? 'green' : 'gray']"
+      >@[item.name]</span>
+    </crow>
+    <div vendor-col-slot text-sm text-muted>@[item.slotLabel]</div>
+    <div vendor-col-cost>
+      <span text-sm font-bold>@[Math.floor(item.cost / 100)]s @[item.cost % 100]c</span>
+    </div>
+    <crow vendor-col-action right>
+      <button
+        tertiary text-sm
+        onclick="vendorAcquire('@[item.id]')"
+        data-disabled="@[$.coins < item.cost]"
+      >Acquire</button>
+    </crow>
+  </crow>
+  <!-- /each -->
+</crow>
+</div>
+
+<style>
+[page-vendor] [vendor-filters] { display: flex; flex-wrap: wrap; align-items: stretch; justify-content: stretch; }
+[page-vendor] [vendor-filter-btn] { flex: 1; }
+[page-vendor] [vendor-filter-btn][data-active="true"] { opacity: 1; background: var(--accent); }
+[page-vendor] [vendor-table] { margin-left: -16px; margin-right: -16px; width: auto; }
+[page-vendor] [vendor-header] { gap: 16px; padding: 8px 24px; }
+[page-vendor] [vendor-row] { width: 100%; gap: 16px; padding: 8px 24px; font-size: 0.875rem; }
+[page-vendor] [vendor-row][data-even="true"] { background: var(--stone-50, #fafaf9); }
+[page-vendor] [vendor-row][data-even="false"] { background: white; }
+[page-vendor] [vendor-col-name] { flex: 1; }
+[page-vendor] [vendor-col-slot] { flex: 1; }
+[page-vendor] [vendor-col-cost] { flex: 1; }
+[page-vendor] [vendor-col-action] { width: 80px; flex: none; }
+[page-vendor] [vendor-item-name] { cursor: default; border-bottom: 2px solid transparent; padding-bottom: 1px; line-height: 1.25; }
+[page-vendor] [vendor-item-name][data-level-tier="gray"] { border-bottom-color: #9ca3af; }
+[page-vendor] [vendor-item-name][data-level-tier="green"] { border-bottom-color: #16a34a; }
+[page-vendor] [vendor-item-name][data-level-tier="blue"] { border-bottom-color: #2563eb; }
+[page-vendor] [vendor-item-name][data-level-tier="purple"] { border-bottom-color: #9333ea; }
+[page-vendor] [vendor-item-name][data-level-tier="orange"] { border-bottom-color: #ea580c; }
+[page-vendor] [vendor-item-name][data-level-tier="red"] { border-bottom-color: #dc2626; }
+[page-vendor] [vendor-col-action] button[data-disabled="true"] { pointer-events: none; opacity: 0.4; }
+</style>

@@ -1,0 +1,154 @@
+<script type="module">
+  import CHARACTERS, { DEFAULT_LUCKY_STATS, DEFAULT_MODIFIERS } from '/js/constants/CHARACTERS.js';
+  import { RECRUITABLE_CHARACTERS } from '/js/constants/RECRUITABLE_CHARACTERS.js';
+  import { ALL_ELEMENTS } from '/js/constants/ELEMENTS.js';
+  import { correctHealth } from '/js/equipment.js';
+  import { allowedNumberOfCharacters } from '/js/level.js';
+  import { notify } from '/js/actions.js';
+  import { navigate } from '/js/router.js';
+  import { calculateCombatStatsByCharacter } from '/js/utils.js';
+
+  $.recruitableCharacters = RECRUITABLE_CHARACTERS.map(ref => {
+    const char = CHARACTERS(ref, true);
+    const element = ALL_ELEMENTS[char.element] || { color: { primary: '#888', secondary: '#aaa' } };
+    const stats = calculateCombatStatsByCharacter(char);
+    const isRecruited = $.characters.some(c => c.id === char.id);
+
+    const luckyBonuses = [];
+    const cs = char.combatStats;
+    if (cs.criticalChance !== DEFAULT_LUCKY_STATS.criticalChance) luckyBonuses.push({ label: 'Crit%', value: '+' + Math.round((cs.criticalChance - DEFAULT_LUCKY_STATS.criticalChance) * 100) + '%' });
+    if (cs.criticalDamage !== DEFAULT_LUCKY_STATS.criticalDamage) luckyBonuses.push({ label: 'CritDmg', value: '+' + Math.round((cs.criticalDamage - DEFAULT_LUCKY_STATS.criticalDamage) * 100) + '%' });
+    if (cs.dodgeChance !== DEFAULT_LUCKY_STATS.dodgeChance) luckyBonuses.push({ label: 'Dodge', value: '+' + Math.round((cs.dodgeChance - DEFAULT_LUCKY_STATS.dodgeChance) * 100) + '%' });
+    if (cs.blockChance !== DEFAULT_LUCKY_STATS.blockChance) luckyBonuses.push({ label: 'Block', value: '+' + Math.round((cs.blockChance - DEFAULT_LUCKY_STATS.blockChance) * 100) + '%' });
+    if (cs.magicChance !== DEFAULT_LUCKY_STATS.magicChance) luckyBonuses.push({ label: 'Magic', value: '+' + Math.round((cs.magicChance - DEFAULT_LUCKY_STATS.magicChance) * 100) + '%' });
+
+    const modBonuses = [];
+    const mods = cs.modifiers || {};
+    if (mods.maxHealth !== DEFAULT_MODIFIERS.maxHealth) modBonuses.push({ label: 'HP', value: '+' + Math.round((mods.maxHealth - DEFAULT_MODIFIERS.maxHealth) * 100) + '%' });
+    if (mods.maxArmor !== DEFAULT_MODIFIERS.maxArmor) modBonuses.push({ label: 'Armor', value: '+' + Math.round((mods.maxArmor - DEFAULT_MODIFIERS.maxArmor) * 100) + '%' });
+    if (mods.damage !== DEFAULT_MODIFIERS.damage) modBonuses.push({ label: 'Dmg', value: '+' + Math.round((mods.damage - DEFAULT_MODIFIERS.damage) * 100) + '%' });
+    if (mods.resistance !== DEFAULT_MODIFIERS.resistance) modBonuses.push({ label: 'Res', value: '+' + Math.round((mods.resistance - DEFAULT_MODIFIERS.resistance) * 100) + '%' });
+
+    return {
+      ref,
+      name: char.name,
+      race: char.race,
+      image: char.image,
+      element: char.element,
+      primary: element.color.primary,
+      secondary: element.color.secondary,
+      id: char.id,
+      isRecruited,
+      hp: stats.maxHealth,
+      armor: stats.maxArmor,
+      damage: stats.damage,
+      luckyBonuses,
+      modBonuses
+    };
+  });
+
+  $.brawlerCharCount = $.characters.length;
+  $.brawlerCharMax = allowedNumberOfCharacters();
+
+  window.pickCharacter = (index) => {
+    const capped = $.characters.length >= allowedNumberOfCharacters();
+    if (capped) {
+      notify({ warning: 'You cannot recruit more brawlers. Level up your ludus first.' });
+      return;
+    }
+
+    const ref = RECRUITABLE_CHARACTERS[index];
+    const char = CHARACTERS(ref, true);
+    const isRecruited = $.characters.find(c => c.id === char.id);
+    if (isRecruited) {
+      notify({ warning: `${char.name} is already recruited` });
+      return;
+    }
+
+    $.dialog = {
+      dialogId: 'confirm',
+      props: {
+        text: `Recruiting ${char.name} to your Ludus.`,
+        confirm: () => {
+          $.characters.push(correctHealth(ref));
+          navigate(`/brawlers/${$.characters.length - 1}`);
+        }
+      }
+    };
+  };
+</script>
+
+<div page-brawlers>
+<h3 cinzel m-0>Brawlers</h3>
+
+<crow vertical cinzel brawlers-heading>
+  <!-- if characters.length === 0 -->
+  <span>Select your first brawler</span>
+  <!-- /if -->
+  <!-- if characters.length > 0 -->
+  <span>Select a brawler</span>
+  <!-- /if -->
+  <span text-sm text-muted>@[brawlerCharCount] / @[brawlerCharMax]</span>
+</crow>
+
+<crow brawlers-grid>
+  <!-- each recruitableCharacters as char, idx -->
+  <div
+    brawler-card p-2 flex-none
+    onclick="pickCharacter(@[idx])"
+    style="--c1: @[char.primary]; --c2: @[char.secondary]"
+    data-recruited="@[char.isRecruited]"
+  >
+    <crow vertical left g-2>
+      <span cinzel brawler-name>@[char.name]</span>
+      <hr divider />
+      <crow g-4 left w-full>
+        <div char-portrait glass>
+          <img src="/static/images/races/@[char.image]" alt="@[char.name]" portrait-img onerror="this.style.display='none'" />
+        </div>
+        <crow vertical left g-1>
+          <span text-sm text-muted>@[char.race]</span>
+          <span text-sm text-muted>@[char.element]</span>
+          <crow g-2 mt-1>
+            <span text-xs core-stat>HP @[char.hp]</span>
+            <!-- if char.armor > 0 -->
+            <span text-xs core-stat>Armor @[char.armor]</span>
+            <!-- /if -->
+            <span text-xs core-stat>Dmg @[char.damage]</span>
+          </crow>
+          <!-- if char.luckyBonuses.length > 0 -->
+          <crow g-2 bonus-row>
+            <!-- each char.luckyBonuses as bonus -->
+            <span text-xs bonus-stat>@[bonus.label] @[bonus.value]</span>
+            <!-- /each -->
+          </crow>
+          <!-- /if -->
+          <!-- if char.modBonuses.length > 0 -->
+          <crow g-2 bonus-row>
+            <!-- each char.modBonuses as bonus -->
+            <span text-xs bonus-stat>@[bonus.label] @[bonus.value]</span>
+            <!-- /each -->
+          </crow>
+          <!-- /if -->
+        </crow>
+      </crow>
+    </crow>
+  </div>
+  <!-- /each -->
+</crow>
+</div>
+
+<style>
+[page-brawlers] [brawlers-heading] { align-items: center; margin: 48px 0; }
+[page-brawlers] [brawlers-grid] { flex-wrap: wrap; gap: 16px; align-items: flex-start; justify-content: flex-start; }
+[page-brawlers] [brawler-card] { width: 360px; border-radius: var(--radius); overflow: hidden; cursor: pointer; border: 0.5px solid var(--c1, var(--border)); background: linear-gradient(135deg, color-mix(in oklch, var(--c1) 20%, transparent), color-mix(in oklch, var(--c2) 20%, transparent)); min-height: 200px; }
+[page-brawlers] [brawler-card]:active { translate: 0 1px; }
+[page-brawlers] [brawler-card][data-recruited="true"] { opacity: 0.5; filter: grayscale(1); cursor: not-allowed; }
+[page-brawlers] [brawler-name] { font-size: 1.5rem; }
+[page-brawlers] [divider] { width: 100%; border: none; border-top: 1px solid var(--border); }
+[page-brawlers] [char-portrait] { width: 120px; flex: none; aspect-ratio: 11/12; border-radius: var(--radius); overflow: hidden; border: 1px solid rgba(0,0,0,0.1); }
+[page-brawlers] [portrait-img] { width: 100%; height: 100%; object-fit: cover; }
+[page-brawlers] [core-stat] { color: var(--foreground); opacity: 0.8; }
+[page-brawlers] [bonus-stat] { color: #16a34a; }
+[page-brawlers] [bonus-row] { flex-wrap: wrap; }
+</style>

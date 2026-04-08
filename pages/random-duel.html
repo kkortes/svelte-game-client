@@ -1,0 +1,68 @@
+<script type="module">
+  import { getLevelByExperience, getExperienceRangeForLevel } from '/js/level.js';
+  import { generateCombat, healFull, prepareTeams } from '/js/combat.js';
+  import { notify } from '/js/actions.js';
+
+  $.maxBrawlers = Math.floor(getLevelByExperience($.experience) / 5) + 1;
+
+  window.runPvpCombat = async () => {
+    const selected = $.characters.filter(c => $.selectedBrawlers.includes(c.uuid));
+
+    if (selected.length === 0) {
+      notify({ warning: 'Select at least one brawler.' });
+      return;
+    }
+
+    const level = getLevelByExperience($.experience);
+    const { minXp, maxXp } = getExperienceRangeForLevel(level);
+
+    const opponents = await $.socket.sendAsync('pvp/get-random-opponent', {
+      count: selected.length,
+      minXp,
+      maxXp
+    });
+
+    if (!opponents?.length) {
+      notify({ warning: 'No opponents found.' });
+      return;
+    }
+
+    const seed = `${Math.random()}`;
+    const combat = generateCombat(prepareTeams(selected, opponents), seed);
+    $.combat = combat;
+    $.elapsedMilliseconds = 0;
+    $.overlay = 'Combat';
+  };
+</script>
+
+<div page-pvp>
+<crow vertical g-4 left>
+  <h3 cinzel m-0>Random Duel</h3>
+
+  <crow pvp-versus>
+    <card pvp-avatar>
+      ?
+    </card>
+    <span cinzel font-medium text-lg>vs</span>
+    <card pvp-avatar>
+      ?
+    </card>
+  </crow>
+
+  <span text-sm text-muted>
+    @[selectedBrawlers.length] / @[maxBrawlers] brawlers selected
+  </span>
+
+  <button primary onclick="runPvpCombat()">Fight</button>
+
+  <p text-sm text-muted pvp-hint>
+    Select your brawlers from the sidebar before starting a duel. You'll be matched against a random opponent near your level.
+  </p>
+</crow>
+</div>
+
+<style>
+[page-pvp] [pvp-versus] { gap: 32px; align-items: center; justify-content: center; width: 100%; margin: 32px 0; }
+[page-pvp] [pvp-avatar] { width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 2rem; }
+[page-pvp] [pvp-hint] { max-width: 400px; }
+</style>

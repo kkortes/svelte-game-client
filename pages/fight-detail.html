@@ -1,0 +1,140 @@
+<script type="module">
+  import { ALL_FIGHTS } from '/js/constants/FIGHTS.js';
+  import CHARACTERS from '/js/constants/CHARACTERS.js';
+  import { generateCombat, prepareTeams } from '/js/combat.js';
+  import { navigate } from '/js/router.js';
+  import { notify } from '/js/actions.js';
+  import { getExperienceReward } from '/js/level.js';
+
+  const fightId = $.routeParams.fightId;
+  const fight = ALL_FIGHTS.find(f => f.id === fightId);
+
+  if (fight) {
+    $.currentFight = {
+      ...fight,
+      enemies: fight.characters.map(ref => {
+        const char = CHARACTERS(ref, true);
+        return { name: char.name, image: char.image, race: char.race };
+      })
+    };
+    $.selectedBrawlers = [];
+    $.maxBrawlers = fight.allowedNumberOfCharacters;
+
+    $.fightSlots = Array.from({ length: fight.allowedNumberOfCharacters }, (_, i) => {
+      return { index: i, name: '', filled: false };
+    });
+  }
+
+  window.updateFightSlots = () => {
+    if (!$.currentFight) return;
+    $.fightSlots = Array.from({ length: $.maxBrawlers }, (_, i) => {
+      const uuid = $.selectedBrawlers[i];
+      if (!uuid) return { index: i, name: '', filled: false };
+      const char = $.characters.find(c => c.uuid === uuid);
+      if (!char) return { index: i, name: '', filled: false };
+      const full = CHARACTERS(char, true);
+      return { index: i, name: full.name, filled: true };
+    });
+  };
+
+  window.startFight = () => {
+    const fight = ALL_FIGHTS.find(f => f.id === $.routeParams.fightId);
+    if (!fight) return;
+
+    const allies = $.selectedBrawlers.length > 0
+      ? $.characters.filter(c => $.selectedBrawlers.includes(c.uuid))
+      : $.characters.slice(0, fight.allowedNumberOfCharacters);
+
+    if (allies.length === 0) {
+      notify({ warning: 'You need at least one brawler to fight.' });
+      return;
+    }
+
+    const seed = `${Math.random()}`;
+    const combat = generateCombat(prepareTeams(allies, fight.characters), seed, fight.id);
+    $.combat = combat;
+    $.elapsedMilliseconds = 0;
+    $.overlay = 'Combat';
+  };
+</script>
+
+<div page-fight>
+<!-- if currentFight -->
+<crow vertical g-4 left>
+  <a href="/the-arena">&larr; Back to The Arena</a>
+
+  <crow justify-between w-full>
+    <h3 cinzel m-0>@[currentFight.name]</h3>
+    <!-- if currentFight.boss -->
+    <span text-sm boss-badge>BOSS</span>
+    <!-- /if -->
+  </crow>
+
+  <crow g-4>
+    <span text-sm text-muted>Level @[currentFight.minLevel]–@[currentFight.maxLevel]</span>
+    <span text-sm text-muted>Max @[currentFight.allowedNumberOfCharacters] brawler@[currentFight.allowedNumberOfCharacters === 1 ? '' : 's']</span>
+  </crow>
+
+  <!-- if currentFight.description -->
+  <p text-sm>@[currentFight.description]</p>
+  <!-- /if -->
+
+  <hr divider />
+
+  <h5 cinzel m-0>Your Brawlers</h5>
+  <p text-xs text-muted>Select brawlers from the sidebar</p>
+  <crow brawler-slots g-2>
+    <!-- each fightSlots as slot -->
+    <card brawler-slot data-filled="@[slot.filled]">
+      <!-- if slot.filled -->
+      <span text-sm font-medium>@[slot.name]</span>
+      <!-- /if -->
+      <!-- if !slot.filled -->
+      <span text-xs text-muted>Select a brawler</span>
+      <!-- /if -->
+    </card>
+    <!-- /each -->
+  </crow>
+
+  <hr divider />
+
+  <h5 cinzel m-0>Enemies</h5>
+  <crow enemies-grid>
+    <!-- each currentFight.enemies as enemy -->
+    <card enemy-card>
+      <div enemy-portrait glass>
+        <img src="/static/images/races/@[enemy.image]" alt="@[enemy.name]" portrait-img onerror="this.style.display='none'" />
+      </div>
+      <span font-medium mt-1>@[enemy.name]</span>
+      <span text-xs text-muted>@[enemy.race]</span>
+    </card>
+    <!-- /each -->
+  </crow>
+
+  <hr divider />
+
+  <button primary onclick="startFight()" data-disabled="@[selectedBrawlers.length === 0]">Fight!</button>
+</crow>
+<!-- /if -->
+
+<!-- if !currentFight -->
+<crow vertical g-4 fight-empty>
+  <p text-muted>Fight not found.</p>
+  <a href="/the-arena">&larr; Back to The Arena</a>
+</crow>
+<!-- /if -->
+</div>
+
+<style>
+[page-fight] [boss-badge] { background: var(--destructive); color: white; padding: 2px 8px; border-radius: 4px; }
+[page-fight] [divider] { width: 100%; border: none; border-top: 1px solid var(--border); }
+[page-fight] [brawler-slots] { flex-wrap: wrap; }
+[page-fight] [brawler-slot] { min-width: 140px; min-height: 48px; display: flex; align-items: center; justify-content: center; border: 1px dashed var(--border); }
+[page-fight] [brawler-slot][data-filled="true"] { border-style: solid; border-color: var(--primary); background: color-mix(in oklch, var(--primary) 8%, transparent); }
+[page-fight] [enemies-grid] { flex-wrap: wrap; gap: 12px; }
+[page-fight] [enemy-card] { min-width: 120px; }
+[page-fight] [enemy-portrait] { width: 64px; height: 64px; border-radius: 4px; overflow: hidden; border: 1px solid rgba(0,0,0,0.1); }
+[page-fight] [portrait-img] { width: 100%; height: 100%; object-fit: cover; }
+[page-fight] [fight-empty] { align-items: center; }
+[page-fight] button[data-disabled="true"] { pointer-events: none; opacity: 0.4; }
+</style>

@@ -1,0 +1,63 @@
+<script type="module">
+  import { ALL_CHARACTERS } from '/js/constants/CHARACTERS.js';
+
+  $.scalingCharacters = Object.entries(ALL_CHARACTERS).map(([id, char]) => ({
+    id,
+    name: char.name,
+    race: char.race,
+    element: char.element,
+    image: char.image,
+    maxHealth: char.combatStats.maxHealth,
+    maxArmor: char.combatStats.maxArmor,
+    damage: char.combatStats.damage,
+    resistance: char.combatStats.resistance
+  }));
+</script>
+
+<div page-char-scaling>
+<crow vertical g-4 left>
+  <h3 cinzel m-0>Character Scaling</h3>
+
+  <crow char-grid>
+    <!-- each scalingCharacters as char -->
+    <card char-card flex-none>
+      <crow g-4 char-header>
+        <div char-portrait glass>
+          <img src="/static/images/races/@[char.image]" alt="@[char.name]" portrait-img onerror="this.style.display='none'" />
+        </div>
+        <crow vertical>
+          <span cinzel font-medium>@[char.name]</span>
+          <span text-xs text-muted>@[char.race] &middot; @[char.element]</span>
+        </crow>
+      </crow>
+      <hr divider />
+      <crow justify-between>
+        <span text-xs text-muted>Max HP</span>
+        <span text-sm font-medium>@[char.maxHealth]</span>
+      </crow>
+      <crow justify-between>
+        <span text-xs text-muted>Armor</span>
+        <span text-sm font-medium>@[char.maxArmor]</span>
+      </crow>
+      <crow justify-between>
+        <span text-xs text-muted>Damage</span>
+        <span text-sm font-medium>@[char.damage]</span>
+      </crow>
+      <crow justify-between>
+        <span text-xs text-muted>Resistance</span>
+        <span text-sm font-medium>@[char.resistance]</span>
+      </crow>
+    </card>
+    <!-- /each -->
+  </crow>
+</crow>
+</div>
+
+<style>
+[page-char-scaling] [char-grid] { flex-wrap: wrap; gap: 12px; align-items: stretch; }
+[page-char-scaling] [char-card] { width: 220px; display: flex; flex-direction: column; gap: 8px; border: 1px solid var(--border); }
+[page-char-scaling] [char-header] { align-items: center; }
+[page-char-scaling] [char-portrait] { width: 48px; height: 48px; border-radius: 4px; overflow: hidden; border: 1px solid rgba(0,0,0,0.1); }
+[page-char-scaling] [portrait-img] { width: 100%; height: 100%; object-fit: cover; }
+[page-char-scaling] [divider] { width: 100%; border: none; border-top: 1px solid var(--border); margin: 0; }
+</style>
