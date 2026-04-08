@@ -106,10 +106,10 @@
   };
 </script>
 
-<div page-brawler-detail>
+<page-brawler-detail>
 <!-- if currentCharacter -->
 <crow vertical g-4 left>
-  <a href="/brawlers">&larr; Back to Brawlers</a>
+  <button go-back tertiary onclick="navigate('/brawlers')">&#x2039; Back</button>
 
   <crow justify-between w-full headline-row>
     <crow g-4 left>
@@ -118,17 +118,17 @@
       <!-- if !settings.showDetailedCharacterView -->
       <crow core-stats g-2 left>
         <crow g-1>
-          <span stat-icon>&#x2764;</span>
+          <icon maxHealth></icon>
           <span>@[currentCombatStats.maxHealth]</span>
         </crow>
         <span stat-sep>/</span>
         <crow g-1>
-          <span stat-icon>&#x1F6E1;</span>
+          <icon maxArmor></icon>
           <span>@[currentCombatStats.maxArmor]</span>
         </crow>
         <span stat-sep>/</span>
         <crow g-1>
-          <span stat-icon>&#x2694;</span>
+          <icon damage></icon>
           <span>@[currentCombatStats.damage]</span>
         </crow>
       </crow>
@@ -169,7 +169,7 @@
             <crow justify-between w-full><span text-muted>damage</span><span>@[currentCombatStats.damage]</span></crow>
           </crow>
 
-          <div spacer-lg></div>
+          <spacer-lg></spacer-lg>
 
           <h5 cinzel m-0 lucky-heading>Lucky Stats</h5>
           <crow stat-list vertical left g-1>
@@ -190,7 +190,7 @@
             <crow justify-between w-full><span text-muted>resistance</span><span>@[currentCombatStats.modifiers.resistance]</span></crow>
           </crow>
 
-          <div spacer-sm></div>
+          <spacer-sm></spacer-sm>
 
           <h5 cinzel m-0>Resistances</h5>
           <crow stat-list vertical left g-1>
@@ -202,7 +202,7 @@
       </crow>
 
       <!-- if settings.showDetailedCharacterView -->
-      <div spacer-sm></div>
+      <spacer-sm></spacer-sm>
       <h5 cinzel m-0>Equipment</h5>
       <!-- /if -->
       <!-- /if -->
@@ -235,7 +235,7 @@
     </crow>
   </crow>
 
-  <div spacer-lg></div>
+  <spacer-lg></spacer-lg>
 
   <crow vertical left w-full ability-section>
     <crow justify-between w-full>
@@ -243,46 +243,45 @@
       <button tertiary onclick="tryOutBuild()">Try out build</button>
     </crow>
 
-    <div ability-bar>
+    <ability-bar>
       <crow tick-grid>
         <!-- each Array(15) as _, i -->
-        <div tick-cell></div>
+        <tick-cell></tick-cell>
         <!-- /each -->
       </crow>
 
-      <div tick-marker-12></div>
+      <tick-marker-12></tick-marker-12>
 
-      <div tick-marker-last style="left: calc((100% / 15) * @[currentLastTickEnd])">
+      <tick-marker-last style="left: calc((100% / 15) * @[currentLastTickEnd])">
         <crow vertical right tick-label>
           <strong>Ability&nbsp;sequence</strong>
           <span>@[currentLastTickEnd]&nbsp;ticks</span>
         </crow>
-      </div>
+      </tick-marker-last>
 
       <crow ability-overlay left up>
         <!-- each currentAbilities as ability -->
-        <div
-          ability-cell
+        <ability-cell
           style="width: calc(((100% / 15) * @[ability.ticks]) + 1px)"
           @[ability.basic ? 'basic' : '']
           @[ability.overTick ? 'over-tick' : '']
         >
           <span ability-name>@[ability.name]</span>
           <span ability-ticks>@[ability.ticks]t</span>
-        </div>
+        </ability-cell>
         <!-- /each -->
       </crow>
-    </div>
+    </ability-bar>
 
-    <div spacer-sm></div>
+    <spacer-sm></spacer-sm>
 
     <h5 cinzel m-0>Available Abilities</h5>
     <crow available-grid>
       <!-- each currentAvailableAbilities as ability -->
-      <div available-ability>
+      <available-ability>
         <span>@[ability.name]</span>
         <span text-muted text-xs>@[ability.ticks]t</span>
-      </div>
+      </available-ability>
       <!-- /each -->
       <!-- if currentAvailableAbilities.length === 0 -->
       <span text-muted text-sm>No additional abilities available. Equip items to unlock more.</span>
@@ -295,49 +294,55 @@
 <!-- if !currentCharacter -->
 <crow vertical g-4 detail-empty>
   <p text-muted>No brawler found.</p>
-  <a href="/brawlers">&larr; Back to Brawlers</a>
+  <button go-back tertiary onclick="navigate('/brawlers')">&#x2039; Back</button>
 </crow>
 <!-- /if -->
-</div>
+</page-brawler-detail>
 
 <style>
-[page-brawler-detail] [headline-row] { align-items: center; }
-[page-brawler-detail] [core-stats] { font-size: 1.125rem; color: var(--text-muted); translate: 0 1px; }
-[page-brawler-detail] [stat-icon] { font-size: 0.875rem; }
-[page-brawler-detail] [stat-sep] { color: var(--border); }
-[page-brawler-detail] [toggle-btn] { padding: 4px 8px; }
-[page-brawler-detail] [retire-btn] { padding: 4px 8px; background: rgba(248, 113, 113, 0.2); color: rgb(248, 113, 113); }
-[page-brawler-detail] [avatar-col] { flex: none; }
-[page-brawler-detail] [avatar-frame] { aspect-ratio: 11/12; width: 100%; max-width: 280px; border-radius: var(--radius); overflow: hidden; border: 1px solid rgba(0,0,0,0.1); }
-[page-brawler-detail] [portrait-img] { width: 100%; height: 100%; object-fit: cover; }
-[page-brawler-detail] [detail-col] { flex: 2; }
-[page-brawler-detail] [stats-panel] { flex: none; }
-[page-brawler-detail] [stat-list] { min-width: 180px; }
-[page-brawler-detail] [lucky-heading] { color: rgb(34, 197, 94); }
-[page-brawler-detail] [lucky-heading] ~ [stat-list] span:not([text-muted]) { color: rgb(34, 197, 94); }
-[page-brawler-detail] [spacer-lg] { height: 16px; }
-[page-brawler-detail] [spacer-sm] { height: 8px; }
-[page-brawler-detail] [eq-slot-label] { width: 80px; flex: none; }
-[page-brawler-detail] [eq-row] { min-height: 28px; }
-[page-brawler-detail] [unequip-btn] { padding: 2px 6px; }
-[page-brawler-detail] [detail-empty] { align-items: center; }
+page-brawler-detail [go-back] {
+  position: absolute;
+  top: -28px;
+  left: -22px;
+  font-size: 0.75rem;
+  padding: 2px 8px;
+}
+page-brawler-detail [headline-row] { align-items: center; }
+page-brawler-detail [core-stats] { font-size: 1.125rem; color: var(--muted-foreground); translate: 0 1px; }
+page-brawler-detail [stat-sep] { color: var(--border); }
+page-brawler-detail [toggle-btn] { padding: 4px 8px; }
+page-brawler-detail [retire-btn] { padding: 4px 8px; background: rgba(248, 113, 113, 0.2); color: rgb(248, 113, 113); }
+page-brawler-detail [avatar-col] { flex: none; }
+page-brawler-detail [avatar-frame] { aspect-ratio: 11/12; width: 100%; max-width: 280px; border-radius: var(--radius); overflow: hidden; border: 1px solid rgba(0,0,0,0.1); }
+page-brawler-detail [portrait-img] { width: 100%; height: 100%; object-fit: cover; }
+page-brawler-detail [detail-col] { flex: 2; }
+page-brawler-detail [stats-panel] { flex: none; }
+page-brawler-detail [stat-list] { min-width: 180px; }
+page-brawler-detail [lucky-heading] { color: rgb(34, 197, 94); }
+page-brawler-detail [lucky-heading] ~ [stat-list] span:not([text-muted]) { color: rgb(34, 197, 94); }
+page-brawler-detail spacer-lg { display: block; height: 16px; }
+page-brawler-detail spacer-sm { display: block; height: 8px; }
+page-brawler-detail [eq-slot-label] { width: 80px; flex: none; }
+page-brawler-detail [eq-row] { min-height: 28px; }
+page-brawler-detail [unequip-btn] { padding: 2px 6px; }
+page-brawler-detail [detail-empty] { align-items: center; }
 
-[page-brawler-detail] [ability-bar] { position: relative; width: 100%; padding: 8px 4px; }
-[page-brawler-detail] [tick-grid] { width: 100%; }
-[page-brawler-detail] [tick-cell] { flex: 1; aspect-ratio: 2/3; border: 1px dashed var(--border); margin-left: -1px; }
-[page-brawler-detail] [tick-cell]:first-child { margin-left: 0; }
-[page-brawler-detail] [tick-marker-12] { position: absolute; top: 0; bottom: -8px; left: calc((100% / 15) * 12); width: 1px; border-right: 1px solid var(--text); translate: -1px 0; }
-[page-brawler-detail] [tick-marker-last] { position: absolute; top: 0; bottom: 0; width: 1px; border-right: 1px dashed var(--text-muted); translate: -1px 0; }
-[page-brawler-detail] [tick-label] { position: absolute; bottom: 100%; right: 0; text-align: right; font-size: 0.75rem; white-space: nowrap; }
-[page-brawler-detail] [tick-label] strong { line-height: 1; color: var(--text); }
-[page-brawler-detail] [ability-overlay] { position: absolute; inset: 8px 4px; width: calc(100% - 8px); border-radius: var(--radius); }
-[page-brawler-detail] [ability-cell] { flex: none; height: 100%; margin-left: -1px; border: 1px solid var(--text-muted); background: var(--bg-card, rgba(255,255,255,1)); border-radius: var(--radius-sm, 4px); display: flex; align-items: center; justify-content: center; gap: 4px; overflow: hidden; font-size: 0.75rem; }
-[page-brawler-detail] [ability-cell][basic] { background: var(--bg-muted, rgba(243,244,246,1)); border-color: var(--border); color: var(--text-muted); }
-[page-brawler-detail] [ability-cell][over-tick] { background: rgba(254,202,202,1); border-color: rgba(252,165,165,1); }
-[page-brawler-detail] [ability-cell]:not([basic]) { z-index: 1; }
-[page-brawler-detail] [ability-name] { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-[page-brawler-detail] [ability-ticks] { flex: none; font-size: 0.625rem; opacity: 0.6; }
+page-brawler-detail ability-bar { display: block; position: relative; width: 100%; padding: 8px 4px; }
+page-brawler-detail [tick-grid] { width: 100%; }
+page-brawler-detail tick-cell { display: block; flex: 1; aspect-ratio: 2/3; border: 1px dashed var(--border); margin-left: -1px; }
+page-brawler-detail tick-cell:first-child { margin-left: 0; }
+page-brawler-detail tick-marker-12 { display: block; position: absolute; top: 0; bottom: -8px; left: calc((100% / 15) * 12); width: 1px; border-right: 1px solid var(--text); translate: -1px 0; }
+page-brawler-detail tick-marker-last { display: block; position: absolute; top: 0; bottom: 0; width: 1px; border-right: 1px dashed var(--text-muted); translate: -1px 0; }
+page-brawler-detail [tick-label] { position: absolute; bottom: 100%; right: 0; text-align: right; font-size: 0.75rem; white-space: nowrap; }
+page-brawler-detail [tick-label] strong { line-height: 1; color: var(--text); }
+page-brawler-detail [ability-overlay] { position: absolute; inset: 8px 4px; width: calc(100% - 8px); border-radius: var(--radius); }
+page-brawler-detail ability-cell { flex: none; height: 100%; margin-left: -1px; border: 1px solid var(--text-muted); background: var(--bg-card, rgba(255,255,255,1)); border-radius: var(--radius-sm, 4px); display: flex; align-items: center; justify-content: center; gap: 4px; overflow: hidden; font-size: 0.75rem; }
+page-brawler-detail ability-cell[basic] { background: var(--bg-muted, rgba(243,244,246,1)); border-color: var(--border); color: var(--text-muted); }
+page-brawler-detail ability-cell[over-tick] { background: rgba(254,202,202,1); border-color: rgba(252,165,165,1); }
+page-brawler-detail ability-cell:not([basic]) { z-index: 1; }
+page-brawler-detail [ability-name] { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+page-brawler-detail [ability-ticks] { flex: none; font-size: 0.625rem; opacity: 0.6; }
 
-[page-brawler-detail] [available-grid] { flex-wrap: wrap; gap: 8px; align-items: flex-start; }
-[page-brawler-detail] [available-ability] { padding: 6px 10px; border: 1px solid var(--border); border-radius: var(--radius-sm, 4px); display: flex; align-items: center; gap: 6px; font-size: 0.875rem; }
+page-brawler-detail [available-grid] { flex-wrap: wrap; gap: 8px; align-items: flex-start; }
+page-brawler-detail available-ability { padding: 6px 10px; border: 1px solid var(--border); border-radius: var(--radius-sm, 4px); display: flex; align-items: center; gap: 6px; font-size: 0.875rem; }
 </style>

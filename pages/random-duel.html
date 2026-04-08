@@ -1,9 +1,25 @@
 <script type="module">
   import { getLevelByExperience, getExperienceRangeForLevel } from '/js/level.js';
   import { generateCombat, healFull, prepareTeams } from '/js/combat.js';
+  import CHARACTERS from '/js/constants/CHARACTERS.js';
   import { notify } from '/js/actions.js';
 
-  $.maxBrawlers = Math.floor(getLevelByExperience($.experience) / 5) + 1;
+  const count = Math.floor(getLevelByExperience($.experience) / 5) + 1;
+  $.maxBrawlers = count;
+
+  // Build selection slots
+  $.pvpSlots = Array.from({ length: count }, (_, i) => {
+    const uuid = $.selectedBrawlers[i];
+    if (!uuid) return { empty: true, index: i };
+    const ref = $.characters.find(c => c.uuid === uuid);
+    if (!ref) return { empty: true, index: i };
+    try {
+      const char = CHARACTERS(ref, true);
+      return { empty: false, name: char.name, index: i };
+    } catch {
+      return { empty: true, index: i };
+    }
+  });
 
   window.runPvpCombat = async () => {
     const selected = $.characters.filter(c => $.selectedBrawlers.includes(c.uuid));
@@ -13,56 +29,115 @@
       return;
     }
 
-    const level = getLevelByExperience($.experience);
-    const { minXp, maxXp } = getExperienceRangeForLevel(level);
+    try {
+      const level = getLevelByExperience($.experience);
+      const { minXp, maxXp } = getExperienceRangeForLevel(level);
 
-    const opponents = await $.socket.sendAsync('pvp/get-random-opponent', {
-      count: selected.length,
-      minXp,
-      maxXp
-    });
+      const opponents = await $.socket.sendAsync('pvp/get-random-opponent', {
+        count: selected.length,
+        minXp,
+        maxXp
+      });
 
-    if (!opponents?.length) {
-      notify({ warning: 'No opponents found.' });
-      return;
+      if (!opponents?.length) {
+        notify({ warning: 'No opponents found.' });
+        return;
+      }
+
+      const seed = `${Math.random()}`;
+      const combat = generateCombat(prepareTeams(selected, healFull(opponents.slice(0, selected.length))));
+      $.combat = combat;
+      $.elapsedMilliseconds = 0;
+      $.overlay = 'Combat';
+    } catch (e) {
+      notify({ error: 'Failed to find opponent' });
     }
-
-    const seed = `${Math.random()}`;
-    const combat = generateCombat(prepareTeams(selected, opponents), seed);
-    $.combat = combat;
-    $.elapsedMilliseconds = 0;
-    $.overlay = 'Combat';
   };
 </script>
 
-<div page-pvp>
-<crow vertical g-4 left>
-  <h3 cinzel m-0>Random Duel</h3>
+<page-pvp>
 
-  <crow pvp-versus>
-    <card pvp-avatar>
-      ?
-    </card>
-    <span cinzel font-medium text-lg>vs</span>
-    <card pvp-avatar>
-      ?
-    </card>
+<crow justify-between left>
+  <h3>Random duel</h3>
+  <crow left g-2>
+    <badge>@[selectedBrawlers.length || maxBrawlers]&nbsp;vs&nbsp;@[selectedBrawlers.length || maxBrawlers]</badge>
   </crow>
-
-  <span text-sm text-muted>
-    @[selectedBrawlers.length] / @[maxBrawlers] brawlers selected
-  </span>
-
-  <button primary onclick="runPvpCombat()">Fight</button>
-
-  <p text-sm text-muted pvp-hint>
-    Select your brawlers from the sidebar before starting a duel. You'll be matched against a random opponent near your level.
-  </p>
 </crow>
-</div>
+<hr pvp-headline-hr />
+
+<crow pvp-opponent>
+  <crow pvp-mystery>
+    ?
+  </crow>
+</crow>
+
+<crow vertical w-full g-2 mt-4>
+  <!-- each pvpSlots as slot -->
+  <!-- if slot.empty -->
+  <crow pvp-slot-empty>
+    <!-- if slot.index === 0 -->
+    <h5>select a brawler</h5>
+    <!-- /if -->
+    <!-- if slot.index > 0 -->
+    <h5>slot @[slot.index + 1]</h5>
+    <!-- /if -->
+  </crow>
+  <!-- /if -->
+  <!-- if !slot.empty -->
+  <crow pvp-slot-filled>
+    <span font-medium>@[slot.name]</span>
+  </crow>
+  <!-- /if -->
+  <!-- /each -->
+</crow>
+
+</page-pvp>
 
 <style>
-[page-pvp] [pvp-versus] { gap: 32px; align-items: center; justify-content: center; width: 100%; margin: 32px 0; }
-[page-pvp] [pvp-avatar] { width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 2rem; }
-[page-pvp] [pvp-hint] { max-width: 400px; }
+page-pvp [pvp-headline-hr] {
+  height: 1px;
+  border: 0;
+  background: linear-gradient(to right, rgba(0,0,0,0.25), transparent);
+  margin: 8px 0 16px;
+}
+
+page-pvp [pvp-opponent] {
+  justify-content: center;
+  padding: 16px 0;
+}
+
+page-pvp [pvp-mystery] {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 6rem;
+  color: white;
+  flex: none;
+}
+
+page-pvp [pvp-slot-empty] {
+  width: 100%;
+  height: 78px;
+  flex: none;
+  border: 1px dashed var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+page-pvp [pvp-slot-filled] {
+  width: 100%;
+  height: 78px;
+  flex: none;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  background: rgba(255, 255, 255, 0.3);
+}
 </style>

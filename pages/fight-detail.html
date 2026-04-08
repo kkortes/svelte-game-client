@@ -2,139 +2,321 @@
   import { ALL_FIGHTS } from '/js/constants/FIGHTS.js';
   import CHARACTERS from '/js/constants/CHARACTERS.js';
   import { generateCombat, prepareTeams } from '/js/combat.js';
+  import { calculateCombatStatsByCharacter } from '/js/utils.js';
+  import ABILITIES from '/js/constants/ABILITIES.js';
   import { navigate } from '/js/router.js';
   import { notify } from '/js/actions.js';
-  import { getExperienceReward } from '/js/level.js';
 
   const fightId = $.routeParams.fightId;
   const fight = ALL_FIGHTS.find(f => f.id === fightId);
 
   if (fight) {
+    // Apply level overrides to fight characters
+    const characters = fight.characters.map(charRef => ({
+      ...charRef,
+      overrides: {
+        ...charRef?.overrides,
+        level: fight.minLevel,
+        equipment: {
+          mainHand: { overrides: { level: fight.minLevel } },
+          offHand: { overrides: { level: fight.minLevel } },
+          armor: { overrides: { level: fight.minLevel } }
+        }
+      }
+    }));
+
+    // Hydrate enemies for display
     $.currentFight = {
       ...fight,
-      enemies: fight.characters.map(ref => {
-        const char = CHARACTERS(ref, true);
-        return { name: char.name, image: char.image, race: char.race };
+      characters,
+      enemies: characters.map(ref => {
+        try {
+          const char = CHARACTERS(ref, true);
+          const stats = calculateCombatStatsByCharacter(char);
+          const abilities = char.abilities.map(a => {
+            try { const h = ABILITIES(a, true); return { name: h.name, ticks: h.ticks, icon: h.icon }; }
+            catch { return { name: '?', ticks: 0, icon: '' }; }
+          });
+          return {
+            name: char.name, image: char.image, race: char.race,
+            description: char.description || '',
+            maxHealth: stats.maxHealth, maxArmor: stats.maxArmor, damage: stats.damage,
+            abilities
+          };
+        } catch {
+          return { name: '?', image: '', race: '', description: '', maxHealth: 0, maxArmor: 0, damage: 0, abilities: [] };
+        }
       })
     };
-    $.selectedBrawlers = [];
+
     $.maxBrawlers = fight.allowedNumberOfCharacters;
-
-    $.fightSlots = Array.from({ length: fight.allowedNumberOfCharacters }, (_, i) => {
-      return { index: i, name: '', filled: false };
-    });
+    $.selectedBrawlers = [];
   }
-
-  window.updateFightSlots = () => {
-    if (!$.currentFight) return;
-    $.fightSlots = Array.from({ length: $.maxBrawlers }, (_, i) => {
-      const uuid = $.selectedBrawlers[i];
-      if (!uuid) return { index: i, name: '', filled: false };
-      const char = $.characters.find(c => c.uuid === uuid);
-      if (!char) return { index: i, name: '', filled: false };
-      const full = CHARACTERS(char, true);
-      return { index: i, name: full.name, filled: true };
-    });
-  };
 
   window.startFight = () => {
     const fight = ALL_FIGHTS.find(f => f.id === $.routeParams.fightId);
     if (!fight) return;
 
-    const allies = $.selectedBrawlers.length > 0
-      ? $.characters.filter(c => $.selectedBrawlers.includes(c.uuid))
-      : $.characters.slice(0, fight.allowedNumberOfCharacters);
-
+    const allies = $.characters.filter(c => $.selectedBrawlers.includes(c.uuid));
     if (allies.length === 0) {
-      notify({ warning: 'You need at least one brawler to fight.' });
-      return;
+      // Use first N characters if none selected
+      const auto = $.characters.slice(0, fight.allowedNumberOfCharacters);
+      if (auto.length === 0) {
+        notify({ warning: 'You need at least one brawler to fight.' });
+        return;
+      }
+
+      const characters = fight.characters.map(charRef => ({
+        ...charRef,
+        overrides: { ...charRef?.overrides, level: fight.minLevel,
+          equipment: { mainHand: { overrides: { level: fight.minLevel } }, offHand: { overrides: { level: fight.minLevel } }, armor: { overrides: { level: fight.minLevel } } }
+        }
+      }));
+
+      $.combat = generateCombat(prepareTeams(JSON.parse(JSON.stringify(auto)), characters), undefined, fight.id);
+    } else {
+      const characters = fight.characters.map(charRef => ({
+        ...charRef,
+        overrides: { ...charRef?.overrides, level: fight.minLevel,
+          equipment: { mainHand: { overrides: { level: fight.minLevel } }, offHand: { overrides: { level: fight.minLevel } }, armor: { overrides: { level: fight.minLevel } } }
+        }
+      }));
+
+      $.combat = generateCombat(prepareTeams(JSON.parse(JSON.stringify(allies)), characters), undefined, fight.id);
     }
 
-    const seed = `${Math.random()}`;
-    const combat = generateCombat(prepareTeams(allies, fight.characters), seed, fight.id);
-    $.combat = combat;
+    $.selectedBrawlers = [];
     $.elapsedMilliseconds = 0;
     $.overlay = 'Combat';
   };
 </script>
 
-<div page-fight>
-<!-- if currentFight -->
-<crow vertical g-4 left>
-  <a href="/the-arena">&larr; Back to The Arena</a>
+<page-fight>
 
-  <crow justify-between w-full>
-    <h3 cinzel m-0>@[currentFight.name]</h3>
+<!-- if currentFight -->
+<button go-back tertiary onclick="navigate('/the-arena')">&#x2039; Back</button>
+
+<crow justify-between w-full>
+  <h3>@[currentFight.name]</h3>
+  <crow left g-2>
+    <badge>@[currentFight.allowedNumberOfCharacters]&nbsp;vs&nbsp;@[currentFight.enemies.length]</badge>
     <!-- if currentFight.boss -->
-    <span text-sm boss-badge>BOSS</span>
+    <badge>bossfight</badge>
+    <badge fight-badge-luck>luck disabled</badge>
     <!-- /if -->
   </crow>
-
-  <crow g-4>
-    <span text-sm text-muted>Level @[currentFight.minLevel]–@[currentFight.maxLevel]</span>
-    <span text-sm text-muted>Max @[currentFight.allowedNumberOfCharacters] brawler@[currentFight.allowedNumberOfCharacters === 1 ? '' : 's']</span>
-  </crow>
-
-  <!-- if currentFight.description -->
-  <p text-sm>@[currentFight.description]</p>
-  <!-- /if -->
-
-  <hr divider />
-
-  <h5 cinzel m-0>Your Brawlers</h5>
-  <p text-xs text-muted>Select brawlers from the sidebar</p>
-  <crow brawler-slots g-2>
-    <!-- each fightSlots as slot -->
-    <card brawler-slot data-filled="@[slot.filled]">
-      <!-- if slot.filled -->
-      <span text-sm font-medium>@[slot.name]</span>
-      <!-- /if -->
-      <!-- if !slot.filled -->
-      <span text-xs text-muted>Select a brawler</span>
-      <!-- /if -->
-    </card>
-    <!-- /each -->
-  </crow>
-
-  <hr divider />
-
-  <h5 cinzel m-0>Enemies</h5>
-  <crow enemies-grid>
-    <!-- each currentFight.enemies as enemy -->
-    <card enemy-card>
-      <div enemy-portrait glass>
-        <img src="/static/images/races/@[enemy.image]" alt="@[enemy.name]" portrait-img onerror="this.style.display='none'" />
-      </div>
-      <span font-medium mt-1>@[enemy.name]</span>
-      <span text-xs text-muted>@[enemy.race]</span>
-    </card>
-    <!-- /each -->
-  </crow>
-
-  <hr divider />
-
-  <button primary onclick="startFight()" data-disabled="@[selectedBrawlers.length === 0]">Fight!</button>
 </crow>
+<hr fight-headline-hr />
+
+<!-- each currentFight.enemies as enemy -->
+<crow left fight-enemy-row>
+  <!-- Enemy stats column -->
+  <crow fight-stats-col>
+    <crow vertical g-1>
+      <crow g-1><icon maxHealth></icon> @[enemy.maxHealth]</crow>
+      <crow g-1><icon maxArmor></icon> @[enemy.maxArmor]</crow>
+      <crow g-1><icon damage></icon> @[enemy.damage]</crow>
+    </crow>
+  </crow>
+
+  <!-- Enemy info column -->
+  <crow vertical up left fight-info-col>
+    <crow left g-2 mb-4>
+      <crow g-1 text-lg><icon maxHealth></icon> @[enemy.maxHealth]</crow>
+      <span text-muted>/</span>
+      <crow g-1 text-lg><icon maxArmor></icon> @[enemy.maxArmor]</crow>
+      <span text-muted>/</span>
+      <crow g-1 text-lg><icon damage></icon> @[enemy.damage]</crow>
+    </crow>
+
+    <!-- if enemy.description -->
+    <p text-sm mb-4>@[enemy.description]</p>
+    <!-- /if -->
+
+    <h5>Abilities</h5>
+    <fight-ability-bar>
+      <!-- each enemy.abilities as ability -->
+      <fight-ability-cell style="width: calc((100% / 12) * @[ability.ticks])">
+        <icon @[ability.icon]></icon>
+      </fight-ability-cell>
+      <!-- /each -->
+    </fight-ability-bar>
+  </crow>
+
+  <!-- Enemy image column -->
+  <fight-enemy-image>
+    <img src="/static/images/races/@[enemy.image]" alt="" onerror="this.style.display='none'" />
+  </fight-enemy-image>
+</crow>
+<!-- /each -->
+
+<hr fight-divider />
+
+<!-- Brawler selection slots -->
+<crow vertical w-full g-2>
+  <!-- each Array.from({length: currentFight.allowedNumberOfCharacters}, (_, i) => i) as slotIdx -->
+  <!-- if !selectedBrawlers[slotIdx] -->
+  <crow fight-slot-empty>
+    <!-- if slotIdx === 0 -->
+    <h5>select a brawler</h5>
+    <!-- /if -->
+    <!-- if slotIdx > 0 -->
+    <h5>slot @[slotIdx + 1]</h5>
+    <!-- /if -->
+  </crow>
+  <!-- /if -->
+  <!-- if selectedBrawlers[slotIdx] -->
+  <crow fight-slot-filled>
+    <span font-medium>Brawler selected</span>
+  </crow>
+  <!-- /if -->
+  <!-- /each -->
+</crow>
+
+<fight-sticky-bottom>
+  <crow right p-3 fight-bottom-bar>
+    <button fight-btn primary onclick="startFight()" data-disabled="@[selectedBrawlers.length === 0 && characters.length === 0]">Fight</button>
+  </crow>
+</fight-sticky-bottom>
 <!-- /if -->
 
 <!-- if !currentFight -->
 <crow vertical g-4 fight-empty>
   <p text-muted>Fight not found.</p>
-  <a href="/the-arena">&larr; Back to The Arena</a>
+  <a href="/the-arena">&#x2039; Back</a>
 </crow>
 <!-- /if -->
-</div>
+
+</page-fight>
 
 <style>
-[page-fight] [boss-badge] { background: var(--destructive); color: white; padding: 2px 8px; border-radius: 4px; }
-[page-fight] [divider] { width: 100%; border: none; border-top: 1px solid var(--border); }
-[page-fight] [brawler-slots] { flex-wrap: wrap; }
-[page-fight] [brawler-slot] { min-width: 140px; min-height: 48px; display: flex; align-items: center; justify-content: center; border: 1px dashed var(--border); }
-[page-fight] [brawler-slot][data-filled="true"] { border-style: solid; border-color: var(--primary); background: color-mix(in oklch, var(--primary) 8%, transparent); }
-[page-fight] [enemies-grid] { flex-wrap: wrap; gap: 12px; }
-[page-fight] [enemy-card] { min-width: 120px; }
-[page-fight] [enemy-portrait] { width: 64px; height: 64px; border-radius: 4px; overflow: hidden; border: 1px solid rgba(0,0,0,0.1); }
-[page-fight] [portrait-img] { width: 100%; height: 100%; object-fit: cover; }
-[page-fight] [fight-empty] { align-items: center; }
-[page-fight] button[data-disabled="true"] { pointer-events: none; opacity: 0.4; }
+page-fight [go-back] {
+  position: absolute;
+  top: -28px;
+  left: -22px;
+  font-size: 0.75rem;
+  padding: 2px 8px;
+}
+
+page-fight [fight-headline-hr] {
+  height: 1px;
+  border: 0;
+  background: linear-gradient(to right, rgba(0,0,0,0.25), transparent);
+  margin: 8px 0 16px;
+}
+
+page-fight [fight-badge-luck] {
+  background: oklch(0.85 0.1 20);
+  color: oklch(0.5 0.15 20);
+}
+
+page-fight [fight-enemy-row] {
+  align-items: stretch;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+page-fight [fight-stats-col] {
+  width: 80px;
+  flex: none;
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+page-fight [fight-info-col] {
+  flex: 1;
+  min-width: 0;
+}
+
+page-fight fight-enemy-image {
+  display: block;
+  width: 160px;
+  flex: none;
+  position: relative;
+  pointer-events: none;
+  transform: scaleX(-1);
+}
+
+page-fight fight-enemy-image img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+}
+
+page-fight fight-ability-bar {
+  display: flex;
+  width: 100%;
+  border: 1px solid var(--border);
+}
+
+page-fight fight-ability-cell {
+  height: 24px;
+  border-right: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  background: rgba(255,255,255,0.5);
+}
+
+page-fight fight-ability-cell:last-child {
+  border-right: none;
+}
+
+page-fight [fight-divider] {
+  height: 1px;
+  border: 0;
+  background: linear-gradient(to right, transparent, rgba(0,0,0,0.15), transparent);
+  margin: 24px 0;
+}
+
+page-fight [fight-slot-empty] {
+  width: 100%;
+  height: 78px;
+  flex: none;
+  border: 1px dashed var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+page-fight [fight-slot-filled] {
+  width: 100%;
+  height: 78px;
+  flex: none;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+page-fight fight-sticky-bottom {
+  display: block;
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 16px -16px -16px;
+}
+
+page-fight [fight-bottom-bar] {
+  background: linear-gradient(to top, rgba(30, 41, 59, 0.95), transparent);
+}
+
+page-fight [fight-btn] {
+  font-size: 1.125rem;
+  padding: 8px 32px;
+}
+
+page-fight [fight-btn][data-disabled="true"] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+page-fight [fight-empty] {
+  align-items: center;
+}
 </style>

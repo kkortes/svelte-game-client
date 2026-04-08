@@ -62,7 +62,7 @@
   };
 </script>
 
-<div page-arena>
+<page-arena>
 
 <crow justify-between left>
   <h3>The arena</h3>
@@ -71,9 +71,9 @@
 
 <crow vertical up left arena-table>
   <crow up left g-4 arena-header>
-    <div cinzel arena-col-name>name</div>
-    <div cinzel arena-col-level text-center>level</div>
-    <div cinzel arena-col-loot>loot</div>
+    <arena-col-name cinzel>name</arena-col-name>
+    <arena-col-level cinzel text-center>level</arena-col-level>
+    <arena-col-loot cinzel>loot</arena-col-loot>
     <crow arena-col-preview right></crow>
   </crow>
 
@@ -99,22 +99,22 @@
       <!-- /if -->
     </crow>
 
-    <div arena-col-level text-center text-sm>
+    <arena-col-level text-center text-sm>
       @[fight.minLevel]@[fight.minLevel === fight.maxLevel ? '' : ' - ' + fight.maxLevel]
-    </div>
+    </arena-col-level>
 
-    <div arena-col-loot text-sm>
+    <arena-col-loot text-sm>
       <!-- if fight.xpDimmed -->
       <span arena-xp-dimmed>@[fight.xp] XP</span>
       <!-- /if -->
       <!-- if !fight.xpDimmed -->
       <span>@[fight.xp] XP</span>
       <!-- /if -->
-    </div>
+    </arena-col-loot>
 
     <crow arena-col-preview right>
       <!-- each fight.enemies as enemy -->
-      <div arena-enemy-wrap data-boss="@[fight.boss]">
+      <arena-enemy-wrap data-boss="@[fight.boss]">
         <crow arena-enemy-box glass data-locked="@[fight.isLocked]">
           <!-- if fight.isLocked -->
           <crow arena-enemy-locked>?</crow>
@@ -129,39 +129,39 @@
           />
           <!-- /if -->
         </crow>
-      </div>
+      </arena-enemy-wrap>
       <!-- /each -->
     </crow>
   </a>
   <!-- /each -->
 </crow>
 
-</div>
+</page-arena>
 
 <style>
-[page-arena] [arena-headline-hr] {
+page-arena [arena-headline-hr] {
   height: 1px;
   border: 0;
   background: linear-gradient(to right, rgba(0,0,0,0.25), transparent);
   margin: 8px 0 16px;
 }
 
-[page-arena] [arena-table] {
+page-arena [arena-table] {
   margin: 0 -16px;
   width: calc(100% + 32px);
 }
 
-[page-arena] [arena-header] {
+page-arena [arena-header] {
   padding: 8px 24px;
   color: var(--foreground);
 }
 
-[page-arena] [arena-col-name] { flex: 1; white-space: nowrap; }
-[page-arena] [arena-col-level] { width: 48px; flex: none; }
-[page-arena] [arena-col-loot] { width: 48px; flex: none; }
-[page-arena] [arena-col-preview] { width: 120px; flex: none; }
+page-arena [arena-col-name] { flex: 1; white-space: nowrap; }
+page-arena arena-col-level { width: 48px; flex: none; }
+page-arena arena-col-loot { display: block; width: 48px; flex: none; }
+page-arena [arena-col-preview] { width: 120px; flex: none; }
 
-[page-arena] [arena-row] {
+page-arena [arena-row] {
   display: flex;
   align-items: center;
   gap: 16px;
@@ -173,52 +173,53 @@
   width: 100%;
 }
 
-[page-arena] [arena-row][data-even="true"] { background: rgba(120, 110, 100, 0.05); }
-[page-arena] [arena-row][data-even="false"] { background: rgba(120, 110, 100, 0.1); }
+page-arena [arena-row][data-even="true"] { background: rgba(120, 110, 100, 0.05); }
+page-arena [arena-row][data-even="false"] { background: rgba(120, 110, 100, 0.1); }
 
-[page-arena] [arena-row][data-boss="true"] {
+page-arena [arena-row][data-boss="true"] {
   margin-top: 48px;
   padding-top: 32px;
   padding-bottom: 32px;
 }
 
-[page-arena] [arena-row][data-boss="true"] + [arena-row][data-boss="true"] {
+page-arena [arena-row][data-boss="true"] + [arena-row][data-boss="true"] {
   margin-top: 0;
 }
 
-[page-arena] [arena-row]:not([data-locked="true"]):not([data-completed="true"]):hover {
+page-arena [arena-row]:not([data-locked="true"]):not([data-completed="true"]):hover {
   background: linear-gradient(to right, transparent, rgba(120, 110, 100, 0.15), transparent);
 }
 
-[page-arena] [arena-row][data-locked="true"] {
+page-arena [arena-row][data-locked="true"] {
   opacity: 0.5;
   cursor: default;
 }
 
-[page-arena] [arena-row][data-completed="true"] {
+page-arena [arena-row][data-completed="true"] {
   cursor: default;
 }
 
-[page-arena] [arena-pill] {
+page-arena [arena-pill] {
   font-size: 0.65rem;
   padding: 1px 6px;
 }
 
-[page-arena] [arena-xp-dimmed] {
+page-arena [arena-xp-dimmed] {
   color: var(--muted-foreground);
   text-decoration: line-through;
 }
 
-[page-arena] [arena-enemy-wrap] {
+page-arena arena-enemy-wrap {
+  display: block;
   width: 16px;
   flex: none;
 }
 
-[page-arena] [arena-enemy-wrap][data-boss="true"] {
+page-arena arena-enemy-wrap[data-boss="true"] {
   width: 48px;
 }
 
-[page-arena] [arena-enemy-box] {
+page-arena [arena-enemy-box] {
   width: 40px;
   aspect-ratio: 1;
   overflow: hidden;
@@ -227,15 +228,15 @@
   position: relative;
 }
 
-[page-arena] [arena-enemy-wrap][data-boss="true"] [arena-enemy-box] {
+page-arena arena-enemy-wrap[data-boss="true"] [arena-enemy-box] {
   width: 80px;
 }
 
-[page-arena] [arena-enemy-box]:not([data-locked="true"]) {
+page-arena [arena-enemy-box]:not([data-locked="true"]) {
   align-items: flex-start;
 }
 
-[page-arena] [arena-enemy-locked] {
+page-arena [arena-enemy-locked] {
   width: 20px;
   flex: none;
   border-radius: 50%;
@@ -249,14 +250,14 @@
   font-size: 0.75rem;
 }
 
-[page-arena] [arena-enemy-img] {
+page-arena [arena-enemy-img] {
   width: 120%;
   max-width: none;
   height: auto;
   transform: scaleX(-1);
 }
 
-[page-arena] [arena-enemy-img][data-completed="true"] {
+page-arena [arena-enemy-img][data-completed="true"] {
   filter: grayscale(1);
 }
 </style>

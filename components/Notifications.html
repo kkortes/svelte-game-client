@@ -1,0 +1,88 @@
+<notification-panel>
+  <!-- if notifications.length > 0 -->
+  <notification-stack>
+    <!-- each notifications as notification -->
+    <notification-card glass data-type="@[notification.type]">
+      <crow g-2>
+        <crow notification-icon data-type="@[notification.type]">
+          <icon @[notification.type]></icon>
+        </crow>
+        <notification-body>
+          <!-- if notification.type === 'error' -->
+          <strong notification-title>Ops, something went wrong!</strong>
+          <!-- /if -->
+          <!-- if notification.type === 'info' -->
+          <strong notification-title>Did you know?</strong>
+          <!-- /if -->
+          <!-- if notification.type === 'success' -->
+          <strong notification-title>Good news</strong>
+          <!-- /if -->
+          <!-- if notification.type === 'warning' -->
+          <strong notification-title>Heads up</strong>
+          <!-- /if -->
+          <notification-message>@[notification.message]</notification-message>
+        </notification-body>
+      </crow>
+    </notification-card>
+    <!-- /each -->
+  </notification-stack>
+  <!-- /if -->
+
+  <style>
+    notification-panel {
+      display: contents;
+    }
+
+    notification-panel notification-stack {
+      position: fixed;
+      top: 32px;
+      right: 8px;
+      z-index: 60;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    notification-panel notification-card {
+      display: block;
+      animation: slide-in 200ms ease;
+      margin-bottom: 8px;
+      padding: 12px 20px 12px 12px;
+    }
+
+    notification-panel notification-card[data-type="error"] { border-color: #ef4444; }
+    notification-panel notification-card[data-type="warning"] { border-color: #f97316; }
+    notification-panel notification-card[data-type="success"] { border-color: #22c55e; }
+    notification-panel notification-card[data-type="info"] { border-color: #3b82f6; }
+
+    notification-panel [notification-icon] {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: none;
+      color: white;
+      font-size: 1.125rem;
+    }
+
+    notification-panel [notification-icon][data-type="error"] { background: #ef4444; }
+    notification-panel [notification-icon][data-type="warning"] { background: #f97316; }
+    notification-panel [notification-icon][data-type="success"] { background: #22c55e; }
+    notification-panel [notification-icon][data-type="info"] { background: #3b82f6; }
+
+    notification-panel [notification-title] {
+      font-size: 1rem;
+      color: var(--foreground);
+      display: block;
+    }
+
+    notification-panel notification-message {
+      display: block;
+      max-width: 240px;
+      color: var(--muted-foreground);
+      font-size: 0.875rem;
+    }
+  </style>
+</notification-panel>

@@ -88,6 +88,60 @@ a:hover {
   -webkit-text-stroke: 0.5px black;
 }
 
+/* Equipment link — colored brush-stroke banner */
+eq-link {
+  display: grid;
+  height: 20px;
+  place-content: stretch;
+  cursor: default;
+  line-height: 1;
+  --eq-color: rgb(156,163,175);
+}
+
+eq-link[data-tier="green"] { --eq-color: #16a34a; }
+eq-link[data-tier="blue"] { --eq-color: #2563eb; }
+eq-link[data-tier="purple"] { --eq-color: #9333ea; }
+eq-link[data-tier="orange"] { --eq-color: #ea580c; }
+eq-link[data-tier="red"] { --eq-color: #dc2626; }
+
+eq-link eq-bg-center,
+eq-link eq-bg-left,
+eq-link eq-bg-right {
+  grid-area: 1/1;
+  display: block;
+}
+
+eq-link eq-bg-center {
+  background: var(--eq-color);
+  clip-path: polygon(19px 0%, calc(100% - 17px) 0%, calc(100% - 17px) 100%, 19px 100%);
+  mask: url('/static/images/brush-center.png') repeat-x 0 0 / auto 20px;
+}
+
+eq-link eq-bg-left {
+  background: var(--eq-color);
+  clip-path: polygon(0 0, 19px 0, 19px 100%, 0 100%);
+  mask: url('/static/images/brush-left.png') no-repeat 0 0 / auto 20px;
+}
+
+eq-link eq-bg-right {
+  background: var(--eq-color);
+  clip-path: polygon(100% 0, 100% 100%, calc(100% - 17px) 100%, calc(100% - 17px) 0);
+  mask: url('/static/images/brush-right.png') no-repeat 100% 0 / auto 20px;
+}
+
+eq-link [eq-name] {
+  grid-area: 1/1;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  font-weight: bold;
+  letter-spacing: 0.025em;
+  white-space: nowrap;
+  color: white;
+  translate: 0 -0.5px;
+  z-index: 1;
+}
+
 /* Text utilities (not in Stylecheat) */
 [text-sm] { font-size: 0.875rem; }
 [text-xs] { font-size: 0.75rem; }

@@ -330,8 +330,9 @@
 
   <!-- OVERLAY LAYER -->
   <!-- if overlay === 'Combat' -->
-  <div overlay-backdrop>
-    <div combat-panel onclick="event.stopPropagation()">
+  <overlay-backdrop combat-bg>
+    <spacer></spacer>
+    <combat-panel onclick="event.stopPropagation()">
 
       <!-- COMBAT IN PROGRESS -->
       <!-- if elapsedMilliseconds < combat.duration -->
@@ -339,9 +340,9 @@
         <h3 m-0>Combat</h3>
         <span text-sm text-muted>@[Math.floor(elapsedMilliseconds / 1000)]s / @[Math.floor(combat.duration / 1000)]s</span>
       </crow>
-      <div progress-track mb-4>
-        <div progress-fill style="width: @[Math.min(100, (elapsedMilliseconds / combat.duration) * 100)]%"></div>
-      </div>
+      <progress-track mb-4>
+        <progress-fill style="width: @[Math.min(100, (elapsedMilliseconds / combat.duration) * 100)]%"></progress-fill>
+      </progress-track>
 
       <!-- if liveTeams.length >= 2 -->
       <crow justify-between mb-3>
@@ -352,20 +353,20 @@
 
       <crow combat-teams g-4>
         <!-- Team 0 (player) -->
-        <div combat-team-col>
+        <combat-team-col>
           <!-- each liveTeams[0].combatants as c -->
-          <div combat-card>
+          <combat-card>
             <crow justify-between mb-1>
               <span text-sm font-medium>@[c.name]</span>
               <span combat-hp-num>@[Math.max(0, c.combatStats.currentHealth)] / @[c.combatStats.maxHealth]</span>
             </crow>
-            <div hp-track>
-              <div hp-fill style="width: @[Math.max(0, Math.min(100, (c.combatStats.currentHealth / c.combatStats.maxHealth) * 100))]%"></div>
-            </div>
+            <hp-track>
+              <hp-fill style="width: @[Math.max(0, Math.min(100, (c.combatStats.currentHealth / c.combatStats.maxHealth) * 100))]%"></hp-fill>
+            </hp-track>
             <!-- if c.combatStats.maxArmor > 0 -->
-            <div armor-track>
-              <div armor-fill style="width: @[Math.max(0, Math.min(100, (c.combatStats.currentArmor / c.combatStats.maxArmor) * 100))]%"></div>
-            </div>
+            <armor-track>
+              <armor-fill style="width: @[Math.max(0, Math.min(100, (c.combatStats.currentArmor / c.combatStats.maxArmor) * 100))]%"></armor-fill>
+            </armor-track>
             <!-- /if -->
             <!-- if c.statuses.knockedOut -->
             <span combat-ko>KO</span>
@@ -379,25 +380,25 @@
             <!-- if c.statuses.isVulnerable.ticks > 0 -->
             <span combat-status vulnerable>Vuln @[c.statuses.isVulnerable.ticks]</span>
             <!-- /if -->
-          </div>
+          </combat-card>
           <!-- /each -->
-        </div>
+        </combat-team-col>
 
         <!-- Team 1 (enemy) -->
-        <div combat-team-col>
+        <combat-team-col>
           <!-- each liveTeams[1].combatants as c -->
-          <div combat-card>
+          <combat-card>
             <crow justify-between mb-1>
               <span text-sm font-medium>@[c.name]</span>
               <span combat-hp-num>@[Math.max(0, c.combatStats.currentHealth)] / @[c.combatStats.maxHealth]</span>
             </crow>
-            <div hp-track>
-              <div hp-fill style="width: @[Math.max(0, Math.min(100, (c.combatStats.currentHealth / c.combatStats.maxHealth) * 100))]%"></div>
-            </div>
+            <hp-track>
+              <hp-fill style="width: @[Math.max(0, Math.min(100, (c.combatStats.currentHealth / c.combatStats.maxHealth) * 100))]%"></hp-fill>
+            </hp-track>
             <!-- if c.combatStats.maxArmor > 0 -->
-            <div armor-track>
-              <div armor-fill style="width: @[Math.max(0, Math.min(100, (c.combatStats.currentArmor / c.combatStats.maxArmor) * 100))]%"></div>
-            </div>
+            <armor-track>
+              <armor-fill style="width: @[Math.max(0, Math.min(100, (c.combatStats.currentArmor / c.combatStats.maxArmor) * 100))]%"></armor-fill>
+            </armor-track>
             <!-- /if -->
             <!-- if c.statuses.knockedOut -->
             <span combat-ko>KO</span>
@@ -411,92 +412,99 @@
             <!-- if c.statuses.isVulnerable.ticks > 0 -->
             <span combat-status vulnerable>Vuln @[c.statuses.isVulnerable.ticks]</span>
             <!-- /if -->
-          </div>
+          </combat-card>
           <!-- /each -->
-        </div>
+        </combat-team-col>
       </crow>
       <!-- /if -->
       <!-- /if -->
 
       <!-- RESULT: VICTORY -->
       <!-- if elapsedMilliseconds >= combat.duration && combat.duration > 0 && combat.winningTeam && combat.winningTeam.index === 0 -->
-      <div combat-result>
+      <combat-result>
         <h2 victory-text m-0 mb-2>Victory!</h2>
         <p text-muted mb-3>Your brawlers won the fight.</p>
-        <div combat-rewards>
+        <combat-rewards>
           <span text-sm>XP earned</span>
-        </div>
+        </combat-rewards>
         <button primary mt-4 onclick="claimCombatReward()">Claim</button>
-      </div>
+      </combat-result>
       <!-- /if -->
 
       <!-- RESULT: DEFEAT -->
       <!-- if elapsedMilliseconds >= combat.duration && combat.duration > 0 && combat.winningTeam && combat.winningTeam.index !== 0 -->
-      <div combat-result>
+      <combat-result>
         <h2 defeat-text m-0 mb-2>Defeat</h2>
         <p text-muted mb-3>Your brawlers were knocked out.</p>
         <button secondary mt-4 onclick="closeCombatOverlay()">Go back</button>
-      </div>
+      </combat-result>
       <!-- /if -->
 
-    </div>
-  </div>
+    </combat-panel>
+  </overlay-backdrop>
   <!-- /if -->
 
   <!-- if overlay === 'GameMenu' -->
-  <div overlay-backdrop onclick="$.overlay = ''">
-    <div overlay-panel overlay-sm onclick="event.stopPropagation()">
-      <crow justify-between mb-4>
-        <h3 m-0>Game Menu</h3>
-        <button tertiary onclick="$.overlay = ''">Close</button>
-      </crow>
+  <overlay-backdrop onclick="$.overlay = ''">
+    <spacer></spacer>
+    <overlay-panel overlay-sm onclick="event.stopPropagation()">
+      <game-frame>
+        <crow left game-frame-title cinzel>options</crow>
+        <crow vertical g-2 p-4>
+          <crow justify-between w-full>
+            <span cinzel>Audio settings</span>
+            <button secondary text-xs onclick="$.settings = { ...$.settings, volume: { master: 0.5, ambient: 0.25, sfx: 0.5, combat: 1 } }">Reset to default</button>
+          </crow>
+          <crow w-full g-4>
+            <menu-label>Master</menu-label>
+            <input type="range" min="0" max="1" step="0.05" value="@[settings.volume.master]"
+              oninput="$.settings = { ...$.settings, volume: { ...$.settings.volume, master: +this.value } }"
+              w-full />
+          </crow>
+          <crow w-full g-4>
+            <menu-label>Ambient</menu-label>
+            <input type="range" min="0" max="1" step="0.05" value="@[settings.volume.ambient]"
+              oninput="$.settings = { ...$.settings, volume: { ...$.settings.volume, ambient: +this.value } }"
+              w-full />
+          </crow>
+          <crow w-full g-4>
+            <menu-label>Sound effect</menu-label>
+            <input type="range" min="0" max="1" step="0.05" value="@[settings.volume.sfx]"
+              oninput="$.settings = { ...$.settings, volume: { ...$.settings.volume, sfx: +this.value } }"
+              w-full />
+          </crow>
+          <crow w-full g-4>
+            <menu-label>Combat</menu-label>
+            <input type="range" min="0" max="1" step="0.05" value="@[settings.volume.combat]"
+              oninput="$.settings = { ...$.settings, volume: { ...$.settings.volume, combat: +this.value } }"
+              w-full />
+          </crow>
 
-      <h5 cinzel m-0 mb-2>VOLUME</h5>
-      <crow vertical g-3 mb-4 stretch>
-        <crow justify-between>
-          <label text-sm>Master</label>
-          <input type="range" min="0" max="1" step="0.05" value="@[settings.volume.master]"
-            oninput="$.settings = { ...$.settings, volume: { ...$.settings.volume, master: +this.value } }"
-            range-input />
-        </crow>
-        <crow justify-between>
-          <label text-sm>Ambient</label>
-          <input type="range" min="0" max="1" step="0.05" value="@[settings.volume.ambient]"
-            oninput="$.settings = { ...$.settings, volume: { ...$.settings.volume, ambient: +this.value } }"
-            range-input />
-        </crow>
-        <crow justify-between>
-          <label text-sm>SFX</label>
-          <input type="range" min="0" max="1" step="0.05" value="@[settings.volume.sfx]"
-            oninput="$.settings = { ...$.settings, volume: { ...$.settings.volume, sfx: +this.value } }"
-            range-input />
-        </crow>
-        <crow justify-between>
-          <label text-sm>Combat</label>
-          <input type="range" min="0" max="1" step="0.05" value="@[settings.volume.combat]"
-            oninput="$.settings = { ...$.settings, volume: { ...$.settings.volume, combat: +this.value } }"
-            range-input />
-        </crow>
-      </crow>
+          <hr menu-divider />
 
-      <h5 cinzel m-0 mb-2>SETTINGS</h5>
-      <crow g-2 mb-4>
-        <input type="checkbox" id="detailed-view"
-          onchange="$.settings = { ...$.settings, showDetailedCharacterView: this.checked }" />
-        <label for="detailed-view" text-sm>Show detailed character view</label>
-      </crow>
+          <button secondary onclick="$.overlay = 'ReleaseNotes'">Release notes</button>
+          <!-- if token -->
+          <button secondary onclick="document.cookie = 'token=; Max-Age=0'; $.token = undefined; $.characters = []; $.inventory = []; $.overlay = ''">Logout</button>
+          <!-- /if -->
+        </crow>
+      </game-frame>
+      <button close-btn onclick="$.overlay = ''">
+        <icon cross></icon>
+      </button>
+    </overlay-panel>
+    <spacer></spacer>
 
       <crow vertical g-2>
         <button secondary w-full onclick="$.overlay = 'ReleaseNotes'">Release Notes</button>
         <button secondary w-full onclick="document.cookie = 'token=; Max-Age=0'; $.token = undefined; $.characters = []; $.inventory = []; $.overlay = ''">Logout</button>
       </crow>
-    </div>
-  </div>
+    </overlay-panel>
+  </overlay-backdrop>
   <!-- /if -->
 
   <!-- if overlay === 'CodeOfConduct' -->
-  <div overlay-backdrop onclick="$.overlay = ''">
-    <div overlay-panel onclick="event.stopPropagation()">
+  <overlay-backdrop onclick="$.overlay = ''">
+    <overlay-panel onclick="event.stopPropagation()">
       <crow justify-between mb-4>
         <h3 m-0>Code of Conduct</h3>
         <button tertiary onclick="$.overlay = ''">Close</button>
@@ -505,26 +513,26 @@
       <p mb-3>No harassment, hate speech, or toxic behavior.</p>
       <p mb-3>Play fair — no exploits or cheating.</p>
       <p>Have fun!</p>
-    </div>
-  </div>
+    </overlay-panel>
+  </overlay-backdrop>
   <!-- /if -->
 
   <!-- if overlay === 'ReleaseNotes' -->
-  <div overlay-backdrop onclick="$.overlay = ''">
-    <div overlay-panel onclick="event.stopPropagation()">
+  <overlay-backdrop onclick="$.overlay = ''">
+    <overlay-panel onclick="event.stopPropagation()">
       <crow justify-between mb-4>
         <h3 m-0>Release Notes</h3>
         <button tertiary onclick="$.overlay = ''">Close</button>
       </crow>
       <h5 cinzel m-0>v0.1.0</h5>
       <p text-sm text-muted mt-2>Initial Vibe + Stylecheat rewrite.</p>
-    </div>
-  </div>
+    </overlay-panel>
+  </overlay-backdrop>
   <!-- /if -->
 
   <!-- DIALOG LAYER -->
   <!-- if dialog -->
-  <div dialog-backdrop>
+  <dialog-backdrop>
     <card dialog-card>
       <p mb-4>@[dialog.props?.text || 'Are you sure?']</p>
       <crow g-2 dialog-actions>
@@ -533,29 +541,29 @@
           onclick="if($.dialog?.props?.confirm) $.dialog.props.confirm(); $.dialog = undefined;">Confirm</button>
       </crow>
     </card>
-  </div>
+  </dialog-backdrop>
   <!-- /if -->
 
   <!-- ACCOUNT PROGRESSION OVERLAY -->
   <!-- if showAccountProgression -->
-  <div overlay-backdrop onclick="$.showAccountProgression = false">
-    <div progression-panel onclick="event.stopPropagation()">
+  <overlay-backdrop onclick="$.showAccountProgression = false">
+    <progression-panel onclick="event.stopPropagation()">
       <crow justify-between mb-4>
         <h3 m-0>Account Progression</h3>
         <button tertiary onclick="$.showAccountProgression = false">Close</button>
       </crow>
-      <div progression-scroll>
+      <progression-scroll>
         <!-- each Array.from({length: 25}, (_, i) => i + 1) as lvl -->
         <card progression-card data-claimed="@[lvl <= accountRewards ? 'yes' : 'no']" data-reached="@[lvl <= sidebarLevel ? 'yes' : 'no']">
           <h4 m-0 mb-1>Lv @[lvl]</h4>
-          <div progression-rewards>
+          <progression-rewards>
             <span progression-reward>+100 coins</span>
             <!-- if lvl % 5 === 0 -->
             <span progression-reward>+1 brawler slot</span>
             <!-- /if -->
             <span progression-reward>+4 maxHealth</span>
             <span progression-reward>+2 damage</span>
-          </div>
+          </progression-rewards>
           <!-- if lvl <= accountRewards -->
           <span progression-claimed>Claimed</span>
           <!-- /if -->
@@ -567,14 +575,14 @@
           <!-- /if -->
         </card>
         <!-- /each -->
-      </div>
-    </div>
-  </div>
+      </progression-scroll>
+    </progression-panel>
+  </overlay-backdrop>
   <!-- /if -->
 
   <!-- TOOLTIP LAYER -->
   <!-- if tooltip && tooltip.visible -->
-  <div tooltip-layer style="left: @[tooltip.x + 12]px; top: @[tooltip.y + 12]px;">
+  <tooltip-layer style="left: @[tooltip.x + 12]px; top: @[tooltip.y + 12]px;">
     <card text-sm tooltip-card>
       <!-- if tooltip.props && tooltip.props.name -->
       <strong tooltip-name>@[tooltip.props.name]</strong>
@@ -595,7 +603,7 @@
       <span tooltip-stat>Level @[tooltip.props.level]</span>
       <!-- /if -->
       <!-- if tooltip.props && tooltip.props.combatStats -->
-      <div tooltip-stats mt-1>
+      <tooltip-stats mt-1>
         <!-- if tooltip.props.combatStats.maxHealth -->
         <span tooltip-stat>HP: +@[tooltip.props.combatStats.maxHealth]</span>
         <!-- /if -->
@@ -608,55 +616,107 @@
         <!-- if tooltip.props.combatStats.speed -->
         <span tooltip-stat>Speed: +@[tooltip.props.combatStats.speed]</span>
         <!-- /if -->
-      </div>
+      </tooltip-stats>
       <!-- /if -->
       <!-- if !tooltip.props || !tooltip.props.name -->
       <span tooltip-fallback>Tooltip</span>
       <!-- /if -->
     </card>
-  </div>
+  </tooltip-layer>
   <!-- /if -->
 
   <!-- NOTIFICATIONS -->
-  <!-- if notifications.length > 0 -->
-  <div notification-stack>
-    <!-- each notifications as notification -->
-    <card text-sm notification-card data-type="@[notification.type]">
-      @[notification.message]
-    </card>
-    <!-- /each -->
-  </div>
-  <!-- /if -->
+  <component src="/components/Notifications.html"></component>
 
   <!-- TOPBAR -->
   <component src="/components/Topbar.html"></component>
 
   <style>
-    [battle-brawlers] [overlay-backdrop] {
+    [battle-brawlers] overlay-backdrop {
       position: fixed;
       inset: 0;
-      z-index: 40;
-      background: rgba(0, 0, 0, 0.85);
+      z-index: 20;
+      display: grid;
+      grid-template-rows: 80px 1fr 80px;
+      place-items: center;
+      overflow-x: hidden;
+      overflow-y: auto;
+      background: rgba(0, 0, 0, 0.2);
+      box-shadow: inset 0 0 10vw rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(1px);
+      transition: opacity 200ms, transform 200ms;
+    }
+
+    [battle-brawlers] overlay-backdrop[combat-bg] {
+      background: url('/static/images/arena.png') center / cover no-repeat;
+      box-shadow: inset 0 0 10vw rgba(0, 0, 0, 1);
+      backdrop-filter: none;
+    }
+
+    [battle-brawlers] overlay-panel {
+      max-width: 700px;
+      min-width: 320px;
+      width: calc(100% - 96px);
+      max-height: 90vh;
+      overflow-y: auto;
+      text-align: left;
+    }
+
+    [battle-brawlers] overlay-panel[overlay-sm] {
+      max-width: 320px;
+    }
+
+    [battle-brawlers] game-frame {
+      border: 3px solid;
+      border-image-source: url('/static/images/ui/frame.png');
+      border-image-slice: 3;
+      border-image-repeat: repeat;
+      background: rgba(0, 0, 0, 0.75);
+      box-shadow: inset 0 0 100px rgb(0 0 0 / 80%);
+      color: rgb(156, 163, 175);
+    }
+
+    [battle-brawlers] [close-btn] {
+      all: unset;
+      position: absolute;
+      top: -12px;
+      right: -12px;
+      width: 24px;
+      height: 24px;
       display: flex;
       align-items: center;
       justify-content: center;
+      cursor: pointer;
+      color: rgb(220, 38, 38);
+      font-size: 0.75rem;
     }
 
-    [battle-brawlers] [overlay-panel] {
-      background: white;
-      border-radius: var(--radius);
-      padding: 24px;
-      max-width: 600px;
-      width: 90%;
-      max-height: 90vh;
-      overflow-y: auto;
+    [battle-brawlers] menu-label {
+      width: 160px;
+      flex: none;
     }
 
-    [battle-brawlers] [overlay-sm] {
-      max-width: 400px;
+    [battle-brawlers] [menu-divider] {
+      border: 0;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(255,255,255,0.2), transparent);
+      margin: 4px 0;
+      width: 100%;
     }
 
-    [battle-brawlers] [combat-panel] {
+    [battle-brawlers] [game-frame-title] {
+      position: relative;
+      margin: -3px 0 0 0;
+      padding: 0 8px;
+      height: 33px;
+      background-image: url('/static/images/ui/frame-header.jpg');
+      background-position: left 2px;
+      background-repeat: repeat-x;
+      font-family: var(--font-heading);
+      color: rgb(156, 163, 175);
+    }
+
+    [battle-brawlers] combat-panel {
       background: var(--card);
       border-radius: var(--radius);
       padding: 24px;
@@ -671,7 +731,7 @@
       grid-template-columns: 1fr 1fr;
     }
 
-    [battle-brawlers] [combat-team-col] {
+    [battle-brawlers] combat-team-col {
       display: flex;
       flex-direction: column;
       gap: 8px;
@@ -682,7 +742,7 @@
       font-size: 0.9rem;
     }
 
-    [battle-brawlers] [combat-card] {
+    [battle-brawlers] combat-card {
       padding: 8px 10px;
       border-radius: var(--radius);
       background: var(--muted);
@@ -694,7 +754,7 @@
       opacity: 0.7;
     }
 
-    [battle-brawlers] [hp-track] {
+    [battle-brawlers] hp-track {
       width: 100%;
       height: 8px;
       background: var(--destructive-foreground);
@@ -702,14 +762,14 @@
       overflow: hidden;
     }
 
-    [battle-brawlers] [hp-fill] {
+    [battle-brawlers] hp-fill {
       height: 100%;
       background: #22c55e;
       border-radius: 4px;
       transition: width 150ms;
     }
 
-    [battle-brawlers] [armor-track] {
+    [battle-brawlers] armor-track {
       width: 100%;
       height: 5px;
       background: var(--destructive-foreground);
@@ -718,7 +778,7 @@
       margin-top: 3px;
     }
 
-    [battle-brawlers] [armor-fill] {
+    [battle-brawlers] armor-fill {
       height: 100%;
       background: #60a5fa;
       border-radius: 3px;
@@ -759,19 +819,19 @@
       color: #fff;
     }
 
-    [battle-brawlers] [combat-result] {
+    [battle-brawlers] combat-result {
       text-align: center;
       padding: 32px 16px;
     }
 
-    [battle-brawlers] [combat-rewards] {
+    [battle-brawlers] combat-rewards {
       padding: 12px;
       background: var(--muted);
       border-radius: var(--radius);
       display: inline-block;
     }
 
-    [battle-brawlers] [progress-track] {
+    [battle-brawlers] progress-track {
       width: 100%;
       height: 12px;
       background: var(--muted);
@@ -779,7 +839,7 @@
       overflow: hidden;
     }
 
-    [battle-brawlers] [progress-fill] {
+    [battle-brawlers] progress-fill {
       height: 100%;
       background: var(--primary);
       border-radius: 6px;
@@ -802,7 +862,7 @@
       width: 60%;
     }
 
-    [battle-brawlers] [dialog-backdrop] {
+    [battle-brawlers] dialog-backdrop {
       position: fixed;
       inset: 0;
       z-index: 50;
@@ -821,7 +881,7 @@
       justify-content: flex-end;
     }
 
-    [battle-brawlers] [progression-panel] {
+    [battle-brawlers] progression-panel {
       background: var(--card);
       border-radius: var(--radius);
       padding: 24px;
@@ -833,7 +893,7 @@
       flex-direction: column;
     }
 
-    [battle-brawlers] [progression-scroll] {
+    [battle-brawlers] progression-scroll {
       display: flex;
       gap: 12px;
       overflow-x: auto;
@@ -857,7 +917,7 @@
       opacity: 0.4;
     }
 
-    [battle-brawlers] [progression-rewards] {
+    [battle-brawlers] progression-rewards {
       display: flex;
       flex-direction: column;
       gap: 2px;
@@ -882,7 +942,7 @@
       margin-top: auto;
     }
 
-    [battle-brawlers] [tooltip-layer] {
+    [battle-brawlers] tooltip-layer {
       position: fixed;
       z-index: 100;
       pointer-events: none;
@@ -915,41 +975,6 @@
       display: block;
     }
 
-    [battle-brawlers] [notification-stack] {
-      position: fixed;
-      top: 40px;
-      right: 16px;
-      z-index: 60;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      max-width: 300px;
-    }
-
-    [battle-brawlers] [notification-card] {
-      animation: slide-in 200ms ease;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
-
-    [battle-brawlers] [notification-card][data-type="error"] {
-      background: #dc2626;
-      color: white;
-    }
-
-    [battle-brawlers] [notification-card][data-type="warning"] {
-      background: #d97706;
-      color: white;
-    }
-
-    [battle-brawlers] [notification-card][data-type="success"] {
-      background: #16a34a;
-      color: white;
-    }
-
-    [battle-brawlers] [notification-card][data-type="info"] {
-      background: #2563eb;
-      color: white;
-    }
 
     [battle-brawlers] [devbar] {
       position: sticky;

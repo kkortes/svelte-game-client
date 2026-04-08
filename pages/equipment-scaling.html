@@ -14,11 +14,11 @@
   }));
 </script>
 
-<div page-equip-scaling>
+<page-equip-scaling>
 <crow vertical g-4 left>
   <h3 cinzel m-0>Equipment Scaling</h3>
 
-  <div table-scroll>
+  <table-scroll>
     <table scaling-table>
       <thead>
         <tr>
@@ -47,15 +47,15 @@
         <!-- /each -->
       </tbody>
     </table>
-  </div>
+  </table-scroll>
 </crow>
-</div>
+</page-equip-scaling>
 
 <style>
-[page-equip-scaling] [table-scroll] { overflow-x: auto; width: 100%; }
-[page-equip-scaling] [scaling-table] { width: 100%; border-collapse: collapse; }
-[page-equip-scaling] th,
-[page-equip-scaling] td { padding: 6px 8px; text-align: center; border-bottom: 1px solid var(--border); }
-[page-equip-scaling] [th-left],
-[page-equip-scaling] td:first-child { text-align: left; }
+page-equip-scaling table-scroll { display: block; overflow-x: auto; width: 100%; }
+page-equip-scaling [scaling-table] { width: 100%; border-collapse: collapse; }
+page-equip-scaling th,
+page-equip-scaling td { padding: 6px 8px; text-align: center; border-bottom: 1px solid var(--border); }
+page-equip-scaling [th-left],
+page-equip-scaling td:first-child { text-align: left; }
 </style>

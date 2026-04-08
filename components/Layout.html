@@ -1,20 +1,20 @@
 <game-layout layout>
   <!-- if !socket -->
-  <div center-full>
+  <center-full>
     <p text-muted>Connecting to server...</p>
-  </div>
+  </center-full>
   <!-- /if -->
 
   <!-- if socket && !token -->
-  <div center-full auth-padding>
-    <div auth-scene>
+  <center-full auth-padding>
+    <auth-scene>
       <img src="/static/images/races/troll/male-01.png" alt="" auth-char-left />
 
-      <div auth-form glass>
+      <auth-form glass>
         <!-- if authError -->
-        <div auth-error text-sm mb-4>
+        <auth-error text-sm mb-4>
           @[authError]
-        </div>
+        </auth-error>
         <!-- /if -->
 
         <!-- if authMode === 'login' -->
@@ -51,11 +51,11 @@
           </p>
         </form>
         <!-- /if -->
-      </div>
+      </auth-form>
 
       <img src="/static/images/races/elf/female-01.png" alt="" auth-char-right />
-    </div>
-  </div>
+    </auth-scene>
+  </center-full>
   <!-- /if -->
 
   <!-- if token -->
@@ -64,7 +64,7 @@
       <component src="/components/Sidebar.html"></component>
     </aside>
 
-    <div game-main>
+    <game-main>
       <nav data-active="@[route ? route.split('/')[1] || '' : '']" tab-nav>
         <a href="/" data-tab="" tab-link>Game Guide</a>
         <a href="/the-arena" data-tab="the-arena" tab-link>The Arena</a>
@@ -73,12 +73,12 @@
         <a href="/brawlers" data-tab="brawlers" tab-link>Brawlers</a>
       </nav>
 
-      <div content-area>
+      <content-area>
         <page-content>
           <p text-muted>Loading...</p>
         </page-content>
-      </div>
-    </div>
+      </content-area>
+    </game-main>
 
     <!-- if routeParams.characterIndex !== undefined || route === '/vendor' -->
     <aside game-sidebar sm-hide armory-aside>
@@ -89,7 +89,7 @@
   <!-- /if -->
 
   <style>
-    [layout] [center-full] {
+    [layout] center-full {
       display: flex;
       align-items: center;
       justify-content: center;
@@ -100,7 +100,7 @@
       padding: 40px 16px 16px;
     }
 
-    [layout] [auth-scene] {
+    [layout] auth-scene {
       position: relative;
       display: flex;
       align-items: flex-end;
@@ -128,7 +128,7 @@
       margin-bottom: -20px;
     }
 
-    [layout] [auth-form] {
+    [layout] auth-form {
       position: relative;
       z-index: 2;
       width: 100%;
@@ -136,7 +136,8 @@
       padding: 16px;
     }
 
-    [layout] [auth-error] {
+    [layout] auth-error {
+      display: block;
       background: var(--destructive);
       color: white;
       padding: 8px 12px;
@@ -177,7 +178,7 @@
       transition: all 200ms;
     }
 
-    [layout] [game-main] {
+    [layout] game-main {
       flex: 1;
       min-width: 0;
       display: flex;
@@ -204,7 +205,8 @@
       text-decoration: none;
     }
 
-    [layout] [content-area] {
+    [layout] content-area {
+      display: block;
       background: white;
       border-radius: var(--radius);
       padding: 16px;

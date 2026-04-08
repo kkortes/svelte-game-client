@@ -22,11 +22,11 @@
   });
 </script>
 
-<div page-ability-scaling>
+<page-ability-scaling>
 <crow vertical g-4 left>
   <h3 cinzel m-0>Ability Scaling</h3>
 
-  <div table-scroll>
+  <table-scroll>
     <table scaling-table>
       <thead>
         <tr>
@@ -57,15 +57,15 @@
         <!-- /each -->
       </tbody>
     </table>
-  </div>
+  </table-scroll>
 </crow>
-</div>
+</page-ability-scaling>
 
 <style>
-[page-ability-scaling] [table-scroll] { overflow-x: auto; width: 100%; }
-[page-ability-scaling] [scaling-table] { width: 100%; border-collapse: collapse; }
-[page-ability-scaling] th,
-[page-ability-scaling] td { padding: 6px 8px; text-align: center; border-bottom: 1px solid var(--border); }
-[page-ability-scaling] [th-left],
-[page-ability-scaling] td:first-child { text-align: left; }
+page-ability-scaling table-scroll { display: block; overflow-x: auto; width: 100%; }
+page-ability-scaling [scaling-table] { width: 100%; border-collapse: collapse; }
+page-ability-scaling th,
+page-ability-scaling td { padding: 6px 8px; text-align: center; border-bottom: 1px solid var(--border); }
+page-ability-scaling [th-left],
+page-ability-scaling td:first-child { text-align: left; }
 </style>

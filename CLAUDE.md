@@ -18,13 +18,16 @@ The **`main` branch** contains the original SvelteKit implementation. Use `git s
 
 ## Conventions
 
-- **No `class=""` or `style=""` attributes** (except dynamic Vibe `@[...]` values for computed widths/positions)
+- **No `class=""` attributes** — use individual HTML attributes instead
+- **No `style=""` attributes** — use custom attributes with CSS custom properties via `<element attr="@[value]">` instead of `style="--var: @[value]"`. Only acceptable for truly unavoidable cases like tooltip absolute positioning.
+- **No `<div>` elements** — use semantic or custom element names instead: `<page-home>`, `<fight-row>`, `<ability-cell>`, `<xp-bar>`, `<coin-stack>`, etc. Divs say nothing about what they are.
 - **Attribute-based styling**: use Stylecheat attributes (`g-4`, `text-sm`, `vertical`, `primary`, etc.) or custom attributes
 - **Scoped styles**: each page/component has a `<style>` block scoped with `[page-name]` or `[component-name]`
-- **Page structure**: `<script type="module">` at top, `<div page-xxx>` wrapper, `<style>` at bottom
+- **Page structure**: `<script type="module">` at top, `<page-xxx>` wrapper (custom element, not div), `<style>` at bottom
 - **State access**: use `$` (not `window.$`) — it's a global property
 - **Router**: custom pushState SPA router at `/js/router.js` — pages loaded via fetch + innerHTML + script execution
 - **Component scripts**: `<script type="module">` in Vibe components have imports STRIPPED by processComponent — use index.html's script for logic that needs imports
+- **Dynamic values**: for per-element dynamic values (colors, widths, positions), use custom attributes that map to CSS custom properties: `<element color="@[val]">` with CSS `[color] { --color: attr(color); }` or use `data-*` attributes. Where CSS `attr()` is insufficient, a minimal `style="--var: @[val]"` is acceptable as last resort.
 
 ## File Structure
 
