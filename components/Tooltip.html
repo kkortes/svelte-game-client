@@ -1,0 +1,137 @@
+<!-- if tooltip && tooltip.visible -->
+<tooltip-layer style="left: @[tooltip.x + 12]px; top: @[tooltip.y + 12]px;">
+  <card text-sm tooltip-card>
+    <!-- if tooltip.props && tooltip.props.name -->
+    <crow justify-between w-full>
+      <strong tooltip-name>@[tooltip.props.name]</strong>
+      <!-- if tooltip.props.level -->
+      <span cinzel text-xs>level @[tooltip.props.level]</span>
+      <!-- /if -->
+    </crow>
+    <hr headline-hr-sm />
+    <!-- /if -->
+
+    <!-- if tooltip.props && tooltip.props.ticks -->
+    <span tooltip-stat><strong>Wind up:</strong> @[tooltip.props.ticks] tick@[tooltip.props.ticks
+      === 1 ? '' : 's']</span>
+    <!-- /if -->
+
+    <!-- if tooltip.props && tooltip.props.basic !== undefined -->
+    <span tooltip-tag data-basic="@[tooltip.props.basic]">@[tooltip.props.basic ? 'Basic' :
+      'Special']</span>
+    <!-- /if -->
+
+    <!-- if tooltip.props && tooltip.props.slotsIn -->
+    <span tooltip-stat text-muted>@[tooltip.props.slotsIn]</span>
+    <!-- /if -->
+
+    <!-- if tooltip.props && tooltip.props.combatStats -->
+    <tooltip-stats>
+      <!-- if tooltip.props.combatStats.maxHealth -->
+      <crow justify-between w-full>
+        <crow left g-1>
+          <icon maxHealth></icon> Health
+        </crow> <span>@[tooltip.props.combatStats.maxHealth]</span>
+      </crow>
+      <!-- /if -->
+      <!-- if tooltip.props.combatStats.damage -->
+      <crow justify-between w-full>
+        <crow left g-1>
+          <icon damage></icon> Damage
+        </crow> <span>@[tooltip.props.combatStats.damage]</span>
+      </crow>
+      <!-- /if -->
+      <!-- if tooltip.props.combatStats.maxArmor -->
+      <crow justify-between w-full>
+        <crow left g-1>
+          <icon maxArmor></icon> Armor
+        </crow> <span>@[tooltip.props.combatStats.maxArmor]</span>
+      </crow>
+      <!-- /if -->
+      <!-- if tooltip.props.combatStats.blockChance -->
+      <crow justify-between w-full>
+        <crow left g-1>
+          <icon blockChance></icon> Block
+        </crow> <span text-green>@[Math.round(tooltip.props.combatStats.blockChance *
+          100)]%</span>
+      </crow>
+      <!-- /if -->
+      <!-- if tooltip.props.combatStats.dodgeChance -->
+      <crow justify-between w-full>
+        <crow left g-1>
+          <icon dodgeChance></icon> Dodge
+        </crow> <span text-green>@[Math.round(tooltip.props.combatStats.dodgeChance *
+          100)]%</span>
+      </crow>
+      <!-- /if -->
+      <!-- if tooltip.props.combatStats.criticalChance -->
+      <crow justify-between w-full>
+        <crow left g-1>
+          <icon criticalChance></icon> Crit
+        </crow> <span text-green>@[Math.round(tooltip.props.combatStats.criticalChance *
+          100)]%</span>
+      </crow>
+      <!-- /if -->
+    </tooltip-stats>
+    <!-- /if -->
+
+    <!-- if tooltip.props && tooltip.props.description -->
+    <p m-0 mt-2 text-xs tooltip-desc>@[tooltip.props.description]</p>
+    <!-- /if -->
+
+    <!-- if !tooltip.props || !tooltip.props.name -->
+    <span>Tooltip</span>
+    <!-- /if -->
+  </card>
+</tooltip-layer>
+<!-- /if -->
+
+<style>
+  [battle-brawlers] tooltip-layer {
+    position: fixed;
+    z-index: 100;
+    pointer-events: none;
+    transform: translateY(-100%);
+  }
+
+  [battle-brawlers] [tooltip-card] {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    max-width: calc(var(--unit) * 60);
+  }
+
+  [battle-brawlers] [tooltip-name] {
+    display: block;
+    font-size: 0.85rem;
+  }
+
+  [battle-brawlers] [tooltip-desc] {
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+  }
+
+  [battle-brawlers] [tooltip-stat] {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--muted-foreground);
+    margin-top: calc(var(--unit) * 0.5);
+  }
+
+  [battle-brawlers] [tooltip-tag] {
+    display: inline-block;
+    font-size: 0.6rem;
+    padding: calc(var(--unit) * 0.25) calc(var(--unit) * 1.5);
+    border-radius: calc(var(--unit) * 0.75);
+    margin-top: var(--unit);
+    background: var(--accent);
+    color: var(--muted-foreground);
+  }
+
+  [battle-brawlers] [tooltip-tag][data-basic="false"] {
+    background: oklch(0.85 0.1 280);
+    color: oklch(0.4 0.15 280);
+  }
+
+  [battle-brawlers] [tooltip-fallback] {
+    display: block;
+  }
+</style>

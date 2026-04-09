@@ -61,6 +61,14 @@ const loadPage = (html) => {
     script.textContent = s.textContent;
     el.appendChild(script);
   });
+
+  // Sync data-src → src after Vibe hydrates (delayed to allow @[...] resolution)
+  setTimeout(() => {
+    el.querySelectorAll('img[data-src]').forEach(img => {
+      const ds = img.dataset.src;
+      if (ds && !ds.includes('@[')) img.src = ds;
+    });
+  }, 100);
 };
 
 export const navigate = async (path) => {

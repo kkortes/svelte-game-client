@@ -1,0 +1,33 @@
+  <!-- if overlay === 'CodeOfConduct' -->
+  <overlay-backdrop onclick="$.overlay = ''">
+    <spacer></spacer>
+    <overlay-panel glass p-4 onclick="event.stopPropagation()">
+      <crow justify-between mb-4>
+        <h3 m-0>Code of Conduct</h3>
+        <button tertiary onclick="$.overlay = ''">Close</button>
+      </crow>
+      <p mb-3>By playing the game you agree to the following rules and regulations.</p>
+      <h5 cinzel m-0>Rules:</h5>
+      <ol text-sm mb-3>
+        <li>Respect everyone and their opinions</li>
+        <li>Don't spam chat</li>
+        <li>No excessive caps</li>
+        <li>No excessive swearing</li>
+        <li>No NSFW Content in chat</li>
+        <li>Always respect a moderators request</li>
+      </ol>
+      <p text-sm mb-3>We want to promote a sense of community where conversations and discussion is
+        encouraged. Therefore we expect everyone to behave in a civil and respectful manner.</p>
+      <h5 cinzel m-0>Verbal abuse, threatening behaviour, harassment</h5>
+      <p text-sm mb-3>Remember this is a game where people come to relax and have fun. Although you
+        may disagree with other players and their opinions, this does not mean you need to be
+        abusive or offensive.</p>
+      <h5 cinzel m-0>Racism, discrimination and hate speech</h5>
+      <p text-sm mb-3>Any kind of racism, discrimination or hate speech will not be tolerated.</p>
+      <h5 cinzel m-0>Moderators discretion</h5>
+      <p text-sm>Moderators reserve the right to request conversations to end. Remember everyone is
+        here to have fun.</p>
+    </overlay-panel>
+    <spacer></spacer>
+  </overlay-backdrop>
+  <!-- /if -->

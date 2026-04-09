@@ -72,39 +72,29 @@
 
   <!-- if token -->
   <crow game-shell>
-    <aside game-sidebar sm-hide>
+    <sidebar sm-hide>
       <component src="/components/Sidebar.html"></component>
-    </aside>
+    </sidebar>
 
-    <crow vertical game-main>
-      <game-content-grid>
-        <crow left up vertical content-area>
-          <content-inner>
-            <page-content>
-              <p text-muted>Loading...</p>
-            </page-content>
-          </content-inner>
-          <sticky-bottom>
-            <page-sticky-bottom></page-sticky-bottom>
-          </sticky-bottom>
-        </crow>
-
-        <crow up tab-row>
-          <crow up right g-1>
-            <a href="/" data-tab="" tab-link data-active="@[route ? route.split('/')[1] || '' : '']">Game Guide</a>
-            <a href="/the-arena" data-tab="the-arena" tab-link data-active="@[route ? route.split('/')[1] || '' : '']">The Arena</a>
-            <a href="/random-duel" data-tab="random-duel" tab-link data-active="@[route ? route.split('/')[1] || '' : '']">Random duel</a>
-            <a href="/vendor" data-tab="vendor" tab-link data-active="@[route ? route.split('/')[1] || '' : '']">Vendor</a>
-            <a href="/brawlers" data-tab="brawlers" tab-link data-active="@[route ? route.split('/')[1] || '' : '']">Brawlers</a>
-          </crow>
-        </crow>
-      </game-content-grid>
+    <crow vertical up game-main>
+      <crow up right g-1 tab-row>
+        <a href="/" data-tab="" tab-link data-active="@[route ? route.split('/')[1] || '' : '']">Game Guide</a>
+        <a href="/the-arena" data-tab="the-arena" tab-link data-active="@[route ? route.split('/')[1] || '' : '']">The Arena</a>
+        <a href="/random-duel" data-tab="random-duel" tab-link data-active="@[route ? route.split('/')[1] || '' : '']">Random duel</a>
+        <a href="/vendor" data-tab="vendor" tab-link data-active="@[route ? route.split('/')[1] || '' : '']">Vendor</a>
+        <a href="/brawlers" data-tab="brawlers" tab-link data-active="@[route ? route.split('/')[1] || '' : '']">Brawlers</a>
+      </crow>
+      <card content-area>
+        <page-content>
+          <p text-muted>Loading...</p>
+        </page-content>
+      </card>
     </crow>
 
     <!-- if routeParams.characterIndex !== undefined || route === '/vendor' -->
-    <aside game-sidebar sm-hide armory-aside>
+    <sidebar sm-hide armory>
       <component src="/components/Armory.html"></component>
-    </aside>
+    </sidebar>
     <!-- /if -->
   </crow>
   <!-- /if -->
@@ -118,7 +108,7 @@
     }
 
     [layout] [auth-padding] {
-      padding: 0 16px 16px;
+      padding: 0 calc(var(--unit) * 4) calc(var(--unit) * 4);
     }
 
     [layout] auth-scene {
@@ -130,13 +120,13 @@
     }
 
     [layout] [auth-char-left] {
-      max-width: 320px;
+      max-width: calc(var(--unit) * 80);
       height: auto;
       pointer-events: none;
     }
 
     [layout] [auth-char-right] {
-      max-width: 128px;
+      max-width: calc(var(--unit) * 32);
       height: auto;
       pointer-events: none;
       z-index: 1;
@@ -147,22 +137,22 @@
       position: relative;
       z-index: 2;
       width: 100%;
-      margin-right: -72px;
-      margin-left: -96px;
-      margin-bottom: 40px;
-      padding: 40px 40px 24px;
+      margin-right: calc(var(--unit) * -18);
+      margin-left: calc(var(--unit) * -24);
+      margin-bottom: calc(var(--unit) * 10);
+      padding: calc(var(--unit) * 10) calc(var(--unit) * 10) calc(var(--unit) * 6);
     }
 
     [layout] auth-error {
       display: block;
       background: var(--destructive);
       color: white;
-      padding: 8px 12px;
+      padding: calc(var(--unit) * 2) calc(var(--unit) * 3);
       border-radius: var(--radius);
     }
 
     [layout] [auth-input] {
-      padding: 8px 12px;
+      padding: calc(var(--unit) * 2) calc(var(--unit) * 3);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       flex: 1;
@@ -173,81 +163,53 @@
       align-items: flex-start;
       min-height: 100vh;
       width: 100%;
-      max-width: 1280px;
+      max-width: calc(var(--unit) * 320);
       margin: 0 auto;
-      padding: 80px 12px 12px;
-      gap: 12px;
+      padding: calc(var(--unit) * 20) calc(var(--unit) * 3) calc(var(--unit) * 3);
+      gap: calc(var(--unit) * 3);
     }
 
-    [layout] [game-sidebar] {
-      width: 224px;
-      flex: none;
-      position: sticky;
-      top: 12px;
-      height: calc(100vh - 24px);
-      background: rgba(255, 255, 255, 0.3);
-      border-radius: var(--radius);
-      border: 1px solid transparent;
-      padding: 16px;
+    [layout] sidebar {
+      order: 0;
+      top: calc(var(--unit) * 3);
+      height: calc(100vh - calc(var(--unit) * 6));
       overflow-y: auto;
     }
 
-    [layout] [armory-aside] {
+    [layout] sidebar-content {
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: var(--radius);
+      border: 1px solid transparent;
+    }
+
+    [layout] sidebar[armory] {
+      order: 1;
       transition: all 200ms;
     }
 
     [layout] [game-main] {
       flex: 1;
       min-width: 0;
-      height: 100%;
     }
 
-    [layout] game-content-grid {
-      display: grid;
-      height: 100%;
-      width: 100%;
-    }
-
-    [layout] content-area {
-      background: white;
+    [layout] [content-area] {
+      flex: 1;
       border-radius: var(--radius);
-      border: 1px solid transparent;
-      padding: 16px;
-      grid-area: 1/1;
-      position: relative;
     }
 
-    [layout] content-inner {
+    [layout] page-content {
       display: block;
-      position: relative;
-      width: 100%;
       flex: 1;
     }
 
-    [layout] sticky-bottom {
-      display: block;
-      position: sticky;
-      bottom: 12px;
-      width: 100%;
-    }
-
-    [layout] page-sticky-bottom {
-      display: block;
-      margin: 0 calc(-16px - 1px);
-      overflow: hidden;
-      border-radius: 0 0 var(--radius) var(--radius);
-    }
-
     [layout] [tab-row] {
-      grid-area: 1/1;
-      height: 28px;
+      height: calc(var(--unit) * 7);
       flex: none;
-      margin-top: -28px;
-      padding: 0 4px;
+      padding: 0 var(--unit);
     }
 
     [layout] [tab-link] {
-      padding: 2px 8px;
+      padding: calc(var(--unit) * 0.5) calc(var(--unit) * 2);
       font-size: 0.8rem;
       border: 1px solid transparent;
       border-bottom: none;

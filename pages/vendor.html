@@ -164,10 +164,10 @@
     <vendor-col-cost>
       <crow g-1 text-sm right>
         <!-- if Math.floor(item.cost / 100) > 0 -->
-        <span>@[Math.floor(item.cost / 100)]×</span><coin-icon coin-silver></coin-icon>
+        <span>@[Math.floor(item.cost / 100)]×</span><icon coin coin-silver></icon>
         <!-- /if -->
         <!-- if item.cost % 100 > 0 -->
-        <span>@[item.cost % 100]×</span><coin-icon coin-copper></coin-icon>
+        <span>@[item.cost % 100]×</span><icon coin coin-copper></icon>
         <!-- /if -->
       </crow>
     </vendor-col-cost>
@@ -187,9 +187,9 @@
 page-vendor [vendor-filters] { display: flex; flex-wrap: wrap; align-items: stretch; justify-content: stretch; }
 page-vendor [vendor-filter-btn] { flex: 1; }
 page-vendor [vendor-filter-btn][data-active="true"] { opacity: 1; background: var(--accent); }
-page-vendor [vendor-table] { margin-left: -16px; margin-right: -16px; width: auto; }
-page-vendor [vendor-header] { gap: 16px; padding: 8px 24px; }
-page-vendor [vendor-row] { width: 100%; gap: 16px; padding: 8px 24px; font-size: 0.875rem; }
+page-vendor [vendor-table] { margin-left: calc(var(--unit) * -4); margin-right: calc(var(--unit) * -4); width: auto; }
+page-vendor [vendor-header] { gap: calc(var(--unit) * 4); padding: calc(var(--unit) * 2) calc(var(--unit) * 6); }
+page-vendor [vendor-row] { width: 100%; gap: calc(var(--unit) * 4); padding: calc(var(--unit) * 2) calc(var(--unit) * 6); font-size: 0.875rem; }
 page-vendor [vendor-row][data-even="true"] { background: #fafaf9; }
 page-vendor [vendor-row][data-even="false"] { background: white; }
 page-vendor vendor-col-name { display: block; }
@@ -197,8 +197,7 @@ page-vendor [vendor-col-name] { flex: 1; }
 page-vendor vendor-col-slot { display: block; flex: 1; }
 page-vendor vendor-col-cost { display: block; flex: 1; }
 page-vendor vendor-col-action { display: block; }
-page-vendor [vendor-col-action] { width: 80px; flex: none; }
-page-vendor coin-icon { display: inline-block; width: 16px; height: 16px; border-radius: 50%; border: 0.5px solid rgba(0,0,0,0.3); box-shadow: 0.5px 0.5px 0 rgba(0,0,0,0.5); vertical-align: middle; }
-page-vendor [coin-silver] { background: oklch(0.7 0.1 200); }
-page-vendor [coin-copper] { background: oklch(0.65 0.12 60); }
+page-vendor [vendor-col-action] { width: calc(var(--unit) * 20); flex: none; }
+page-vendor [coin-silver] { color: oklch(0.6 0.12 200); }
+page-vendor [coin-copper] { color: oklch(0.6 0.15 60); }
 </style>

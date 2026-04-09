@@ -6,7 +6,29 @@ Strategy auto-battler rewritten from SvelteKit + Tailwind to Vibe + Stylecheat. 
 
 ## Reference
 
-The **`main` branch** contains the original SvelteKit implementation. Use `git stash && git checkout main` to inspect original components, then `git checkout chore/major-rewrite-to-stylecheat-and-vibe && git stash pop` to return. The original is the source of truth for all functionality and design.
+The **`main` branch** contains the original SvelteKit implementation. Use `git show main:<path>` or `git ls-tree main <dir>` to inspect without switching branches. The original is the source of truth for all functionality and design.
+
+### SvelteKit Components → Vibe Components
+
+The original SvelteKit project had these components (`src/components/`). Each should have a Vibe equivalent in `components/`:
+
+**Root-level (general purpose):**
+- Accordion, Armory, Coin, Coins, DevBar, EquipmentFilter, EquipmentLink
+- ForgotPassword, Frame, GameAudio, Headline, Hr, Loader, Login, Logo
+- MyLudus, RefillHealthTimer, Register, Topbar
+
+**buttons/**: Clickable, Close, GoBack, Logout
+**character/**: AbilityBar, AbilityIcon, AbilityInventory, AbilitySelection, CharacterAvatar, CharacterEquipment, CoreStats, Stats
+**combat/**: CharacterSelection, CombatArena, CombatAudioPlayer, CombatantAbilityBar, CombatantAudioPlayer, CombatantCard, CombatantImage, HealthBar, ResultAnnouncement, TeamBadge, VictoryOrLoss
+**dialog/**: BasicConfirmation
+**form/**: Button, Checkbox, Dropdown, Input
+**global/**: AccountProgression, ClientClock, ConnectSocket, Dialog, InCombat, Keystrokes, Notifications, Overlay
+**overlays/**: CodeOfConduct, Combat, GameMenu, ReleaseNotes
+**tooltips/**: TooltipAbility, TooltipEquipment
+**ui/**: Bar, Icon, Pill, Spinner, Tooltip
+
+**Ported as Vibe components:** AccountProgression, Armory, CodeOfConduct, Combat, Dialog, GameMenu, Layout, Notifications, ReleaseNotes, Sidebar, Tooltip, Topbar
+**Not yet components (inlined in pages or index.html):** everything else — extract as needed
 
 ## Stack
 
@@ -29,6 +51,9 @@ The **`main` branch** contains the original SvelteKit implementation. Use `git s
 - **Component scripts**: `<script type="module">` in Vibe components have imports STRIPPED by processComponent — use index.html's script for logic that needs imports
 - **Dynamic values**: for per-element dynamic values (colors, widths, positions), use custom attributes that map to CSS custom properties: `<element color="@[val]">` with CSS `[color] { --color: attr(color); }` or use `data-*` attributes. Where CSS `attr()` is insufficient, a minimal `style="--var: @[val]"` is acceptable as last resort.
 - **Stylecheat boolean attributes**: Stylecheat uses attribute presence (`[open]` vs `:not([open])`) for boolean states. Vibe's `@[expr]` sets attribute VALUES ("true"/"false"), not presence/absence. Use `data-*` attributes with value matching (`[data-open="true"]`) instead of Stylecheat's native boolean attributes for dynamic state.
+- **No string methods with quotes in `@[...]` inside `src` attributes**: `@[x.replace('.png', '-mugshot.png')]` fails because single quotes inside Vibe expressions conflict with HTML attribute parsing. Precompute the value in JS instead.
+- **Flatten deeply nested data for `<!-- each -->` loops**: Vibe's each-loop variable binding works best with flat top-level arrays on `$`. Deeply nested paths like `liveTeams[0].combatants` may not resolve properties in `@[c.name]`. Precompute flat arrays (e.g., `$.combatTeam0`) with simple property names.
+- **`onerror` on images with `@[...]` src**: Vibe briefly sets `src` to the literal `@[expr]` string before resolving, causing a 404. Guard onerror handlers: `onerror="if(!this.src.includes('@['))this.style.display='none'"`
 
 ## File Structure
 

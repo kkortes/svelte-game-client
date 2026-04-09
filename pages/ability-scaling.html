@@ -60,18 +60,18 @@
 </page-ability-scaling>
 
 <style>
-page-ability-scaling select { padding: 4px 8px; border: 1px solid var(--border); border-radius: var(--radius); }
+page-ability-scaling select { padding: var(--unit) calc(var(--unit) * 2); border: 1px solid var(--border); border-radius: var(--radius); }
 page-ability-scaling [scaling-row] { align-items: center; }
-page-ability-scaling [scaling-ticks] { width: 60px; flex: none; font-size: 0.875rem; }
+page-ability-scaling [scaling-ticks] { width: calc(var(--unit) * 15); flex: none; font-size: 0.875rem; }
 page-ability-scaling scaling-bar { display: block; flex: none; }
 page-ability-scaling ability-preview-cell {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 24px;
+  height: calc(var(--unit) * 6);
   flex: none;
   border: 0.5px solid rgb(120, 113, 108);
-  border-radius: 0 0 4px 4px;
+  border-radius: 0 0 var(--unit) var(--unit);
   background: rgb(214, 211, 209);
   color: rgb(120, 113, 108);
   font-size: 0.875rem;

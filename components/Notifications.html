@@ -35,8 +35,8 @@
 
     notification-panel notification-stack {
       position: fixed;
-      top: 32px;
-      right: 8px;
+      top: calc(var(--unit) * 8);
+      right: calc(var(--unit) * 2);
       z-index: 60;
       display: flex;
       flex-direction: column;
@@ -46,8 +46,8 @@
     notification-panel notification-card {
       display: block;
       animation: slide-in 200ms ease;
-      margin-bottom: 8px;
-      padding: 12px 20px 12px 12px;
+      margin-bottom: calc(var(--unit) * 2);
+      padding: calc(var(--unit) * 3) calc(var(--unit) * 5) calc(var(--unit) * 3) calc(var(--unit) * 3);
     }
 
     notification-panel notification-card[data-type="error"] { border-color: #ef4444; }
@@ -56,8 +56,8 @@
     notification-panel notification-card[data-type="info"] { border-color: #3b82f6; }
 
     notification-panel [notification-icon] {
-      width: 32px;
-      height: 32px;
+      width: calc(var(--unit) * 8);
+      height: calc(var(--unit) * 8);
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -80,7 +80,7 @@
 
     notification-panel notification-message {
       display: block;
-      max-width: 240px;
+      max-width: calc(var(--unit) * 60);
       color: var(--muted-foreground);
       font-size: 0.875rem;
     }

@@ -68,7 +68,7 @@
           try { const h = A(a, true); return { icon: h.icon, ticks: h.ticks }; }
           catch { return null; }
         }).filter(Boolean);
-        return { empty: false, name: char.name, mugshot: char.image.replace('.png', '-mugshot.png'), abilities, index: i };
+        return { empty: false, name: char.name, image: char.image, abilities, index: i };
       } catch {
         return { empty: true, index: i };
       }
@@ -159,7 +159,7 @@
 
   <!-- Enemy image column -->
   <fight-enemy-image>
-    <img src="/static/images/races/@[enemy.image]" alt="" onerror="if(!this.src.includes('@['))this.style.display='none'" />
+    <img data-src="/static/images/races/@[enemy.image]" alt="" />
   </fight-enemy-image>
 </crow>
 <!-- /each -->
@@ -182,7 +182,7 @@
   <!-- if !slot.empty -->
   <crow fight-slot-filled left g-2>
     <fight-slot-avatar glass>
-      <img src="/static/images/races/@[slot.mugshot]" alt="" fight-slot-img onerror="if(!this.src.includes('@['))this.style.display='none'" />
+      <img data-src="/static/images/races/@[slot.mugshot]" alt="" fight-slot-img />
     </fight-slot-avatar>
     <crow vertical left fight-slot-info>
       <span font-medium text-sm>@[slot.name]</span>
@@ -218,10 +218,10 @@
 <style>
 page-fight [go-back] {
   position: absolute;
-  top: -28px;
-  left: -22px;
+  top: calc(var(--unit) * -7);
+  left: calc(var(--unit) * -5.5);
   font-size: 0.75rem;
-  padding: 2px 8px;
+  padding: calc(var(--unit) * 0.5) calc(var(--unit) * 2);
 }
 
 page-fight [fight-badge-luck] {
@@ -232,11 +232,11 @@ page-fight [fight-badge-luck] {
 page-fight [fight-enemy-row] {
   align-items: stretch;
   overflow: hidden;
-  margin-bottom: 16px;
+  margin-bottom: calc(var(--unit) * 4);
 }
 
 page-fight [fight-stats-col] {
-  width: 80px;
+  width: calc(var(--unit) * 20);
   flex: none;
   font-size: 0.875rem;
   color: var(--muted-foreground);
@@ -249,7 +249,7 @@ page-fight [fight-info-col] {
 
 page-fight fight-enemy-image {
   display: block;
-  width: 160px;
+  width: calc(var(--unit) * 40);
   flex: none;
   position: relative;
   pointer-events: none;
@@ -271,7 +271,7 @@ page-fight fight-ability-bar {
 }
 
 page-fight fight-ability-cell {
-  height: 24px;
+  height: calc(var(--unit) * 6);
   border-right: 1px solid var(--border);
   display: flex;
   align-items: center;
@@ -288,12 +288,12 @@ page-fight [fight-divider] {
   height: 1px;
   border: 0;
   background: linear-gradient(to right, transparent, rgba(0,0,0,0.15), transparent);
-  margin: 24px 0;
+  margin: calc(var(--unit) * 6) 0;
 }
 
 page-fight [fight-slot-empty] {
   width: 100%;
-  height: 78px;
+  height: calc(var(--unit) * 19.5);
   flex: none;
   border: 1px dashed var(--border);
   display: flex;
@@ -303,21 +303,21 @@ page-fight [fight-slot-empty] {
 
 page-fight [fight-slot-filled] {
   width: 100%;
-  height: 78px;
+  height: calc(var(--unit) * 19.5);
   flex: none;
   border: 1px solid var(--border);
   display: flex;
   align-items: center;
-  padding: 8px 16px;
+  padding: calc(var(--unit) * 2) calc(var(--unit) * 4);
   background: rgba(255, 255, 255, 0.3);
 }
 
 page-fight fight-slot-avatar {
   display: block;
-  width: 48px;
-  height: 48px;
+  width: calc(var(--unit) * 12);
+  height: calc(var(--unit) * 12);
   flex: none;
-  border-radius: 4px;
+  border-radius: var(--unit);
   overflow: hidden;
   border: 1px solid rgba(75, 85, 99, 1);
 }
@@ -337,17 +337,17 @@ page-fight [fight-slot-info] {
 page-fight fight-slot-abilities {
   display: flex;
   border: 0.5px solid rgb(120, 113, 108);
-  border-radius: 0 0 4px 4px;
+  border-radius: 0 0 var(--unit) var(--unit);
   background: rgb(214, 211, 209);
   overflow: hidden;
-  max-width: 180px;
+  max-width: calc(var(--unit) * 45);
 }
 
 page-fight fight-slot-ability {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 20px;
+  height: calc(var(--unit) * 5);
   flex: none;
   border-right: 0.5px solid rgb(120, 113, 108);
   color: rgb(120, 113, 108);
@@ -364,7 +364,7 @@ page-fight fight-sticky-bottom {
   bottom: 0;
   left: 0;
   right: 0;
-  margin: 16px -16px -16px;
+  margin: calc(var(--unit) * 4) calc(var(--unit) * -4) calc(var(--unit) * -4);
 }
 
 page-fight [fight-bottom-bar] {
@@ -373,7 +373,7 @@ page-fight [fight-bottom-bar] {
 
 page-fight [fight-btn] {
   font-size: 1.125rem;
-  padding: 8px 32px;
+  padding: calc(var(--unit) * 2) calc(var(--unit) * 8);
 }
 
 page-fight [fight-btn][data-disabled="true"] {

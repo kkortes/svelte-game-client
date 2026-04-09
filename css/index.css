@@ -1,12 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Fira+Sans+Condensed:wght@300;400;500;600;700&family=Cinzel:wght@400;500;600;700&family=Alfa+Slab+One&family=Bree+Serif&display=swap');
+@import url('/nodemodules/@ape-egg/vibe/vibe.css');
 @import url('/css/stylecheat.css');
-@import url('/css/icons.css');
+@import url('/css/Iconice.css');
 
 /* Game theme — overrides stylecheat's default theme tokens */
 :root {
   --unit: 4px;
   --font-sans: 'Fira Sans Condensed', 'Trebuchet MS', sans-serif;
-  --radius: 6px;
+  --radius: calc(var(--unit) * 1.5);
 
   --background: oklch(0.94 0.02 60);
   --foreground: oklch(0.2 0 0);
@@ -54,7 +55,12 @@ body {
   background-attachment: fixed;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-heading);
   font-weight: 500;
   color: var(--foreground);
@@ -70,9 +76,15 @@ a:hover {
 }
 
 /* Game-specific font attributes */
-[cinzel] { font-family: var(--font-heading); }
-[alfa-slab] { font-family: var(--font-display); }
-[bree-serif] { font-family: var(--font-accent); }
+[cinzel] {
+  font-family: var(--font-heading);
+}
+[alfa-slab] {
+  font-family: var(--font-display);
+}
+[bree-serif] {
+  font-family: var(--font-accent);
+}
 
 /* Game-specific modifiers */
 [glass] {
@@ -91,18 +103,28 @@ a:hover {
 /* Equipment link — colored brush-stroke banner */
 eq-link {
   display: grid;
-  height: 20px;
+  height: calc(var(--unit) * 5);
   place-content: stretch;
   cursor: default;
   line-height: 1;
-  --eq-color: rgb(156,163,175);
+  --eq-color: rgb(156, 163, 175);
 }
 
-eq-link[data-tier="green"] { --eq-color: #16a34a; }
-eq-link[data-tier="blue"] { --eq-color: #2563eb; }
-eq-link[data-tier="purple"] { --eq-color: #9333ea; }
-eq-link[data-tier="orange"] { --eq-color: #ea580c; }
-eq-link[data-tier="red"] { --eq-color: #dc2626; }
+eq-link[data-tier='green'] {
+  --eq-color: #16a34a;
+}
+eq-link[data-tier='blue'] {
+  --eq-color: #2563eb;
+}
+eq-link[data-tier='purple'] {
+  --eq-color: #9333ea;
+}
+eq-link[data-tier='orange'] {
+  --eq-color: #ea580c;
+}
+eq-link[data-tier='red'] {
+  --eq-color: #dc2626;
+}
 
 eq-link eq-bg-center,
 eq-link eq-bg-left,
@@ -113,27 +135,27 @@ eq-link eq-bg-right {
 
 eq-link eq-bg-center {
   background: var(--eq-color);
-  clip-path: polygon(19px 0%, calc(100% - 17px) 0%, calc(100% - 17px) 100%, 19px 100%);
-  mask: url('/static/images/brush-center.png') repeat-x 0 0 / auto 20px;
+  clip-path: polygon(calc(var(--unit) * 4.75) 0%, calc(100% - calc(var(--unit) * 4.25)) 0%, calc(100% - calc(var(--unit) * 4.25)) 100%, calc(var(--unit) * 4.75) 100%);
+  mask: url('/static/images/brush-center.png') repeat-x 0 0 / auto calc(var(--unit) * 5);
 }
 
 eq-link eq-bg-left {
   background: var(--eq-color);
-  clip-path: polygon(0 0, 19px 0, 19px 100%, 0 100%);
-  mask: url('/static/images/brush-left.png') no-repeat 0 0 / auto 20px;
+  clip-path: polygon(0 0, calc(var(--unit) * 4.75) 0, calc(var(--unit) * 4.75) 100%, 0 100%);
+  mask: url('/static/images/brush-left.png') no-repeat 0 0 / auto calc(var(--unit) * 5);
 }
 
 eq-link eq-bg-right {
   background: var(--eq-color);
-  clip-path: polygon(100% 0, 100% 100%, calc(100% - 17px) 100%, calc(100% - 17px) 0);
-  mask: url('/static/images/brush-right.png') no-repeat 100% 0 / auto 20px;
+  clip-path: polygon(100% 0, 100% 100%, calc(100% - calc(var(--unit) * 4.25)) 100%, calc(100% - calc(var(--unit) * 4.25)) 0);
+  mask: url('/static/images/brush-right.png') no-repeat 100% 0 / auto calc(var(--unit) * 5);
 }
 
 eq-link [eq-name] {
   grid-area: 1/1;
   display: flex;
   align-items: center;
-  padding: 0 8px;
+  padding: 0 calc(var(--unit) * 2);
   font-weight: bold;
   letter-spacing: 0.025em;
   white-space: nowrap;
@@ -143,7 +165,7 @@ eq-link [eq-name] {
 }
 
 /* Disabled state for buttons via data attribute */
-button[data-disabled="true"] {
+button[data-disabled='true'] {
   pointer-events: none;
   opacity: 0.4;
 }
@@ -152,36 +174,60 @@ button[data-disabled="true"] {
 [headline-hr] {
   height: 1px;
   border: 0;
-  background: linear-gradient(to right, rgba(0,0,0,0.25), transparent);
-  margin: 8px 0 16px;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.25), transparent);
+  margin: calc(var(--unit) * 2) 0 calc(var(--unit) * 4);
 }
 
 [headline-hr-sm] {
   height: 1px;
   border: 0;
-  background: linear-gradient(to right, rgba(0,0,0,0.25), transparent);
-  margin: 4px 0 12px;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.25), transparent);
+  margin: var(--unit) 0 calc(var(--unit) * 3);
 }
 
 /* Text utilities (not in Stylecheat) */
-[text-sm] { font-size: 0.875rem; }
-[text-xs] { font-size: 0.75rem; }
-[text-lg] { font-size: 1.125rem; }
-[text-muted] { color: var(--muted-foreground); }
-[text-center] { text-align: center; }
+[text-sm] {
+  font-size: 0.875rem;
+}
+[text-xs] {
+  font-size: 0.75rem;
+}
+[text-lg] {
+  font-size: 1.125rem;
+}
+[text-muted] {
+  color: var(--muted-foreground);
+}
+[text-center] {
+  text-align: center;
+}
 
 /* Font utilities */
-[font-bold] { font-weight: 700; }
-[font-medium] { font-weight: 500; }
+[font-bold] {
+  font-weight: 700;
+}
+[font-medium] {
+  font-weight: 500;
+}
 
 /* Flex utilities */
-[flex-none] { flex: none; }
+[flex-none] {
+  flex: none;
+}
 
 /* Scrollbar */
-::-webkit-scrollbar { width: 10px; }
-::-webkit-scrollbar-track { background: oklch(0.85 0.01 50); }
-::-webkit-scrollbar-thumb { background: oklch(0.55 0.01 50); }
-::-webkit-scrollbar-thumb:hover { opacity: 0.9; }
+::-webkit-scrollbar {
+  width: calc(var(--unit) * 2.5);
+}
+::-webkit-scrollbar-track {
+  background: oklch(0.85 0.01 50);
+}
+::-webkit-scrollbar-thumb {
+  background: oklch(0.55 0.01 50);
+}
+::-webkit-scrollbar-thumb:hover {
+  opacity: 0.9;
+}
 
 /* Custom game elements */
 page-content {
@@ -190,32 +236,43 @@ page-content {
 }
 
 /* Page wrapper elements — all need block display */
-page-home, page-brawlers, page-brawler-detail, page-arena, page-fight,
-page-vendor, page-pvp, page-debug, page-ability-scaling, page-char-scaling,
-page-equip-scaling, page-reset-pw {
+page-home,
+page-brawlers,
+page-brawler-detail,
+page-arena,
+page-fight,
+page-vendor,
+page-pvp,
+page-debug,
+page-ability-scaling,
+page-char-scaling,
+page-equip-scaling,
+page-reset-pw {
   display: block;
 }
 
 spinner {
   display: inline-block;
-  width: 20px;
-  height: 20px;
-  border: 2px solid var(--border);
+  width: calc(var(--unit) * 5);
+  height: calc(var(--unit) * 5);
+  border: calc(var(--unit) * 0.5) solid var(--border);
   border-top-color: var(--primary);
   border-radius: 50%;
   animation: spin 600ms linear infinite;
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Health bar — game custom */
 health-bar {
   display: block;
-  height: 6px;
+  height: calc(var(--unit) * 1.5);
   background: rgba(0, 0, 0, 0.2);
-  border-radius: 3px;
+  border-radius: calc(var(--unit) * 0.75);
   overflow: hidden;
 }
 
@@ -228,9 +285,9 @@ health-bar > div {
 /* Progress bar */
 progress-bar {
   display: block;
-  height: 8px;
+  height: calc(var(--unit) * 2);
   background: var(--border);
-  border-radius: 4px;
+  border-radius: var(--unit);
   overflow: hidden;
 }
 
@@ -243,36 +300,46 @@ progress-bar > div {
 /* Combat ring */
 [combat-ring] {
   position: relative;
-  width: 500px;
-  height: 500px;
+  width: calc(var(--unit) * 125);
+  height: calc(var(--unit) * 125);
   margin: 0 auto;
 }
 
 /* Notification/overlay animations */
 @keyframes slide-in {
-  from { transform: translateX(100%); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 @keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* Tab styling — active when data-active matches data-tab */
-[tab-link][data-tab=""][data-active=""],
-[tab-link][data-tab="the-arena"][data-active="the-arena"],
-[tab-link][data-tab="random-duel"][data-active="random-duel"],
-[tab-link][data-tab="vendor"][data-active="vendor"],
-[tab-link][data-tab="brawlers"][data-active="brawlers"] {
-  background: white;
+[tab-link][data-tab=''][data-active=''],
+[tab-link][data-tab='the-arena'][data-active='the-arena'],
+[tab-link][data-tab='random-duel'][data-active='random-duel'],
+[tab-link][data-tab='vendor'][data-active='vendor'],
+[tab-link][data-tab='brawlers'][data-active='brawlers'] {
+  background: var(--card);
   color: var(--foreground);
-  border-radius: 2px 2px 0 0;
+  border-radius: calc(var(--unit) * 0.5) calc(var(--unit) * 0.5) 0 0;
 }
 
 /* DnD-specific styles */
 [dnd-zone] {
-  min-height: 40px;
+  min-height: calc(var(--unit) * 10);
 }
 
 [dnd-item] {
@@ -295,6 +362,7 @@ progress-bar > div {
 
 /* Responsive */
 @media (max-width: 768px) {
-  [sm-hide] { display: none; }
+  [sm-hide] {
+    display: none;
+  }
 }
-
