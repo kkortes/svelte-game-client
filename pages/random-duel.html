@@ -7,19 +7,27 @@
   const count = Math.floor(getLevelByExperience($.experience) / 5) + 1;
   $.maxBrawlers = count;
 
-  // Build selection slots
-  $.pvpSlots = Array.from({ length: count }, (_, i) => {
-    const uuid = $.selectedBrawlers[i];
-    if (!uuid) return { empty: true, index: i };
-    const ref = $.characters.find(c => c.uuid === uuid);
-    if (!ref) return { empty: true, index: i };
-    try {
-      const char = CHARACTERS(ref, true);
-      return { empty: false, name: char.name, index: i };
-    } catch {
-      return { empty: true, index: i };
-    }
-  });
+  window.updateFightSlots = () => {
+    const C = window.CHARACTERS || CHARACTERS;
+    const A = window.ABILITIES_FN;
+    $.pvpSlots = Array.from({ length: count }, (_, i) => {
+      const uuid = $.selectedBrawlers[i];
+      if (!uuid) return { empty: true, index: i };
+      const ref = $.characters.find(c => c.uuid === uuid);
+      if (!ref) return { empty: true, index: i };
+      try {
+        const char = C(ref, true);
+        const abilities = A ? char.abilities.map(a => {
+          try { const h = A(a, true); return { icon: h.icon, ticks: h.ticks }; }
+          catch { return null; }
+        }).filter(Boolean) : [];
+        return { empty: false, name: char.name, mugshot: char.image.replace('.png', '-mugshot.png'), abilities, index: i };
+      } catch {
+        return { empty: true, index: i };
+      }
+    });
+  };
+  window.updateFightSlots();
 
   window.runPvpCombat = async () => {
     const selected = $.characters.filter(c => $.selectedBrawlers.includes(c.uuid));
@@ -44,10 +52,9 @@
         return;
       }
 
-      const seed = `${Math.random()}`;
-      const combat = generateCombat(prepareTeams(selected, healFull(opponents.slice(0, selected.length))));
-      $.combat = combat;
-      $.elapsedMilliseconds = 0;
+      const myCharacters = JSON.parse(JSON.stringify(selected));
+      $.selectedBrawlers = [];
+      $.combat = generateCombat(prepareTeams(myCharacters, healFull(opponents.slice(0, myCharacters.length))));
       $.overlay = 'Combat';
     } catch (e) {
       notify({ error: 'Failed to find opponent' });
@@ -63,7 +70,7 @@
     <badge>@[selectedBrawlers.length || maxBrawlers]&nbsp;vs&nbsp;@[selectedBrawlers.length || maxBrawlers]</badge>
   </crow>
 </crow>
-<hr pvp-headline-hr />
+<hr headline-hr />
 
 <crow pvp-opponent>
   <crow pvp-mystery>
@@ -84,23 +91,32 @@
   </crow>
   <!-- /if -->
   <!-- if !slot.empty -->
-  <crow pvp-slot-filled>
-    <span font-medium>@[slot.name]</span>
+  <crow pvp-slot-filled left g-2>
+    <pvp-slot-avatar glass>
+      <img src="/static/images/races/@[slot.mugshot]" alt="" pvp-slot-img onerror="if(!this.src.includes('@['))this.style.display='none'" />
+    </pvp-slot-avatar>
+    <crow vertical left pvp-slot-info>
+      <span font-medium text-sm>@[slot.name]</span>
+      <pvp-slot-abilities>
+        <!-- each slot.abilities as ab -->
+        <pvp-slot-ability style="width: calc(12px * @[ab.ticks])">
+          <icon @[ab.icon]></icon>
+        </pvp-slot-ability>
+        <!-- /each -->
+      </pvp-slot-abilities>
+    </crow>
   </crow>
   <!-- /if -->
   <!-- /each -->
 </crow>
 
+<sticky-bottom>
+  <button primary big onclick="runPvpCombat()" data-disabled="@[selectedBrawlers.length === 0 || combat.duration !== 0]">Fight</button>
+</sticky-bottom>
+
 </page-pvp>
 
 <style>
-page-pvp [pvp-headline-hr] {
-  height: 1px;
-  border: 0;
-  background: linear-gradient(to right, rgba(0,0,0,0.25), transparent);
-  margin: 8px 0 16px;
-}
-
 page-pvp [pvp-opponent] {
   justify-content: center;
   padding: 16px 0;
@@ -137,7 +153,55 @@ page-pvp [pvp-slot-filled] {
   border: 1px solid var(--border);
   display: flex;
   align-items: center;
-  padding: 0 16px;
+  padding: 8px 16px;
   background: rgba(255, 255, 255, 0.3);
 }
+
+page-pvp pvp-slot-avatar {
+  display: block;
+  width: 48px;
+  height: 48px;
+  flex: none;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid rgba(75, 85, 99, 1);
+}
+
+page-pvp [pvp-slot-img] { width: 100%; height: 100%; object-fit: cover; }
+page-pvp [pvp-slot-info] { flex: 1; min-width: 0; overflow: hidden; }
+
+page-pvp pvp-slot-abilities {
+  display: flex;
+  border: 0.5px solid rgb(120, 113, 108);
+  border-radius: 0 0 4px 4px;
+  background: rgb(214, 211, 209);
+  overflow: hidden;
+  max-width: 180px;
+}
+
+page-pvp pvp-slot-ability {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 20px;
+  flex: none;
+  border-right: 0.5px solid rgb(120, 113, 108);
+  color: rgb(120, 113, 108);
+  font-size: 0.75rem;
+}
+
+page-pvp pvp-slot-ability:last-child { border-right: none; }
+
+page-pvp sticky-bottom {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  padding: 12px;
+  background: linear-gradient(to top, rgb(30 41 59), transparent);
+  margin-top: 16px;
+}
+
+page-pvp sticky-bottom button { min-width: 200px; }
+page-pvp sticky-bottom button[data-disabled="true"] { opacity: 0.5; pointer-events: none; }
 </style>

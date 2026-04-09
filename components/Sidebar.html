@@ -19,7 +19,7 @@
     <h5>MY LUDUS</h5>
     <span cinzel flex-none>level @[sidebarLevel]</span>
   </crow>
-  <hr sidebar-hr />
+  <hr headline-hr-sm />
 
   <crow vertical left w-full g-2>
     <!-- Coins -->
@@ -82,11 +82,11 @@
   <!-- MY BRAWLERS -->
   <crow justify-between>
     <h5>MY BRAWLERS</h5>
-    <span cinzel flex-none>@[sidebarChars.length]</span>
+    <span cinzel flex-none>@[sidebarChars.length] / @[sidebarMaxChars]</span>
   </crow>
-  <hr sidebar-hr />
+  <hr headline-hr-sm />
 
-  <brawler-list>
+  <brawler-list onmouseenter="$.showSequence = true" onmouseleave="$.showSequence = false">
     <crow vertical up left>
       <!-- if characters.length === 0 -->
       <crow vertical w-full g-2 text-sm text-muted>
@@ -100,7 +100,7 @@
         <crow left brawler-row data-active="@[Number(routeParams.characterIndex) === i || selectedBrawlers.includes(characters[i]?.uuid)]">
           <avatar-wrap>
             <avatar-frame glass>
-              <img src="/static/images/races/@[schar.image.replace('.png', '-mugshot.png')]" alt="" brawler-img onerror="this.style.display='none'" />
+              <img src="/static/images/races/@[schar.mugshot]" alt="" brawler-img onerror="if(!this.src.includes('@['))this.style.display='none'" />
             </avatar-frame>
           </avatar-wrap>
           <crow vertical left brawler-info>
@@ -109,10 +109,26 @@
                 <bar-fill hp-fill style="width: @[schar.healthPct]%"></bar-fill>
                 <crow bar-text text-sm justify-between>
                   <span>@[schar.name]</span>
+                  <!-- if showSequence || maxBrawlers || Number(routeParams.characterIndex) === i || selectedBrawlers.includes(characters[i]?.uuid) -->
+                  <span>@[schar.currentHealth] / @[schar.maxHealth]</span>
+                  <!-- /if -->
+                  <!-- if !showSequence && !maxBrawlers && Number(routeParams.characterIndex) !== i && !selectedBrawlers.includes(characters[i]?.uuid) -->
                   <span>@[schar.healthPct]%</span>
+                  <!-- /if -->
                 </crow>
               </bar-track>
             </crow>
+            <ability-accordion data-open="@[showSequence || !!maxBrawlers || Number(routeParams.characterIndex) === i || selectedBrawlers.includes(characters[i]?.uuid)]">
+              <ability-accordion-content>
+              <ability-preview>
+                <!-- each schar.abilities as ab -->
+                <ability-preview-cell style="width: calc(12px * @[ab.ticks])">
+                  <icon @[ab.icon]></icon>
+                </ability-preview-cell>
+                <!-- /each -->
+              </ability-preview>
+              </ability-accordion-content>
+            </ability-accordion>
           </crow>
         </crow>
       </a>
@@ -133,13 +149,6 @@
       gap: 8px;
       text-decoration: none;
       color: inherit;
-    }
-
-    sidebar-content [sidebar-hr] {
-      height: 1px;
-      border: 0;
-      background: linear-gradient(to right, rgba(0,0,0,0.25), transparent);
-      margin: 4px 0 12px;
     }
 
     sidebar-content spacer {
@@ -285,6 +294,47 @@
       min-width: 0;
       overflow: hidden;
       padding: 4px;
+    }
+
+    sidebar-content ability-accordion {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 200ms ease;
+    }
+
+    sidebar-content ability-accordion[data-open="true"] {
+      grid-template-rows: 1fr;
+    }
+
+    sidebar-content ability-accordion-content {
+      display: block;
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    sidebar-content ability-preview {
+      display: flex;
+      border: 0.5px solid rgb(120, 113, 108);
+      border-radius: 0 0 4px 4px;
+      background: rgb(214, 211, 209);
+      overflow: hidden;
+      width: 145px;
+      padding-right: 1px;
+    }
+
+    sidebar-content ability-preview-cell {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 24px;
+      flex: none;
+      border-right: 0.5px solid rgb(120, 113, 108);
+      color: rgb(120, 113, 108);
+      font-size: 0.875rem;
+    }
+
+    sidebar-content ability-preview-cell:last-child {
+      border-right: none;
     }
   </style>
 </sidebar-content>

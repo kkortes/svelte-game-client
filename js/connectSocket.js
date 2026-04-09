@@ -1,5 +1,6 @@
 import config from '/js/config.js';
 import AsyncAwaitWebsocket from '/nodemodules/async-await-websockets/client.js';
+import { notify } from '/js/actions.js';
 
 let saveTimeout = null;
 
@@ -28,11 +29,11 @@ const connectWebSocket = () => {
 
   ws.on('open', () => {
     $.socket = ws;
-    console.info('Connected to game server');
+    notify({ success: 'Connected to game server' });
   });
 
   ws.on('close', () => {
-    console.info('Disconnected from game server, reconnecting...');
+    notify({ error: "Can't connect to game server" });
   });
 
   ws.on('broadcast', (data) => {

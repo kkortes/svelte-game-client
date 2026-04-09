@@ -49,6 +49,7 @@
 
   $.brawlerCharCount = $.characters.length;
   $.brawlerCharMax = allowedNumberOfCharacters();
+  $.brawlerCharCapped = $.characters.length >= allowedNumberOfCharacters();
 
   window.pickCharacter = (index) => {
     const capped = $.characters.length >= allowedNumberOfCharacters();
@@ -79,16 +80,21 @@
 </script>
 
 <page-brawlers>
-<h3 cinzel m-0>Brawlers</h3>
+<crow justify-between left>
+  <h3>Brawlers</h3>
+</crow>
+<hr headline-hr />
 
 <crow vertical cinzel brawlers-heading>
   <!-- if characters.length === 0 -->
   <span>Select your first brawler</span>
   <!-- /if -->
-  <!-- if characters.length > 0 -->
+  <!-- if brawlerCharCapped -->
+  <span>Level up your ludus in order<br />to recruit new brawlers</span>
+  <!-- /if -->
+  <!-- if characters.length > 0 && !brawlerCharCapped -->
   <span>Select a brawler</span>
   <!-- /if -->
-  <span text-sm text-muted>@[brawlerCharCount] / @[brawlerCharMax]</span>
 </crow>
 
 <crow brawlers-grid>
@@ -104,17 +110,17 @@
       <hr divider />
       <crow g-4 left w-full>
         <char-portrait glass>
-          <img src="/static/images/races/@[char.image]" alt="@[char.name]" portrait-img onerror="this.style.display='none'" />
+          <img src="/static/images/races/@[char.image]" alt="@[char.name]" portrait-img onerror="if(!this.src.includes('@['))this.style.display='none'" />
         </char-portrait>
         <crow vertical left g-1>
           <span text-sm text-muted>@[char.race]</span>
           <span text-sm text-muted>@[char.element]</span>
-          <crow g-2 mt-1>
-            <span text-xs core-stat>HP @[char.hp]</span>
-            <!-- if char.armor > 0 -->
-            <span text-xs core-stat>Armor @[char.armor]</span>
-            <!-- /if -->
-            <span text-xs core-stat>Dmg @[char.damage]</span>
+          <crow g-2 mt-2 core-stats>
+            <crow g-1><icon maxHealth></icon> @[char.hp]</crow>
+            <span text-muted>/</span>
+            <crow g-1><icon maxArmor></icon> @[char.armor]</crow>
+            <span text-muted>/</span>
+            <crow g-1><icon damage></icon> @[char.damage]</crow>
           </crow>
           <!-- if char.luckyBonuses.length > 0 -->
           <crow g-2 bonus-row>
@@ -153,7 +159,7 @@ page-brawlers [brawler-name] { font-size: 1.5rem; }
 page-brawlers [divider] { width: 100%; border: none; border-top: 1px solid var(--border); }
 page-brawlers char-portrait { display: block; width: 120px; flex: none; aspect-ratio: 11/12; border-radius: var(--radius); overflow: hidden; border: 1px solid rgba(0,0,0,0.1); }
 page-brawlers [portrait-img] { width: 100%; height: 100%; object-fit: cover; }
-page-brawlers [core-stat] { color: var(--foreground); opacity: 0.8; }
+page-brawlers [core-stats] { font-size: 1rem; color: var(--muted-foreground); }
 page-brawlers [bonus-stat] { color: #16a34a; }
 page-brawlers [bonus-row] { flex-wrap: wrap; }
 </style>

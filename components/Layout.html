@@ -1,7 +1,7 @@
 <game-layout layout>
   <!-- if !socket -->
   <center-full>
-    <p text-muted>Connecting to server...</p>
+    <crow g-2 text-muted><spinner></spinner> Connecting to server</crow>
   </center-full>
   <!-- /if -->
 
@@ -25,8 +25,8 @@
             <button primary type="submit">Log in</button>
           </crow>
           <crow g-2 mb-2>
-            <input type="checkbox" id="codeOfConduct" />
-            <label for="codeOfConduct" text-sm>I agree to the <a href="#" onclick="event.stopPropagation()">Code of Conduct</a></label>
+            <input type="checkbox" id="codeOfConduct" onchange="$.authCodeOfConduct = this.checked" />
+            <label for="codeOfConduct" text-sm>I agree to the <a href="#" onclick="event.preventDefault(); $.overlay = 'CodeOfConduct'">Code of Conduct</a></label>
           </crow>
           <crow g-2 mb-2>
             <input type="checkbox" id="rememberMe" onchange="$.authRememberMe = this.checked" />
@@ -34,7 +34,7 @@
           </crow>
           <crow g-2>
             <button tertiary type="button" onclick="$.authMode = 'register'">Register</button>
-            <button tertiary type="button">Forgot password</button>
+            <button tertiary type="button" onclick="$.authMode = 'forgot'">Forgot password</button>
           </crow>
         </form>
         <!-- /if -->
@@ -51,6 +51,18 @@
           </p>
         </form>
         <!-- /if -->
+
+        <!-- if authMode === 'forgot' -->
+        <form onsubmit="event.preventDefault(); $.authError = 'Password reset email sent (if account exists)'; $.authMode = 'login';">
+          <crow g-2 mb-3>
+            <input type="email" placeholder="Email" value="@[authEmail]" oninput="$.authEmail = this.value" required auth-input />
+            <button primary type="submit">Reset</button>
+          </crow>
+          <p text-sm text-muted>
+            <a href="#" onclick="event.preventDefault(); $.authMode = 'login';">Back to login</a>
+          </p>
+        </form>
+        <!-- /if -->
       </auth-form>
 
       <img src="/static/images/races/elf/female-01.png" alt="" auth-char-right />
@@ -64,21 +76,30 @@
       <component src="/components/Sidebar.html"></component>
     </aside>
 
-    <game-main>
-      <nav data-active="@[route ? route.split('/')[1] || '' : '']" tab-nav>
-        <a href="/" data-tab="" tab-link>Game Guide</a>
-        <a href="/the-arena" data-tab="the-arena" tab-link>The Arena</a>
-        <a href="/random-duel" data-tab="random-duel" tab-link>Random duel</a>
-        <a href="/vendor" data-tab="vendor" tab-link>Vendor</a>
-        <a href="/brawlers" data-tab="brawlers" tab-link>Brawlers</a>
-      </nav>
+    <crow vertical game-main>
+      <game-content-grid>
+        <crow left up vertical content-area>
+          <content-inner>
+            <page-content>
+              <p text-muted>Loading...</p>
+            </page-content>
+          </content-inner>
+          <sticky-bottom>
+            <page-sticky-bottom></page-sticky-bottom>
+          </sticky-bottom>
+        </crow>
 
-      <content-area>
-        <page-content>
-          <p text-muted>Loading...</p>
-        </page-content>
-      </content-area>
-    </game-main>
+        <crow up tab-row>
+          <crow up right g-1>
+            <a href="/" data-tab="" tab-link data-active="@[route ? route.split('/')[1] || '' : '']">Game Guide</a>
+            <a href="/the-arena" data-tab="the-arena" tab-link data-active="@[route ? route.split('/')[1] || '' : '']">The Arena</a>
+            <a href="/random-duel" data-tab="random-duel" tab-link data-active="@[route ? route.split('/')[1] || '' : '']">Random duel</a>
+            <a href="/vendor" data-tab="vendor" tab-link data-active="@[route ? route.split('/')[1] || '' : '']">Vendor</a>
+            <a href="/brawlers" data-tab="brawlers" tab-link data-active="@[route ? route.split('/')[1] || '' : '']">Brawlers</a>
+          </crow>
+        </crow>
+      </game-content-grid>
+    </crow>
 
     <!-- if routeParams.characterIndex !== undefined || route === '/vendor' -->
     <aside game-sidebar sm-hide armory-aside>
@@ -97,7 +118,7 @@
     }
 
     [layout] [auth-padding] {
-      padding: 40px 16px 16px;
+      padding: 0 16px 16px;
     }
 
     [layout] auth-scene {
@@ -109,31 +130,27 @@
     }
 
     [layout] [auth-char-left] {
-      width: 280px;
+      max-width: 320px;
       height: auto;
-      object-fit: contain;
-      position: relative;
-      z-index: 1;
-      margin-right: -40px;
-      margin-bottom: -20px;
+      pointer-events: none;
     }
 
     [layout] [auth-char-right] {
-      width: 180px;
+      max-width: 128px;
       height: auto;
-      object-fit: contain;
-      position: relative;
+      pointer-events: none;
       z-index: 1;
-      margin-left: -20px;
-      margin-bottom: -20px;
+      transform: scaleX(-1);
     }
 
     [layout] auth-form {
       position: relative;
       z-index: 2;
       width: 100%;
-      max-width: 440px;
-      padding: 16px;
+      margin-right: -72px;
+      margin-left: -96px;
+      margin-bottom: 40px;
+      padding: 40px 40px 24px;
     }
 
     [layout] auth-error {
@@ -170,6 +187,7 @@
       height: calc(100vh - 24px);
       background: rgba(255, 255, 255, 0.3);
       border-radius: var(--radius);
+      border: 1px solid transparent;
       padding: 16px;
       overflow-y: auto;
     }
@@ -178,20 +196,53 @@
       transition: all 200ms;
     }
 
-    [layout] game-main {
+    [layout] [game-main] {
       flex: 1;
       min-width: 0;
-      display: flex;
-      flex-direction: column;
+      height: 100%;
     }
 
-    [layout] [tab-nav] {
-      margin-top: -28px;
+    [layout] game-content-grid {
+      display: grid;
+      height: 100%;
+      width: 100%;
+    }
+
+    [layout] content-area {
+      background: white;
+      border-radius: var(--radius);
+      border: 1px solid transparent;
+      padding: 16px;
+      grid-area: 1/1;
+      position: relative;
+    }
+
+    [layout] content-inner {
+      display: block;
+      position: relative;
+      width: 100%;
+      flex: 1;
+    }
+
+    [layout] sticky-bottom {
+      display: block;
+      position: sticky;
+      bottom: 12px;
+      width: 100%;
+    }
+
+    [layout] page-sticky-bottom {
+      display: block;
+      margin: 0 calc(-16px - 1px);
+      overflow: hidden;
+      border-radius: 0 0 var(--radius) var(--radius);
+    }
+
+    [layout] [tab-row] {
+      grid-area: 1/1;
       height: 28px;
-      display: flex;
       flex: none;
-      gap: 1px;
-      justify-content: flex-end;
+      margin-top: -28px;
       padding: 0 4px;
     }
 
@@ -203,15 +254,6 @@
       border-radius: var(--radius) var(--radius) 0 0;
       color: var(--muted-foreground);
       text-decoration: none;
-    }
-
-    [layout] content-area {
-      display: block;
-      background: white;
-      border-radius: var(--radius);
-      padding: 16px;
-      flex: 1;
-      position: relative;
     }
   </style>
 </game-layout>

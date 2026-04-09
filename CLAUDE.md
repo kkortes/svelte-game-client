@@ -28,6 +28,7 @@ The **`main` branch** contains the original SvelteKit implementation. Use `git s
 - **Router**: custom pushState SPA router at `/js/router.js` — pages loaded via fetch + innerHTML + script execution
 - **Component scripts**: `<script type="module">` in Vibe components have imports STRIPPED by processComponent — use index.html's script for logic that needs imports
 - **Dynamic values**: for per-element dynamic values (colors, widths, positions), use custom attributes that map to CSS custom properties: `<element color="@[val]">` with CSS `[color] { --color: attr(color); }` or use `data-*` attributes. Where CSS `attr()` is insufficient, a minimal `style="--var: @[val]"` is acceptable as last resort.
+- **Stylecheat boolean attributes**: Stylecheat uses attribute presence (`[open]` vs `:not([open])`) for boolean states. Vibe's `@[expr]` sets attribute VALUES ("true"/"false"), not presence/absence. Use `data-*` attributes with value matching (`[data-open="true"]`) instead of Stylecheat's native boolean attributes for dynamic state.
 
 ## File Structure
 
@@ -48,39 +49,40 @@ svelte-game-server/     — WebSocket game server (unchanged)
 
 Run from `svelte-game-server/`: `bun run index.js` (port 1337). Config in `js/config.js`.
 
-## TODO — Rewrite Completion
+## Remaining Work
 
-Reference: compare against `main` branch for each item. Be 1:1 with original functionality.
+### Known gaps vs original:
+- DnD for abilities is basic (reorder + refresh, no smooth drag preview like svelte-dnd-action)
+- Combat visualization is card-based instead of circular arena layout with character sprites
+- No CSS transitions on overlay open/close (hard show/hide via Vibe conditionals)
 
-### CRITICAL (game doesn't function without these)
-
-- [x] 1. Arena fight list — locking/progression, boss tracking, enemy previews, XP rewards, sorted table
-- [x] 2. Fight detail — enemy stats, brawler selection slots, fight button gating
-- [x] 3. Character detail — detailed stats toggle, ability bar tick visualization, "Try out build", retire button, equipment display
-- [x] 4. Combat overlay — team health bars, status effects, result announcement with rewards (XP + boss progression + health sync)
-- [x] 5. Armory — equip/dismantle/refund distinction, level-colored borders
-- [x] 6. Vendor — equipment filter buttons, slot grouping, proper acquire flow
-- [x] 7. Sidebar brawler list — active brawler glass highlight
-- [x] 8. Health refill timer — countdown bar, auto-heal
-- [x] 9. Account progression — level reward system (1-25), claim buttons, auto-popup on level up
-- [x] 10. Tooltip system — ability tooltips, equipment tooltips, smart positioning, colored borders
-
-### IMPORTANT (game works but incomplete)
-
-- [x] 11. Notifications — color-coding by type, auto-dismiss
-- [x] 12. Login form — "I agree to Code of Conduct" checkbox
-- [x] 13. Audio system — combat audio, ambient, SFX, level-up sound
-- [x] 14. Equipment links — colored border by level in armory
-- [x] 15. Combat result handling — character health sync, boss highscore update, XP + coin rewards
-- [x] 16. Brawler recruitment — already-recruited disable, character cap, full stats display
-
-### MINOR (polish)
-
-- [x] 17. Code of Conduct overlay
-- [x] 18. Release Notes overlay
-- [x] 19. Coins component — coin icons instead of text
-- [x] 20. Dark mode toggle (hidden by default in original)
-- [x] 21. DevBar (dev only debug panel)
-- [x] 22. Equipment/ability/character scaling pages — match original detail level
-- [x] 23. Keyboard shortcuts — wire into game actions
-- [x] 24. Login floating labels (Svelte-style label animation)
+### Completed:
+- All 12 route pages functional
+- Login/Register/Forgot password flows
+- Brawler recruitment with dialog + CoC validation
+- Character detail with stats toggle, ability bar, equipment slots, try-out, retire
+- Ability auto-generation from equipment (ensureDefaultAbilities logic)
+- Arena fight list with sorting, locking, boss tracking, enemy previews, XP
+- Fight detail with enemy info, brawler selection slots (with names), fight button
+- Random duel with brawler selection, fight button, PvP matchmaking
+- Combat overlay with team health bars, damage/armor badges, all 6 status effect icons, floating damage/heal numbers, result/rewards with XP + boss defeated
+- Combat audio: SFX timed to combat events + victory/defeat stingers
+- Ambient audio: desert wind / wilderness crossfade based on boss progression, volume settings
+- Floating damage/heal/armor numbers during combat (animated, color-coded)
+- Equipment tooltips on hover (armory, brawler-detail, vendor) with combat stats + icons
+- Ability tooltips with basic/special tags
+- Fight selection slots show brawler mugshot + ability bar (fight-detail + PvP)
+- Vendor with equipment filters, eq-link banners, acquire with coin check
+- Armory with equip/unequip, refund/dismantle, eq-link banners
+- Sidebar: HP bars, XP bar, heal timer (server-timestamp synced), coin icons, ability sequence accordion, brawler selection
+- Notifications component with icons, titles, type-based colors
+- GameMenu component with Frame styling, audio sliders, logout
+- DevBar at top with combat controls, state manipulation
+- Icon system (56 game icons via CSS masks)
+- Account progression overlay with 25 levels, claim, auto-popup
+- Code of Conduct overlay with full rules text (matching original)
+- Escape key toggles GameMenu
+- Client clock syncs server timestamp
+- Combat-loop syncs character health on end
+- Boss highscore tracking
+- All HTML: zero divs, zero classes, minimal style attrs

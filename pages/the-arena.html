@@ -57,6 +57,7 @@
   window.arenaClick = (e, id, isLocked, bossCompleted) => {
     if (isLocked || bossCompleted) {
       e.preventDefault();
+      e.stopPropagation();
       return;
     }
   };
@@ -67,7 +68,7 @@
 <crow justify-between left>
   <h3>The arena</h3>
 </crow>
-<hr arena-headline-hr />
+<hr headline-hr />
 
 <crow vertical up left arena-table>
   <crow up left g-4 arena-header>
@@ -125,7 +126,7 @@
             alt=""
             arena-enemy-img
             data-completed="@[fight.bossCompleted]"
-            onerror="this.style.display='none'"
+            onerror="if(!this.src.includes('@['))this.style.display='none'"
           />
           <!-- /if -->
         </crow>
@@ -139,13 +140,6 @@
 </page-arena>
 
 <style>
-page-arena [arena-headline-hr] {
-  height: 1px;
-  border: 0;
-  background: linear-gradient(to right, rgba(0,0,0,0.25), transparent);
-  margin: 8px 0 16px;
-}
-
 page-arena [arena-table] {
   margin: 0 -16px;
   width: calc(100% + 32px);
@@ -156,8 +150,9 @@ page-arena [arena-header] {
   color: var(--foreground);
 }
 
+page-arena arena-col-name { display: block; }
 page-arena [arena-col-name] { flex: 1; white-space: nowrap; }
-page-arena arena-col-level { width: 48px; flex: none; }
+page-arena arena-col-level { display: block; width: 48px; flex: none; }
 page-arena arena-col-loot { display: block; width: 48px; flex: none; }
 page-arena [arena-col-preview] { width: 120px; flex: none; }
 
@@ -173,8 +168,8 @@ page-arena [arena-row] {
   width: 100%;
 }
 
-page-arena [arena-row][data-even="true"] { background: rgba(120, 110, 100, 0.05); }
-page-arena [arena-row][data-even="false"] { background: rgba(120, 110, 100, 0.1); }
+page-arena [arena-row][data-even="true"] { background: #fafaf9; }
+page-arena [arena-row][data-even="false"] { background: #f5f5f4; }
 
 page-arena [arena-row][data-boss="true"] {
   margin-top: 48px;

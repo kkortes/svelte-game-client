@@ -21,10 +21,15 @@
       : $.vendorItems.filter(item => item.slotsIn.includes(type));
   };
 
-  window.vendorFilterCount = (type) =>
-    type === 'all'
-      ? $.vendorItems.length
-      : $.vendorItems.filter(item => item.slotsIn.includes(type)).length;
+  const countByType = (type) => $.vendorItems.filter(item => item.slotsIn.includes(type)).length;
+  $.vendorCounts = {
+    oneHand: countByType('oneHand'),
+    offHand: countByType('offHand'),
+    twoHand: countByType('twoHand'),
+    armor: countByType('armor'),
+    accessory: countByType('accessory'),
+    trinket: countByType('trinket')
+  };
 
   window.vendorAcquire = (itemId) => {
     const item = EQUIPMENT(itemId, false);
@@ -51,12 +56,55 @@
       }
     };
   };
+
+  // Tooltip via event delegation — works even after filter changes
+  window.vendorTooltipInit = () => {
+    const container = document.querySelector('page-vendor [vendor-table]');
+    if (!container) return;
+
+    container.addEventListener('mouseenter', (e) => {
+      const row = e.target.closest('[vendor-row]');
+      if (!row) return;
+      const eqLink = row.querySelector('eq-link');
+      if (!eqLink) return;
+
+      // Find which item this row corresponds to
+      const rows = [...container.querySelectorAll('[vendor-row]')];
+      const idx = rows.indexOf(row);
+      const item = $.vendorFiltered[idx];
+      if (!item) return;
+
+      const rect = eqLink.getBoundingClientRect();
+      $.tooltip = {
+        x: rect.left + rect.width / 2,
+        y: rect.top,
+        visible: true,
+        props: {
+          name: item.name,
+          level: item.level,
+          description: item.description,
+          combatStats: item.combatStats,
+          slotsIn: item.slotsIn
+        }
+      };
+    }, true);
+
+    container.addEventListener('mouseleave', (e) => {
+      const row = e.target.closest('[vendor-row]');
+      if (row && $.tooltip) $.tooltip.visible = false;
+    }, true);
+  };
+
+  setTimeout(vendorTooltipInit, 500);
 </script>
 
 <page-vendor>
-<h3 cinzel m-0>Vendor</h3>
+<crow justify-between left>
+  <h3>Vendor</h3>
+</crow>
+<hr headline-hr />
 
-<crow vendor-filters mt-4 g-1>
+<crow vendor-filters g-1>
   <button
     tertiary vendor-filter-btn
     data-active="@[$.vendorFilter === 'all']"
@@ -66,32 +114,32 @@
     tertiary vendor-filter-btn
     data-active="@[$.vendorFilter === 'oneHand']"
     onclick="vendorFilterBy('oneHand')"
-  >One-Handed (@[vendorFilterCount('oneHand')])</button>
+  >One-Handed (@[vendorCounts.oneHand])</button>
   <button
     tertiary vendor-filter-btn
     data-active="@[$.vendorFilter === 'offHand']"
     onclick="vendorFilterBy('offHand')"
-  >Off-Hand (@[vendorFilterCount('offHand')])</button>
+  >Off-Hand (@[vendorCounts.offHand])</button>
   <button
     tertiary vendor-filter-btn
     data-active="@[$.vendorFilter === 'twoHand']"
     onclick="vendorFilterBy('twoHand')"
-  >Two-Handed (@[vendorFilterCount('twoHand')])</button>
+  >Two-Handed (@[vendorCounts.twoHand])</button>
   <button
     tertiary vendor-filter-btn
     data-active="@[$.vendorFilter === 'armor']"
     onclick="vendorFilterBy('armor')"
-  >Armor (@[vendorFilterCount('armor')])</button>
+  >Armor (@[vendorCounts.armor])</button>
   <button
     tertiary vendor-filter-btn
     data-active="@[$.vendorFilter === 'accessory']"
     onclick="vendorFilterBy('accessory')"
-  >Accessory (@[vendorFilterCount('accessory')])</button>
+  >Accessory (@[vendorCounts.accessory])</button>
   <button
     tertiary vendor-filter-btn
     data-active="@[$.vendorFilter === 'trinket']"
     onclick="vendorFilterBy('trinket')"
-  >Trinket (@[vendorFilterCount('trinket')])</button>
+  >Trinket (@[vendorCounts.trinket])</button>
 </crow>
 
 <crow vertical up left vendor-table mt-4>
@@ -114,7 +162,14 @@
     </crow>
     <vendor-col-slot text-sm text-muted>@[item.slotLabel]</vendor-col-slot>
     <vendor-col-cost>
-      <span text-sm font-bold>@[Math.floor(item.cost / 100)]s @[item.cost % 100]c</span>
+      <crow g-1 text-sm right>
+        <!-- if Math.floor(item.cost / 100) > 0 -->
+        <span>@[Math.floor(item.cost / 100)]×</span><coin-icon coin-silver></coin-icon>
+        <!-- /if -->
+        <!-- if item.cost % 100 > 0 -->
+        <span>@[item.cost % 100]×</span><coin-icon coin-copper></coin-icon>
+        <!-- /if -->
+      </crow>
     </vendor-col-cost>
     <crow vendor-col-action right>
       <button
@@ -135,11 +190,15 @@ page-vendor [vendor-filter-btn][data-active="true"] { opacity: 1; background: va
 page-vendor [vendor-table] { margin-left: -16px; margin-right: -16px; width: auto; }
 page-vendor [vendor-header] { gap: 16px; padding: 8px 24px; }
 page-vendor [vendor-row] { width: 100%; gap: 16px; padding: 8px 24px; font-size: 0.875rem; }
-page-vendor [vendor-row][data-even="true"] { background: var(--stone-50, #fafaf9); }
+page-vendor [vendor-row][data-even="true"] { background: #fafaf9; }
 page-vendor [vendor-row][data-even="false"] { background: white; }
+page-vendor vendor-col-name { display: block; }
 page-vendor [vendor-col-name] { flex: 1; }
 page-vendor vendor-col-slot { display: block; flex: 1; }
 page-vendor vendor-col-cost { display: block; flex: 1; }
+page-vendor vendor-col-action { display: block; }
 page-vendor [vendor-col-action] { width: 80px; flex: none; }
-page-vendor [vendor-col-action] button[data-disabled="true"] { pointer-events: none; opacity: 0.4; }
+page-vendor coin-icon { display: inline-block; width: 16px; height: 16px; border-radius: 50%; border: 0.5px solid rgba(0,0,0,0.3); box-shadow: 0.5px 0.5px 0 rgba(0,0,0,0.5); vertical-align: middle; }
+page-vendor [coin-silver] { background: oklch(0.7 0.1 200); }
+page-vendor [coin-copper] { background: oklch(0.65 0.12 60); }
 </style>

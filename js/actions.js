@@ -10,6 +10,7 @@ export const notify = (payload) => {
   const { error, warning, success, info } = payload;
   const message = error || warning || success || info;
 
+  if (!$.notifications) return true;
   if ($.notifications.find(n => n.message === message)) {
     return true;
   }
@@ -26,7 +27,7 @@ export const notify = (payload) => {
 };
 
 export const removeFirstNotification = () => {
-  const [_first, ...rest] = $.notifications;
-  $.notifications = [...rest];
+  if (!$.notifications || $.notifications.length === 0) return true;
+  $.notifications = JSON.parse(JSON.stringify($.notifications)).slice(1);
   return true;
 };

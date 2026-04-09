@@ -1,0 +1,51 @@
+<game-menu>
+  <game-frame>
+    <crow left game-frame-title cinzel>options</crow>
+    <crow vertical g-2 p-4>
+      <crow justify-between w-full>
+        <span cinzel>Audio settings</span>
+        <button secondary text-xs onclick="$.settings = { ...$.settings, volume: { master: 0.5, ambient: 0.25, sfx: 0.5, combat: 1 } }">Reset to default</button>
+      </crow>
+      <crow w-full g-4>
+        <menu-label>Master</menu-label>
+        <input type="range" min="0" max="1" step="0.05" value="@[settings.volume.master]"
+          oninput="$.settings = { ...$.settings, volume: { ...$.settings.volume, master: +this.value } }"
+          w-full />
+      </crow>
+      <crow w-full g-4>
+        <menu-label>Ambient</menu-label>
+        <input type="range" min="0" max="1" step="0.05" value="@[settings.volume.ambient]"
+          oninput="$.settings = { ...$.settings, volume: { ...$.settings.volume, ambient: +this.value } }"
+          w-full />
+      </crow>
+      <crow w-full g-4>
+        <menu-label>Sound effect</menu-label>
+        <input type="range" min="0" max="1" step="0.05" value="@[settings.volume.sfx]"
+          oninput="$.settings = { ...$.settings, volume: { ...$.settings.volume, sfx: +this.value } }"
+          w-full />
+      </crow>
+      <crow w-full g-4>
+        <menu-label>Combat</menu-label>
+        <input type="range" min="0" max="1" step="0.05" value="@[settings.volume.combat]"
+          oninput="$.settings = { ...$.settings, volume: { ...$.settings.volume, combat: +this.value } }"
+          w-full />
+      </crow>
+
+      <hr menu-divider />
+
+      <button secondary onclick="$.overlay = 'ReleaseNotes'">Release notes</button>
+      <!-- if token -->
+      <button secondary onclick="document.cookie = 'token=; Max-Age=0'; $.token = undefined; $.characters = []; $.inventory = []; $.overlay = ''">Logout</button>
+      <!-- /if -->
+    </crow>
+  </game-frame>
+  <button close-btn onclick="$.overlay = ''">
+    <icon cross></icon>
+  </button>
+
+  <style>
+    game-menu {
+      display: contents;
+    }
+  </style>
+</game-menu>

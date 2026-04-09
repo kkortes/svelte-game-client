@@ -44,13 +44,14 @@ const loadPage = (html) => {
   const scripts = temp.querySelectorAll('script[type="module"]');
   scripts.forEach(s => s.remove());
 
-  // Extract styles (move to content so they apply)
+  // Extract and remove styles (will re-append after content)
   const styles = temp.querySelectorAll('style');
+  styles.forEach(s => s.remove());
 
-  // Set content (without scripts — Vibe's MutationObserver will hydrate)
+  // Set content (without scripts/styles — Vibe's MutationObserver will hydrate)
   el.innerHTML = temp.innerHTML;
 
-  // Re-append styles inside page-content (scoped by page attribute)
+  // Re-append styles inside page-content
   styles.forEach(s => el.appendChild(s.cloneNode(true)));
 
   // Execute scripts as real modules
@@ -96,6 +97,13 @@ export const init = () => {
   window.addEventListener('popstate', () => {
     const result = match(window.location.pathname);
     if (!result) return;
+
+    const r = result.route.path;
+    if (!r.includes(':characterIndex') && !r.includes(':fightId') && r !== '/random-duel') {
+      $.selectedBrawlers = [];
+      $.maxBrawlers = 0;
+    }
+
     $.route = result.route.path;
     $.routeParams = result.params;
     const page = result.route.page;

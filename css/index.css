@@ -142,6 +142,27 @@ eq-link [eq-name] {
   z-index: 1;
 }
 
+/* Disabled state for buttons via data attribute */
+button[data-disabled="true"] {
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+/* Headline divider — gradient line used after section headings */
+[headline-hr] {
+  height: 1px;
+  border: 0;
+  background: linear-gradient(to right, rgba(0,0,0,0.25), transparent);
+  margin: 8px 0 16px;
+}
+
+[headline-hr-sm] {
+  height: 1px;
+  border: 0;
+  background: linear-gradient(to right, rgba(0,0,0,0.25), transparent);
+  margin: 4px 0 12px;
+}
+
 /* Text utilities (not in Stylecheat) */
 [text-sm] { font-size: 0.875rem; }
 [text-xs] { font-size: 0.75rem; }
@@ -166,6 +187,13 @@ eq-link [eq-name] {
 page-content {
   display: block;
   width: 100%;
+}
+
+/* Page wrapper elements — all need block display */
+page-home, page-brawlers, page-brawler-detail, page-arena, page-fight,
+page-vendor, page-pvp, page-debug, page-ability-scaling, page-char-scaling,
+page-equip-scaling, page-reset-pw {
+  display: block;
 }
 
 spinner {
@@ -231,15 +259,15 @@ progress-bar > div {
   to { opacity: 1; }
 }
 
-/* Tab styling — active tab matches nav[data-active] to a[data-tab] */
-nav[data-active=""] a[data-tab=""],
-nav[data-active="the-arena"] a[data-tab="the-arena"],
-nav[data-active="random-duel"] a[data-tab="random-duel"],
-nav[data-active="vendor"] a[data-tab="vendor"],
-nav[data-active="brawlers"] a[data-tab="brawlers"] {
+/* Tab styling — active when data-active matches data-tab */
+[tab-link][data-tab=""][data-active=""],
+[tab-link][data-tab="the-arena"][data-active="the-arena"],
+[tab-link][data-tab="random-duel"][data-active="random-duel"],
+[tab-link][data-tab="vendor"][data-active="vendor"],
+[tab-link][data-tab="brawlers"][data-active="brawlers"] {
   background: white;
   color: var(--foreground);
-  border-color: var(--border);
+  border-radius: 2px 2px 0 0;
 }
 
 /* DnD-specific styles */

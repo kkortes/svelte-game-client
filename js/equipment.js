@@ -85,6 +85,9 @@ export const equip = (equipmentRef) => {
   characterRef.overrides.equipment[slotsIn] = equipmentRef;
 
   correctHealth(characterRef, calculateCombatStatsByCharacter(character).maxHealth);
+
+  // Re-navigate to refresh page (recompute derived data like abilities)
+  if (window.navigate) window.navigate(window.location.pathname);
 };
 
 export const unequip = (equipmentRef, slot) => {
@@ -98,6 +101,9 @@ export const unequip = (equipmentRef, slot) => {
   characterRef.overrides.equipment[slot] = null;
 
   correctHealth(characterRef, calculateCombatStatsByCharacter(character).maxHealth);
+
+  // Re-navigate to refresh page
+  if (window.navigate) window.navigate(window.location.pathname);
 };
 
 export const slotsInPrettyName = (slotsIn) =>

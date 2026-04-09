@@ -1,63 +1,96 @@
 <script type="module">
-  import { ALL_CHARACTERS } from '/js/constants/CHARACTERS.js';
+  import CHARACTERS, { ALL_CHARACTERS } from '/js/constants/CHARACTERS.js';
+  import EQUIPMENT from '/js/constants/EQUIPMENT.js';
+  import { calculateCombatStatsByCharacter } from '/js/utils.js';
 
-  $.scalingCharacters = Object.entries(ALL_CHARACTERS).map(([id, char]) => ({
-    id,
-    name: char.name,
-    race: char.race,
-    element: char.element,
-    image: char.image,
-    maxHealth: char.combatStats.maxHealth,
-    maxArmor: char.combatStats.maxArmor,
-    damage: char.combatStats.damage,
-    resistance: char.combatStats.resistance
-  }));
+  $.charChoices = Object.keys(ALL_CHARACTERS);
+  $.chosenChar = 'elfMale';
+  $.charScaling = true;
+  $.equipScaling = true;
+
+  const computeChars = () => {
+    $.charPool = Array.from({ length: 25 }, (_, i) => {
+      const level = i + 1;
+      const ref = CHARACTERS($.chosenChar, false, {
+        overrides: {
+          level: $.charScaling ? level : 1,
+          equipment: {
+            mainHand: { overrides: { level: $.equipScaling ? level : 0 } },
+            offHand: { overrides: { level: $.equipScaling ? level : 0 } },
+            armor: { overrides: { level: $.equipScaling ? level : 0 } }
+          }
+        }
+      });
+      const hydrated = CHARACTERS(ref, true);
+      const stats = calculateCombatStatsByCharacter(hydrated);
+      return {
+        level,
+        name: hydrated.name,
+        maxHealth: stats.maxHealth || 0,
+        maxArmor: stats.maxArmor || 0,
+        damage: stats.damage || 0
+      };
+    });
+  };
+
+  computeChars();
+
+  window.changeChar = (value) => { $.chosenChar = value; computeChars(); };
+  window.toggleCharScaling = (checked) => { $.charScaling = checked; computeChars(); };
+  window.toggleEquipScaling = (checked) => { $.equipScaling = checked; computeChars(); };
 </script>
 
 <page-char-scaling>
 <crow vertical g-4 left>
-  <h3 cinzel m-0>Character Scaling</h3>
+  <crow justify-between left>
+    <h3>Character Scaling</h3>
+  </crow>
+  <hr headline-hr />
 
-  <crow char-grid>
-    <!-- each scalingCharacters as char -->
-    <card char-card flex-none>
-      <crow g-4 char-header>
-        <char-portrait glass>
-          <img src="/static/images/races/@[char.image]" alt="@[char.name]" portrait-img onerror="this.style.display='none'" />
-        </char-portrait>
-        <crow vertical>
-          <span cinzel font-medium>@[char.name]</span>
-          <span text-xs text-muted>@[char.race] &middot; @[char.element]</span>
-        </crow>
+  <crow left g-4>
+    <crow g-2>
+      <input type="checkbox" id="charScaling" checked onchange="toggleCharScaling(this.checked)" />
+      <label for="charScaling" text-sm>Character scaling</label>
+    </crow>
+    <crow g-2>
+      <input type="checkbox" id="equipScaling" checked onchange="toggleEquipScaling(this.checked)" />
+      <label for="equipScaling" text-sm>Equipment scaling</label>
+    </crow>
+  </crow>
+
+  <select onchange="changeChar(this.value)">
+    <!-- each charChoices as choice -->
+    <option value="@[choice]">@[choice]</option>
+    <!-- /each -->
+  </select>
+
+  <crow vertical left g-2 w-full>
+    <!-- each charPool as ch -->
+    <crow left justify-between g-4 w-full scaling-row>
+      <crow left g-2>
+        <span scaling-label>level @[ch.level]</span>
+        <eq-link data-tier="@[ch.level >= 25 ? 'red' : ch.level >= 20 ? 'orange' : ch.level >= 15 ? 'purple' : ch.level >= 10 ? 'blue' : ch.level >= 5 ? 'green' : 'gray']">
+          <eq-bg-center></eq-bg-center>
+          <eq-bg-left></eq-bg-left>
+          <eq-bg-right></eq-bg-right>
+          <crow eq-name left>@[ch.name]</crow>
+        </eq-link>
       </crow>
-      <hr divider />
-      <crow justify-between>
-        <span text-xs text-muted>Max HP</span>
-        <span text-sm font-medium>@[char.maxHealth]</span>
+      <crow g-2 text-sm text-muted>
+        <crow g-1><icon maxHealth></icon> @[ch.maxHealth]</crow>
+        <span>/</span>
+        <crow g-1><icon maxArmor></icon> @[ch.maxArmor]</crow>
+        <span>/</span>
+        <crow g-1><icon damage></icon> @[ch.damage]</crow>
       </crow>
-      <crow justify-between>
-        <span text-xs text-muted>Armor</span>
-        <span text-sm font-medium>@[char.maxArmor]</span>
-      </crow>
-      <crow justify-between>
-        <span text-xs text-muted>Damage</span>
-        <span text-sm font-medium>@[char.damage]</span>
-      </crow>
-      <crow justify-between>
-        <span text-xs text-muted>Resistance</span>
-        <span text-sm font-medium>@[char.resistance]</span>
-      </crow>
-    </card>
+    </crow>
     <!-- /each -->
   </crow>
 </crow>
 </page-char-scaling>
 
 <style>
-page-char-scaling [char-grid] { flex-wrap: wrap; gap: 12px; align-items: stretch; }
-page-char-scaling [char-card] { width: 220px; display: flex; flex-direction: column; gap: 8px; border: 1px solid var(--border); }
-page-char-scaling [char-header] { align-items: center; }
-page-char-scaling char-portrait { display: block; width: 48px; height: 48px; border-radius: 4px; overflow: hidden; border: 1px solid rgba(0,0,0,0.1); }
-page-char-scaling [portrait-img] { width: 100%; height: 100%; object-fit: cover; }
-page-char-scaling [divider] { width: 100%; border: none; border-top: 1px solid var(--border); margin: 0; }
+page-char-scaling select { padding: 4px 8px; border: 1px solid var(--border); border-radius: var(--radius); }
+page-char-scaling [scaling-row] { align-items: center; }
+page-char-scaling [scaling-label] { width: 60px; flex: none; font-size: 0.875rem; }
 </style>

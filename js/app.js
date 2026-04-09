@@ -49,6 +49,9 @@ export default {
   notifications: [],
   gameKeyboardDisabled: false,
   keys: ['keyw','keya','keys','keyd','keyi','keyq','keye','keyz','keyx','keyc','arrowright','arrowleft','arrowdown','arrowup','escape','enter','shiftleft','shiftright','digit1','digit2','digit3','digit4','digit5','numpad1','numpad2','numpad3','numpad4','numpad5','numpad6','numpad7','numpad8','numpad9'].reduce((a, key) => ({ ...a, [key]: false }), {}),
+  combatRewardXp: 0,
+  healTimer: 120,
+  healTimerPct: 0,
   overlay: '',
   settings: loadLocalStorage({
     volume: SETTINGS_DEFAULT_VOLUME,
