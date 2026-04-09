@@ -21,7 +21,7 @@
           try { const h = A(a, true); return { icon: h.icon, ticks: h.ticks }; }
           catch { return null; }
         }).filter(Boolean) : [];
-        return { empty: false, name: char.name, mugshot: char.image.replace('.png', '-mugshot.png'), abilities, index: i };
+        return { empty: false, name: char.name, image: char.image, abilities, index: i };
       } catch {
         return { empty: true, index: i };
       }
@@ -93,7 +93,7 @@
   <!-- if !slot.empty -->
   <crow pvp-slot-filled left g-2>
     <pvp-slot-avatar glass>
-      <img data-src="/static/images/races/@[slot.mugshot]" alt="" pvp-slot-img />
+      <img data-src="/static/images/races/@[slot.image.replace('.png', '-mugshot.png')]" alt="" pvp-slot-img />
     </pvp-slot-avatar>
     <crow vertical left pvp-slot-info>
       <span font-medium text-sm>@[slot.name]</span>

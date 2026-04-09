@@ -16,7 +16,7 @@ export const notify = (payload) => {
   }
 
   const type = error ? 'error' : warning ? 'warning' : success ? 'success' : 'info';
-  $.notifications.push({ type, message });
+  $.notifications = [...$.notifications, { type, message }];
 
   // Auto-dismiss after 3s
   setTimeout(() => {

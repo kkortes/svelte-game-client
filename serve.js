@@ -10,8 +10,10 @@ const MIME = {
 
 const root = import.meta.dir;
 
+const port = Number(process.env.PORT) || 3000;
+
 Bun.serve({
-  port: 3000,
+  port,
   fetch(req) {
     const url = new URL(req.url);
     let path = join(root, url.pathname);
@@ -30,4 +32,4 @@ Bun.serve({
   },
 });
 
-console.info('Dev server running at http://localhost:3000');
+console.info(`Dev server running at http://localhost:${port}`);
