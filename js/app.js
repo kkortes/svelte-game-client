@@ -58,7 +58,8 @@ export default {
     loginPageMode: 0,
     openProperties: {},
     debugOpen: false,
-    showDetailedCharacterView: false
+    showDetailedCharacterView: false,
+    darkMode: false
   }),
   route: '/',
   routeParams: {},

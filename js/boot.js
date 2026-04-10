@@ -118,6 +118,9 @@ export default () => {
     updateMedia();
     if (cookie?.token) $.token = cookie.token;
 
+    // Apply dark mode from saved settings
+    document.body.toggleAttribute('dark', !!$.settings?.darkMode);
+
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && !$.gameKeyboardDisabled) {
         if ($.dialog) { $.dialog = undefined; return; }

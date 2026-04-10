@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,6 +8,7 @@
   <link rel="icon" href="/static/favicon.png" />
   <link rel="stylesheet" href="/css/index.css" />
 </head>
+
 <body battle-brawlers vibe vibe-fouc stylecheat>
   <script type="module">
     import boot from '/js/boot.js';
@@ -55,58 +57,80 @@
 
   <component src="/components/Layout.html">
     <page-content>
-    <crow vertical g-4 left>
-      <crow justify-between left>
-        <h3>Character Scaling</h3>
-      </crow>
-      <hr headline-hr />
-
-      <crow left g-4>
-        <crow g-2>
-          <input type="checkbox" id="charScaling" checked onchange="toggleCharScaling(this.checked)" />
-          <label for="charScaling" text-sm>Character scaling</label>
+      <crow vertical g-4 left>
+        <crow justify-between left>
+          <h3>Character Scaling</h3>
         </crow>
-        <crow g-2>
-          <input type="checkbox" id="equipScaling" checked onchange="toggleEquipScaling(this.checked)" />
-          <label for="equipScaling" text-sm>Equipment scaling</label>
-        </crow>
-      </crow>
+        <hr />
 
-      <select onchange="changeChar(this.value)">
-        <!-- each charChoices as choice -->
-        <option value="@[choice]">@[choice]</option>
-        <!-- /each -->
-      </select>
-
-      <crow vertical left g-2 w-full>
-        <!-- each charPool as ch -->
-        <crow left justify-between g-4 w-full scaling-row>
-          <crow left g-2>
-            <span scaling-label>level @[ch.level]</span>
-            <eq-link data-tier="@[ch.level >= 25 ? 'red' : ch.level >= 20 ? 'orange' : ch.level >= 15 ? 'purple' : ch.level >= 10 ? 'blue' : ch.level >= 5 ? 'green' : 'gray']">
-              <eq-bg-center></eq-bg-center>
-              <eq-bg-left></eq-bg-left>
-              <eq-bg-right></eq-bg-right>
-              <crow eq-name left>@[ch.name]</crow>
-            </eq-link>
+        <crow left g-4>
+          <crow g-2>
+            <input type="checkbox" id="charScaling" checked
+              onchange="toggleCharScaling(this.checked)" />
+            <label for="charScaling" text-sm>Character scaling</label>
           </crow>
-          <crow g-2 text-sm text-muted>
-            <crow g-1><icon maxHealth></icon> @[ch.maxHealth]</crow>
-            <span>/</span>
-            <crow g-1><icon maxArmor></icon> @[ch.maxArmor]</crow>
-            <span>/</span>
-            <crow g-1><icon damage></icon> @[ch.damage]</crow>
+          <crow g-2>
+            <input type="checkbox" id="equipScaling" checked
+              onchange="toggleEquipScaling(this.checked)" />
+            <label for="equipScaling" text-sm>Equipment scaling</label>
           </crow>
         </crow>
-        <!-- /each -->
+
+        <select onchange="changeChar(this.value)">
+          <!-- each charChoices as choice -->
+          <option value="@[choice]">@[choice]</option>
+          <!-- /each -->
+        </select>
+
+        <crow vertical left g-2 w-full>
+          <!-- each charPool as ch -->
+          <crow left justify-between g-4 w-full scaling-row>
+            <crow left g-2>
+              <span scaling-label>level @[ch.level]</span>
+              <eq-link
+                data-tier="@[ch.level >= 25 ? 'red' : ch.level >= 20 ? 'orange' : ch.level >= 15 ? 'purple' : ch.level >= 10 ? 'blue' : ch.level >= 5 ? 'green' : 'gray']">
+                <eq-bg-center></eq-bg-center>
+                <eq-bg-left></eq-bg-left>
+                <eq-bg-right></eq-bg-right>
+                <crow eq-name left>@[ch.name]</crow>
+              </eq-link>
+            </crow>
+            <crow g-2 text-sm text-muted>
+              <crow g-1>
+                <icon maxHealth></icon> @[ch.maxHealth]
+              </crow>
+              <span>/</span>
+              <crow g-1>
+                <icon maxArmor></icon> @[ch.maxArmor]
+              </crow>
+              <span>/</span>
+              <crow g-1>
+                <icon damage></icon> @[ch.damage]
+              </crow>
+            </crow>
+          </crow>
+          <!-- /each -->
+        </crow>
       </crow>
-    </crow>
     </page-content>
   </component>
   <style>
-page[character-scaling] select { padding: var(--unit) calc(var(--unit) * 2); border: 1px solid var(--border); border-radius: var(--radius); }
-page[character-scaling] [scaling-row] { align-items: center; }
-page[character-scaling] [scaling-label] { width: calc(var(--unit) * 15); flex: none; font-size: 0.875rem; }
+    page[character-scaling] select {
+      padding: var(--unit) calc(var(--unit) * 2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+
+    page[character-scaling] [scaling-row] {
+      align-items: center;
+    }
+
+    page[character-scaling] [scaling-label] {
+      width: calc(var(--unit) * 15);
+      flex: none;
+      font-size: 0.875rem;
+    }
   </style>
 </body>
+
 </html>

@@ -2507,6 +2507,8 @@ input:not([type='checkbox'], [type='radio'], [type='range'], [type='file']) {
 .p-8, [p-8] { padding: calc(var(--unit) * 8); }
 
 /* Position utilities */
+.relative, [relative] { position: relative; }
+.absolute, [absolute] { position: absolute; }
 .sticky, [sticky] { position: sticky; }
 
 /* Inset utilities (top, right, bottom, left) */

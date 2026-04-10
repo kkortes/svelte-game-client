@@ -16,24 +16,24 @@
 
           <stay w-full sm:reverse>
             <crow up g-1 tab-row w-full py-3 sm:h="8" overflow-hidden>
-              <a href="/" data-tab="" tab-link
-                data-active="@[route ? route.split('/')[1] || '' : '']">
+              <a href="/" class="button" tertiary="@[pageName !== 'home']"
+                primary="@[pageName === 'home']">
                 <icon info hide sm:block></icon><span sm:hide>Game Guide</span>
               </a>
-              <a href="/the-arena" data-tab="the-arena" tab-link
-                data-active="@[route ? route.split('/')[1] || '' : '']">
+              <a href="/the-arena" data-tab="the-arena" class="button"
+                tertiary="@[pageName !== 'the-arena']" primary="@[pageName === 'the-arena']">
                 <icon damage hide sm:block></icon><span sm:hide>The Arena</span>
               </a>
-              <a href="/random-duel" data-tab="random-duel" tab-link
-                data-active="@[route ? route.split('/')[1] || '' : '']">
+              <a href="/random-duel" data-tab="random-duel" class="button"
+                tertiary="@[pageName !== 'random-duel']" primary="@[pageName === 'random-duel']">
                 <icon dice hide sm:block></icon><span sm:hide>Random duel</span>
               </a>
-              <a href="/vendor" data-tab="vendor" tab-link
-                data-active="@[route ? route.split('/')[1] || '' : '']">
+              <a href="/vendor" data-tab="vendor" class="button" tertiary="@[pageName !== 'vendor']"
+                primary="@[pageName === 'vendor']">
                 <icon coin hide sm:block></icon><span sm:hide>Vendor</span>
               </a>
-              <a href="/brawlers" data-tab="brawlers" tab-link
-                data-active="@[route ? route.split('/')[1] || '' : '']">
+              <a href="/brawlers" data-tab="brawlers" class="button"
+                tertiary="@[pageName !== 'brawlers']" primary="@[pageName === 'brawlers']">
                 <icon maxHealth hide sm:block></icon><span sm:hide>Brawlers</span>
               </a>
             </crow>
@@ -55,7 +55,7 @@
   <!-- if overlay === 'GameMenu' -->
   <overlay-backdrop onclick="$.overlay = ''">
     <spacer></spacer>
-    <overlay-panel overlay-sm onclick="event.stopPropagation()">
+    <overlay-panel onclick="event.stopPropagation()">
       <component src="/components/GameMenu.html"></component>
     </overlay-panel>
     <spacer></spacer>
@@ -111,7 +111,7 @@
     }
 
     game-layout [game-shell] {
-      align-items: stretch;
+      align-items: flex-start;
       display: flex;
       flex: 1;
       align-self: stretch;
@@ -153,22 +153,18 @@
       width: 100%;
       border-radius: calc(var(--radius) * 0);
       box-shadow: none;
+      border-top-left-radius: calc(var(--radius) * 1);
+      border-top-right-radius: calc(var(--radius) * 1);
     }
 
     game-layout [tab-row] {
-      background: #fff;
-    }
-
-    game-layout [tab-link] {
-      padding: calc(var(--unit) * 0.5) calc(var(--unit) * 2);
-      border: 1px solid transparent;
-      border-bottom: none;
-      border-radius: var(--radius) var(--radius) 0 0;
-      color: var(--muted-foreground);
-      text-decoration: none;
+      background: #ffffff;
+      border-top-left-radius: calc(var(--radius) * 1);
+      border-top-right-radius: calc(var(--radius) * 1);
     }
 
     [battle-brawlers] overlay-backdrop {
+      z-index: 1;
       position: fixed;
       inset: 0;
       display: grid;
@@ -179,6 +175,7 @@
       background: rgba(0, 0, 0, 0.2);
       box-shadow: inset 0 0 10vw rgba(0, 0, 0, 0.5);
       backdrop-filter: blur(1px);
+      transform: scale(1.05);
       animation: overlayIn 200ms ease-out 75ms both;
     }
 
@@ -189,7 +186,7 @@
     @keyframes overlayIn {
       from {
         opacity: 0;
-        transform: scale(0.95);
+        transform: scale(1);
       }
     }
 
@@ -229,10 +226,7 @@
       max-height: 90vh;
       overflow-y: auto;
       text-align: left;
-    }
-
-    [battle-brawlers] overlay-panel[overlay-sm] {
-      max-width: calc(var(--unit) * 80);
+      overflow-x: hidden;
     }
 
     [battle-brawlers] game-frame {
@@ -240,25 +234,11 @@
       border-image-source: url('/static/images/ui/frame.png');
       border-image-slice: 3;
       border-image-repeat: repeat;
-      background: rgba(0, 0, 0, 0.75);
+      background: var(--popover);
       box-shadow: inset 0 0 100px rgb(0 0 0 / 80%);
       color: rgb(156, 163, 175);
     }
 
-    [battle-brawlers] [close-btn] {
-      all: unset;
-      position: absolute;
-      top: calc(var(--unit) * -3);
-      right: calc(var(--unit) * -3);
-      width: calc(var(--unit) * 6);
-      height: calc(var(--unit) * 6);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      color: rgb(220, 38, 38);
-      font-size: 0.75rem;
-    }
 
     [battle-brawlers] menu-label {
       width: calc(var(--unit) * 40);

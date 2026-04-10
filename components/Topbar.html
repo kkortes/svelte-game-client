@@ -1,31 +1,13 @@
-<crow topbar right>
-  <button topbar-btn onclick="$.overlay = 'GameMenu'">
+<crow ml="auto" order-first g-1>
+  <button tertiary onclick="$.settings = { ...$.settings, darkMode: !$.settings.darkMode }; document.body.toggleAttribute('dark', $.settings.darkMode)">
+    <!-- if settings.darkMode -->
+    <icon light></icon>
+    <!-- /if -->
+    <!-- if !settings.darkMode -->
+    <icon dark></icon>
+    <!-- /if -->
+  </button>
+  <button tertiary onclick="$.overlay = 'GameMenu'">
     <icon menu></icon>
   </button>
 </crow>
-
-<style>
-  [topbar] {
-    position: fixed;
-    top: 0;
-    right: 0;
-    z-index: 30;
-  }
-
-  [topbar] [topbar-btn] {
-    width: calc(var(--unit) * 8);
-    height: calc(var(--unit) * 8);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    color: var(--foreground);
-    font-size: 1rem;
-  }
-
-  [topbar] [topbar-btn]:hover {
-    background: rgba(0, 0, 0, 0.05);
-  }
-</style>

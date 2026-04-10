@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,6 +8,7 @@
   <link rel="icon" href="/static/favicon.png" />
   <link rel="stylesheet" href="/css/index.css" />
 </head>
+
 <body battle-brawlers vibe vibe-fouc stylecheat>
   <script type="module">
     import boot from '/js/boot.js';
@@ -79,195 +81,212 @@
   <component src="/components/Layout.html">
     <page-content>
 
-    <crow justify-between left>
-      <h3>The arena</h3>
-    </crow>
-    <hr headline-hr />
-
-    <crow vertical up left arena-table>
-      <crow up left g-4 arena-header>
-        <arena-col-name cinzel>name</arena-col-name>
-        <arena-col-level cinzel text-center>level</arena-col-level>
-        <arena-col-loot cinzel>loot</arena-col-loot>
-        <crow arena-col-preview right></crow>
+      <crow justify-between left>
+        <h3>The arena</h3>
       </crow>
+      <hr />
 
-      <!-- each arenaFights as fight, i -->
-      <a
-        href="/the-arena/@[fight.id]"
-        onclick="arenaClick(event, '@[fight.id]', @[fight.isLocked], @[fight.bossCompleted])"
-        arena-row
-        data-even="@[fight.even]"
-        data-boss="@[fight.boss]"
-        data-locked="@[fight.isLocked]"
-        data-completed="@[fight.bossCompleted]"
-      >
-        <crow left arena-col-name cinzel g-2>
-          <!-- if fight.isLocked -->
-          <span>?</span>
-          <!-- /if -->
-          <!-- if !fight.isLocked -->
-          <span>@[fight.name]</span>
-          <!-- /if -->
-          <!-- if fight.boss -->
-          <badge arena-pill>Bossfight</badge>
-          <!-- /if -->
+      <crow vertical up left arena-table>
+        <crow up left g-4 arena-header>
+          <arena-col-name cinzel>name</arena-col-name>
+          <arena-col-level cinzel text-center>level</arena-col-level>
+          <arena-col-loot cinzel>loot</arena-col-loot>
+          <crow arena-col-preview right></crow>
         </crow>
 
-        <arena-col-level text-center text-sm>
-          @[fight.minLevel]@[fight.minLevel === fight.maxLevel ? '' : ' - ' + fight.maxLevel]
-        </arena-col-level>
+        <!-- each arenaFights as fight, i -->
+        <a href="/the-arena/@[fight.id]"
+          onclick="arenaClick(event, '@[fight.id]', @[fight.isLocked], @[fight.bossCompleted])"
+          arena-row data-even="@[fight.even]" data-boss="@[fight.boss]"
+          data-locked="@[fight.isLocked]" data-completed="@[fight.bossCompleted]">
+          <crow left arena-col-name cinzel g-2>
+            <!-- if fight.isLocked -->
+            <span>?</span>
+            <!-- /if -->
+            <!-- if !fight.isLocked -->
+            <span>@[fight.name]</span>
+            <!-- /if -->
+            <!-- if fight.boss -->
+            <badge arena-pill>Bossfight</badge>
+            <!-- /if -->
+          </crow>
 
-        <arena-col-loot text-sm>
-          <!-- if fight.xpDimmed -->
-          <span arena-xp-dimmed>@[fight.xp] XP</span>
-          <!-- /if -->
-          <!-- if !fight.xpDimmed -->
-          <span>@[fight.xp] XP</span>
-          <!-- /if -->
-        </arena-col-loot>
+          <arena-col-level text-center text-sm>
+            @[fight.minLevel]@[fight.minLevel === fight.maxLevel ? '' : ' - ' + fight.maxLevel]
+          </arena-col-level>
 
-        <crow arena-col-preview right>
-          <!-- each fight.enemies as enemy -->
-          <arena-enemy-wrap data-boss="@[fight.boss]">
-            <crow arena-enemy-box glass data-locked="@[fight.isLocked]">
-              <!-- if fight.isLocked -->
-              <crow arena-enemy-locked>?</crow>
-              <!-- /if -->
-              <!-- if !fight.isLocked -->
-              <img
-                data-src="/static/images/races/@[enemy.image]"
-                alt=""
-                arena-enemy-img
-                data-completed="@[fight.bossCompleted]"
-              />
-              <!-- /if -->
-            </crow>
-          </arena-enemy-wrap>
-          <!-- /each -->
-        </crow>
-      </a>
-      <!-- /each -->
-    </crow>
+          <arena-col-loot text-sm>
+            <!-- if fight.xpDimmed -->
+            <span arena-xp-dimmed>@[fight.xp] XP</span>
+            <!-- /if -->
+            <!-- if !fight.xpDimmed -->
+            <span>@[fight.xp] XP</span>
+            <!-- /if -->
+          </arena-col-loot>
+
+          <crow arena-col-preview right>
+            <!-- each fight.enemies as enemy -->
+            <arena-enemy-wrap data-boss="@[fight.boss]">
+              <crow arena-enemy-box glass data-locked="@[fight.isLocked]">
+                <!-- if fight.isLocked -->
+                <crow arena-enemy-locked>?</crow>
+                <!-- /if -->
+                <!-- if !fight.isLocked -->
+                <img data-src="/static/images/races/@[enemy.image]" alt="" arena-enemy-img
+                  data-completed="@[fight.bossCompleted]" />
+                <!-- /if -->
+              </crow>
+            </arena-enemy-wrap>
+            <!-- /each -->
+          </crow>
+        </a>
+        <!-- /each -->
+      </crow>
 
     </page-content>
   </component>
   <style>
-page[the-arena] [arena-table] {
-  margin: 0 calc(var(--unit) * -4);
-  width: calc(100% + calc(var(--unit) * 8));
-}
+    page[the-arena] [arena-table] {
+      margin: 0 calc(var(--unit) * -4);
+      width: calc(100% + calc(var(--unit) * 8));
+    }
 
-page[the-arena] [arena-header] {
-  padding: calc(var(--unit) * 2) calc(var(--unit) * 6);
-  color: var(--foreground);
-}
+    page[the-arena] [arena-header] {
+      padding: calc(var(--unit) * 2) calc(var(--unit) * 6);
+      color: var(--foreground);
+    }
 
-page[the-arena] arena-col-name { display: block; }
-page[the-arena] [arena-col-name] { flex: 1; white-space: nowrap; }
-page[the-arena] arena-col-level { display: block; width: calc(var(--unit) * 12); flex: none; }
-page[the-arena] arena-col-loot { display: block; width: calc(var(--unit) * 12); flex: none; }
-page[the-arena] [arena-col-preview] { width: calc(var(--unit) * 30); flex: none; }
+    page[the-arena] arena-col-name {
+      display: block;
+    }
 
-page[the-arena] [arena-row] {
-  display: flex;
-  align-items: center;
-  gap: calc(var(--unit) * 4);
-  padding: calc(var(--unit) * 2) calc(var(--unit) * 6);
-  text-decoration: none;
-  color: inherit;
-  font-size: 0.875rem;
-  transition: all 500ms;
-  width: 100%;
-}
+    page[the-arena] [arena-col-name] {
+      flex: 1;
+      white-space: nowrap;
+    }
 
-page[the-arena] [arena-row][data-even="true"] { background: #fafaf9; }
-page[the-arena] [arena-row][data-even="false"] { background: #f5f5f4; }
+    page[the-arena] arena-col-level {
+      display: block;
+      width: calc(var(--unit) * 12);
+      flex: none;
+    }
 
-page[the-arena] [arena-row][data-boss="true"] {
-  margin-top: calc(var(--unit) * 12);
-  padding-top: calc(var(--unit) * 8);
-  padding-bottom: calc(var(--unit) * 8);
-}
+    page[the-arena] arena-col-loot {
+      display: block;
+      width: calc(var(--unit) * 12);
+      flex: none;
+    }
 
-page[the-arena] [arena-row][data-boss="true"] + [arena-row][data-boss="true"] {
-  margin-top: 0;
-}
+    page[the-arena] [arena-col-preview] {
+      width: calc(var(--unit) * 30);
+      flex: none;
+    }
 
-page[the-arena] [arena-row]:not([data-locked="true"]):not([data-completed="true"]):hover {
-  background: linear-gradient(to right, transparent, rgba(120, 110, 100, 0.15), transparent);
-}
+    page[the-arena] [arena-row] {
+      display: flex;
+      align-items: center;
+      gap: calc(var(--unit) * 4);
+      padding: calc(var(--unit) * 2) calc(var(--unit) * 6);
+      text-decoration: none;
+      color: inherit;
+      font-size: 0.875rem;
+      transition: all 500ms;
+      width: 100%;
+    }
 
-page[the-arena] [arena-row][data-locked="true"] {
-  opacity: 0.5;
-  cursor: default;
-}
+    page[the-arena] [arena-row][data-even="true"] {
+      background: #fafaf9;
+    }
 
-page[the-arena] [arena-row][data-completed="true"] {
-  cursor: default;
-}
+    page[the-arena] [arena-row][data-even="false"] {
+      background: #f5f5f4;
+    }
 
-page[the-arena] [arena-pill] {
-  font-size: 0.65rem;
-  padding: calc(var(--unit) * 0.25) calc(var(--unit) * 1.5);
-}
+    page[the-arena] [arena-row][data-boss="true"] {
+      margin-top: calc(var(--unit) * 12);
+      padding-top: calc(var(--unit) * 8);
+      padding-bottom: calc(var(--unit) * 8);
+    }
 
-page[the-arena] [arena-xp-dimmed] {
-  color: var(--muted-foreground);
-  text-decoration: line-through;
-}
+    page[the-arena] [arena-row][data-boss="true"]+[arena-row][data-boss="true"] {
+      margin-top: 0;
+    }
 
-page[the-arena] arena-enemy-wrap {
-  display: block;
-  width: calc(var(--unit) * 4);
-  flex: none;
-}
+    page[the-arena] [arena-row]:not([data-locked="true"]):not([data-completed="true"]):hover {
+      background: linear-gradient(to right, transparent, rgba(120, 110, 100, 0.15), transparent);
+    }
 
-page[the-arena] arena-enemy-wrap[data-boss="true"] {
-  width: calc(var(--unit) * 12);
-}
+    page[the-arena] [arena-row][data-locked="true"] {
+      opacity: 0.5;
+      cursor: default;
+    }
 
-page[the-arena] [arena-enemy-box] {
-  width: calc(var(--unit) * 10);
-  aspect-ratio: 1;
-  overflow: hidden;
-  border-radius: 0;
-  margin: calc(var(--unit) * -2) calc(var(--unit) * -6) calc(var(--unit) * -2) 0;
-  position: relative;
-}
+    page[the-arena] [arena-row][data-completed="true"] {
+      cursor: default;
+    }
 
-page[the-arena] arena-enemy-wrap[data-boss="true"] [arena-enemy-box] {
-  width: calc(var(--unit) * 20);
-}
+    page[the-arena] [arena-pill] {
+      font-size: 0.65rem;
+      padding: calc(var(--unit) * 0.25) calc(var(--unit) * 1.5);
+    }
 
-page[the-arena] [arena-enemy-box]:not([data-locked="true"]) {
-  align-items: flex-start;
-}
+    page[the-arena] [arena-xp-dimmed] {
+      color: var(--muted-foreground);
+      text-decoration: line-through;
+    }
 
-page[the-arena] [arena-enemy-locked] {
-  width: calc(var(--unit) * 5);
-  flex: none;
-  border-radius: 50%;
-  background: rgba(0,0,0,0.25);
-  font-weight: bold;
-  color: white;
-  aspect-ratio: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.75rem;
-}
+    page[the-arena] arena-enemy-wrap {
+      display: block;
+      width: calc(var(--unit) * 4);
+      flex: none;
+    }
 
-page[the-arena] [arena-enemy-img] {
-  width: 120%;
-  max-width: none;
-  height: auto;
-  transform: scaleX(-1);
-}
+    page[the-arena] arena-enemy-wrap[data-boss="true"] {
+      width: calc(var(--unit) * 12);
+    }
 
-page[the-arena] [arena-enemy-img][data-completed="true"] {
-  filter: grayscale(1);
-}
+    page[the-arena] [arena-enemy-box] {
+      width: calc(var(--unit) * 10);
+      aspect-ratio: 1;
+      overflow: hidden;
+      border-radius: 0;
+      margin: calc(var(--unit) * -2) calc(var(--unit) * -6) calc(var(--unit) * -2) 0;
+      position: relative;
+    }
+
+    page[the-arena] arena-enemy-wrap[data-boss="true"] [arena-enemy-box] {
+      width: calc(var(--unit) * 20);
+    }
+
+    page[the-arena] [arena-enemy-box]:not([data-locked="true"]) {
+      align-items: flex-start;
+    }
+
+    page[the-arena] [arena-enemy-locked] {
+      width: calc(var(--unit) * 5);
+      flex: none;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.25);
+      font-weight: bold;
+      color: white;
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+    }
+
+    page[the-arena] [arena-enemy-img] {
+      width: 120%;
+      max-width: none;
+      height: auto;
+      transform: scaleX(-1);
+    }
+
+    page[the-arena] [arena-enemy-img][data-completed="true"] {
+      filter: grayscale(1);
+    }
   </style>
 </body>
+
 </html>

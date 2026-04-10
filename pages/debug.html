@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,6 +8,7 @@
   <link rel="icon" href="/static/favicon.png" />
   <link rel="stylesheet" href="/css/index.css" />
 </head>
+
 <body battle-brawlers vibe vibe-fouc stylecheat>
   <script type="module">
     import boot from '/js/boot.js';
@@ -64,66 +66,76 @@
 
   <component src="/components/Layout.html">
     <page-content>
-    <crow vertical g-4 left>
-      <crow justify-between left>
-        <h3>Debug</h3>
+      <crow vertical g-4 left>
+        <crow justify-between left>
+          <h3>Debug</h3>
+        </crow>
+        <hr />
+
+        <card debug-card>
+          <crow vertical g-4>
+            <crow justify-between align-center>
+              <span text-sm text-muted>Teams</span>
+              <crow g-2 align-center>
+                <span text-sm font-medium>@[debugTeamCount]</span>
+                <input type="range" min="1" max="8" value="@[debugTeamCount]"
+                  oninput="$.debugTeamCount = +this.value" />
+              </crow>
+            </crow>
+            <crow justify-between align-center>
+              <span text-sm text-muted>Combatants per team</span>
+              <crow g-2 align-center>
+                <span text-sm font-medium>@[debugCombatantCount]</span>
+                <input type="range" min="1" max="6" value="@[debugCombatantCount]"
+                  oninput="$.debugCombatantCount = +this.value" />
+              </crow>
+            </crow>
+            <crow g-2>
+              <button primary onclick="initializeCombat()">Initialize Combat</button>
+              <button primary onclick="startCombat()"
+                data-disabled="@[combat?.duration !== 0]">Start Combat</button>
+              <button destructive onclick="resetState()">Reset</button>
+            </crow>
+          </crow>
+        </card>
+
+        <card debug-card>
+          <crow vertical g-4>
+            <crow justify-between>
+              <span text-sm text-muted>Characters</span>
+              <span text-sm font-medium>@[characters.length]</span>
+            </crow>
+            <crow justify-between>
+              <span text-sm text-muted>Inventory</span>
+              <span text-sm font-medium>@[inventory.length]</span>
+            </crow>
+            <crow justify-between>
+              <span text-sm text-muted>Coins</span>
+              <span text-sm font-medium>@[coins]</span>
+            </crow>
+            <crow justify-between>
+              <span text-sm text-muted>Experience</span>
+              <span text-sm font-medium>@[experience]</span>
+            </crow>
+            <crow justify-between>
+              <span text-sm text-muted>Combat duration</span>
+              <span text-sm font-medium>@[combat?.duration ?? 'N/A']</span>
+            </crow>
+          </crow>
+        </card>
       </crow>
-      <hr headline-hr />
-
-      <card debug-card>
-        <crow vertical g-4>
-          <crow justify-between align-center>
-            <span text-sm text-muted>Teams</span>
-            <crow g-2 align-center>
-              <span text-sm font-medium>@[debugTeamCount]</span>
-              <input type="range" min="1" max="8" value="@[debugTeamCount]" oninput="$.debugTeamCount = +this.value" />
-            </crow>
-          </crow>
-          <crow justify-between align-center>
-            <span text-sm text-muted>Combatants per team</span>
-            <crow g-2 align-center>
-              <span text-sm font-medium>@[debugCombatantCount]</span>
-              <input type="range" min="1" max="6" value="@[debugCombatantCount]" oninput="$.debugCombatantCount = +this.value" />
-            </crow>
-          </crow>
-          <crow g-2>
-            <button primary onclick="initializeCombat()">Initialize Combat</button>
-            <button primary onclick="startCombat()" data-disabled="@[combat?.duration !== 0]">Start Combat</button>
-            <button destructive onclick="resetState()">Reset</button>
-          </crow>
-        </crow>
-      </card>
-
-      <card debug-card>
-        <crow vertical g-4>
-          <crow justify-between>
-            <span text-sm text-muted>Characters</span>
-            <span text-sm font-medium>@[characters.length]</span>
-          </crow>
-          <crow justify-between>
-            <span text-sm text-muted>Inventory</span>
-            <span text-sm font-medium>@[inventory.length]</span>
-          </crow>
-          <crow justify-between>
-            <span text-sm text-muted>Coins</span>
-            <span text-sm font-medium>@[coins]</span>
-          </crow>
-          <crow justify-between>
-            <span text-sm text-muted>Experience</span>
-            <span text-sm font-medium>@[experience]</span>
-          </crow>
-          <crow justify-between>
-            <span text-sm text-muted>Combat duration</span>
-            <span text-sm font-medium>@[combat?.duration ?? 'N/A']</span>
-          </crow>
-        </crow>
-      </card>
-    </crow>
     </page-content>
   </component>
   <style>
-body[battle-brawlers] { background-image: url('/static/images/arena.png'); }
-page[debug] [debug-card] { width: 100%; max-width: calc(var(--unit) * 125); }
+    body[battle-brawlers] {
+      background-image: url('/static/images/arena.png');
+    }
+
+    page[debug] [debug-card] {
+      width: 100%;
+      max-width: calc(var(--unit) * 125);
+    }
   </style>
 </body>
+
 </html>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,6 +8,7 @@
   <link rel="icon" href="/static/favicon.png" />
   <link rel="stylesheet" href="/css/index.css" />
 </head>
+
 <body battle-brawlers vibe vibe-fouc stylecheat>
   <script type="module">
     import boot from '/js/boot.js';
@@ -45,38 +47,51 @@
 
   <component src="/components/Layout.html">
     <page-content>
-    <crow vertical g-4 left>
-      <crow justify-between left>
-        <h3>Equipment Scaling</h3>
-      </crow>
-      <hr headline-hr />
-
-      <select onchange="changeEquip(this.value)">
-        <!-- each equipChoices as choice -->
-        <option value="@[choice]">@[choice]</option>
-        <!-- /each -->
-      </select>
-
-      <crow vertical left g-2 w-full>
-        <!-- each equipPool as eq -->
-        <crow left g-2 scaling-row>
-          <span scaling-label>@[eq.label]</span>
-          <eq-link data-tier="@[eq.tier]">
-            <eq-bg-center></eq-bg-center>
-            <eq-bg-left></eq-bg-left>
-            <eq-bg-right></eq-bg-right>
-            <crow eq-name left>@[eq.name]</crow>
-          </eq-link>
+      <crow vertical g-4 left>
+        <crow justify-between left>
+          <h3>Equipment Scaling</h3>
         </crow>
-        <!-- /each -->
+        <hr />
+
+        <select onchange="changeEquip(this.value)">
+          <!-- each equipChoices as choice -->
+          <option value="@[choice]">@[choice]</option>
+          <!-- /each -->
+        </select>
+
+        <crow vertical left g-2 w-full>
+          <!-- each equipPool as eq -->
+          <crow left g-2 scaling-row>
+            <span scaling-label>@[eq.label]</span>
+            <eq-link data-tier="@[eq.tier]">
+              <eq-bg-center></eq-bg-center>
+              <eq-bg-left></eq-bg-left>
+              <eq-bg-right></eq-bg-right>
+              <crow eq-name left>@[eq.name]</crow>
+            </eq-link>
+          </crow>
+          <!-- /each -->
+        </crow>
       </crow>
-    </crow>
     </page-content>
   </component>
   <style>
-page[equipment-scaling] select { padding: var(--unit) calc(var(--unit) * 2); border: 1px solid var(--border); border-radius: var(--radius); }
-page[equipment-scaling] [scaling-row] { align-items: center; }
-page[equipment-scaling] [scaling-label] { width: calc(var(--unit) * 15); flex: none; font-size: 0.875rem; }
+    page[equipment-scaling] select {
+      padding: var(--unit) calc(var(--unit) * 2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+
+    page[equipment-scaling] [scaling-row] {
+      align-items: center;
+    }
+
+    page[equipment-scaling] [scaling-label] {
+      width: calc(var(--unit) * 15);
+      flex: none;
+      font-size: 0.875rem;
+    }
   </style>
 </body>
+
 </html>

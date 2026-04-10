@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,6 +8,7 @@
   <link rel="icon" href="/static/favicon.png" />
   <link rel="stylesheet" href="/css/index.css" />
 </head>
+
 <body battle-brawlers vibe vibe-fouc stylecheat>
   <script type="module">
     import boot from '/js/boot.js';
@@ -113,107 +115,161 @@
 
   <component src="/components/Layout.html">
     <page-content>
-    <crow justify-between left>
+
       <h3>Vendor</h3>
-    </crow>
-    <hr headline-hr />
 
-    <crow vendor-filters g-1>
-      <button
-        tertiary vendor-filter-btn
-        data-active="@[$.vendorFilter === 'all']"
-        onclick="vendorFilterBy('all')"
-      >All (@[$.vendorItems.length])</button>
-      <button
-        tertiary vendor-filter-btn
-        data-active="@[$.vendorFilter === 'oneHand']"
-        onclick="vendorFilterBy('oneHand')"
-      >One-Handed (@[vendorCounts.oneHand])</button>
-      <button
-        tertiary vendor-filter-btn
-        data-active="@[$.vendorFilter === 'offHand']"
-        onclick="vendorFilterBy('offHand')"
-      >Off-Hand (@[vendorCounts.offHand])</button>
-      <button
-        tertiary vendor-filter-btn
-        data-active="@[$.vendorFilter === 'twoHand']"
-        onclick="vendorFilterBy('twoHand')"
-      >Two-Handed (@[vendorCounts.twoHand])</button>
-      <button
-        tertiary vendor-filter-btn
-        data-active="@[$.vendorFilter === 'armor']"
-        onclick="vendorFilterBy('armor')"
-      >Armor (@[vendorCounts.armor])</button>
-      <button
-        tertiary vendor-filter-btn
-        data-active="@[$.vendorFilter === 'accessory']"
-        onclick="vendorFilterBy('accessory')"
-      >Accessory (@[vendorCounts.accessory])</button>
-      <button
-        tertiary vendor-filter-btn
-        data-active="@[$.vendorFilter === 'trinket']"
-        onclick="vendorFilterBy('trinket')"
-      >Trinket (@[vendorCounts.trinket])</button>
-    </crow>
+      <hr />
 
-    <crow vertical up left vendor-table mt-4>
-      <crow up left vendor-header>
-        <vendor-col-name cinzel>Name</vendor-col-name>
-        <vendor-col-slot cinzel>Slots in</vendor-col-slot>
-        <vendor-col-cost cinzel>Cost</vendor-col-cost>
-        <vendor-col-action></vendor-col-action>
+      <crow vendor-filters g-1 sm>
+        <button tertiary vendor-filter-btn data-active="@[$.vendorFilter === 'all']"
+          onclick="vendorFilterBy('all')">
+          All (@[$.vendorItems.length])
+        </button>
+        <button tertiary vendor-filter-btn data-active="@[$.vendorFilter === 'oneHand']"
+          onclick="vendorFilterBy('oneHand')">
+          One-Handed (@[vendorCounts.oneHand])
+        </button>
+        <button tertiary vendor-filter-btn data-active="@[$.vendorFilter === 'offHand']"
+          onclick="vendorFilterBy('offHand')">
+          Off-Hand (@[vendorCounts.offHand])
+        </button>
+        <button tertiary vendor-filter-btn data-active="@[$.vendorFilter === 'twoHand']"
+          onclick="vendorFilterBy('twoHand')">
+          Two-Handed (@[vendorCounts.twoHand])
+        </button>
+        <button tertiary vendor-filter-btn data-active="@[$.vendorFilter === 'armor']"
+          onclick="vendorFilterBy('armor')">
+          Armor (@[vendorCounts.armor])
+        </button>
+        <button tertiary vendor-filter-btn data-active="@[$.vendorFilter === 'accessory']"
+          onclick="vendorFilterBy('accessory')">
+          Accessory (@[vendorCounts.accessory])
+        </button>
+        <button tertiary vendor-filter-btn data-active="@[$.vendorFilter === 'trinket']"
+          onclick="vendorFilterBy('trinket')">
+          Trinket (@[vendorCounts.trinket])
+        </button>
       </crow>
 
-      <!-- each vendorFiltered as item, i -->
-      <crow left vendor-row data-even="@[i % 2 === 0]">
-        <crow left vendor-col-name>
-          <eq-link data-tier="@[item.level >= 25 ? 'red' : item.level >= 20 ? 'orange' : item.level >= 15 ? 'purple' : item.level >= 10 ? 'blue' : item.level >= 5 ? 'green' : 'gray']">
-            <eq-bg-center></eq-bg-center>
-            <eq-bg-left></eq-bg-left>
-            <eq-bg-right></eq-bg-right>
-            <crow eq-name left>@[item.name]</crow>
-          </eq-link>
+      <crow vertical up left vendor-table mt-4>
+        <crow up left vendor-header>
+          <vendor-col-name cinzel>Name</vendor-col-name>
+          <vendor-col-slot cinzel>Slots in</vendor-col-slot>
+          <vendor-col-cost cinzel>Cost</vendor-col-cost>
+          <vendor-col-action></vendor-col-action>
         </crow>
-        <vendor-col-slot text-sm text-muted>@[item.slotLabel]</vendor-col-slot>
-        <vendor-col-cost>
-          <crow g-1 text-sm right>
-            <!-- if Math.floor(item.cost / 100) > 0 -->
-            <span>@[Math.floor(item.cost / 100)]×</span><icon coin coin-silver></icon>
-            <!-- /if -->
-            <!-- if item.cost % 100 > 0 -->
-            <span>@[item.cost % 100]×</span><icon coin coin-copper></icon>
-            <!-- /if -->
+
+        <!-- each vendorFiltered as item, i -->
+        <crow left vendor-row data-even="@[i % 2 === 0]">
+          <crow left vendor-col-name>
+            <eq-link
+              data-tier="@[item.level >= 25 ? 'red' : item.level >= 20 ? 'orange' : item.level >= 15 ? 'purple' : item.level >= 10 ? 'blue' : item.level >= 5 ? 'green' : 'gray']">
+              <eq-bg-center></eq-bg-center>
+              <eq-bg-left></eq-bg-left>
+              <eq-bg-right></eq-bg-right>
+              <crow eq-name left>@[item.name]</crow>
+            </eq-link>
           </crow>
-        </vendor-col-cost>
-        <crow vendor-col-action right>
-          <button
-            tertiary text-sm
-            onclick="vendorAcquire('@[item.id]')"
-            data-disabled="@[$.coins < item.cost]"
-          >Acquire</button>
+          <vendor-col-slot text-sm text-muted>@[item.slotLabel]</vendor-col-slot>
+          <vendor-col-cost>
+            <crow g-1 text-sm right>
+              <!-- if Math.floor(item.cost / 100) > 0 -->
+              <span>@[Math.floor(item.cost / 100)]×</span>
+              <icon coin coin-silver></icon>
+              <!-- /if -->
+              <!-- if item.cost % 100 > 0 -->
+              <span>@[item.cost % 100]×</span>
+              <icon coin coin-copper></icon>
+              <!-- /if -->
+            </crow>
+          </vendor-col-cost>
+          <crow vendor-col-action right>
+            <button tertiary text-sm onclick="vendorAcquire('@[item.id]')"
+              data-disabled="@[$.coins < item.cost]">Acquire</button>
+          </crow>
         </crow>
+        <!-- /each -->
       </crow>
-      <!-- /each -->
-    </crow>
     </page-content>
   </component>
   <style>
-page[vendor] [vendor-filters] { display: flex; flex-wrap: wrap; align-items: stretch; justify-content: stretch; }
-page[vendor] [vendor-filter-btn] { flex: 1; }
-page[vendor] [vendor-filter-btn][data-active="true"] { opacity: 1; background: var(--accent); }
-page[vendor] [vendor-table] { margin-left: calc(var(--unit) * -4); margin-right: calc(var(--unit) * -4); width: auto; }
-page[vendor] [vendor-header] { gap: calc(var(--unit) * 4); padding: calc(var(--unit) * 2) calc(var(--unit) * 6); }
-page[vendor] [vendor-row] { width: 100%; gap: calc(var(--unit) * 4); padding: calc(var(--unit) * 2) calc(var(--unit) * 6); font-size: 0.875rem; }
-page[vendor] [vendor-row][data-even="true"] { background: #fafaf9; }
-page[vendor] [vendor-row][data-even="false"] { background: white; }
-page[vendor] vendor-col-name { display: block; }
-page[vendor] [vendor-col-name] { flex: 1; }
-page[vendor] vendor-col-slot { display: block; flex: 1; }
-page[vendor] vendor-col-cost { display: block; flex: 1; }
-page[vendor] vendor-col-action { display: block; }
-page[vendor] [vendor-col-action] { width: calc(var(--unit) * 20); flex: none; }
-page[vendor] [coin-silver] { color: oklch(0.6 0.12 200); }
-page[vendor] [coin-copper] { color: oklch(0.6 0.15 60); }
+    page[vendor] [vendor-filters] {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: stretch;
+      justify-content: stretch;
+    }
+
+    page[vendor] [vendor-filter-btn] {
+      flex: 1;
+    }
+
+    page[vendor] [vendor-filter-btn][data-active="true"] {
+      opacity: 1;
+      background: var(--accent);
+    }
+
+    page[vendor] [vendor-table] {
+      margin-left: calc(var(--unit) * -4);
+      margin-right: calc(var(--unit) * -4);
+      width: auto;
+    }
+
+    page[vendor] [vendor-header] {
+      gap: calc(var(--unit) * 4);
+      padding: calc(var(--unit) * 2) calc(var(--unit) * 6);
+    }
+
+    page[vendor] [vendor-row] {
+      width: 100%;
+      gap: calc(var(--unit) * 4);
+      padding: calc(var(--unit) * 2) calc(var(--unit) * 6);
+      font-size: 0.875rem;
+    }
+
+    page[vendor] [vendor-row][data-even="true"] {
+      background: #fafaf9;
+    }
+
+    page[vendor] [vendor-row][data-even="false"] {
+      background: white;
+    }
+
+    page[vendor] vendor-col-name {
+      display: block;
+    }
+
+    page[vendor] [vendor-col-name] {
+      flex: 1;
+    }
+
+    page[vendor] vendor-col-slot {
+      display: block;
+      flex: 1;
+    }
+
+    page[vendor] vendor-col-cost {
+      display: block;
+      flex: 1;
+    }
+
+    page[vendor] vendor-col-action {
+      display: block;
+    }
+
+    page[vendor] [vendor-col-action] {
+      width: calc(var(--unit) * 20);
+      flex: none;
+    }
+
+    page[vendor] [coin-silver] {
+      color: oklch(0.6 0.12 200);
+    }
+
+    page[vendor] [coin-copper] {
+      color: oklch(0.6 0.15 60);
+    }
   </style>
 </body>
+
 </html>

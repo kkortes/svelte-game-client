@@ -1,10 +1,13 @@
 <game-menu>
-  <game-frame>
+  <game-frame relative>
     <crow left game-frame-title cinzel>options</crow>
     <crow vertical g-2 p-4>
       <crow justify-between w-full>
         <span cinzel>Audio settings</span>
-        <button secondary text-xs onclick="$.settings = { ...$.settings, volume: { master: 0.5, ambient: 0.25, sfx: 0.5, combat: 1 } }">Reset to default</button>
+        <button secondary
+          onclick="$.settings = { ...$.settings, volume: { master: 0.5, ambient: 0.25, sfx: 0.5, combat: 1 } }">
+          Reset to default
+        </button>
       </crow>
       <crow w-full g-4>
         <menu-label>Master</menu-label>
@@ -33,19 +36,21 @@
 
       <hr menu-divider />
 
-      <button secondary onclick="$.overlay = 'ReleaseNotes'">Release notes</button>
-      <!-- if token -->
-      <button secondary onclick="document.cookie = 'token=; Max-Age=0'; $.token = undefined; $.characters = []; $.inventory = []; $.overlay = ''">Logout</button>
-      <!-- /if -->
+      <crow g-2 vertical>
+        <button secondary onclick="$.overlay = 'ReleaseNotes'">
+          Release notes
+        </button>
+        <!-- if token -->
+        <button primary
+          onclick="document.cookie = 'token=; Max-Age=0'; $.token = undefined; $.characters = []; $.inventory = []; $.overlay = ''">
+          Logout
+        </button>
+        <!-- /if -->
+      </crow>
     </crow>
-  </game-frame>
-  <button close-btn onclick="$.overlay = ''">
-    <icon cross></icon>
-  </button>
 
-  <style>
-    game-menu {
-      display: contents;
-    }
-  </style>
+    <button absolute text-red tertiary t="-.5" r="-.5" onclick="$.overlay = ''">
+      <icon cross></icon>
+    </button>
+  </game-frame>
 </game-menu>

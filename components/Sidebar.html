@@ -19,7 +19,7 @@
         <h5 m-0>MY LUDUS</h5>
         <span cinzel flex-none>level @[sidebarLevel]</span>
       </crow>
-      <hr headline-hr-sm />
+      <hr />
 
       <crow vertical left w-full g-2>
         <crow justify-between w-full>
@@ -85,14 +85,16 @@
         <h5 m-0>MY BRAWLERS</h5>
         <span cinzel flex-none>@[sidebarChars.length] / @[sidebarMaxChars]</span>
       </crow>
-      <hr headline-hr-sm />
+      <hr />
 
       <brawler-list onmouseenter="$.showSequence = true" onmouseleave="$.showSequence = false">
         <crow vertical up left>
           <!-- if characters.length === 0 -->
           <crow vertical w-full g-2 text-sm text-muted>
             You have no brawlers yet.
-            <a href="/brawlers" tertiary>Recruit brawler</a>
+            <a class="button" href="/brawlers" primary>
+              Recruit brawler
+            </a>
           </crow>
           <!-- /if -->
 
