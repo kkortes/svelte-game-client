@@ -1,511 +1,524 @@
-<script type="module">
-  import CHARACTERS from '/js/constants/CHARACTERS.js';
-  import EQUIPMENT from '/js/constants/EQUIPMENT.js';
-  import ABILITIES from '/js/constants/ABILITIES.js';
-  import { calculateCombatStatsByCharacter, calculateAvailableAbilitiesByCharacter, calculateTickStart } from '/js/utils.js';
-  import { slotsInPrettyName, unequip } from '/js/equipment.js';
-  import { getLevelByExperience } from '/js/level.js';
-  import { generateCombat, healFull, prepareTeams } from '/js/combat.js';
-  import { navigate } from '/js/router.js';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Battle Brawlers</title>
+  <link rel="icon" href="/static/favicon.png" />
+  <link rel="stylesheet" href="/css/index.css" />
+</head>
+<body battle-brawlers vibe vibe-fouc stylecheat>
+  <script type="module">
+    import boot from '/js/boot.js';
+    boot();
 
-  const index = Number($.routeParams.characterIndex) || 0;
-  const characterRef = $.characters[index];
+    import CHARACTERS from '/js/constants/CHARACTERS.js';
+    import EQUIPMENT from '/js/constants/EQUIPMENT.js';
+    import ABILITIES from '/js/constants/ABILITIES.js';
+    import { calculateCombatStatsByCharacter, calculateAvailableAbilitiesByCharacter, calculateTickStart } from '/js/utils.js';
+    import { slotsInPrettyName, unequip } from '/js/equipment.js';
+    import { getLevelByExperience } from '/js/level.js';
+    import { generateCombat, healFull, prepareTeams } from '/js/combat.js';
 
-  if (characterRef) {
-    const char = CHARACTERS(characterRef, true);
-    const combatStats = calculateCombatStatsByCharacter(char);
-    const isTwoHanded = char.equipment.mainHand && EQUIPMENT(char.equipment.mainHand, true).slotsIn === 'twoHand';
+    const index = Number($.routeParams.characterIndex) || 0;
+    const characterRef = $.characters[index];
 
-    const slots = ['mainHand', 'offHand', 'armor', 'accessory', 'trinket'].map(slot => {
-      const eq = char.equipment[slot];
-      const item = eq ? EQUIPMENT(eq, true) : null;
-      const isTwoHandOffHand = slot === 'offHand' && isTwoHanded;
-      return {
-        slot,
-        prettyName: slotsInPrettyName(slot),
-        itemName: isTwoHandOffHand
-          ? EQUIPMENT(char.equipment.mainHand, true).name
-          : item ? item.name : ['mainHand', 'offHand'].includes(slot) ? 'Fist' : '-',
-        hasItem: !!eq,
-        disabled: isTwoHandOffHand,
-        level: item ? (item.level || 1) : 0
+    if (characterRef) {
+      const char = CHARACTERS(characterRef, true);
+      const combatStats = calculateCombatStatsByCharacter(char);
+      const isTwoHanded = char.equipment.mainHand && EQUIPMENT(char.equipment.mainHand, true).slotsIn === 'twoHand';
+
+      const slots = ['mainHand', 'offHand', 'armor', 'accessory', 'trinket'].map(slot => {
+        const eq = char.equipment[slot];
+        const item = eq ? EQUIPMENT(eq, true) : null;
+        const isTwoHandOffHand = slot === 'offHand' && isTwoHanded;
+        return {
+          slot,
+          prettyName: slotsInPrettyName(slot),
+          itemName: isTwoHandOffHand
+            ? EQUIPMENT(char.equipment.mainHand, true).name
+            : item ? item.name : ['mainHand', 'offHand'].includes(slot) ? 'Fist' : '-',
+          hasItem: !!eq,
+          disabled: isTwoHandOffHand,
+          level: item ? (item.level || 1) : 0
+        };
+      });
+
+      // --- ensureDefaultAbilities (matching original AbilitySelection.svelte) ---
+      const eq = char.equipment;
+      const isShield = !!(eq.offHand && EQUIPMENT(eq.offHand, true).slotsIn === 'offHand');
+      const isTwoHandedWeapon = !!(eq.mainHand && EQUIPMENT(eq.mainHand, true).slotsIn === 'twoHand');
+      const isOneHandedMainhand = !!(eq.mainHand && EQUIPMENT(eq.mainHand, true).slotsIn === 'oneHand');
+      const isOneHandedOffhand = !!(eq.offHand && EQUIPMENT(eq.offHand, true).slotsIn === 'oneHand');
+      const isOneHandedWeapon = isOneHandedMainhand || isOneHandedOffhand;
+
+      const getBasicAbilities = (slot) => {
+        if (!eq[slot]) return [];
+        return EQUIPMENT(eq[slot], true).abilities
+          .map(a => ABILITIES(a, true))
+          .filter(a => a.basic)
+          .map((a, i) => ({ ...ABILITIES(a), uuid: `${char.id}::${slot}::${eq[slot]?.id}::${a.id}::${a.name}::${i}` }));
       };
-    });
 
-    // --- ensureDefaultAbilities (matching original AbilitySelection.svelte) ---
-    const eq = char.equipment;
-    const isShield = !!(eq.offHand && EQUIPMENT(eq.offHand, true).slotsIn === 'offHand');
-    const isTwoHandedWeapon = !!(eq.mainHand && EQUIPMENT(eq.mainHand, true).slotsIn === 'twoHand');
-    const isOneHandedMainhand = !!(eq.mainHand && EQUIPMENT(eq.mainHand, true).slotsIn === 'oneHand');
-    const isOneHandedOffhand = !!(eq.offHand && EQUIPMENT(eq.offHand, true).slotsIn === 'oneHand');
-    const isOneHandedWeapon = isOneHandedMainhand || isOneHandedOffhand;
+      const punches = Array.from({ length: 6 }, (_, i) =>
+        ABILITIES({ id: 'punch', uuid: `${char.id}::${i < 3 ? 'mainHand' : 'offHand'}::_::punch::${i}` })
+      );
 
-    const getBasicAbilities = (slot) => {
-      if (!eq[slot]) return [];
-      return EQUIPMENT(eq[slot], true).abilities
+      let defaultAbilities = [...punches];
+
+      if (isTwoHandedWeapon) {
+        defaultAbilities = getBasicAbilities('mainHand');
+      } else if (isShield) {
+        defaultAbilities = [];
+        defaultAbilities.push(...(isOneHandedWeapon ? getBasicAbilities('mainHand') : punches.slice(0, 3)));
+        defaultAbilities.push(...getBasicAbilities('offHand'));
+      } else if (isOneHandedWeapon) {
+        defaultAbilities = [];
+        defaultAbilities.push(...(isOneHandedMainhand ? getBasicAbilities('mainHand') : punches.slice(0, 3)));
+        defaultAbilities.push(...(isOneHandedOffhand ? getBasicAbilities('offHand') : punches.slice(3, 6)));
+      }
+
+      // Merge: keep non-basic abilities from overrides, fill basic slots with defaults
+      const currentOverrides = (characterRef.overrides?.abilities || []);
+      const nonBasicFromOverrides = currentOverrides.filter(a => {
+        try { return !ABILITIES(a, true).basic; } catch { return false; }
+      });
+
+      const merged = [
+        ...nonBasicFromOverrides.map(a => JSON.parse(JSON.stringify(a))),
+        ...defaultAbilities
+      ];
+
+      // Check if abilities changed — if so, update overrides
+      const mergedUuids = merged.map(a => a.uuid).sort().join(',');
+      const currentUuids = currentOverrides.map(a => a.uuid).sort().join(',');
+      if (mergedUuids !== currentUuids) {
+        characterRef.overrides.abilities = merged;
+      }
+
+      // --- Now compute display data ---
+      const availableAbilities = calculateAvailableAbilitiesByCharacter(char);
+      const activeAbilities = (characterRef.overrides?.abilities || []).map(a => ABILITIES(a, true));
+      const usedUuids = new Set(activeAbilities.map(a => a.uuid));
+
+      const availableNonBasic = availableAbilities
+        .filter(a => !ABILITIES(a, true).basic && !usedUuids.has(a.uuid))
         .map(a => ABILITIES(a, true))
-        .filter(a => a.basic)
-        .map((a, i) => ({ ...ABILITIES(a), uuid: `${char.id}::${slot}::${eq[slot]?.id}::${a.id}::${a.name}::${i}` }));
-    };
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .sort((a, b) => a.ticks - b.ticks);
 
-    const punches = Array.from({ length: 6 }, (_, i) =>
-      ABILITIES({ id: 'punch', uuid: `${char.id}::${i < 3 ? 'mainHand' : 'offHand'}::_::punch::${i}` })
-    );
+      const tickCells = 15;
+      const abilityBarItems = activeAbilities.map((ability, i) => {
+        const tickStart = calculateTickStart(activeAbilities, i);
+        const widthPct = (ability.ticks / tickCells) * 100;
+        return { ...ability, tickStart, widthPct, overTick: tickStart > 11 };
+      });
 
-    let defaultAbilities = [...punches];
+      const lastTick = abilityBarItems.filter(a => a.tickStart < char.maxTicks).at(-1);
+      const lastTickEnd = lastTick ? lastTick.tickStart + lastTick.ticks : 0;
 
-    if (isTwoHandedWeapon) {
-      defaultAbilities = getBasicAbilities('mainHand');
-    } else if (isShield) {
-      defaultAbilities = [];
-      defaultAbilities.push(...(isOneHandedWeapon ? getBasicAbilities('mainHand') : punches.slice(0, 3)));
-      defaultAbilities.push(...getBasicAbilities('offHand'));
-    } else if (isOneHandedWeapon) {
-      defaultAbilities = [];
-      defaultAbilities.push(...(isOneHandedMainhand ? getBasicAbilities('mainHand') : punches.slice(0, 3)));
-      defaultAbilities.push(...(isOneHandedOffhand ? getBasicAbilities('offHand') : punches.slice(3, 6)));
+      const canRetire = getLevelByExperience($.experience) <= 4;
+
+      $.currentCharacter = { ...char, slots, _canRetire: canRetire };
+      const fmt = (v) => v === 0 ? '-' : v > 1 ? v : `${(v * 100).toFixed(0)}%`;
+
+      $.currentCombatStats = {
+        maxHealth: combatStats.maxHealth || 0,
+        maxArmor: combatStats.maxArmor || 0,
+        damage: combatStats.damage || 0,
+        criticalChance: fmt(combatStats.criticalChance || 0),
+        criticalDamage: fmt(combatStats.criticalDamage || 0),
+        blockChance: fmt(combatStats.blockChance || 0),
+        dodgeChance: fmt(combatStats.dodgeChance || 0),
+        magicChance: fmt(combatStats.magicChance || 0),
+        modifiers: {
+          maxHealth: fmt((combatStats.modifiers || {}).maxHealth || 0),
+          maxArmor: fmt((combatStats.modifiers || {}).maxArmor || 0),
+          damage: fmt((combatStats.modifiers || {}).damage || 0),
+          resistance: fmt((combatStats.modifiers || {}).resistance || 0)
+        },
+        limits: combatStats.limits || {}
+      };
+      $.currentSlots = slots;
+      $.currentAbilities = abilityBarItems;
+      $.currentAvailableAbilities = availableNonBasic;
+      $.currentLastTickEnd = lastTickEnd;
     }
 
-    // Merge: keep non-basic abilities from overrides, fill basic slots with defaults
-    const currentOverrides = (characterRef.overrides?.abilities || []);
-    const nonBasicFromOverrides = currentOverrides.filter(a => {
-      try { return !ABILITIES(a, true).basic; } catch { return false; }
-    });
-
-    const merged = [
-      ...nonBasicFromOverrides.map(a => JSON.parse(JSON.stringify(a))),
-      ...defaultAbilities
-    ];
-
-    // Check if abilities changed — if so, update overrides
-    const mergedUuids = merged.map(a => a.uuid).sort().join(',');
-    const currentUuids = currentOverrides.map(a => a.uuid).sort().join(',');
-    if (mergedUuids !== currentUuids) {
-      characterRef.overrides.abilities = merged;
-    }
-
-    // --- Now compute display data ---
-    const availableAbilities = calculateAvailableAbilitiesByCharacter(char);
-    const activeAbilities = (characterRef.overrides?.abilities || []).map(a => ABILITIES(a, true));
-    const usedUuids = new Set(activeAbilities.map(a => a.uuid));
-
-    const availableNonBasic = availableAbilities
-      .filter(a => !ABILITIES(a, true).basic && !usedUuids.has(a.uuid))
-      .map(a => ABILITIES(a, true))
-      .sort((a, b) => a.name.localeCompare(b.name))
-      .sort((a, b) => a.ticks - b.ticks);
-
-    const tickCells = 15;
-    const abilityBarItems = activeAbilities.map((ability, i) => {
-      const tickStart = calculateTickStart(activeAbilities, i);
-      const widthPct = (ability.ticks / tickCells) * 100;
-      return { ...ability, tickStart, widthPct, overTick: tickStart > 11 };
-    });
-
-    const lastTick = abilityBarItems.filter(a => a.tickStart < char.maxTicks).at(-1);
-    const lastTickEnd = lastTick ? lastTick.tickStart + lastTick.ticks : 0;
-
-    const canRetire = getLevelByExperience($.experience) <= 4;
-
-    $.currentCharacter = { ...char, slots, _canRetire: canRetire };
-    const fmt = (v) => v === 0 ? '-' : v > 1 ? v : `${(v * 100).toFixed(0)}%`;
-
-    $.currentCombatStats = {
-      maxHealth: combatStats.maxHealth || 0,
-      maxArmor: combatStats.maxArmor || 0,
-      damage: combatStats.damage || 0,
-      criticalChance: fmt(combatStats.criticalChance || 0),
-      criticalDamage: fmt(combatStats.criticalDamage || 0),
-      blockChance: fmt(combatStats.blockChance || 0),
-      dodgeChance: fmt(combatStats.dodgeChance || 0),
-      magicChance: fmt(combatStats.magicChance || 0),
-      modifiers: {
-        maxHealth: fmt((combatStats.modifiers || {}).maxHealth || 0),
-        maxArmor: fmt((combatStats.modifiers || {}).maxArmor || 0),
-        damage: fmt((combatStats.modifiers || {}).damage || 0),
-        resistance: fmt((combatStats.modifiers || {}).resistance || 0)
-      },
-      limits: combatStats.limits || {}
+    window.toggleDetailedView = () => {
+      $.settings.showDetailedCharacterView = !$.settings.showDetailedCharacterView;
     };
-    $.currentSlots = slots;
-    $.currentAbilities = abilityBarItems;
-    $.currentAvailableAbilities = availableNonBasic;
-    $.currentLastTickEnd = lastTickEnd;
-  }
 
-  window.toggleDetailedView = () => {
-    $.settings.showDetailedCharacterView = !$.settings.showDetailedCharacterView;
-  };
-
-  window.retireCharacter = () => {
-    const char = $.currentCharacter;
-    $.dialog = {
-      dialogId: 'confirm',
-      props: {
-        text: `You are retiring ${char.name}. Do you wish to proceed?`,
-        confirm: () => {
-          $.selectedBrawlers = $.selectedBrawlers.filter(uuid => uuid !== char.uuid);
-          navigate('/brawlers');
-          $.characters = [];
+    window.retireCharacter = () => {
+      const char = $.currentCharacter;
+      $.dialog = {
+        dialogId: 'confirm',
+        props: {
+          text: `You are retiring ${char.name}. Do you wish to proceed?`,
+          confirm: () => {
+            $.selectedBrawlers = $.selectedBrawlers.filter(uuid => uuid !== char.uuid);
+            window.location.href = '/brawlers';
+            $.characters = [];
+          }
         }
-      }
+      };
     };
-  };
 
-  window.tryOutBuild = () => {
-    const selected = $.characters[Number($.routeParams.characterIndex)];
-    if (!selected) return;
-    const snapshot = JSON.parse(JSON.stringify(selected));
-    const creature = CHARACTERS('trainingDummy', true);
-    $.combat = generateCombat(prepareTeams(healFull([snapshot]), [creature]));
-    $.overlay = 'Combat';
-  };
+    window.tryOutBuild = () => {
+      const selected = $.characters[Number($.routeParams.characterIndex)];
+      if (!selected) return;
+      const snapshot = JSON.parse(JSON.stringify(selected));
+      const creature = CHARACTERS('trainingDummy', true);
+      $.combat = generateCombat(prepareTeams(healFull([snapshot]), [creature]));
+      $.overlay = 'Combat';
+    };
 
-  window.unequipSlot = (slot) => {
-    const characterRef = $.characters[Number($.routeParams.characterIndex)];
-    const eq = characterRef?.overrides?.equipment?.[slot];
-    if (eq) unequip(eq, slot);
-  };
+    window.unequipSlot = (slot) => {
+      const characterRef = $.characters[Number($.routeParams.characterIndex)];
+      const eq = characterRef?.overrides?.equipment?.[slot];
+      if (eq) unequip(eq, slot);
+    };
 
-  // Initialize DnD for ability reordering after DOM is ready
-  import('/js/dnd.js').then(({ default: dnd }) => {
-    dnd.init();
+    // Initialize DnD for ability reordering after DOM is ready
+    import('/js/dnd.js').then(({ default: dnd }) => {
+      dnd.init();
 
-    // Wait for Vibe to hydrate the ability bar elements
-    setTimeout(() => {
-      const abilityOverlay = document.querySelector('[ability-overlay]');
-      const availableGrid = document.querySelector('[available-grid]');
+      // Wait for Vibe to hydrate the ability bar elements
+      setTimeout(() => {
+        const abilityOverlay = document.querySelector('[ability-overlay]');
+        const availableGrid = document.querySelector('[available-grid]');
 
-      if (abilityOverlay) {
-        dnd.zone(abilityOverlay, {
-          items: () => $.currentAbilities,
-          group: 'abilities',
-          direction: 'horizontal',
-          onReorder: (newItems) => {
-            const characterRef = $.characters[Number($.routeParams.characterIndex)];
-            if (characterRef) {
-              characterRef.overrides.abilities = newItems.map(a => ({ id: a.id, uuid: a.uuid, overrides: a.overrides }));
-              if (window.navigate) window.navigate(window.location.pathname);
+        if (abilityOverlay) {
+          dnd.zone(abilityOverlay, {
+            items: () => $.currentAbilities,
+            group: 'abilities',
+            direction: 'horizontal',
+            onReorder: (newItems) => {
+              const characterRef = $.characters[Number($.routeParams.characterIndex)];
+              if (characterRef) {
+                characterRef.overrides.abilities = newItems.map(a => ({ id: a.id, uuid: a.uuid, overrides: a.overrides }));
+                window.location.reload();
+              }
             }
-          }
-        });
-      }
+          });
+        }
 
-      if (availableGrid) {
-        dnd.zone(availableGrid, {
-          items: () => $.currentAvailableAbilities,
-          group: 'abilities',
-          direction: 'horizontal',
-          onReceive: (item, fromZone, insertIndex) => {
-            const characterRef = $.characters[Number($.routeParams.characterIndex)];
-            if (characterRef) {
-              // Remove from active, it'll re-appear in available on refresh
-              characterRef.overrides.abilities = characterRef.overrides.abilities.filter(a => a.uuid !== item.uuid);
-              if (window.navigate) window.navigate(window.location.pathname);
+        if (availableGrid) {
+          dnd.zone(availableGrid, {
+            items: () => $.currentAvailableAbilities,
+            group: 'abilities',
+            direction: 'horizontal',
+            onReceive: (item, fromZone, insertIndex) => {
+              const characterRef = $.characters[Number($.routeParams.characterIndex)];
+              if (characterRef) {
+                // Remove from active, it'll re-appear in available on refresh
+                characterRef.overrides.abilities = characterRef.overrides.abilities.filter(a => a.uuid !== item.uuid);
+                window.location.reload();
+              }
             }
-          }
-        });
-      }
-      // Ability tooltips
-      const abilityBar = document.querySelector('page-brawler-detail ability-bar');
-      if (abilityBar) {
-        abilityBar.addEventListener('mouseenter', (e) => {
-          const cell = e.target.closest('ability-cell');
-          if (!cell) return;
-          const cells = [...abilityBar.querySelectorAll('ability-cell')];
-          const idx = cells.indexOf(cell);
-          const ability = $.currentAbilities[idx];
-          if (!ability) return;
+          });
+        }
+        // Ability tooltips
+        const abilityBar = document.querySelector('page-brawler-detail ability-bar');
+        if (abilityBar) {
+          abilityBar.addEventListener('mouseenter', (e) => {
+            const cell = e.target.closest('ability-cell');
+            if (!cell) return;
+            const cells = [...abilityBar.querySelectorAll('ability-cell')];
+            const idx = cells.indexOf(cell);
+            const ability = $.currentAbilities[idx];
+            if (!ability) return;
 
-          const rect = cell.getBoundingClientRect();
-          $.tooltip = {
-            x: rect.left + rect.width / 2,
-            y: rect.top,
-            visible: true,
-            props: {
-              name: ability.name,
-              ticks: ability.ticks,
-              description: ability.description || '',
-              basic: ability.basic
-            }
-          };
-        }, true);
-
-        abilityBar.addEventListener('mouseleave', (e) => {
-          if (e.target.closest('ability-cell') && $.tooltip) $.tooltip.visible = false;
-        }, true);
-      }
-
-      // Available ability tooltips
-      const availGrid = document.querySelector('page-brawler-detail [available-grid]');
-      if (availGrid) {
-        availGrid.addEventListener('mouseenter', (e) => {
-          const cell = e.target.closest('available-ability');
-          if (!cell) return;
-          const cells = [...availGrid.querySelectorAll('available-ability')];
-          const idx = cells.indexOf(cell);
-          const ability = $.currentAvailableAbilities[idx];
-          if (!ability) return;
-
-          const rect = cell.getBoundingClientRect();
-          $.tooltip = {
-            x: rect.left + rect.width / 2,
-            y: rect.top,
-            visible: true,
-            props: {
-              name: ability.name,
-              ticks: ability.ticks,
-              description: ability.description || '',
-              basic: ability.basic
-            }
-          };
-        }, true);
-
-        availGrid.addEventListener('mouseleave', (e) => {
-          if (e.target.closest('available-ability') && $.tooltip) $.tooltip.visible = false;
-        }, true);
-      }
-      // Equipment slot tooltips
-      const eqSection = document.querySelector('page-brawler-detail [eq-section]');
-      if (eqSection) {
-        eqSection.addEventListener('mouseenter', (e) => {
-          const row = e.target.closest('[eq-row]');
-          if (!row) return;
-          const eqLink = row.querySelector('eq-link');
-          if (!eqLink) return;
-
-          const rows = [...eqSection.querySelectorAll('[eq-row]')];
-          const idx = rows.indexOf(row);
-          const slotData = $.currentSlots[idx];
-          if (!slotData?.hasItem || slotData.disabled) return;
-
-          const charRef = $.characters[Number($.routeParams.characterIndex)];
-          const eqRef = charRef?.overrides?.equipment?.[slotData.slot];
-          if (!eqRef) return;
-
-          try {
-            const item = EQUIPMENT(eqRef, true);
-            const rect = eqLink.getBoundingClientRect();
+            const rect = cell.getBoundingClientRect();
             $.tooltip = {
-              x: rect.left + rect.width / 2, y: rect.top, visible: true,
+              x: rect.left + rect.width / 2,
+              y: rect.top,
+              visible: true,
               props: {
-                name: item.name, level: item.level,
-                combatStats: item.combatStats, slotsIn: item.slotsIn,
-                description: item.description
+                name: ability.name,
+                ticks: ability.ticks,
+                description: ability.description || '',
+                basic: ability.basic
               }
             };
-          } catch {}
-        }, true);
+          }, true);
 
-        eqSection.addEventListener('mouseleave', (e) => {
-          if (e.target.closest('[eq-row]') && $.tooltip) $.tooltip.visible = false;
-        }, true);
-      }
-    }, 500);
-  });
-</script>
+          abilityBar.addEventListener('mouseleave', (e) => {
+            if (e.target.closest('ability-cell') && $.tooltip) $.tooltip.visible = false;
+          }, true);
+        }
 
-<page-brawler-detail>
-<!-- if currentCharacter -->
-<crow vertical g-4 left>
-  <button go-back tertiary onclick="navigate('/brawlers')">&#x2039; Back</button>
+        // Available ability tooltips
+        const availGrid = document.querySelector('page-brawler-detail [available-grid]');
+        if (availGrid) {
+          availGrid.addEventListener('mouseenter', (e) => {
+            const cell = e.target.closest('available-ability');
+            if (!cell) return;
+            const cells = [...availGrid.querySelectorAll('available-ability')];
+            const idx = cells.indexOf(cell);
+            const ability = $.currentAvailableAbilities[idx];
+            if (!ability) return;
 
-  <crow justify-between w-full headline-row>
-    <crow g-4 left>
-      <h3 cinzel m-0>@[currentCharacter.name]</h3>
+            const rect = cell.getBoundingClientRect();
+            $.tooltip = {
+              x: rect.left + rect.width / 2,
+              y: rect.top,
+              visible: true,
+              props: {
+                name: ability.name,
+                ticks: ability.ticks,
+                description: ability.description || '',
+                basic: ability.basic
+              }
+            };
+          }, true);
 
-      <!-- if !settings.showDetailedCharacterView -->
-      <crow core-stats g-2 left>
-        <crow g-1>
-          <icon maxHealth></icon>
-          <span>@[currentCombatStats.maxHealth]</span>
+          availGrid.addEventListener('mouseleave', (e) => {
+            if (e.target.closest('available-ability') && $.tooltip) $.tooltip.visible = false;
+          }, true);
+        }
+        // Equipment slot tooltips
+        const eqSection = document.querySelector('page-brawler-detail [eq-section]');
+        if (eqSection) {
+          eqSection.addEventListener('mouseenter', (e) => {
+            const row = e.target.closest('[eq-row]');
+            if (!row) return;
+            const eqLink = row.querySelector('eq-link');
+            if (!eqLink) return;
+
+            const rows = [...eqSection.querySelectorAll('[eq-row]')];
+            const idx = rows.indexOf(row);
+            const slotData = $.currentSlots[idx];
+            if (!slotData?.hasItem || slotData.disabled) return;
+
+            const charRef = $.characters[Number($.routeParams.characterIndex)];
+            const eqRef = charRef?.overrides?.equipment?.[slotData.slot];
+            if (!eqRef) return;
+
+            try {
+              const item = EQUIPMENT(eqRef, true);
+              const rect = eqLink.getBoundingClientRect();
+              $.tooltip = {
+                x: rect.left + rect.width / 2, y: rect.top, visible: true,
+                props: {
+                  name: item.name, level: item.level,
+                  combatStats: item.combatStats, slotsIn: item.slotsIn,
+                  description: item.description
+                }
+              };
+            } catch {}
+          }, true);
+
+          eqSection.addEventListener('mouseleave', (e) => {
+            if (e.target.closest('[eq-row]') && $.tooltip) $.tooltip.visible = false;
+          }, true);
+        }
+      }, 500);
+    });
+  </script>
+
+  <component src="/components/Layout.html">
+    <page-brawler-detail>
+    <!-- if currentCharacter -->
+    <crow vertical g-4 left>
+      <button go-back tertiary onclick="window.location.href='/brawlers'">&#x2039; Back</button>
+
+      <crow justify-between w-full headline-row>
+        <crow g-4 left>
+          <h3 cinzel m-0>@[currentCharacter.name]</h3>
+
+          <!-- if !settings.showDetailedCharacterView -->
+          <crow core-stats g-2 left>
+            <crow g-1>
+              <icon maxHealth></icon>
+              <span>@[currentCombatStats.maxHealth]</span>
+            </crow>
+            <span stat-sep>/</span>
+            <crow g-1>
+              <icon maxArmor></icon>
+              <span>@[currentCombatStats.maxArmor]</span>
+            </crow>
+            <span stat-sep>/</span>
+            <crow g-1>
+              <icon damage></icon>
+              <span>@[currentCombatStats.damage]</span>
+            </crow>
+          </crow>
+          <!-- /if -->
         </crow>
-        <span stat-sep>/</span>
-        <crow g-1>
-          <icon maxArmor></icon>
-          <span>@[currentCombatStats.maxArmor]</span>
-        </crow>
-        <span stat-sep>/</span>
-        <crow g-1>
-          <icon damage></icon>
-          <span>@[currentCombatStats.damage]</span>
+
+        <crow g-2 right>
+          <button tertiary toggle-btn onclick="toggleDetailedView()">
+            <icon down data-flipped="@[settings.showDetailedCharacterView]"></icon>
+            <!-- if settings.showDetailedCharacterView -->
+            Simple view
+            <!-- /if -->
+            <!-- if !settings.showDetailedCharacterView -->
+            Show stats
+            <!-- /if -->
+          </button>
+
+          <!-- if currentCharacter._canRetire -->
+          <button tertiary retire-btn onclick="retireCharacter()">Retire</button>
+          <!-- /if -->
         </crow>
       </crow>
-      <!-- /if -->
-    </crow>
 
-    <crow g-2 right>
-      <button tertiary toggle-btn onclick="toggleDetailedView()">
-        <icon down data-flipped="@[settings.showDetailedCharacterView]"></icon>
-        <!-- if settings.showDetailedCharacterView -->
-        Simple view
-        <!-- /if -->
-        <!-- if !settings.showDetailedCharacterView -->
-        Show stats
-        <!-- /if -->
-      </button>
-
-      <!-- if currentCharacter._canRetire -->
-      <button tertiary retire-btn onclick="retireCharacter()">Retire</button>
-      <!-- /if -->
-    </crow>
-  </crow>
-
-  <crow left up g-4 main-content>
-    <crow left vertical avatar-col>
-      <crow avatar-frame>
-        <img data-src="/static/images/races/@[currentCharacter.image]" alt="@[currentCharacter.name]" portrait-img />
-      </crow>
-    </crow>
-
-    <crow vertical up left detail-col>
-      <!-- if settings.showDetailedCharacterView -->
-      <crow up left g-8 stats-panel>
-        <crow up left vertical>
-          <h5 cinzel m-0>Base Stats</h5>
-          <crow stat-list vertical left g-1>
-            <crow justify-between w-full><crow left g-1 flex-none><icon maxHealth></icon> Health</crow><span>@[currentCombatStats.maxHealth]</span></crow>
-            <crow justify-between w-full><crow left g-1 flex-none><icon maxArmor></icon> Armor</crow><span>@[currentCombatStats.maxArmor]</span></crow>
-            <crow justify-between w-full><crow left g-1 flex-none><icon damage></icon> Damage</crow><span>@[currentCombatStats.damage]</span></crow>
-          </crow>
-
-          <spacer-lg></spacer-lg>
-
-          <h5 cinzel m-0 lucky-heading>Lucky Stats</h5>
-          <crow stat-list vertical left g-1 text-green>
-            <crow justify-between w-full><crow left g-1 flex-none><icon criticalChance></icon> Critical Chance</crow><span>@[currentCombatStats.criticalChance]</span></crow>
-            <crow justify-between w-full><crow left g-1 flex-none><icon criticalDamage></icon> Critical Damage</crow><span>@[currentCombatStats.criticalDamage]</span></crow>
-            <crow justify-between w-full><crow left g-1 flex-none><icon blockChance></icon> Block Chance</crow><span>@[currentCombatStats.blockChance]</span></crow>
-            <crow justify-between w-full><crow left g-1 flex-none><icon dodgeChance></icon> Dodge Chance</crow><span>@[currentCombatStats.dodgeChance]</span></crow>
-            <crow justify-between w-full><crow left g-1 flex-none><icon magicChance></icon> Magic Chance</crow><span>@[currentCombatStats.magicChance]</span></crow>
+      <crow left up g-4 main-content>
+        <crow left vertical avatar-col>
+          <crow avatar-frame>
+            <img data-src="/static/images/races/@[currentCharacter.image]" alt="@[currentCharacter.name]" portrait-img />
           </crow>
         </crow>
 
-        <crow up left vertical>
-          <h5 cinzel m-0>Modifiers</h5>
-          <crow stat-list vertical left g-1>
-            <crow justify-between w-full><span>Health</span><span>@[currentCombatStats.modifiers.maxHealth]</span></crow>
-            <crow justify-between w-full><span>Armor</span><span>@[currentCombatStats.modifiers.maxArmor]</span></crow>
-            <crow justify-between w-full><span>Damage</span><span>@[currentCombatStats.modifiers.damage]</span></crow>
-            <crow justify-between w-full><span>All resistances</span><span>@[currentCombatStats.modifiers.resistance]</span></crow>
+        <crow vertical up left detail-col>
+          <!-- if settings.showDetailedCharacterView -->
+          <crow up left g-8 stats-panel>
+            <crow up left vertical>
+              <h5 cinzel m-0>Base Stats</h5>
+              <crow stat-list vertical left g-1>
+                <crow justify-between w-full><crow left g-1 flex-none><icon maxHealth></icon> Health</crow><span>@[currentCombatStats.maxHealth]</span></crow>
+                <crow justify-between w-full><crow left g-1 flex-none><icon maxArmor></icon> Armor</crow><span>@[currentCombatStats.maxArmor]</span></crow>
+                <crow justify-between w-full><crow left g-1 flex-none><icon damage></icon> Damage</crow><span>@[currentCombatStats.damage]</span></crow>
+              </crow>
+
+              <spacer-lg></spacer-lg>
+
+              <h5 cinzel m-0 lucky-heading>Lucky Stats</h5>
+              <crow stat-list vertical left g-1 text-green>
+                <crow justify-between w-full><crow left g-1 flex-none><icon criticalChance></icon> Critical Chance</crow><span>@[currentCombatStats.criticalChance]</span></crow>
+                <crow justify-between w-full><crow left g-1 flex-none><icon criticalDamage></icon> Critical Damage</crow><span>@[currentCombatStats.criticalDamage]</span></crow>
+                <crow justify-between w-full><crow left g-1 flex-none><icon blockChance></icon> Block Chance</crow><span>@[currentCombatStats.blockChance]</span></crow>
+                <crow justify-between w-full><crow left g-1 flex-none><icon dodgeChance></icon> Dodge Chance</crow><span>@[currentCombatStats.dodgeChance]</span></crow>
+                <crow justify-between w-full><crow left g-1 flex-none><icon magicChance></icon> Magic Chance</crow><span>@[currentCombatStats.magicChance]</span></crow>
+              </crow>
+            </crow>
+
+            <crow up left vertical>
+              <h5 cinzel m-0>Modifiers</h5>
+              <crow stat-list vertical left g-1>
+                <crow justify-between w-full><span>Health</span><span>@[currentCombatStats.modifiers.maxHealth]</span></crow>
+                <crow justify-between w-full><span>Armor</span><span>@[currentCombatStats.modifiers.maxArmor]</span></crow>
+                <crow justify-between w-full><span>Damage</span><span>@[currentCombatStats.modifiers.damage]</span></crow>
+                <crow justify-between w-full><span>All resistances</span><span>@[currentCombatStats.modifiers.resistance]</span></crow>
+              </crow>
+
+              <spacer-sm></spacer-sm>
+
+              <h5 cinzel m-0>Resistances</h5>
+              <crow stat-list vertical left g-1>
+                <crow justify-between w-full><crow left g-1 flex-none><icon bleeding></icon> Bleeding</crow><span>@[currentCombatStats.limits.wounded]</span></crow>
+                <crow justify-between w-full><crow left g-1 flex-none><icon stunned></icon> Stunned</crow><span>@[currentCombatStats.limits.concussed]</span></crow>
+                <crow justify-between w-full><crow left g-1 flex-none><icon vulnerable></icon> Vulnerable</crow><span>@[currentCombatStats.limits.exposed]</span></crow>
+              </crow>
+            </crow>
           </crow>
 
+          <!-- if settings.showDetailedCharacterView -->
           <spacer-sm></spacer-sm>
+          <h5 cinzel m-0>Equipment</h5>
+          <!-- /if -->
+          <!-- /if -->
 
-          <h5 cinzel m-0>Resistances</h5>
-          <crow stat-list vertical left g-1>
-            <crow justify-between w-full><crow left g-1 flex-none><icon bleeding></icon> Bleeding</crow><span>@[currentCombatStats.limits.wounded]</span></crow>
-            <crow justify-between w-full><crow left g-1 flex-none><icon stunned></icon> Stunned</crow><span>@[currentCombatStats.limits.concussed]</span></crow>
-            <crow justify-between w-full><crow left g-1 flex-none><icon vulnerable></icon> Vulnerable</crow><span>@[currentCombatStats.limits.exposed]</span></crow>
+          <crow vertical left w-full g-2 eq-section>
+            <!-- each currentSlots as eq -->
+            <crow left justify-between w-full g-2 eq-row>
+              <crow left g-2>
+                <span eq-slot-label>@[eq.prettyName]</span>
+                <!-- if eq.disabled -->
+                <span text-muted>@[eq.itemName]</span>
+                <!-- /if -->
+                <!-- if !eq.disabled -->
+                <!-- if eq.hasItem -->
+                <eq-link data-tier="@[eq.level >= 25 ? 'red' : eq.level >= 20 ? 'orange' : eq.level >= 15 ? 'purple' : eq.level >= 10 ? 'blue' : eq.level >= 5 ? 'green' : 'gray']">
+                  <eq-bg-center></eq-bg-center>
+                  <eq-bg-left></eq-bg-left>
+                  <eq-bg-right></eq-bg-right>
+                  <crow eq-name left>@[eq.itemName]</crow>
+                </eq-link>
+                <!-- /if -->
+                <!-- if !eq.hasItem -->
+                <span text-muted>@[eq.itemName]</span>
+                <!-- /if -->
+                <!-- /if -->
+              </crow>
+              <!-- if eq.hasItem -->
+              <!-- if !eq.disabled -->
+              <button tertiary text-xs unequip-btn onclick="unequipSlot('@[eq.slot]')">Unequip</button>
+              <!-- /if -->
+              <!-- /if -->
+            </crow>
+            <!-- /each -->
           </crow>
         </crow>
       </crow>
 
-      <!-- if settings.showDetailedCharacterView -->
-      <spacer-sm></spacer-sm>
-      <h5 cinzel m-0>Equipment</h5>
-      <!-- /if -->
-      <!-- /if -->
+      <spacer-lg></spacer-lg>
 
-      <crow vertical left w-full g-2 eq-section>
-        <!-- each currentSlots as eq -->
-        <crow left justify-between w-full g-2 eq-row>
-          <crow left g-2>
-            <span eq-slot-label>@[eq.prettyName]</span>
-            <!-- if eq.disabled -->
-            <span text-muted>@[eq.itemName]</span>
-            <!-- /if -->
-            <!-- if !eq.disabled -->
-            <!-- if eq.hasItem -->
-            <eq-link data-tier="@[eq.level >= 25 ? 'red' : eq.level >= 20 ? 'orange' : eq.level >= 15 ? 'purple' : eq.level >= 10 ? 'blue' : eq.level >= 5 ? 'green' : 'gray']">
-              <eq-bg-center></eq-bg-center>
-              <eq-bg-left></eq-bg-left>
-              <eq-bg-right></eq-bg-right>
-              <crow eq-name left>@[eq.itemName]</crow>
-            </eq-link>
-            <!-- /if -->
-            <!-- if !eq.hasItem -->
-            <span text-muted>@[eq.itemName]</span>
-            <!-- /if -->
-            <!-- /if -->
+      <crow vertical left w-full ability-section>
+        <crow justify-between w-full>
+          <h5 cinzel m-0>Active Abilities</h5>
+          <button tertiary onclick="tryOutBuild()">Try out build</button>
+        </crow>
+
+        <ability-bar>
+          <crow tick-grid>
+            <!-- each Array(15) as _, i -->
+            <tick-cell></tick-cell>
+            <!-- /each -->
           </crow>
-          <!-- if eq.hasItem -->
-          <!-- if !eq.disabled -->
-          <button tertiary text-xs unequip-btn onclick="unequipSlot('@[eq.slot]')">Unequip</button>
-          <!-- /if -->
+
+          <tick-marker-12></tick-marker-12>
+
+          <tick-marker-last style="left: calc((100% / 15) * @[currentLastTickEnd])">
+            <crow vertical right tick-label>
+              <strong>Ability&nbsp;sequence</strong>
+              <span>@[currentLastTickEnd]&nbsp;ticks</span>
+            </crow>
+          </tick-marker-last>
+
+          <crow ability-overlay left up>
+            <!-- each currentAbilities as ability -->
+            <ability-cell
+              dnd-item
+              style="width: calc(((100% / 15) * @[ability.ticks]) + 1px)"
+              data-basic="@[ability.basic]"
+              data-overtick="@[ability.overTick]"
+            >
+              <icon @[ability.icon]></icon>
+              <ability-tick-count>@[ability.ticks]</ability-tick-count>
+            </ability-cell>
+            <!-- /each -->
+          </crow>
+        </ability-bar>
+
+        <spacer-sm></spacer-sm>
+
+        <h5 cinzel m-0>Available Abilities</h5>
+        <crow available-grid>
+          <!-- each currentAvailableAbilities as ability -->
+          <available-ability dnd-item data-basic="@[ability.basic]">
+            <icon @[ability.icon]></icon>
+            <ability-tick-count>@[ability.ticks]</ability-tick-count>
+          </available-ability>
+          <!-- /each -->
+          <!-- if currentAvailableAbilities.length === 0 -->
+          <span text-muted text-sm>No additional abilities available. Equip items to unlock more.</span>
           <!-- /if -->
         </crow>
-        <!-- /each -->
       </crow>
     </crow>
-  </crow>
+    <!-- /if -->
 
-  <spacer-lg></spacer-lg>
-
-  <crow vertical left w-full ability-section>
-    <crow justify-between w-full>
-      <h5 cinzel m-0>Active Abilities</h5>
-      <button tertiary onclick="tryOutBuild()">Try out build</button>
+    <!-- if !currentCharacter -->
+    <crow vertical g-4 detail-empty>
+      <p text-muted>No brawler found.</p>
+      <button go-back tertiary onclick="window.location.href='/brawlers'">&#x2039; Back</button>
     </crow>
-
-    <ability-bar>
-      <crow tick-grid>
-        <!-- each Array(15) as _, i -->
-        <tick-cell></tick-cell>
-        <!-- /each -->
-      </crow>
-
-      <tick-marker-12></tick-marker-12>
-
-      <tick-marker-last style="left: calc((100% / 15) * @[currentLastTickEnd])">
-        <crow vertical right tick-label>
-          <strong>Ability&nbsp;sequence</strong>
-          <span>@[currentLastTickEnd]&nbsp;ticks</span>
-        </crow>
-      </tick-marker-last>
-
-      <crow ability-overlay left up>
-        <!-- each currentAbilities as ability -->
-        <ability-cell
-          dnd-item
-          style="width: calc(((100% / 15) * @[ability.ticks]) + 1px)"
-          data-basic="@[ability.basic]"
-          data-overtick="@[ability.overTick]"
-        >
-          <icon @[ability.icon]></icon>
-          <ability-tick-count>@[ability.ticks]</ability-tick-count>
-        </ability-cell>
-        <!-- /each -->
-      </crow>
-    </ability-bar>
-
-    <spacer-sm></spacer-sm>
-
-    <h5 cinzel m-0>Available Abilities</h5>
-    <crow available-grid>
-      <!-- each currentAvailableAbilities as ability -->
-      <available-ability dnd-item data-basic="@[ability.basic]">
-        <icon @[ability.icon]></icon>
-        <ability-tick-count>@[ability.ticks]</ability-tick-count>
-      </available-ability>
-      <!-- /each -->
-      <!-- if currentAvailableAbilities.length === 0 -->
-      <span text-muted text-sm>No additional abilities available. Equip items to unlock more.</span>
-      <!-- /if -->
-    </crow>
-  </crow>
-</crow>
-<!-- /if -->
-
-<!-- if !currentCharacter -->
-<crow vertical g-4 detail-empty>
-  <p text-muted>No brawler found.</p>
-  <button go-back tertiary onclick="navigate('/brawlers')">&#x2039; Back</button>
-</crow>
-<!-- /if -->
-</page-brawler-detail>
-
-<style>
+    <!-- /if -->
+    </page-brawler-detail>
+  </component>
+  <style>
 page-brawler-detail [go-back] {
   position: absolute;
   top: calc(var(--unit) * -7);
@@ -558,4 +571,6 @@ page-brawler-detail available-ability[data-basic="true"] { background: rgb(243,2
 page-brawler-detail available-ability[data-basic="true"] icon { color: rgb(156,163,175); }
 page-brawler-detail available-ability icon { font-size: clamp(0.875rem, 3vw, 1.875rem); }
 page-brawler-detail available-ability ability-tick-count { bottom: calc(var(--unit) * -2.5); width: calc(var(--unit) * 6); height: calc(var(--unit) * 4); font-size: 0.6875rem; }
-</style>
+  </style>
+</body>
+</html>

@@ -76,38 +76,32 @@ Run from `svelte-game-server/`: `bun run index.js` (port 1337). Config in `js/co
 
 ## Remaining Work
 
-### Known gaps vs original:
-- DnD for abilities is basic (reorder + refresh, no smooth drag preview like svelte-dnd-action)
-- Combat visualization is card-based instead of circular arena layout with character sprites
-- No CSS transitions on overlay open/close (hard show/hide via Vibe conditionals)
+### Discrepancies vs original (compare to `main` branch line-by-line before fixing):
 
-### Completed:
-- All 12 route pages functional
-- Login/Register/Forgot password flows
-- Brawler recruitment with dialog + CoC validation
-- Character detail with stats toggle, ability bar, equipment slots, try-out, retire
-- Ability auto-generation from equipment (ensureDefaultAbilities logic)
-- Arena fight list with sorting, locking, boss tracking, enemy previews, XP
-- Fight detail with enemy info, brawler selection slots (with names), fight button
-- Random duel with brawler selection, fight button, PvP matchmaking
-- Combat overlay with team health bars, damage/armor badges, all 6 status effect icons, floating damage/heal numbers, result/rewards with XP + boss defeated
-- Combat audio: SFX timed to combat events + victory/defeat stingers
-- Ambient audio: desert wind / wilderness crossfade based on boss progression, volume settings
-- Floating damage/heal/armor numbers during combat (animated, color-coded)
-- Equipment tooltips on hover (armory, brawler-detail, vendor) with combat stats + icons
-- Ability tooltips with basic/special tags
-- Fight selection slots show brawler mugshot + ability bar (fight-detail + PvP)
-- Vendor with equipment filters, eq-link banners, acquire with coin check
-- Armory with equip/unequip, refund/dismantle, eq-link banners
-- Sidebar: HP bars, XP bar, heal timer (server-timestamp synced), coin icons, ability sequence accordion, brawler selection
-- Notifications component with icons, titles, type-based colors
-- GameMenu component with Frame styling, audio sliders, logout
-- DevBar at top with combat controls, state manipulation
-- Icon system (56 game icons via CSS masks)
-- Account progression overlay with 25 levels, claim, auto-popup
-- Code of Conduct overlay with full rules text (matching original)
-- Escape key toggles GameMenu
-- Client clock syncs server timestamp
-- Combat-loop syncs character health on end
-- Boss highscore tracking
-- All HTML: zero divs, zero classes, minimal style attrs
+**Auth/Login (Layout.html):**
+- [x] Login error handling uses `$.authError` (inline div) — original uses `notify()` (toast)
+- [x] No success notification after login — original shows "Logged in successfully"
+- [x] Registration: no success notification, no form clearing — original shows "Account was created"
+- [x] Password reset doesn't call server — original calls `user/password/request-reset` via socket
+- [x] Auth failure doesn't clear token — original does `app.token = undefined` on catch
+
+**Combat (Combat.html):**
+- [ ] Card-based grid instead of circular arena with character sprites
+- [ ] No combatant sprites rendered
+- [ ] Floating damage numbers: CSS exists but template may not match combat-loop selectors
+- [ ] No ability bars in combat display
+- [ ] Status effects not sorted (original sorts by ticks/value)
+
+**Pages:**
+- [ ] Brawler detail: DnD causes `window.location.reload()` — original updates in-place reactively
+- [ ] Brawlers page: `brawlerCharCapped` computed once, not reactive
+- [ ] Arena: `hideTreshold` (fight locking) computed once, not reactive
+- [x] Fight detail: mugshot image `.replace()` inside `@[...]` breaks Vibe attribute parsing
+
+**Components:**
+- [ ] Notifications: no auto-dismiss (original has 3s dismiss with animation + hover pause)
+- [ ] Dialog: only supports confirm type — original accepts any component
+- [x] AccountProgression: claim sound effect + auto-close on current level
+- [ ] AccountProgression: no auto-scroll to current level
+- [ ] Layout: no armory sidebar transition (original has opacity + translate CSS transition)
+- [ ] Layout: no background image switching for debug page

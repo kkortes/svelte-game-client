@@ -6,6 +6,7 @@ export default async ({ email, password }, { ws, mongo }) => {
   if (!email || !password) throw Error('Invalid login credentials');
 
   const token = ws.data; // Buns .data is the websocket ID
+  console.log(token);
   const users = mongo.collection('users');
   const updated = new Date();
 

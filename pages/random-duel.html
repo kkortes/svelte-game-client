@@ -1,122 +1,136 @@
-<script type="module">
-  import { getLevelByExperience, getExperienceRangeForLevel } from '/js/level.js';
-  import { generateCombat, healFull, prepareTeams } from '/js/combat.js';
-  import CHARACTERS from '/js/constants/CHARACTERS.js';
-  import { notify } from '/js/actions.js';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Battle Brawlers</title>
+  <link rel="icon" href="/static/favicon.png" />
+  <link rel="stylesheet" href="/css/index.css" />
+</head>
+<body battle-brawlers vibe vibe-fouc stylecheat>
+  <script type="module">
+    import boot from '/js/boot.js';
+    boot();
 
-  const count = Math.floor(getLevelByExperience($.experience) / 5) + 1;
-  $.maxBrawlers = count;
+    import { getLevelByExperience, getExperienceRangeForLevel } from '/js/level.js';
+    import { generateCombat, healFull, prepareTeams } from '/js/combat.js';
+    import CHARACTERS from '/js/constants/CHARACTERS.js';
+    import { notify } from '/js/actions.js';
 
-  window.updateFightSlots = () => {
-    const C = window.CHARACTERS || CHARACTERS;
-    const A = window.ABILITIES_FN;
-    $.pvpSlots = Array.from({ length: count }, (_, i) => {
-      const uuid = $.selectedBrawlers[i];
-      if (!uuid) return { empty: true, index: i };
-      const ref = $.characters.find(c => c.uuid === uuid);
-      if (!ref) return { empty: true, index: i };
-      try {
-        const char = C(ref, true);
-        const abilities = A ? char.abilities.map(a => {
-          try { const h = A(a, true); return { icon: h.icon, ticks: h.ticks }; }
-          catch { return null; }
-        }).filter(Boolean) : [];
-        return { empty: false, name: char.name, image: char.image, abilities, index: i };
-      } catch {
-        return { empty: true, index: i };
-      }
-    });
-  };
-  window.updateFightSlots();
+    const count = Math.floor(getLevelByExperience($.experience) / 5) + 1;
+    $.maxBrawlers = count;
 
-  window.runPvpCombat = async () => {
-    const selected = $.characters.filter(c => $.selectedBrawlers.includes(c.uuid));
-
-    if (selected.length === 0) {
-      notify({ warning: 'Select at least one brawler.' });
-      return;
-    }
-
-    try {
-      const level = getLevelByExperience($.experience);
-      const { minXp, maxXp } = getExperienceRangeForLevel(level);
-
-      const opponents = await $.socket.sendAsync('pvp/get-random-opponent', {
-        count: selected.length,
-        minXp,
-        maxXp
+    window.updateFightSlots = () => {
+      const C = window.CHARACTERS || CHARACTERS;
+      const A = window.ABILITIES_FN;
+      $.pvpSlots = Array.from({ length: count }, (_, i) => {
+        const uuid = $.selectedBrawlers[i];
+        if (!uuid) return { empty: true, index: i };
+        const ref = $.characters.find(c => c.uuid === uuid);
+        if (!ref) return { empty: true, index: i };
+        try {
+          const char = C(ref, true);
+          const abilities = A ? char.abilities.map(a => {
+            try { const h = A(a, true); return { icon: h.icon, ticks: h.ticks }; }
+            catch { return null; }
+          }).filter(Boolean) : [];
+          return { empty: false, name: char.name, image: char.image, mugshot: char.image.replace('.png', '-mugshot.png'), abilities, index: i };
+        } catch {
+          return { empty: true, index: i };
+        }
       });
+    };
+    window.updateFightSlots();
 
-      if (!opponents?.length) {
-        notify({ warning: 'No opponents found.' });
+    window.runPvpCombat = async () => {
+      const selected = $.characters.filter(c => $.selectedBrawlers.includes(c.uuid));
+
+      if (selected.length === 0) {
+        notify({ warning: 'Select at least one brawler.' });
         return;
       }
 
-      const myCharacters = JSON.parse(JSON.stringify(selected));
-      $.selectedBrawlers = [];
-      $.combat = generateCombat(prepareTeams(myCharacters, healFull(opponents.slice(0, myCharacters.length))));
-      $.overlay = 'Combat';
-    } catch (e) {
-      notify({ error: 'Failed to find opponent' });
-    }
-  };
-</script>
+      try {
+        const level = getLevelByExperience($.experience);
+        const { minXp, maxXp } = getExperienceRangeForLevel(level);
 
-<page-pvp>
+        const opponents = await $.socket.sendAsync('pvp/get-random-opponent', {
+          count: selected.length,
+          minXp,
+          maxXp
+        });
 
-<crow justify-between left>
-  <h3>Random duel</h3>
-  <crow left g-2>
-    <badge>@[selectedBrawlers.length || maxBrawlers]&nbsp;vs&nbsp;@[selectedBrawlers.length || maxBrawlers]</badge>
-  </crow>
-</crow>
-<hr headline-hr />
+        if (!opponents?.length) {
+          notify({ warning: 'No opponents found.' });
+          return;
+        }
 
-<crow pvp-opponent>
-  <crow pvp-mystery>
-    ?
-  </crow>
-</crow>
+        const myCharacters = JSON.parse(JSON.stringify(selected));
+        $.selectedBrawlers = [];
+        $.combat = generateCombat(prepareTeams(myCharacters, healFull(opponents.slice(0, myCharacters.length))));
+        $.overlay = 'Combat';
+      } catch (e) {
+        notify({ error: 'Failed to find opponent' });
+      }
+    };
+  </script>
 
-<crow vertical w-full g-2 mt-4>
-  <!-- each pvpSlots as slot -->
-  <!-- if slot.empty -->
-  <crow pvp-slot-empty>
-    <!-- if slot.index === 0 -->
-    <h5>select a brawler</h5>
-    <!-- /if -->
-    <!-- if slot.index > 0 -->
-    <h5>slot @[slot.index + 1]</h5>
-    <!-- /if -->
-  </crow>
-  <!-- /if -->
-  <!-- if !slot.empty -->
-  <crow pvp-slot-filled left g-2>
-    <pvp-slot-avatar glass>
-      <img data-src="/static/images/races/@[slot.image.replace('.png', '-mugshot.png')]" alt="" pvp-slot-img />
-    </pvp-slot-avatar>
-    <crow vertical left pvp-slot-info>
-      <span font-medium text-sm>@[slot.name]</span>
-      <pvp-slot-abilities>
-        <!-- each slot.abilities as ab -->
-        <pvp-slot-ability style="width: calc(12px * @[ab.ticks])">
-          <icon @[ab.icon]></icon>
-        </pvp-slot-ability>
-        <!-- /each -->
-      </pvp-slot-abilities>
+  <component src="/components/Layout.html">
+    <page-pvp>
+
+    <crow justify-between left>
+      <h3>Random duel</h3>
+      <crow left g-2>
+        <badge>@[selectedBrawlers.length || maxBrawlers]&nbsp;vs&nbsp;@[selectedBrawlers.length || maxBrawlers]</badge>
+      </crow>
     </crow>
-  </crow>
-  <!-- /if -->
-  <!-- /each -->
-</crow>
+    <hr headline-hr />
 
-<sticky-bottom>
-  <button primary big onclick="runPvpCombat()" data-disabled="@[selectedBrawlers.length === 0 || combat.duration !== 0]">Fight</button>
-</sticky-bottom>
+    <crow pvp-opponent>
+      <crow pvp-mystery>
+        ?
+      </crow>
+    </crow>
 
-</page-pvp>
+    <crow vertical w-full g-2 mt-4>
+      <!-- each pvpSlots as slot -->
+      <!-- if slot.empty -->
+      <crow pvp-slot-empty>
+        <!-- if slot.index === 0 -->
+        <h5>select a brawler</h5>
+        <!-- /if -->
+        <!-- if slot.index > 0 -->
+        <h5>slot @[slot.index + 1]</h5>
+        <!-- /if -->
+      </crow>
+      <!-- /if -->
+      <!-- if !slot.empty -->
+      <crow pvp-slot-filled left g-2>
+        <pvp-slot-avatar glass>
+          <img data-src="/static/images/races/@[slot.mugshot]" alt="" pvp-slot-img />
+        </pvp-slot-avatar>
+        <crow vertical left pvp-slot-info>
+          <span font-medium text-sm>@[slot.name]</span>
+          <pvp-slot-abilities>
+            <!-- each slot.abilities as ab -->
+            <pvp-slot-ability style="width: calc(12px * @[ab.ticks])">
+              <icon @[ab.icon]></icon>
+            </pvp-slot-ability>
+            <!-- /each -->
+          </pvp-slot-abilities>
+        </crow>
+      </crow>
+      <!-- /if -->
+      <!-- /each -->
+    </crow>
 
-<style>
+    <sticky-bottom>
+      <button primary big onclick="runPvpCombat()" data-disabled="@[selectedBrawlers.length === 0 || combat.duration !== 0]">Fight</button>
+    </sticky-bottom>
+
+    </page-pvp>
+  </component>
+  <style>
 page-pvp [pvp-opponent] {
   justify-content: center;
   padding: calc(var(--unit) * 4) 0;
@@ -204,4 +218,6 @@ page-pvp sticky-bottom {
 
 page-pvp sticky-bottom button { min-width: calc(var(--unit) * 50); }
 page-pvp sticky-bottom button[data-disabled="true"] { opacity: 0.5; pointer-events: none; }
-</style>
+  </style>
+</body>
+</html>

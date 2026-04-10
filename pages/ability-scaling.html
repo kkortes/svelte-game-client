@@ -1,65 +1,79 @@
-<script type="module">
-  import ABILITIES, { ALL_ABILITIES } from '/js/constants/ABILITIES.js';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Battle Brawlers</title>
+  <link rel="icon" href="/static/favicon.png" />
+  <link rel="stylesheet" href="/css/index.css" />
+</head>
+<body battle-brawlers vibe vibe-fouc stylecheat>
+  <script type="module">
+    import boot from '/js/boot.js';
+    boot();
 
-  $.abilityChoices = Object.keys(ALL_ABILITIES);
-  $.chosenAbility = 'punch';
+    import ABILITIES, { ALL_ABILITIES } from '/js/constants/ABILITIES.js';
 
-  const computeAbilities = () => {
-    $.abilityPool = Array.from({ length: 12 }, (_, i) => {
-      const ticks = i + 1;
-      const ref = ABILITIES($.chosenAbility, false, { overrides: { ticks } });
-      const hydrated = ABILITIES(ref, true);
-      const damage = hydrated.calc?.damage();
-      const healing = hydrated.calc?.healing();
-      return {
-        ticks,
-        name: hydrated.name,
-        icon: hydrated.icon,
-        damageResult: damage?.result ? (damage.result * 100).toFixed(0) + '%' : '-',
-        healingResult: healing?.result ? (healing.result * 100).toFixed(0) + '%' : '-'
-      };
-    });
-  };
+    $.abilityChoices = Object.keys(ALL_ABILITIES);
+    $.chosenAbility = 'punch';
 
-  computeAbilities();
+    const computeAbilities = () => {
+      $.abilityPool = Array.from({ length: 12 }, (_, i) => {
+        const ticks = i + 1;
+        const ref = ABILITIES($.chosenAbility, false, { overrides: { ticks } });
+        const hydrated = ABILITIES(ref, true);
+        const damage = hydrated.calc?.damage();
+        const healing = hydrated.calc?.healing();
+        return {
+          ticks,
+          name: hydrated.name,
+          icon: hydrated.icon,
+          damageResult: damage?.result ? (damage.result * 100).toFixed(0) + '%' : '-',
+          healingResult: healing?.result ? (healing.result * 100).toFixed(0) + '%' : '-'
+        };
+      });
+    };
 
-  window.changeAbility = (value) => {
-    $.chosenAbility = value;
     computeAbilities();
-  };
-</script>
 
-<page-ability-scaling>
-<crow vertical g-4 left>
-  <crow justify-between left>
-    <h3>Ability Scaling</h3>
-  </crow>
-  <hr headline-hr />
+    window.changeAbility = (value) => {
+      $.chosenAbility = value;
+      computeAbilities();
+    };
+  </script>
 
-  <select onchange="changeAbility(this.value)">
-    <!-- each abilityChoices as choice -->
-    <option value="@[choice]">@[choice]</option>
-    <!-- /each -->
-  </select>
+  <component src="/components/Layout.html">
+    <page-ability-scaling>
+    <crow vertical g-4 left>
+      <crow justify-between left>
+        <h3>Ability Scaling</h3>
+      </crow>
+      <hr headline-hr />
 
-  <crow vertical left g-2 w-full>
-    <!-- each abilityPool as ab -->
-    <crow left g-4 scaling-row>
-      <span scaling-ticks>@[ab.ticks] tick@[ab.ticks === 1 ? '' : 's']</span>
-      <scaling-bar>
-        <ability-preview-cell style="width: calc(12px * @[ab.ticks])">
-          <icon @[ab.icon]></icon>
-        </ability-preview-cell>
-      </scaling-bar>
-      <span text-sm>Dmg: @[ab.damageResult]</span>
-      <span text-sm>Heal: @[ab.healingResult]</span>
+      <select onchange="changeAbility(this.value)">
+        <!-- each abilityChoices as choice -->
+        <option value="@[choice]">@[choice]</option>
+        <!-- /each -->
+      </select>
+
+      <crow vertical left g-2 w-full>
+        <!-- each abilityPool as ab -->
+        <crow left g-4 scaling-row>
+          <span scaling-ticks>@[ab.ticks] tick@[ab.ticks === 1 ? '' : 's']</span>
+          <scaling-bar>
+            <ability-preview-cell style="width: calc(12px * @[ab.ticks])">
+              <icon @[ab.icon]></icon>
+            </ability-preview-cell>
+          </scaling-bar>
+          <span text-sm>Dmg: @[ab.damageResult]</span>
+          <span text-sm>Heal: @[ab.healingResult]</span>
+        </crow>
+        <!-- /each -->
+      </crow>
     </crow>
-    <!-- /each -->
-  </crow>
-</crow>
-</page-ability-scaling>
-
-<style>
+    </page-ability-scaling>
+  </component>
+  <style>
 page-ability-scaling select { padding: var(--unit) calc(var(--unit) * 2); border: 1px solid var(--border); border-radius: var(--radius); }
 page-ability-scaling [scaling-row] { align-items: center; }
 page-ability-scaling [scaling-ticks] { width: calc(var(--unit) * 15); flex: none; font-size: 0.875rem; }
@@ -76,4 +90,6 @@ page-ability-scaling ability-preview-cell {
   color: rgb(120, 113, 108);
   font-size: 0.875rem;
 }
-</style>
+  </style>
+</body>
+</html>

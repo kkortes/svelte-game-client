@@ -1,3 +1,26 @@
+<script type="module">
+  import { Howl } from '/js/lib/howler.js';
+  import AUDIO from '/js/audio.js';
+  import { getLevelByExperience } from '/js/level.js';
+
+  // Matches: src/components/MyLudus.svelte claimReward()
+  window.claimAccountReward = (lvl) => {
+    if (lvl > $.accountRewards && lvl <= $.sidebarLevel) {
+      if (lvl === getLevelByExperience($.experience)) {
+        setTimeout(() => { $.showAccountProgression = false; }, 500);
+      }
+      try {
+        new Howl({
+          src: [AUDIO['Special Lootbox 13']],
+          volume: $.settings.volume.master * $.settings.volume.sfx
+        }).play();
+      } catch { }
+      $.accountRewards += 1;
+      $.coins += 100;
+    }
+  };
+</script>
+
   <!-- ACCOUNT PROGRESSION OVERLAY -->
   <!-- if showAccountProgression -->
   <overlay-backdrop onclick="$.showAccountProgression = false">

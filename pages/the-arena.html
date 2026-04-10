@@ -1,144 +1,158 @@
-<script type="module">
-  import { ALL_FIGHTS } from '/js/constants/FIGHTS.js';
-  import CHARACTERS from '/js/constants/CHARACTERS.js';
-  import { getExperienceReward, getLevelByExperience } from '/js/level.js';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Battle Brawlers</title>
+  <link rel="icon" href="/static/favicon.png" />
+  <link rel="stylesheet" href="/css/index.css" />
+</head>
+<body battle-brawlers vibe vibe-fouc stylecheat>
+  <script type="module">
+    import boot from '/js/boot.js';
+    boot();
 
-  const fights = [...ALL_FIGHTS].sort((a, b) => {
-    if (a.minLevel !== b.minLevel) return a.minLevel - b.minLevel;
-    if (a.boss !== b.boss) return a.boss ? 1 : -1;
-    return a.maxLevel - b.maxLevel;
-  });
+    import { ALL_FIGHTS } from '/js/constants/FIGHTS.js';
+    import CHARACTERS from '/js/constants/CHARACTERS.js';
+    import { getExperienceReward, getLevelByExperience } from '/js/level.js';
 
-  $.arenaFights = fights.map((fight, i) => {
-    const hideTreshold = $.bossHighscore + 5;
-    const ludusLevel = getLevelByExperience($.experience);
-    const isLocked = hideTreshold < fight.minLevel;
-    const bossCompleted = fight.boss && $.bossHighscore >= fight.minLevel;
-
-    const enemies = fight.characters.map(charRef => {
-      const withLevel = {
-        ...charRef,
-        overrides: {
-          ...charRef?.overrides,
-          level: fight.minLevel,
-          equipment: {
-            mainHand: { overrides: { level: fight.minLevel } },
-            offHand: { overrides: { level: fight.minLevel } },
-            armor: { overrides: { level: fight.minLevel } }
-          }
-        }
-      };
-      try {
-        const hydrated = CHARACTERS(withLevel, true);
-        return { image: hydrated.image, name: hydrated.name };
-      } catch {
-        return { image: '', name: '?' };
-      }
+    const fights = [...ALL_FIGHTS].sort((a, b) => {
+      if (a.minLevel !== b.minLevel) return a.minLevel - b.minLevel;
+      if (a.boss !== b.boss) return a.boss ? 1 : -1;
+      return a.maxLevel - b.maxLevel;
     });
 
-    const xp = getExperienceReward(fight.characters.length, fight.minLevel, fight.maxLevel, fight.boss);
-    const xpDimmed = ludusLevel > fight.maxLevel;
+    $.arenaFights = fights.map((fight, i) => {
+      const hideTreshold = $.bossHighscore + 5;
+      const ludusLevel = getLevelByExperience($.experience);
+      const isLocked = hideTreshold < fight.minLevel;
+      const bossCompleted = fight.boss && $.bossHighscore >= fight.minLevel;
 
-    return {
-      id: fight.id,
-      name: fight.name,
-      minLevel: fight.minLevel,
-      maxLevel: fight.maxLevel,
-      boss: fight.boss,
-      isLocked,
-      bossCompleted,
-      enemies,
-      xp,
-      xpDimmed,
-      even: i % 2 === 0
+      const enemies = fight.characters.map(charRef => {
+        const withLevel = {
+          ...charRef,
+          overrides: {
+            ...charRef?.overrides,
+            level: fight.minLevel,
+            equipment: {
+              mainHand: { overrides: { level: fight.minLevel } },
+              offHand: { overrides: { level: fight.minLevel } },
+              armor: { overrides: { level: fight.minLevel } }
+            }
+          }
+        };
+        try {
+          const hydrated = CHARACTERS(withLevel, true);
+          return { image: hydrated.image, name: hydrated.name };
+        } catch {
+          return { image: '', name: '?' };
+        }
+      });
+
+      const xp = getExperienceReward(fight.characters.length, fight.minLevel, fight.maxLevel, fight.boss);
+      const xpDimmed = ludusLevel > fight.maxLevel;
+
+      return {
+        id: fight.id,
+        name: fight.name,
+        minLevel: fight.minLevel,
+        maxLevel: fight.maxLevel,
+        boss: fight.boss,
+        isLocked,
+        bossCompleted,
+        enemies,
+        xp,
+        xpDimmed,
+        even: i % 2 === 0
+      };
+    });
+
+    window.arenaClick = (e, id, isLocked, bossCompleted) => {
+      if (isLocked || bossCompleted) {
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
     };
-  });
+  </script>
 
-  window.arenaClick = (e, id, isLocked, bossCompleted) => {
-    if (isLocked || bossCompleted) {
-      e.preventDefault();
-      e.stopPropagation();
-      return;
-    }
-  };
-</script>
+  <component src="/components/Layout.html">
+    <page-arena>
 
-<page-arena>
-
-<crow justify-between left>
-  <h3>The arena</h3>
-</crow>
-<hr headline-hr />
-
-<crow vertical up left arena-table>
-  <crow up left g-4 arena-header>
-    <arena-col-name cinzel>name</arena-col-name>
-    <arena-col-level cinzel text-center>level</arena-col-level>
-    <arena-col-loot cinzel>loot</arena-col-loot>
-    <crow arena-col-preview right></crow>
-  </crow>
-
-  <!-- each arenaFights as fight, i -->
-  <a
-    href="/the-arena/@[fight.id]"
-    onclick="arenaClick(event, '@[fight.id]', @[fight.isLocked], @[fight.bossCompleted])"
-    arena-row
-    data-even="@[fight.even]"
-    data-boss="@[fight.boss]"
-    data-locked="@[fight.isLocked]"
-    data-completed="@[fight.bossCompleted]"
-  >
-    <crow left arena-col-name cinzel g-2>
-      <!-- if fight.isLocked -->
-      <span>?</span>
-      <!-- /if -->
-      <!-- if !fight.isLocked -->
-      <span>@[fight.name]</span>
-      <!-- /if -->
-      <!-- if fight.boss -->
-      <badge arena-pill>Bossfight</badge>
-      <!-- /if -->
+    <crow justify-between left>
+      <h3>The arena</h3>
     </crow>
+    <hr headline-hr />
 
-    <arena-col-level text-center text-sm>
-      @[fight.minLevel]@[fight.minLevel === fight.maxLevel ? '' : ' - ' + fight.maxLevel]
-    </arena-col-level>
+    <crow vertical up left arena-table>
+      <crow up left g-4 arena-header>
+        <arena-col-name cinzel>name</arena-col-name>
+        <arena-col-level cinzel text-center>level</arena-col-level>
+        <arena-col-loot cinzel>loot</arena-col-loot>
+        <crow arena-col-preview right></crow>
+      </crow>
 
-    <arena-col-loot text-sm>
-      <!-- if fight.xpDimmed -->
-      <span arena-xp-dimmed>@[fight.xp] XP</span>
-      <!-- /if -->
-      <!-- if !fight.xpDimmed -->
-      <span>@[fight.xp] XP</span>
-      <!-- /if -->
-    </arena-col-loot>
-
-    <crow arena-col-preview right>
-      <!-- each fight.enemies as enemy -->
-      <arena-enemy-wrap data-boss="@[fight.boss]">
-        <crow arena-enemy-box glass data-locked="@[fight.isLocked]">
+      <!-- each arenaFights as fight, i -->
+      <a
+        href="/the-arena/@[fight.id]"
+        onclick="arenaClick(event, '@[fight.id]', @[fight.isLocked], @[fight.bossCompleted])"
+        arena-row
+        data-even="@[fight.even]"
+        data-boss="@[fight.boss]"
+        data-locked="@[fight.isLocked]"
+        data-completed="@[fight.bossCompleted]"
+      >
+        <crow left arena-col-name cinzel g-2>
           <!-- if fight.isLocked -->
-          <crow arena-enemy-locked>?</crow>
+          <span>?</span>
           <!-- /if -->
           <!-- if !fight.isLocked -->
-          <img
-            data-src="/static/images/races/@[enemy.image]"
-            alt=""
-            arena-enemy-img
-            data-completed="@[fight.bossCompleted]"
-          />
+          <span>@[fight.name]</span>
+          <!-- /if -->
+          <!-- if fight.boss -->
+          <badge arena-pill>Bossfight</badge>
           <!-- /if -->
         </crow>
-      </arena-enemy-wrap>
+
+        <arena-col-level text-center text-sm>
+          @[fight.minLevel]@[fight.minLevel === fight.maxLevel ? '' : ' - ' + fight.maxLevel]
+        </arena-col-level>
+
+        <arena-col-loot text-sm>
+          <!-- if fight.xpDimmed -->
+          <span arena-xp-dimmed>@[fight.xp] XP</span>
+          <!-- /if -->
+          <!-- if !fight.xpDimmed -->
+          <span>@[fight.xp] XP</span>
+          <!-- /if -->
+        </arena-col-loot>
+
+        <crow arena-col-preview right>
+          <!-- each fight.enemies as enemy -->
+          <arena-enemy-wrap data-boss="@[fight.boss]">
+            <crow arena-enemy-box glass data-locked="@[fight.isLocked]">
+              <!-- if fight.isLocked -->
+              <crow arena-enemy-locked>?</crow>
+              <!-- /if -->
+              <!-- if !fight.isLocked -->
+              <img
+                data-src="/static/images/races/@[enemy.image]"
+                alt=""
+                arena-enemy-img
+                data-completed="@[fight.bossCompleted]"
+              />
+              <!-- /if -->
+            </crow>
+          </arena-enemy-wrap>
+          <!-- /each -->
+        </crow>
+      </a>
       <!-- /each -->
     </crow>
-  </a>
-  <!-- /each -->
-</crow>
 
-</page-arena>
-
-<style>
+    </page-arena>
+  </component>
+  <style>
 page-arena [arena-table] {
   margin: 0 calc(var(--unit) * -4);
   width: calc(100% + calc(var(--unit) * 8));
@@ -254,4 +268,6 @@ page-arena [arena-enemy-img] {
 page-arena [arena-enemy-img][data-completed="true"] {
   filter: grayscale(1);
 }
-</style>
+  </style>
+</body>
+</html>

@@ -1,3 +1,50 @@
+<script type="module">
+  import { Howl } from '/js/lib/howler.js';
+  import AUDIO from '/js/audio.js';
+  import { INITIAL_COMBAT } from '/js/app.js';
+  import { ALL_FIGHTS } from '/js/constants/FIGHTS.js';
+  import { getExperienceReward } from '/js/level.js';
+
+  window.claimCombatReward = () => {
+    const combat = $.combat;
+    if (!combat?.duration || combat._rewarded) return;
+
+    const fight = ALL_FIGHTS.find(f => f.id === combat.fightId);
+    if (fight) {
+      const xp = getExperienceReward(fight.characters.length, fight.minLevel, fight.maxLevel, fight.boss);
+      $.experience += xp;
+
+      if (fight.boss && combat.winningTeam?.index === 0) {
+        if (fight.minLevel > $.bossHighscore) $.bossHighscore = fight.minLevel;
+      }
+    }
+
+    try {
+      new Howl({ src: [AUDIO['Victory Stinger 1']], volume: $.settings.volume.sfx * $.settings.volume.master }).play();
+    } catch { }
+
+    combat._rewarded = true;
+    $.overlay = '';
+    $.combat = JSON.parse(JSON.stringify(INITIAL_COMBAT));
+    $.liveTeams = [];
+    $.elapsedMilliseconds = 0;
+    $.combatRewardXp = 0;
+    $.combatRewardBoss = false;
+  };
+
+  window.closeCombatOverlay = () => {
+    try {
+      new Howl({ src: [AUDIO['Stinger - Ominous Timpani']], volume: $.settings.volume.sfx * $.settings.volume.master }).play();
+    } catch { }
+    $.overlay = '';
+    $.combat = JSON.parse(JSON.stringify(INITIAL_COMBAT));
+    $.liveTeams = [];
+    $.elapsedMilliseconds = 0;
+    $.combatRewardXp = 0;
+    $.combatRewardBoss = false;
+  };
+</script>
+
 <!-- if overlay === 'Combat' -->
 <overlay-backdrop combat-bg>
   <spacer></spacer>

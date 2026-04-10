@@ -9,7 +9,7 @@ const saveGameState = () => {
   saveTimeout = setTimeout(async () => {
     if (!$.socket || !$.token) return;
 
-    const res = await $.socket.sendAsync('store-game-state', {
+    await $.socket.sendAsync('store-game-state', {
       token: $.token,
       inventory: JSON.parse(JSON.stringify($.inventory)),
       characters: JSON.parse(JSON.stringify($.characters)),
@@ -18,8 +18,6 @@ const saveGameState = () => {
       accountRewards: $.accountRewards
     });
 
-    $.serverTimestampSnapshot = res;
-    $.syncPerformanceNow = performance.now();
     console.info('Game state saved');
   }, 1000);
 };
@@ -44,6 +42,20 @@ const connectWebSocket = () => {
 export const init = () => {
   connectWebSocket();
 
+  // Flush pending save before page unloads (MPA navigation, tab close, etc.)
+  window.addEventListener('beforeunload', () => {
+    if (!saveTimeout || !$.socket || !$.token) return;
+    clearTimeout(saveTimeout);
+    $.socket.sendAsync('store-game-state', {
+      token: $.token,
+      inventory: JSON.parse(JSON.stringify($.inventory)),
+      characters: JSON.parse(JSON.stringify($.characters)),
+      experience: $.experience,
+      coins: $.coins,
+      accountRewards: $.accountRewards
+    });
+  });
+
   $.on('afterUpdate', (current, prev) => {
     const settings = current.settings;
     if (settings) {
@@ -52,6 +64,15 @@ export const init = () => {
       });
     }
 
-    saveGameState();
+    // Only save when game data actually changed
+    if (
+      current.characters !== prev.characters ||
+      current.inventory !== prev.inventory ||
+      current.experience !== prev.experience ||
+      current.coins !== prev.coins ||
+      current.accountRewards !== prev.accountRewards
+    ) {
+      saveGameState();
+    }
   });
 };

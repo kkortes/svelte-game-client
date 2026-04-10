@@ -1,66 +1,82 @@
-<script type="module">
-  import EQUIPMENT, { ALL_EQUIPMENT } from '/js/constants/EQUIPMENT.js';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Battle Brawlers</title>
+  <link rel="icon" href="/static/favicon.png" />
+  <link rel="stylesheet" href="/css/index.css" />
+</head>
+<body battle-brawlers vibe vibe-fouc stylecheat>
+  <script type="module">
+    import boot from '/js/boot.js';
+    boot();
 
-  $.equipChoices = Object.keys(ALL_EQUIPMENT);
-  $.chosenEquip = 'sword';
+    import EQUIPMENT, { ALL_EQUIPMENT } from '/js/constants/EQUIPMENT.js';
 
-  const computeEquip = () => {
-    $.equipPool = Array.from({ length: 13 }, (_, i) => {
-      const ref = i === 0
-        ? EQUIPMENT($.chosenEquip)
-        : EQUIPMENT($.chosenEquip, false, { overrides: { level: i } });
-      const hydrated = EQUIPMENT(ref, true);
-      return {
-        label: i === 0 ? 'base' : `level ${i}`,
-        name: hydrated.name,
-        level: hydrated.level || 0,
-        tier: hydrated.level >= 25 ? 'red' : hydrated.level >= 20 ? 'orange' : hydrated.level >= 15 ? 'purple' : hydrated.level >= 10 ? 'blue' : hydrated.level >= 5 ? 'green' : 'gray',
-        damage: hydrated.combatStats?.damage || 0,
-        maxHealth: hydrated.combatStats?.maxHealth || 0,
-        maxArmor: hydrated.combatStats?.maxArmor || 0
-      };
-    });
-  };
+    $.equipChoices = Object.keys(ALL_EQUIPMENT);
+    $.chosenEquip = 'sword';
 
-  computeEquip();
+    const computeEquip = () => {
+      $.equipPool = Array.from({ length: 13 }, (_, i) => {
+        const ref = i === 0
+          ? EQUIPMENT($.chosenEquip)
+          : EQUIPMENT($.chosenEquip, false, { overrides: { level: i } });
+        const hydrated = EQUIPMENT(ref, true);
+        return {
+          label: i === 0 ? 'base' : `level ${i}`,
+          name: hydrated.name,
+          level: hydrated.level || 0,
+          tier: hydrated.level >= 25 ? 'red' : hydrated.level >= 20 ? 'orange' : hydrated.level >= 15 ? 'purple' : hydrated.level >= 10 ? 'blue' : hydrated.level >= 5 ? 'green' : 'gray',
+          damage: hydrated.combatStats?.damage || 0,
+          maxHealth: hydrated.combatStats?.maxHealth || 0,
+          maxArmor: hydrated.combatStats?.maxArmor || 0
+        };
+      });
+    };
 
-  window.changeEquip = (value) => {
-    $.chosenEquip = value;
     computeEquip();
-  };
-</script>
 
-<page-equip-scaling>
-<crow vertical g-4 left>
-  <crow justify-between left>
-    <h3>Equipment Scaling</h3>
-  </crow>
-  <hr headline-hr />
+    window.changeEquip = (value) => {
+      $.chosenEquip = value;
+      computeEquip();
+    };
+  </script>
 
-  <select onchange="changeEquip(this.value)">
-    <!-- each equipChoices as choice -->
-    <option value="@[choice]">@[choice]</option>
-    <!-- /each -->
-  </select>
+  <component src="/components/Layout.html">
+    <page-equip-scaling>
+    <crow vertical g-4 left>
+      <crow justify-between left>
+        <h3>Equipment Scaling</h3>
+      </crow>
+      <hr headline-hr />
 
-  <crow vertical left g-2 w-full>
-    <!-- each equipPool as eq -->
-    <crow left g-2 scaling-row>
-      <span scaling-label>@[eq.label]</span>
-      <eq-link data-tier="@[eq.tier]">
-        <eq-bg-center></eq-bg-center>
-        <eq-bg-left></eq-bg-left>
-        <eq-bg-right></eq-bg-right>
-        <crow eq-name left>@[eq.name]</crow>
-      </eq-link>
+      <select onchange="changeEquip(this.value)">
+        <!-- each equipChoices as choice -->
+        <option value="@[choice]">@[choice]</option>
+        <!-- /each -->
+      </select>
+
+      <crow vertical left g-2 w-full>
+        <!-- each equipPool as eq -->
+        <crow left g-2 scaling-row>
+          <span scaling-label>@[eq.label]</span>
+          <eq-link data-tier="@[eq.tier]">
+            <eq-bg-center></eq-bg-center>
+            <eq-bg-left></eq-bg-left>
+            <eq-bg-right></eq-bg-right>
+            <crow eq-name left>@[eq.name]</crow>
+          </eq-link>
+        </crow>
+        <!-- /each -->
+      </crow>
     </crow>
-    <!-- /each -->
-  </crow>
-</crow>
-</page-equip-scaling>
-
-<style>
+    </page-equip-scaling>
+  </component>
+  <style>
 page-equip-scaling select { padding: var(--unit) calc(var(--unit) * 2); border: 1px solid var(--border); border-radius: var(--radius); }
 page-equip-scaling [scaling-row] { align-items: center; }
 page-equip-scaling [scaling-label] { width: calc(var(--unit) * 15); flex: none; font-size: 0.875rem; }
-</style>
+  </style>
+</body>
+</html>

@@ -1,189 +1,203 @@
-<script type="module">
-  import EQUIPMENT, { ALL_EQUIPMENT } from '/js/constants/EQUIPMENT.js';
-  import { slotsInPrettyName } from '/js/equipment.js';
-  import { formatCoins } from '/js/coin.js';
-  import { notify } from '/js/actions.js';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Battle Brawlers</title>
+  <link rel="icon" href="/static/favicon.png" />
+  <link rel="stylesheet" href="/css/index.css" />
+</head>
+<body battle-brawlers vibe vibe-fouc stylecheat>
+  <script type="module">
+    import boot from '/js/boot.js';
+    boot();
 
-  const EQUIPMENT_TYPES = ['oneHand', 'offHand', 'twoHand', 'armor', 'accessory', 'trinket'];
+    import EQUIPMENT, { ALL_EQUIPMENT } from '/js/constants/EQUIPMENT.js';
+    import { slotsInPrettyName } from '/js/equipment.js';
+    import { formatCoins } from '/js/coin.js';
+    import { notify } from '/js/actions.js';
 
-  $.vendorItems = Object.keys(ALL_EQUIPMENT).map(key => {
-    const item = EQUIPMENT(key, true);
-    return { ...item, id: key, slotLabel: slotsInPrettyName(item.slotsIn) };
-  });
-  $.vendorFilter = 'all';
-  $.vendorFiltered = $.vendorItems;
+    const EQUIPMENT_TYPES = ['oneHand', 'offHand', 'twoHand', 'armor', 'accessory', 'trinket'];
 
-  window.vendorFilterBy = (type) => {
-    if (type === $.vendorFilter) type = 'all';
-    $.vendorFilter = type;
-    $.vendorFiltered = type === 'all'
-      ? $.vendorItems
-      : $.vendorItems.filter(item => item.slotsIn.includes(type));
-  };
+    $.vendorItems = Object.keys(ALL_EQUIPMENT).map(key => {
+      const item = EQUIPMENT(key, true);
+      return { ...item, id: key, slotLabel: slotsInPrettyName(item.slotsIn) };
+    });
+    $.vendorFilter = 'all';
+    $.vendorFiltered = $.vendorItems;
 
-  const countByType = (type) => $.vendorItems.filter(item => item.slotsIn.includes(type)).length;
-  $.vendorCounts = {
-    oneHand: countByType('oneHand'),
-    offHand: countByType('offHand'),
-    twoHand: countByType('twoHand'),
-    armor: countByType('armor'),
-    accessory: countByType('accessory'),
-    trinket: countByType('trinket')
-  };
-
-  window.vendorAcquire = (itemId) => {
-    const item = EQUIPMENT(itemId, false);
-    const { cost, level } = EQUIPMENT(item, true);
-    item.overrides = { level };
-
-    if ($.coins < cost) {
-      notify({ warning: 'Not enough coins.' });
-      return;
-    }
-
-    const { silver, copper } = formatCoins(cost);
-    const coinText = (silver ? silver + 's ' : '') + copper + 'c';
-
-    $.dialog = {
-      dialogId: 'confirm',
-      props: {
-        text: `Are you sure you want to acquire this equipment for ${coinText}?`,
-        confirm: () => {
-          $.coins -= cost;
-          $.inventory.push(item);
-          notify({ success: 'Equipment acquired!' });
-        }
-      }
+    window.vendorFilterBy = (type) => {
+      if (type === $.vendorFilter) type = 'all';
+      $.vendorFilter = type;
+      $.vendorFiltered = type === 'all'
+        ? $.vendorItems
+        : $.vendorItems.filter(item => item.slotsIn.includes(type));
     };
-  };
 
-  // Tooltip via event delegation — works even after filter changes
-  window.vendorTooltipInit = () => {
-    const container = document.querySelector('page-vendor [vendor-table]');
-    if (!container) return;
+    const countByType = (type) => $.vendorItems.filter(item => item.slotsIn.includes(type)).length;
+    $.vendorCounts = {
+      oneHand: countByType('oneHand'),
+      offHand: countByType('offHand'),
+      twoHand: countByType('twoHand'),
+      armor: countByType('armor'),
+      accessory: countByType('accessory'),
+      trinket: countByType('trinket')
+    };
 
-    container.addEventListener('mouseenter', (e) => {
-      const row = e.target.closest('[vendor-row]');
-      if (!row) return;
-      const eqLink = row.querySelector('eq-link');
-      if (!eqLink) return;
+    window.vendorAcquire = (itemId) => {
+      const item = EQUIPMENT(itemId, false);
+      const { cost, level } = EQUIPMENT(item, true);
+      item.overrides = { level };
 
-      // Find which item this row corresponds to
-      const rows = [...container.querySelectorAll('[vendor-row]')];
-      const idx = rows.indexOf(row);
-      const item = $.vendorFiltered[idx];
-      if (!item) return;
+      if ($.coins < cost) {
+        notify({ warning: 'Not enough coins.' });
+        return;
+      }
 
-      const rect = eqLink.getBoundingClientRect();
-      $.tooltip = {
-        x: rect.left + rect.width / 2,
-        y: rect.top,
-        visible: true,
+      const { silver, copper } = formatCoins(cost);
+      const coinText = (silver ? silver + 's ' : '') + copper + 'c';
+
+      $.dialog = {
+        dialogId: 'confirm',
         props: {
-          name: item.name,
-          level: item.level,
-          description: item.description,
-          combatStats: item.combatStats,
-          slotsIn: item.slotsIn
+          text: `Are you sure you want to acquire this equipment for ${coinText}?`,
+          confirm: () => {
+            $.coins -= cost;
+            $.inventory.push(item);
+            notify({ success: 'Equipment acquired!' });
+          }
         }
       };
-    }, true);
+    };
 
-    container.addEventListener('mouseleave', (e) => {
-      const row = e.target.closest('[vendor-row]');
-      if (row && $.tooltip) $.tooltip.visible = false;
-    }, true);
-  };
+    // Tooltip via event delegation — works even after filter changes
+    window.vendorTooltipInit = () => {
+      const container = document.querySelector('page-vendor [vendor-table]');
+      if (!container) return;
 
-  setTimeout(vendorTooltipInit, 500);
-</script>
+      container.addEventListener('mouseenter', (e) => {
+        const row = e.target.closest('[vendor-row]');
+        if (!row) return;
+        const eqLink = row.querySelector('eq-link');
+        if (!eqLink) return;
 
-<page-vendor>
-<crow justify-between left>
-  <h3>Vendor</h3>
-</crow>
-<hr headline-hr />
+        // Find which item this row corresponds to
+        const rows = [...container.querySelectorAll('[vendor-row]')];
+        const idx = rows.indexOf(row);
+        const item = $.vendorFiltered[idx];
+        if (!item) return;
 
-<crow vendor-filters g-1>
-  <button
-    tertiary vendor-filter-btn
-    data-active="@[$.vendorFilter === 'all']"
-    onclick="vendorFilterBy('all')"
-  >All (@[$.vendorItems.length])</button>
-  <button
-    tertiary vendor-filter-btn
-    data-active="@[$.vendorFilter === 'oneHand']"
-    onclick="vendorFilterBy('oneHand')"
-  >One-Handed (@[vendorCounts.oneHand])</button>
-  <button
-    tertiary vendor-filter-btn
-    data-active="@[$.vendorFilter === 'offHand']"
-    onclick="vendorFilterBy('offHand')"
-  >Off-Hand (@[vendorCounts.offHand])</button>
-  <button
-    tertiary vendor-filter-btn
-    data-active="@[$.vendorFilter === 'twoHand']"
-    onclick="vendorFilterBy('twoHand')"
-  >Two-Handed (@[vendorCounts.twoHand])</button>
-  <button
-    tertiary vendor-filter-btn
-    data-active="@[$.vendorFilter === 'armor']"
-    onclick="vendorFilterBy('armor')"
-  >Armor (@[vendorCounts.armor])</button>
-  <button
-    tertiary vendor-filter-btn
-    data-active="@[$.vendorFilter === 'accessory']"
-    onclick="vendorFilterBy('accessory')"
-  >Accessory (@[vendorCounts.accessory])</button>
-  <button
-    tertiary vendor-filter-btn
-    data-active="@[$.vendorFilter === 'trinket']"
-    onclick="vendorFilterBy('trinket')"
-  >Trinket (@[vendorCounts.trinket])</button>
-</crow>
+        const rect = eqLink.getBoundingClientRect();
+        $.tooltip = {
+          x: rect.left + rect.width / 2,
+          y: rect.top,
+          visible: true,
+          props: {
+            name: item.name,
+            level: item.level,
+            description: item.description,
+            combatStats: item.combatStats,
+            slotsIn: item.slotsIn
+          }
+        };
+      }, true);
 
-<crow vertical up left vendor-table mt-4>
-  <crow up left vendor-header>
-    <vendor-col-name cinzel>Name</vendor-col-name>
-    <vendor-col-slot cinzel>Slots in</vendor-col-slot>
-    <vendor-col-cost cinzel>Cost</vendor-col-cost>
-    <vendor-col-action></vendor-col-action>
-  </crow>
+      container.addEventListener('mouseleave', (e) => {
+        const row = e.target.closest('[vendor-row]');
+        if (row && $.tooltip) $.tooltip.visible = false;
+      }, true);
+    };
 
-  <!-- each vendorFiltered as item, i -->
-  <crow left vendor-row data-even="@[i % 2 === 0]">
-    <crow left vendor-col-name>
-      <eq-link data-tier="@[item.level >= 25 ? 'red' : item.level >= 20 ? 'orange' : item.level >= 15 ? 'purple' : item.level >= 10 ? 'blue' : item.level >= 5 ? 'green' : 'gray']">
-        <eq-bg-center></eq-bg-center>
-        <eq-bg-left></eq-bg-left>
-        <eq-bg-right></eq-bg-right>
-        <crow eq-name left>@[item.name]</crow>
-      </eq-link>
+    setTimeout(vendorTooltipInit, 500);
+  </script>
+
+  <component src="/components/Layout.html">
+    <page-vendor>
+    <crow justify-between left>
+      <h3>Vendor</h3>
     </crow>
-    <vendor-col-slot text-sm text-muted>@[item.slotLabel]</vendor-col-slot>
-    <vendor-col-cost>
-      <crow g-1 text-sm right>
-        <!-- if Math.floor(item.cost / 100) > 0 -->
-        <span>@[Math.floor(item.cost / 100)]×</span><icon coin coin-silver></icon>
-        <!-- /if -->
-        <!-- if item.cost % 100 > 0 -->
-        <span>@[item.cost % 100]×</span><icon coin coin-copper></icon>
-        <!-- /if -->
-      </crow>
-    </vendor-col-cost>
-    <crow vendor-col-action right>
+    <hr headline-hr />
+
+    <crow vendor-filters g-1>
       <button
-        tertiary text-sm
-        onclick="vendorAcquire('@[item.id]')"
-        data-disabled="@[$.coins < item.cost]"
-      >Acquire</button>
+        tertiary vendor-filter-btn
+        data-active="@[$.vendorFilter === 'all']"
+        onclick="vendorFilterBy('all')"
+      >All (@[$.vendorItems.length])</button>
+      <button
+        tertiary vendor-filter-btn
+        data-active="@[$.vendorFilter === 'oneHand']"
+        onclick="vendorFilterBy('oneHand')"
+      >One-Handed (@[vendorCounts.oneHand])</button>
+      <button
+        tertiary vendor-filter-btn
+        data-active="@[$.vendorFilter === 'offHand']"
+        onclick="vendorFilterBy('offHand')"
+      >Off-Hand (@[vendorCounts.offHand])</button>
+      <button
+        tertiary vendor-filter-btn
+        data-active="@[$.vendorFilter === 'twoHand']"
+        onclick="vendorFilterBy('twoHand')"
+      >Two-Handed (@[vendorCounts.twoHand])</button>
+      <button
+        tertiary vendor-filter-btn
+        data-active="@[$.vendorFilter === 'armor']"
+        onclick="vendorFilterBy('armor')"
+      >Armor (@[vendorCounts.armor])</button>
+      <button
+        tertiary vendor-filter-btn
+        data-active="@[$.vendorFilter === 'accessory']"
+        onclick="vendorFilterBy('accessory')"
+      >Accessory (@[vendorCounts.accessory])</button>
+      <button
+        tertiary vendor-filter-btn
+        data-active="@[$.vendorFilter === 'trinket']"
+        onclick="vendorFilterBy('trinket')"
+      >Trinket (@[vendorCounts.trinket])</button>
     </crow>
-  </crow>
-  <!-- /each -->
-</crow>
-</page-vendor>
 
-<style>
+    <crow vertical up left vendor-table mt-4>
+      <crow up left vendor-header>
+        <vendor-col-name cinzel>Name</vendor-col-name>
+        <vendor-col-slot cinzel>Slots in</vendor-col-slot>
+        <vendor-col-cost cinzel>Cost</vendor-col-cost>
+        <vendor-col-action></vendor-col-action>
+      </crow>
+
+      <!-- each vendorFiltered as item, i -->
+      <crow left vendor-row data-even="@[i % 2 === 0]">
+        <crow left vendor-col-name>
+          <eq-link data-tier="@[item.level >= 25 ? 'red' : item.level >= 20 ? 'orange' : item.level >= 15 ? 'purple' : item.level >= 10 ? 'blue' : item.level >= 5 ? 'green' : 'gray']">
+            <eq-bg-center></eq-bg-center>
+            <eq-bg-left></eq-bg-left>
+            <eq-bg-right></eq-bg-right>
+            <crow eq-name left>@[item.name]</crow>
+          </eq-link>
+        </crow>
+        <vendor-col-slot text-sm text-muted>@[item.slotLabel]</vendor-col-slot>
+        <vendor-col-cost>
+          <crow g-1 text-sm right>
+            <!-- if Math.floor(item.cost / 100) > 0 -->
+            <span>@[Math.floor(item.cost / 100)]×</span><icon coin coin-silver></icon>
+            <!-- /if -->
+            <!-- if item.cost % 100 > 0 -->
+            <span>@[item.cost % 100]×</span><icon coin coin-copper></icon>
+            <!-- /if -->
+          </crow>
+        </vendor-col-cost>
+        <crow vendor-col-action right>
+          <button
+            tertiary text-sm
+            onclick="vendorAcquire('@[item.id]')"
+            data-disabled="@[$.coins < item.cost]"
+          >Acquire</button>
+        </crow>
+      </crow>
+      <!-- /each -->
+    </crow>
+    </page-vendor>
+  </component>
+  <style>
 page-vendor [vendor-filters] { display: flex; flex-wrap: wrap; align-items: stretch; justify-content: stretch; }
 page-vendor [vendor-filter-btn] { flex: 1; }
 page-vendor [vendor-filter-btn][data-active="true"] { opacity: 1; background: var(--accent); }
@@ -200,4 +214,6 @@ page-vendor vendor-col-action { display: block; }
 page-vendor [vendor-col-action] { width: calc(var(--unit) * 20); flex: none; }
 page-vendor [coin-silver] { color: oklch(0.6 0.12 200); }
 page-vendor [coin-copper] { color: oklch(0.6 0.15 60); }
-</style>
+  </style>
+</body>
+</html>

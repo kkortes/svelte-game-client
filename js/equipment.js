@@ -87,7 +87,7 @@ export const equip = (equipmentRef) => {
   correctHealth(characterRef, calculateCombatStatsByCharacter(character).maxHealth);
 
   // Re-navigate to refresh page (recompute derived data like abilities)
-  if (window.navigate) window.navigate(window.location.pathname);
+  window.location.reload();
 };
 
 export const unequip = (equipmentRef, slot) => {
@@ -103,7 +103,7 @@ export const unequip = (equipmentRef, slot) => {
   correctHealth(characterRef, calculateCombatStatsByCharacter(character).maxHealth);
 
   // Re-navigate to refresh page
-  if (window.navigate) window.navigate(window.location.pathname);
+  window.location.reload();
 };
 
 export const slotsInPrettyName = (slotsIn) =>

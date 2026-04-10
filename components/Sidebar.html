@@ -91,7 +91,7 @@
       <!-- if characters.length === 0 -->
       <crow vertical w-full g-2 text-sm text-muted>
         You have no brawlers yet.
-        <button tertiary onclick="navigate('/brawlers')">Recruit brawler</button>
+        <a href="/brawlers" tertiary>Recruit brawler</a>
       </crow>
       <!-- /if -->
 
@@ -100,7 +100,7 @@
         <crow left brawler-row data-active="@[Number(routeParams.characterIndex) === i || selectedBrawlers.includes(characters[i]?.uuid)]">
           <avatar-wrap>
             <avatar-frame glass>
-              <img data-src="/static/images/races/@[schar.image.replace('.png', '-mugshot.png')]" alt="" brawler-img />
+              <img data-src="/static/images/races/@[schar.mugshot]" alt="" brawler-img />
             </avatar-frame>
           </avatar-wrap>
           <crow vertical left brawler-info>
