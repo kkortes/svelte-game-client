@@ -74,11 +74,16 @@ h6 {
 
 /* Game-specific modifiers */
 [glass] {
-  border-radius: calc(var(--radius) * 0.25);
   border: 1px solid rgba(255, 255, 255, 0.5);
   background: rgba(255, 255, 255, 0.5);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(4px);
+}
+
+[dark] [glass] {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
 }
 
 [fat-number] {
@@ -198,16 +203,18 @@ button[data-disabled='true'] {
 
 /* Scrollbar */
 ::-webkit-scrollbar {
-  width: calc(var(--unit) * 2.5);
+  width: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: oklch(0.85 0.01 50);
+  background-color: oklch(from var(--background) l c h / 0.75);
+  border-radius: calc(var(--radius) - (8px - var(--unit)));
 }
 ::-webkit-scrollbar-thumb {
-  background: oklch(0.55 0.01 50);
+  background-color: var(--muted-foreground);
+  border-radius: calc(var(--radius) - (8px - var(--unit)));
 }
 ::-webkit-scrollbar-thumb:hover {
-  opacity: 0.9;
+  background-color: var(--muted-foreground);
 }
 
 /* Page wrapper elements — all need block display */

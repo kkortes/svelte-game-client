@@ -28,14 +28,16 @@
 
 <!-- if !socket -->
 <center-full>
-  <crow g-2 text-muted><spinner></spinner> Connecting to server</crow>
+  <crow g-2 text-muted>
+    <spinner></spinner> Connecting to server
+  </crow>
 </center-full>
 <!-- /if -->
 
 <!-- if socket && !token -->
 <center-full auth-padding>
   <auth-scene w-full>
-    <auth-form glass>
+    <card auth-form glass>
       <!-- if authMode === 'login' -->
       <component src="/components/Login.html"></component>
       <!-- /if -->
@@ -48,18 +50,24 @@
       <component src="/components/ForgotPassword.html"></component>
       <!-- /if -->
 
-      <crow g-2>
+      <crow g-2 mt="4">
         <!-- if authMode !== 'login' -->
-        <button secondary type="button" onclick="$.authMode = 'login'">Login</button>
+        <button secondary type="button" onclick="$.authMode = 'login'">
+          Login
+        </button>
         <!-- /if -->
         <!-- if authMode !== 'register' -->
-        <button secondary type="button" onclick="$.authMode = 'register'">Register</button>
+        <button secondary type="button" onclick="$.authMode = 'register'">
+          Register
+        </button>
         <!-- /if -->
         <!-- if authMode !== 'forgot' -->
-        <button secondary type="button" onclick="$.authMode = 'forgot'">Forgot password</button>
+        <button secondary type="button" onclick="$.authMode = 'forgot'">
+          Forgot password
+        </button>
         <!-- /if -->
       </crow>
-    </auth-form>
+    </card>
   </auth-scene>
 </center-full>
 <!-- /if -->

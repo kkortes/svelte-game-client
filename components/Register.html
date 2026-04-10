@@ -17,11 +17,14 @@
 
 <form onsubmit="event.preventDefault(); authRegister();">
   <crow g-2 mb-3>
-    <input type="email" placeholder="Email" value="@[authEmail]" oninput="$.authEmail = this.value" required auth-input />
-    <input type="password" placeholder="Password" value="@[authPassword]" oninput="$.authPassword = this.value" required auth-input />
+    <input type="email" placeholder="Email" value="@[authEmail]" oninput="$.authEmail = this.value"
+      required auth-input />
+    <input type="password" placeholder="Password" value="@[authPassword]"
+      oninput="$.authPassword = this.value" required auth-input />
     <button primary type="submit">Register</button>
   </crow>
   <p text-sm text-muted>
-    Already have an account? <a href="#" onclick="event.preventDefault(); $.authMode = 'login';">Log in</a>
+    Already have an account? <a href="#" primary
+      onclick="event.preventDefault(); $.authMode = 'login';">Log in</a>
   </p>
 </form>

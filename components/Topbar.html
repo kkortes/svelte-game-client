@@ -1,10 +1,11 @@
-<crow ml="auto" order-first g-1>
-  <button tertiary onclick="$.settings = { ...$.settings, darkMode: !$.settings.darkMode }; document.body.toggleAttribute('dark', $.settings.darkMode)">
+<crow ml="auto" glass order-first>
+  <button tertiary
+    onclick="$.settings = { ...$.settings, darkMode: !$.settings.darkMode }; document.body.toggleAttribute('dark', $.settings.darkMode)">
     <!-- if settings.darkMode -->
-    <icon light></icon>
+    <icon light text-yellow></icon>
     <!-- /if -->
     <!-- if !settings.darkMode -->
-    <icon dark></icon>
+    <icon dark text-blue></icon>
     <!-- /if -->
   </button>
   <button tertiary onclick="$.overlay = 'GameMenu'">
