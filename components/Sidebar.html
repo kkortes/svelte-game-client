@@ -44,7 +44,9 @@
         <crow vertical left w-full>
           <crow justify-between w-full>
             <span text-sm>Experience</span>
-            <button tertiary text-xs onclick="$.showAccountProgression = true">See progress</button>
+            <button secondary sm onclick="$.showAccountProgression = true">
+              See progress
+            </button>
           </crow>
           <!-- if sidebarLevel < 25 -->
           <bar-track xp-bar>
@@ -57,7 +59,7 @@
         <crow vertical left w-full>
           <crow justify-between w-full>
             <span text-sm>Medical area</span>
-            <button tertiary text-xs onclick="
+            <button secondary sm onclick="
           $.characters.forEach(c => {
             try {
               const ch = CHARACTERS(c, true);

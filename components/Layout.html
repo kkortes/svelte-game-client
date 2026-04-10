@@ -15,17 +15,27 @@
           </page>
 
           <stay w-full sm:reverse>
-            <crow up g-1 tab-row w-full py-3>
+            <crow up g-1 tab-row w-full py-3 sm:h="8" overflow-hidden>
               <a href="/" data-tab="" tab-link
-                data-active="@[route ? route.split('/')[1] || '' : '']">Game Guide</a>
+                data-active="@[route ? route.split('/')[1] || '' : '']">
+                <icon info hide sm:block></icon><span sm:hide>Game Guide</span>
+              </a>
               <a href="/the-arena" data-tab="the-arena" tab-link
-                data-active="@[route ? route.split('/')[1] || '' : '']">The Arena</a>
+                data-active="@[route ? route.split('/')[1] || '' : '']">
+                <icon damage hide sm:block></icon><span sm:hide>The Arena</span>
+              </a>
               <a href="/random-duel" data-tab="random-duel" tab-link
-                data-active="@[route ? route.split('/')[1] || '' : '']">Random duel</a>
+                data-active="@[route ? route.split('/')[1] || '' : '']">
+                <icon dice hide sm:block></icon><span sm:hide>Random duel</span>
+              </a>
               <a href="/vendor" data-tab="vendor" tab-link
-                data-active="@[route ? route.split('/')[1] || '' : '']">Vendor</a>
+                data-active="@[route ? route.split('/')[1] || '' : '']">
+                <icon coin hide sm:block></icon><span sm:hide>Vendor</span>
+              </a>
               <a href="/brawlers" data-tab="brawlers" tab-link
-                data-active="@[route ? route.split('/')[1] || '' : '']">Brawlers</a>
+                data-active="@[route ? route.split('/')[1] || '' : '']">
+                <icon maxHealth hide sm:block></icon><span sm:hide>Brawlers</span>
+              </a>
             </crow>
             <hr sm:order-first />
           </stay>
@@ -101,28 +111,20 @@
     }
 
     game-layout [game-shell] {
-      align-items: flex-start;
+      align-items: stretch;
       display: flex;
       flex: 1;
       align-self: stretch;
       width: 100%;
       max-width: calc(var(--unit) * 320);
       margin: 0 auto;
-      padding: calc(var(--unit) * 20) calc(var(--unit) * 3) calc(var(--unit) * 0) calc(var(--unit) * 3);
+      padding: calc(var(--unit) * 3) calc(var(--unit) * 3) calc(var(--unit) * 0) calc(var(--unit) * 3);
       gap: calc(var(--unit) * 3);
-    }
-
-    game-layout sidebar {
-      order: 0;
-      top: calc(var(--unit) * 3);
-      height: calc(100vh - calc(var(--unit) * 6));
-      overflow-y: auto;
     }
 
     game-layout sidebar-content {
       background: rgba(255, 255, 255, 0.3);
-      border-radius: var(--radius);
-      border: 1px solid transparent;
+      border-radius: calc(var(--radius) * 0.5);
     }
 
     game-layout sidebar[armory] {

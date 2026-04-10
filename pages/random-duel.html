@@ -128,7 +128,7 @@
       </crow>
     </page-content>
 
-    <stay reverse w-full>
+    <stay reverse w-full sm:b="8" p="3">
       <button primary big onclick="runPvpCombat()"
         data-disabled="@[selectedBrawlers.length === 0 || combat.duration !== 0]">Fight</button>
     </stay>
@@ -221,11 +221,7 @@
     }
 
     page[random-duel] stay {
-      position: sticky;
-      bottom: 0;
-      display: flex;
       justify-content: center;
-      padding: calc(var(--unit) * 3);
       background: #fafafa;
     }
 

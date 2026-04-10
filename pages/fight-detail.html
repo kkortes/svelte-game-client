@@ -225,12 +225,12 @@
         <!-- /each -->
       </crow>
 
-      <fight-sticky-bottom>
+      <stay reverse>
         <crow right p-3 fight-bottom-bar>
           <button fight-btn primary onclick="startFight()"
             data-disabled="@[selectedBrawlers.length === 0 || combat.duration !== 0]">Fight</button>
         </crow>
-      </fight-sticky-bottom>
+      </stay>
       <!-- /if -->
 
       <!-- if !currentFight -->
