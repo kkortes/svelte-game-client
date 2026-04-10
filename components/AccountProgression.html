@@ -5,7 +5,7 @@
 
   $.on('afterUpdate', (current, prev) => {
     if (current.showAccountProgression && !prev.showAccountProgression) {
-      const el = document.querySelector('[progression-scroll]');
+      const el = document.querySelector('[progression-scroll] slides');
       if (!el) return;
       const target = el.children[current.accountRewards - 1];
       if (target) target.scrollIntoView({ behavior: 'instant', block: 'nearest', inline: 'center' });
@@ -37,42 +37,48 @@
 </script>
 
 <!-- if showAccountProgression -->
-<crow progression-scroll onclick="$.showAccountProgression = false">
-  <!-- each progressionLevels as lvl -->
-  <card progression-card onclick="event.stopPropagation()" data-claimed="@[lvl <= accountRewards]"
-    data-reached="@[lvl <= sidebarLevel]">
-    <!-- if lvl <= accountRewards -->
-    <icon checkmark progression-check></icon>
-    <!-- /if -->
-    <h4 m-0>Level @[lvl]</h4>
-    <hr my-2 />
-    <crow g-8 up left>
-      <crow vertical up left>
-        <strong sm>Account</strong>
-        <crow g-1>+1 <icon coin coin-silver></icon>
-        </crow>
-        <!-- if lvl % 5 === 0 || lvl === 1 -->
-        <span sm>+1 brawler</span>
-        <!-- /if -->
-      </crow>
-      <crow vertical up left>
-        <strong sm>Brawlers</strong>
-        <crow g-1>+4 <icon maxHealth></icon>
-        </crow>
-        <crow g-1>+2 <icon damage></icon>
-        </crow>
-      </crow>
-    </crow>
-    <progression-premium>Premium rewards TBA.</progression-premium>
-    <!-- if lvl > accountRewards && lvl <= sidebarLevel -->
-    <button primary onclick="claimAccountReward(@[lvl])">Claim</button>
-    <!-- /if -->
-    <!-- if lvl > sidebarLevel -->
-    <button primary disabled>Locked</button>
-    <!-- /if -->
-  </card>
-  <!-- /each -->
-</crow>
+<carousel progression-scroll onclick="$.showAccountProgression = false">
+  <slides x scrollbar>
+    <!-- each progressionLevels as lvl -->
+    <slide>
+      <slide-center>
+        <card progression-card onclick="event.stopPropagation()"
+          data-claimed="@[lvl <= accountRewards]" data-reached="@[lvl <= sidebarLevel]">
+          <!-- if lvl <= accountRewards -->
+          <icon checkmark progression-check></icon>
+          <!-- /if -->
+          <h4 m-0>Level @[lvl]</h4>
+          <hr my-2 />
+          <crow g-8 up left>
+            <crow vertical up left>
+              <strong sm>Account</strong>
+              <crow g-1>+1 <icon coin coin-silver></icon>
+              </crow>
+              <!-- if lvl % 5 === 0 || lvl === 1 -->
+              <span sm>+1 brawler</span>
+              <!-- /if -->
+            </crow>
+            <crow vertical up left>
+              <strong sm>Brawlers</strong>
+              <crow g-1>+4 <icon maxHealth></icon>
+              </crow>
+              <crow g-1>+2 <icon damage></icon>
+              </crow>
+            </crow>
+          </crow>
+          <progression-premium>Premium rewards TBA.</progression-premium>
+          <!-- if lvl > accountRewards && lvl <= sidebarLevel -->
+          <button primary onclick="claimAccountReward(@[lvl])">Claim</button>
+          <!-- /if -->
+          <!-- if lvl > sidebarLevel -->
+          <button primary disabled>Locked</button>
+          <!-- /if -->
+        </card>
+      </slide-center>
+    </slide>
+    <!-- /each -->
+  </slides>
+</carousel>
 <!-- /if -->
 
 <style>
@@ -80,25 +86,28 @@
     position: fixed;
     inset: 0;
     z-index: 1;
-    justify-content: flex-start;
-    overflow-x: scroll;
-    overflow-y: hidden;
-    scroll-snap-type: x mandatory;
-    overscroll-behavior-x: none;
-    flex-wrap: nowrap;
-    gap: calc(var(--unit) * 8);
-    padding: 0 calc(50vw - min(calc(var(--unit) * 60), 30vw));
     background: rgba(0, 0, 0, 0.2);
     box-shadow: inset 0 0 10vw rgba(0, 0, 0, 0.5);
   }
 
-  [progression-scroll]>[progression-card] {
-    position: relative;
-    flex: none;
-    width: min(calc(var(--unit) * 120), 60vw);
-    text-align: center;
+  [progression-scroll] slides {
+    gap: calc(var(--unit) * 8);
+    padding: 0 calc(50vw - min(calc(var(--unit) * 60), 30vw));
+  }
+
+  [progression-scroll] slides>slide {
+    display: flex;
+    min-width: min(calc(var(--unit) * 120), 60vw);
+    align-items: center;
+    justify-content: center;
     scroll-snap-align: center;
+  }
+
+  [progression-scroll] [progression-card] {
+    position: relative;
+    text-align: center;
     border-style: dashed;
+    width: min(calc(var(--unit) * 120), 60vw);
   }
 
   [progression-card][data-claimed="true"] {
