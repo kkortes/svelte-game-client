@@ -63,7 +63,7 @@
   </script>
 
   <component src="/components/Layout.html">
-    <page-debug>
+    <page-content>
     <crow vertical g-4 left>
       <crow justify-between left>
         <h3>Debug</h3>
@@ -119,10 +119,11 @@
         </crow>
       </card>
     </crow>
-    </page-debug>
+    </page-content>
   </component>
   <style>
-page-debug [debug-card] { width: 100%; max-width: calc(var(--unit) * 125); }
+body[battle-brawlers] { background-image: url('/static/images/arena.png'); }
+page[debug] [debug-card] { width: 100%; max-width: calc(var(--unit) * 125); }
   </style>
 </body>
 </html>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,6 +8,7 @@
   <link rel="icon" href="/static/favicon.png" />
   <link rel="stylesheet" href="/css/index.css" />
 </head>
+
 <body battle-brawlers vibe vibe-fouc stylecheat>
   <script type="module">
     import boot from '/js/boot.js';
@@ -14,49 +16,54 @@
   </script>
 
   <component src="/components/Layout.html">
-    <page-home>
+    <page-content>
+      <crow justify-between left>
+        <h3>Game guide</h3>
+      </crow>
+      <hr headline-hr />
 
-    <crow justify-between left>
-      <h3>Game guide</h3>
-    </crow>
-    <hr headline-hr />
+      <strong>Battle Brawlers</strong> is a strategy auto-battler playable in your browser.
+      <br /><br />
+      Your main objective is to upgrade your <i>Ludus</i> by obtaining experience and leveling it
+      up.
+      <br /><br />
+      You can recruit Brawlers to fight for you. Each Brawler can be equipped with unique items and
+      abilities.
+      <br /><br />
+      Every 5 Ludus levels, you unlock an additional Brawler slot.
+      <br /><br /><br />
 
-    <strong>Battle Brawlers</strong> is a strategy auto-battler playable in your browser.
-    <br /><br />
-    Your main objective is to upgrade your <i>Ludus</i> by obtaining experience and leveling it up.
-    <br /><br />
-    You can recruit Brawlers to fight for you. Each Brawler can be equipped with unique items and abilities.
-    <br /><br />
-    Every 5 Ludus levels, you unlock an additional Brawler slot.
-    <br /><br /><br />
+      <crow justify-between left>
+        <h5>Combat</h5>
+      </crow>
+      <hr headline-hr-sm />
 
-    <crow justify-between left>
-      <h5>Combat</h5>
-    </crow>
-    <hr headline-hr-sm />
+      Combat is automatic once you start a fight.
+      <br /><br />
+      <strong>Battle Brawlers</strong> uses a <i>tick system</i>. A tick cycle is normally
+      <strong>12 ticks</strong>, but it can expand up to <strong>15 ticks</strong>. Each ability you
+      place
+      in your <strong>Active Abilities</strong> has its own tick length, which represents how long
+      the
+      ability takes to cast or remain active.
+      <br /><br />
+      Tick cycles repeat until a winner is determined.
+      <br /><br /><br />
 
-    Combat is automatic once you start a fight.
-    <br /><br />
-    <strong>Battle Brawlers</strong> uses a <i>tick system</i>. A tick cycle is normally
-    <strong>12 ticks</strong>, but it can expand up to <strong>15 ticks</strong>. Each ability you place
-    in your <strong>Active Abilities</strong> has its own tick length, which represents how long the
-    ability takes to cast or remain active.
-    <br /><br />
-    Tick cycles repeat until a winner is determined.
-    <br /><br /><br />
+      <crow justify-between left>
+        <h5>The arena</h5>
+      </crow>
+      <hr headline-hr-sm />
 
-    <crow justify-between left>
-      <h5>The arena</h5>
-    </crow>
-    <hr headline-hr-sm />
-
-    There's a vast roster of fights available in the arena. Each fight features its own unique set of enemies
-    and rewards.
-    <br /><br />
-    Boss fights unlock additional content in <strong>Battle Brawlers</strong>. But be wary! Luck-based
-    combat stats are disabled during boss fights!
-
-    </page-home>
+      There's a vast roster of fights available in the arena. Each fight features its own unique set
+      of enemies
+      and rewards.
+      <br /><br />
+      Boss fights unlock additional content in <strong>Battle Brawlers</strong>. But be wary!
+      Luck-based
+      combat stats are disabled during boss fights!
+    </page-content>
   </component>
 </body>
+
 </html>

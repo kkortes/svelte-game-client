@@ -35,9 +35,8 @@
 
     notification-panel notification-stack {
       position: fixed;
-      top: calc(var(--unit) * 8);
+      bottom: calc(var(--unit) * 8);
       right: calc(var(--unit) * 2);
-      z-index: 60;
       display: flex;
       flex-direction: column;
       align-items: flex-end;
@@ -50,10 +49,21 @@
       padding: calc(var(--unit) * 3) calc(var(--unit) * 5) calc(var(--unit) * 3) calc(var(--unit) * 3);
     }
 
-    notification-panel notification-card[data-type="error"] { border-color: #ef4444; }
-    notification-panel notification-card[data-type="warning"] { border-color: #f97316; }
-    notification-panel notification-card[data-type="success"] { border-color: #22c55e; }
-    notification-panel notification-card[data-type="info"] { border-color: #3b82f6; }
+    notification-panel notification-card[data-type="error"] {
+      border-color: #ef4444;
+    }
+
+    notification-panel notification-card[data-type="warning"] {
+      border-color: #f97316;
+    }
+
+    notification-panel notification-card[data-type="success"] {
+      border-color: #22c55e;
+    }
+
+    notification-panel notification-card[data-type="info"] {
+      border-color: #3b82f6;
+    }
 
     notification-panel [notification-icon] {
       width: calc(var(--unit) * 8);
@@ -67,10 +77,21 @@
       font-size: 1.125rem;
     }
 
-    notification-panel [notification-icon][data-type="error"] { background: #ef4444; }
-    notification-panel [notification-icon][data-type="warning"] { background: #f97316; }
-    notification-panel [notification-icon][data-type="success"] { background: #22c55e; }
-    notification-panel [notification-icon][data-type="info"] { background: #3b82f6; }
+    notification-panel [notification-icon][data-type="error"] {
+      background: #ef4444;
+    }
+
+    notification-panel [notification-icon][data-type="warning"] {
+      background: #f97316;
+    }
+
+    notification-panel [notification-icon][data-type="success"] {
+      background: #22c55e;
+    }
+
+    notification-panel [notification-icon][data-type="info"] {
+      background: #3b82f6;
+    }
 
     notification-panel [notification-title] {
       font-size: 1rem;

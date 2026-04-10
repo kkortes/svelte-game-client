@@ -1,0 +1,27 @@
+<script type="module">
+  import { notify } from '/js/actions.js';
+
+  // Matches: src/components/Register.svelte
+  window.authRegister = async () => {
+    try {
+      await $.socket.sendAsync('user/register', { email: $.authEmail, password: $.authPassword });
+      notify({ success: 'Account was created. You can now log in.' });
+      $.authEmail = '';
+      $.authPassword = '';
+      $.authMode = 'login';
+    } catch (e) {
+      notify(e);
+    }
+  };
+</script>
+
+<form onsubmit="event.preventDefault(); authRegister();">
+  <crow g-2 mb-3>
+    <input type="email" placeholder="Email" value="@[authEmail]" oninput="$.authEmail = this.value" required auth-input />
+    <input type="password" placeholder="Password" value="@[authPassword]" oninput="$.authPassword = this.value" required auth-input />
+    <button primary type="submit">Register</button>
+  </crow>
+  <p text-sm text-muted>
+    Already have an account? <a href="#" onclick="event.preventDefault(); $.authMode = 'login';">Log in</a>
+  </p>
+</form>

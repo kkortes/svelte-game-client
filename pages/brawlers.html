@@ -94,7 +94,7 @@
   </script>
 
   <component src="/components/Layout.html">
-    <page-brawlers>
+    <page-content>
       <crow justify-between left>
         <h3>Brawlers</h3>
       </crow>
@@ -160,22 +160,22 @@
         </brawler-card>
         <!-- /each -->
       </crow>
-    </page-brawlers>
+    </page-content>
   </component>
   <style>
-    page-brawlers [brawlers-heading] {
+    page[brawlers] [brawlers-heading] {
       align-items: center;
       margin: calc(var(--unit) * 12) 0;
     }
 
-    page-brawlers [brawlers-grid] {
+    page[brawlers] [brawlers-grid] {
       flex-wrap: wrap;
       gap: calc(var(--unit) * 4);
       align-items: flex-start;
       justify-content: flex-start;
     }
 
-    page-brawlers brawler-card {
+    page[brawlers] brawler-card {
       display: block;
       width: calc(var(--unit) * 90);
       border-radius: var(--radius);
@@ -185,52 +185,52 @@
       min-height: calc(var(--unit) * 50);
     }
 
-    page-brawlers brawler-card:active {
+    page[brawlers] brawler-card:active {
       translate: 0 1px;
     }
 
-    page-brawlers brawler-card[data-element="nature"] {
+    page[brawlers] brawler-card[data-element="nature"] {
       border-color: #8bb737;
       background: linear-gradient(135deg, rgba(139, 183, 55, 0.2), rgba(160, 206, 62, 0.2));
     }
 
-    page-brawlers brawler-card[data-element="earth"] {
+    page[brawlers] brawler-card[data-element="earth"] {
       border-color: #7f5322;
       background: linear-gradient(135deg, rgba(127, 83, 34, 0.2), rgba(198, 133, 51, 0.2));
     }
 
-    page-brawlers brawler-card[data-element="lightning"] {
+    page[brawlers] brawler-card[data-element="lightning"] {
       border-color: #eac303;
       background: linear-gradient(135deg, rgba(234, 195, 3, 0.2), rgba(252, 237, 96, 0.2));
     }
 
-    page-brawlers brawler-card[data-element="frost"] {
+    page[brawlers] brawler-card[data-element="frost"] {
       border-color: #88c6cb;
       background: linear-gradient(135deg, rgba(136, 198, 203, 0.2), rgba(234, 255, 255, 0.2));
     }
 
-    page-brawlers brawler-card[data-element="fire"] {
+    page[brawlers] brawler-card[data-element="fire"] {
       border-color: #f45f31;
       background: linear-gradient(135deg, rgba(244, 95, 49, 0.2), rgba(244, 160, 49, 0.2));
     }
 
-    page-brawlers brawler-card[data-recruited="true"] {
+    page[brawlers] brawler-card[data-recruited="true"] {
       opacity: 0.5;
       filter: grayscale(1);
       cursor: not-allowed;
     }
 
-    page-brawlers [brawler-name] {
+    page[brawlers] [brawler-name] {
       font-size: 1.5rem;
     }
 
-    page-brawlers [divider] {
+    page[brawlers] [divider] {
       width: 100%;
       border: none;
       border-top: 1px solid var(--border);
     }
 
-    page-brawlers char-portrait {
+    page[brawlers] char-portrait {
       display: block;
       width: calc(var(--unit) * 30);
       flex: none;
@@ -240,22 +240,22 @@
       border: 1px solid rgba(0, 0, 0, 0.1);
     }
 
-    page-brawlers [portrait-img] {
+    page[brawlers] [portrait-img] {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
 
-    page-brawlers [core-stats] {
+    page[brawlers] [core-stats] {
       font-size: 1rem;
       color: var(--muted-foreground);
     }
 
-    page-brawlers [bonus-stat] {
+    page[brawlers] [bonus-stat] {
       color: #16a34a;
     }
 
-    page-brawlers [bonus-row] {
+    page[brawlers] [bonus-row] {
       flex-wrap: wrap;
     }
   </style>

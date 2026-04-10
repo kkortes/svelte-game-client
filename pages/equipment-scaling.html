@@ -44,7 +44,7 @@
   </script>
 
   <component src="/components/Layout.html">
-    <page-equip-scaling>
+    <page-content>
     <crow vertical g-4 left>
       <crow justify-between left>
         <h3>Equipment Scaling</h3>
@@ -71,12 +71,12 @@
         <!-- /each -->
       </crow>
     </crow>
-    </page-equip-scaling>
+    </page-content>
   </component>
   <style>
-page-equip-scaling select { padding: var(--unit) calc(var(--unit) * 2); border: 1px solid var(--border); border-radius: var(--radius); }
-page-equip-scaling [scaling-row] { align-items: center; }
-page-equip-scaling [scaling-label] { width: calc(var(--unit) * 15); flex: none; font-size: 0.875rem; }
+page[equipment-scaling] select { padding: var(--unit) calc(var(--unit) * 2); border: 1px solid var(--border); border-radius: var(--radius); }
+page[equipment-scaling] [scaling-row] { align-items: center; }
+page[equipment-scaling] [scaling-label] { width: calc(var(--unit) * 15); flex: none; font-size: 0.875rem; }
   </style>
 </body>
 </html>

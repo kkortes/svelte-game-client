@@ -3,6 +3,21 @@
   import AUDIO from '/js/audio.js';
   import { getLevelByExperience } from '/js/level.js';
 
+  // Matches: src/components/MyLudus.svelte — auto-scroll on open
+  $.on('afterUpdate', (current, prev) => {
+    if (current.showAccountProgression && !prev.showAccountProgression) {
+      const scroll = document.querySelector('progression-scroll');
+      if (!scroll) return;
+      const target = scroll.children[current.accountRewards - 1];
+      if (target) target.scrollIntoView({ behavior: 'instant', block: 'nearest', inline: 'center' });
+      setTimeout(() => {
+        const level = getLevelByExperience(current.experience);
+        const lvlTarget = scroll.children[level - 1];
+        if (lvlTarget) lvlTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }, 50);
+    }
+  });
+
   // Matches: src/components/MyLudus.svelte claimReward()
   window.claimAccountReward = (lvl) => {
     if (lvl > $.accountRewards && lvl <= $.sidebarLevel) {
@@ -21,102 +36,101 @@
   };
 </script>
 
-  <!-- ACCOUNT PROGRESSION OVERLAY -->
-  <!-- if showAccountProgression -->
-  <overlay-backdrop onclick="$.showAccountProgression = false">
-    <progression-panel onclick="event.stopPropagation()">
-      <crow justify-between mb-4>
-        <h3 m-0>Account Progression</h3>
-        <button tertiary onclick="$.showAccountProgression = false">Close</button>
-      </crow>
-      <progression-scroll>
-        <!-- each Array.from({length: 25}, (_, i) => i + 1) as lvl -->
-        <card progression-card data-claimed="@[lvl <= accountRewards ? 'yes' : 'no']"
-          data-reached="@[lvl <= sidebarLevel ? 'yes' : 'no']">
-          <h4 m-0 mb-1>Lv @[lvl]</h4>
-          <progression-rewards>
-            <span progression-reward>+100 coins</span>
-            <!-- if lvl % 5 === 0 -->
-            <span progression-reward>+1 brawler slot</span>
-            <!-- /if -->
-            <span progression-reward>+4 maxHealth</span>
-            <span progression-reward>+2 damage</span>
-          </progression-rewards>
-          <!-- if lvl <= accountRewards -->
-          <span progression-claimed>Claimed</span>
+<!-- if showAccountProgression -->
+<overlay-backdrop onclick="$.showAccountProgression = false">
+  <progression-panel onclick="event.stopPropagation()">
+    <crow justify-between mb-4>
+      <h3 m-0>Account Progression</h3>
+      <button tertiary onclick="$.showAccountProgression = false">Close</button>
+    </crow>
+    <progression-scroll>
+      <!-- each Array.from({length: 25}, (_, i) => i + 1) as lvl -->
+      <card progression-card data-claimed="@[lvl <= accountRewards ? 'yes' : 'no']"
+        data-reached="@[lvl <= sidebarLevel ? 'yes' : 'no']">
+        <h4 m-0 mb-1>Lv @[lvl]</h4>
+        <progression-rewards>
+          <span progression-reward>+100 coins</span>
+          <!-- if lvl % 5 === 0 -->
+          <span progression-reward>+1 brawler slot</span>
           <!-- /if -->
-          <!-- if lvl > accountRewards && lvl <= sidebarLevel -->
-          <button primary progression-claim onclick="claimAccountReward(@[lvl])">Claim</button>
-          <!-- /if -->
-          <!-- if lvl > sidebarLevel -->
-          <button primary progression-claim disabled>Locked</button>
-          <!-- /if -->
-        </card>
-        <!-- /each -->
-      </progression-scroll>
-    </progression-panel>
-  </overlay-backdrop>
-  <!-- /if -->
+          <span progression-reward>+4 maxHealth</span>
+          <span progression-reward>+2 damage</span>
+        </progression-rewards>
+        <!-- if lvl <= accountRewards -->
+        <span progression-claimed>Claimed</span>
+        <!-- /if -->
+        <!-- if lvl > accountRewards && lvl <= sidebarLevel -->
+        <button primary progression-claim onclick="claimAccountReward(@[lvl])">Claim</button>
+        <!-- /if -->
+        <!-- if lvl > sidebarLevel -->
+        <button primary progression-claim disabled>Locked</button>
+        <!-- /if -->
+      </card>
+      <!-- /each -->
+    </progression-scroll>
+  </progression-panel>
+</overlay-backdrop>
+<!-- /if -->
 
 <style>
-    [battle-brawlers] progression-panel {
-      background: var(--card);
-      border-radius: var(--radius);
-      padding: calc(var(--unit) * 6);
-      max-width: calc(var(--unit) * 215);
-      width: 94%;
-      max-height: 90vh;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
+  [battle-brawlers] progression-panel {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: calc(var(--unit) * 6);
+    max-width: calc(var(--unit) * 215);
+    width: 94%;
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
 
-    [battle-brawlers] progression-scroll {
-      display: flex;
-      gap: calc(var(--unit) * 3);
-      overflow-x: auto;
-      padding-bottom: calc(var(--unit) * 2);
-    }
+  [battle-brawlers] progression-scroll {
+    display: flex;
+    gap: calc(var(--unit) * 3);
+    overflow-x: auto;
+    padding-bottom: calc(var(--unit) * 2);
+  }
 
-    [battle-brawlers] [progression-card] {
-      min-width: calc(var(--unit) * 35);
-      flex-shrink: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }
+  [battle-brawlers] [progression-card] {
+    min-width: calc(var(--unit) * 35);
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
 
-    [battle-brawlers] [progression-card][data-claimed="yes"] {
-      opacity: 0.5;
-    }
+  [battle-brawlers] [progression-card][data-claimed="yes"] {
+    opacity: 0.5;
+  }
 
-    [battle-brawlers] [progression-card][data-reached="no"]:not([data-claimed="yes"]) {
-      opacity: 0.4;
-    }
+  [battle-brawlers] [progression-card][data-reached="no"]:not([data-claimed="yes"]) {
+    opacity: 0.4;
+  }
 
-    [battle-brawlers] progression-rewards {
-      display: flex;
-      flex-direction: column;
-      gap: calc(var(--unit) * 0.5);
-      margin-bottom: calc(var(--unit) * 2);
-    }
+  [battle-brawlers] progression-rewards {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--unit) * 0.5);
+    margin-bottom: calc(var(--unit) * 2);
+  }
 
-    [battle-brawlers] [progression-reward] {
-      font-size: 0.7rem;
-      color: var(--muted-foreground);
-    }
+  [battle-brawlers] [progression-reward] {
+    font-size: 0.7rem;
+    color: var(--muted-foreground);
+  }
 
-    [battle-brawlers] [progression-claimed] {
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--primary);
-      margin-top: auto;
-    }
+  [battle-brawlers] [progression-claimed] {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--primary);
+    margin-top: auto;
+  }
 
-    [battle-brawlers] [progression-claim] {
-      font-size: 0.7rem;
-      padding: var(--unit) calc(var(--unit) * 3);
-      margin-top: auto;
-    }
+  [battle-brawlers] [progression-claim] {
+    font-size: 0.7rem;
+    padding: var(--unit) calc(var(--unit) * 3);
+    margin-top: auto;
+  }
 </style>

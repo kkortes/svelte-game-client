@@ -4,52 +4,56 @@
   window.equipItem = equip;
   window.dismantleItem = dismantle;
 </script>
+<sidebar sm-hide armory
+  data-visible="@[routeParams.characterIndex !== undefined || route === '/vendor']">
 
-<sidebar-content>
-  <crow justify-between>
-    <h5>ARMORY</h5>
-  </crow>
-  <hr headline-hr-sm />
+  <sidebar-content>
+    <crow justify-between>
+      <h5>ARMORY</h5>
+    </crow>
+    <hr headline-hr-sm />
 
-  <crow vertical up left>
-    <!-- each inventory as item, idx -->
-    <crow justify-between w-full g-2 armory-row>
-      <eq-link data-tier="@[item.overrides?.level >= 25 ? 'red' : item.overrides?.level >= 20 ? 'orange' : item.overrides?.level >= 15 ? 'purple' : item.overrides?.level >= 10 ? 'blue' : item.overrides?.level >= 5 ? 'green' : 'gray']">
-        <eq-bg-center></eq-bg-center>
-        <eq-bg-left></eq-bg-left>
-        <eq-bg-right></eq-bg-right>
-        <crow eq-name left>@[item.overrides?.name || item.id]</crow>
-      </eq-link>
-      <!-- if routeParams.characterIndex !== undefined -->
-      <button tertiary text-xs onclick="equipItem($.inventory[@[idx]])">Equip</button>
-      <!-- /if -->
-      <!-- if route === '/vendor' -->
-      <!-- if item.overrides?.cost > 0 -->
-      <button tertiary text-xs armory-refund onclick="
+    <crow vertical up left>
+      <!-- each inventory as item, idx -->
+      <crow justify-between w-full g-2 armory-row>
+        <eq-link
+          data-tier="@[item.overrides?.level >= 25 ? 'red' : item.overrides?.level >= 20 ? 'orange' : item.overrides?.level >= 15 ? 'purple' : item.overrides?.level >= 10 ? 'blue' : item.overrides?.level >= 5 ? 'green' : 'gray']">
+          <eq-bg-center></eq-bg-center>
+          <eq-bg-left></eq-bg-left>
+          <eq-bg-right></eq-bg-right>
+          <crow eq-name left>@[item.overrides?.name || item.id]</crow>
+        </eq-link>
+        <!-- if routeParams.characterIndex !== undefined -->
+        <button tertiary text-xs onclick="equipItem($.inventory[@[idx]])">Equip</button>
+        <!-- /if -->
+        <!-- if route === '/vendor' -->
+        <!-- if item.overrides?.cost > 0 -->
+        <button tertiary text-xs armory-refund onclick="
         $.dialog = { dialogId: 'confirm', props: { text: 'Refund this item?', confirm: () => { $.coins += $.inventory[@[idx]].overrides?.cost || 0; dismantleItem($.inventory[@[idx]]); } } }
       ">Refund</button>
-      <!-- /if -->
-      <!-- if !item.overrides?.cost -->
-      <button tertiary text-xs armory-refund onclick="
+        <!-- /if -->
+        <!-- if !item.overrides?.cost -->
+        <button tertiary text-xs armory-refund onclick="
         $.dialog = { dialogId: 'confirm', props: { text: 'Dismantle this item?', confirm: () => { dismantleItem($.inventory[@[idx]]); } } }
       ">Dismantle</button>
-      <!-- /if -->
-      <!-- /if -->
+        <!-- /if -->
+        <!-- /if -->
+      </crow>
+      <!-- /each -->
     </crow>
-    <!-- /each -->
-  </crow>
 
-  <!-- if inventory.length === 0 -->
-  <p text-sm text-muted mt-2>No items</p>
-  <!-- /if -->
+    <!-- if inventory.length === 0 -->
+    <p text-sm text-muted mt-2>No items</p>
+    <!-- /if -->
 
-  <style>
-    sidebar-content [armory-row] {
-      padding: var(--unit) 0;
-    }
+    <style>
+      sidebar-content [armory-row] {
+        padding: var(--unit) 0;
+      }
 
-    sidebar-content [armory-refund] {
-      color: var(--destructive);
-    }
-  </style>
-</sidebar-content>
+      sidebar-content [armory-refund] {
+        color: var(--destructive);
+      }
+    </style>
+  </sidebar-content>
+</sidebar>

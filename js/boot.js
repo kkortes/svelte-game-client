@@ -34,6 +34,7 @@ const parseRoute = () => {
 
 export default () => {
   const { route, routeParams } = parseRoute();
+  const pageName = route.replace(/^\/|\/$/g, '').replace(/:(\w+)/g, '$1').replace(/\//g, '-') || 'home';
 
   // Window globals for components and services
   window.Howl = Howl;
@@ -76,7 +77,8 @@ export default () => {
     isDev: config.IS_DEV,
     audio: AUDIO,
     route,
-    routeParams
+    routeParams,
+    pageName
   }, { debug: true });
 
   // Force synchronous boot so window.$ is the real proxy immediately

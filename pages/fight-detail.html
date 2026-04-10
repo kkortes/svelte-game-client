@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,6 +8,7 @@
   <link rel="icon" href="/static/favicon.png" />
   <link rel="stylesheet" href="/css/index.css" />
 </head>
+
 <body battle-brawlers vibe vibe-fouc stylecheat>
   <script type="module">
     import boot from '/js/boot.js';
@@ -105,7 +107,8 @@
 
       const enemies = fight.characters.map(charRef => ({
         ...charRef,
-        overrides: { ...charRef?.overrides, level: fight.minLevel,
+        overrides: {
+          ...charRef?.overrides, level: fight.minLevel,
           equipment: { mainHand: { overrides: { level: fight.minLevel } }, offHand: { overrides: { level: fight.minLevel } }, armor: { overrides: { level: fight.minLevel } } }
         }
       }));
@@ -118,286 +121,298 @@
   </script>
 
   <component src="/components/Layout.html">
-    <page-fight>
+    <page-content>
 
-    <!-- if currentFight -->
-    <button go-back tertiary onclick="window.location.href='/the-arena'">&#x2039; Back</button>
+      <!-- if currentFight -->
+      <button go-back tertiary onclick="window.location.href='/the-arena'">&#x2039; Back</button>
 
-    <crow justify-between w-full>
-      <h3>@[currentFight.name]</h3>
-      <crow left g-2>
-        <badge>@[currentFight.allowedNumberOfCharacters]&nbsp;vs&nbsp;@[currentFight.enemies.length]</badge>
-        <!-- if currentFight.boss -->
-        <badge>bossfight</badge>
-        <badge fight-badge-luck>luck disabled</badge>
-        <!-- /if -->
-      </crow>
-    </crow>
-    <hr headline-hr />
-
-    <!-- each currentFight.enemies as enemy -->
-    <crow left fight-enemy-row>
-      <!-- Enemy stats column -->
-      <crow fight-stats-col>
-        <crow vertical g-1>
-          <crow g-1><icon maxHealth></icon> @[enemy.maxHealth]</crow>
-          <crow g-1><icon maxArmor></icon> @[enemy.maxArmor]</crow>
-          <crow g-1><icon damage></icon> @[enemy.damage]</crow>
+      <crow justify-between w-full>
+        <h3>@[currentFight.name]</h3>
+        <crow left g-2>
+          <badge>
+            @[currentFight.allowedNumberOfCharacters]&nbsp;vs&nbsp;@[currentFight.enemies.length]
+          </badge>
+          <!-- if currentFight.boss -->
+          <badge>bossfight</badge>
+          <badge fight-badge-luck>luck disabled</badge>
+          <!-- /if -->
         </crow>
       </crow>
+      <hr headline-hr />
 
-      <!-- Enemy info column -->
-      <crow vertical up left fight-info-col>
-        <crow left g-2 mb-4>
-          <crow g-1 text-lg><icon maxHealth></icon> @[enemy.maxHealth]</crow>
-          <span text-muted>/</span>
-          <crow g-1 text-lg><icon maxArmor></icon> @[enemy.maxArmor]</crow>
-          <span text-muted>/</span>
-          <crow g-1 text-lg><icon damage></icon> @[enemy.damage]</crow>
+      <!-- each currentFight.enemies as enemy -->
+      <crow left fight-enemy-row>
+        <crow fight-stats-col>
+          <crow vertical g-1>
+            <crow g-1>
+              <icon maxHealth></icon> @[enemy.maxHealth]
+            </crow>
+            <crow g-1>
+              <icon maxArmor></icon> @[enemy.maxArmor]
+            </crow>
+            <crow g-1>
+              <icon damage></icon> @[enemy.damage]
+            </crow>
+          </crow>
         </crow>
 
-        <!-- if enemy.description -->
-        <p text-sm mb-4>@[enemy.description]</p>
-        <!-- /if -->
+        <crow vertical up left fight-info-col>
+          <crow left g-2 mb-4>
+            <crow g-1 text-lg>
+              <icon maxHealth></icon> @[enemy.maxHealth]
+            </crow>
+            <span text-muted>/</span>
+            <crow g-1 text-lg>
+              <icon maxArmor></icon> @[enemy.maxArmor]
+            </crow>
+            <span text-muted>/</span>
+            <crow g-1 text-lg>
+              <icon damage></icon> @[enemy.damage]
+            </crow>
+          </crow>
 
-        <h5>Abilities</h5>
-        <fight-ability-bar>
-          <!-- each enemy.abilities as ability -->
-          <fight-ability-cell style="width: calc((100% / 12) * @[ability.ticks])">
-            <icon @[ability.icon]></icon>
-          </fight-ability-cell>
-          <!-- /each -->
-        </fight-ability-bar>
-      </crow>
+          <!-- if enemy.description -->
+          <p text-sm mb-4>@[enemy.description]</p>
+          <!-- /if -->
 
-      <!-- Enemy image column -->
-      <fight-enemy-image>
-        <img data-src="/static/images/races/@[enemy.image]" alt="" />
-      </fight-enemy-image>
-    </crow>
-    <!-- /each -->
-
-    <hr fight-divider />
-
-    <!-- Brawler selection slots -->
-    <crow vertical w-full g-2>
-      <!-- each fightSlots as slot -->
-      <!-- if slot.empty -->
-      <crow fight-slot-empty>
-        <!-- if slot.index === 0 -->
-        <h5>select a brawler</h5>
-        <!-- /if -->
-        <!-- if slot.index > 0 -->
-        <h5>slot @[slot.index + 1]</h5>
-        <!-- /if -->
-      </crow>
-      <!-- /if -->
-      <!-- if !slot.empty -->
-      <crow fight-slot-filled left g-2>
-        <fight-slot-avatar glass>
-          <img data-src="/static/images/races/@[slot.mugshot]" alt="" fight-slot-img />
-        </fight-slot-avatar>
-        <crow vertical left fight-slot-info>
-          <span font-medium text-sm>@[slot.name]</span>
-          <fight-slot-abilities>
-            <!-- each slot.abilities as ab -->
-            <fight-slot-ability style="width: calc(12px * @[ab.ticks])">
-              <icon @[ab.icon]></icon>
-            </fight-slot-ability>
+          <h5>Abilities</h5>
+          <fight-ability-bar>
+            <!-- each enemy.abilities as ability -->
+            <fight-ability-cell style="width: calc((100% / 12) * @[ability.ticks])">
+              <icon @[ability.icon]></icon>
+            </fight-ability-cell>
             <!-- /each -->
-          </fight-slot-abilities>
+          </fight-ability-bar>
         </crow>
+
+        <fight-enemy-image>
+          <img data-src="/static/images/races/@[enemy.image]" alt="" />
+        </fight-enemy-image>
+      </crow>
+      <!-- /each -->
+
+      <hr fight-divider />
+
+      <crow vertical w-full g-2>
+        <!-- each fightSlots as slot -->
+        <!-- if slot.empty -->
+        <crow fight-slot-empty>
+          <!-- if slot.index === 0 -->
+          <h5>select a brawler</h5>
+          <!-- /if -->
+          <!-- if slot.index > 0 -->
+          <h5>slot @[slot.index + 1]</h5>
+          <!-- /if -->
+        </crow>
+        <!-- /if -->
+        <!-- if !slot.empty -->
+        <crow fight-slot-filled left g-2>
+          <fight-slot-avatar glass>
+            <img data-src="/static/images/races/@[slot.mugshot]" alt="" fight-slot-img />
+          </fight-slot-avatar>
+          <crow vertical left fight-slot-info>
+            <span font-medium text-sm>@[slot.name]</span>
+            <fight-slot-abilities>
+              <!-- each slot.abilities as ab -->
+              <fight-slot-ability style="width: calc(12px * @[ab.ticks])">
+                <icon @[ab.icon]></icon>
+              </fight-slot-ability>
+              <!-- /each -->
+            </fight-slot-abilities>
+          </crow>
+        </crow>
+        <!-- /if -->
+        <!-- /each -->
+      </crow>
+
+      <fight-sticky-bottom>
+        <crow right p-3 fight-bottom-bar>
+          <button fight-btn primary onclick="startFight()"
+            data-disabled="@[selectedBrawlers.length === 0 || combat.duration !== 0]">Fight</button>
+        </crow>
+      </fight-sticky-bottom>
+      <!-- /if -->
+
+      <!-- if !currentFight -->
+      <crow vertical g-4 fight-empty>
+        <p text-muted>Fight not found.</p>
+        <a href="/the-arena">&#x2039; Back</a>
       </crow>
       <!-- /if -->
-      <!-- /each -->
-    </crow>
 
-    <fight-sticky-bottom>
-      <crow right p-3 fight-bottom-bar>
-        <button fight-btn primary onclick="startFight()" data-disabled="@[selectedBrawlers.length === 0 || combat.duration !== 0]">Fight</button>
-      </crow>
-    </fight-sticky-bottom>
-    <!-- /if -->
-
-    <!-- if !currentFight -->
-    <crow vertical g-4 fight-empty>
-      <p text-muted>Fight not found.</p>
-      <a href="/the-arena">&#x2039; Back</a>
-    </crow>
-    <!-- /if -->
-
-    </page-fight>
+    </page-content>
   </component>
   <style>
-page-fight [go-back] {
-  position: absolute;
-  top: calc(var(--unit) * -7);
-  left: calc(var(--unit) * -5.5);
-  font-size: 0.75rem;
-  padding: calc(var(--unit) * 0.5) calc(var(--unit) * 2);
-}
+    page[the-arena-fightId] [go-back] {
+      position: absolute;
+      top: calc(var(--unit) * -7);
+      left: calc(var(--unit) * -5.5);
+      font-size: 0.75rem;
+      padding: calc(var(--unit) * 0.5) calc(var(--unit) * 2);
+    }
 
-page-fight [fight-badge-luck] {
-  background: oklch(0.85 0.1 20);
-  color: oklch(0.5 0.15 20);
-}
+    page[the-arena-fightId] [fight-badge-luck] {
+      background: oklch(0.85 0.1 20);
+      color: oklch(0.5 0.15 20);
+    }
 
-page-fight [fight-enemy-row] {
-  align-items: stretch;
-  overflow: hidden;
-  margin-bottom: calc(var(--unit) * 4);
-}
+    page[the-arena-fightId] [fight-enemy-row] {
+      align-items: stretch;
+      overflow: hidden;
+      margin-bottom: calc(var(--unit) * 4);
+    }
 
-page-fight [fight-stats-col] {
-  width: calc(var(--unit) * 20);
-  flex: none;
-  font-size: 0.875rem;
-  color: var(--muted-foreground);
-}
+    page[the-arena-fightId] [fight-stats-col] {
+      width: calc(var(--unit) * 20);
+      flex: none;
+      font-size: 0.875rem;
+      color: var(--muted-foreground);
+    }
 
-page-fight [fight-info-col] {
-  flex: 1;
-  min-width: 0;
-}
+    page[the-arena-fightId] [fight-info-col] {
+      flex: 1;
+      min-width: 0;
+    }
 
-page-fight fight-enemy-image {
-  display: block;
-  width: calc(var(--unit) * 40);
-  flex: none;
-  position: relative;
-  pointer-events: none;
-  transform: scaleX(-1);
-}
+    page[the-arena-fightId] fight-enemy-image {
+      display: block;
+      width: calc(var(--unit) * 40);
+      flex: none;
+      position: relative;
+      pointer-events: none;
+      transform: scaleX(-1);
+    }
 
-page-fight fight-enemy-image img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
-}
+    page[the-arena-fightId] fight-enemy-image img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+    }
 
-page-fight fight-ability-bar {
-  display: flex;
-  width: 100%;
-  border: 1px solid var(--border);
-}
+    page[the-arena-fightId] fight-ability-bar {
+      display: flex;
+      width: 100%;
+      border: 1px solid var(--border);
+    }
 
-page-fight fight-ability-cell {
-  height: calc(var(--unit) * 6);
-  border-right: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.75rem;
-  background: rgba(255,255,255,0.5);
-}
+    page[the-arena-fightId] fight-ability-cell {
+      height: calc(var(--unit) * 6);
+      border-right: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      background: rgba(255, 255, 255, 0.5);
+    }
 
-page-fight fight-ability-cell:last-child {
-  border-right: none;
-}
+    page[the-arena-fightId] fight-ability-cell:last-child {
+      border-right: none;
+    }
 
-page-fight [fight-divider] {
-  height: 1px;
-  border: 0;
-  background: linear-gradient(to right, transparent, rgba(0,0,0,0.15), transparent);
-  margin: calc(var(--unit) * 6) 0;
-}
+    page[the-arena-fightId] [fight-divider] {
+      height: 1px;
+      border: 0;
+      background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.15), transparent);
+      margin: calc(var(--unit) * 6) 0;
+    }
 
-page-fight [fight-slot-empty] {
-  width: 100%;
-  height: calc(var(--unit) * 19.5);
-  flex: none;
-  border: 1px dashed var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+    page[the-arena-fightId] [fight-slot-empty] {
+      width: 100%;
+      height: calc(var(--unit) * 19.5);
+      flex: none;
+      border: 1px dashed var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-page-fight [fight-slot-filled] {
-  width: 100%;
-  height: calc(var(--unit) * 19.5);
-  flex: none;
-  border: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  padding: calc(var(--unit) * 2) calc(var(--unit) * 4);
-  background: rgba(255, 255, 255, 0.3);
-}
+    page[the-arena-fightId] [fight-slot-filled] {
+      width: 100%;
+      height: calc(var(--unit) * 19.5);
+      flex: none;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: calc(var(--unit) * 2) calc(var(--unit) * 4);
+      background: rgba(255, 255, 255, 0.3);
+    }
 
-page-fight fight-slot-avatar {
-  display: block;
-  width: calc(var(--unit) * 12);
-  height: calc(var(--unit) * 12);
-  flex: none;
-  border-radius: var(--unit);
-  overflow: hidden;
-  border: 1px solid rgba(75, 85, 99, 1);
-}
+    page[the-arena-fightId] fight-slot-avatar {
+      display: block;
+      width: calc(var(--unit) * 12);
+      height: calc(var(--unit) * 12);
+      flex: none;
+      border-radius: var(--unit);
+      overflow: hidden;
+      border: 1px solid rgba(75, 85, 99, 1);
+    }
 
-page-fight [fight-slot-img] {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+    page[the-arena-fightId] [fight-slot-img] {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
 
-page-fight [fight-slot-info] {
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-}
+    page[the-arena-fightId] [fight-slot-info] {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+    }
 
-page-fight fight-slot-abilities {
-  display: flex;
-  border: 0.5px solid rgb(120, 113, 108);
-  border-radius: 0 0 var(--unit) var(--unit);
-  background: rgb(214, 211, 209);
-  overflow: hidden;
-  max-width: calc(var(--unit) * 45);
-}
+    page[the-arena-fightId] fight-slot-abilities {
+      display: flex;
+      border: 0.5px solid rgb(120, 113, 108);
+      border-radius: 0 0 var(--unit) var(--unit);
+      background: rgb(214, 211, 209);
+      overflow: hidden;
+      max-width: calc(var(--unit) * 45);
+    }
 
-page-fight fight-slot-ability {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: calc(var(--unit) * 5);
-  flex: none;
-  border-right: 0.5px solid rgb(120, 113, 108);
-  color: rgb(120, 113, 108);
-  font-size: 0.75rem;
-}
+    page[the-arena-fightId] fight-slot-ability {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: calc(var(--unit) * 5);
+      flex: none;
+      border-right: 0.5px solid rgb(120, 113, 108);
+      color: rgb(120, 113, 108);
+      font-size: 0.75rem;
+    }
 
-page-fight fight-slot-ability:last-child {
-  border-right: none;
-}
+    page[the-arena-fightId] fight-slot-ability:last-child {
+      border-right: none;
+    }
 
-page-fight fight-sticky-bottom {
-  display: block;
-  position: sticky;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin: calc(var(--unit) * 4) calc(var(--unit) * -4) calc(var(--unit) * -4);
-}
+    page[the-arena-fightId] fight-sticky-bottom {
+      display: block;
+      position: sticky;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      margin: calc(var(--unit) * 4) calc(var(--unit) * -4) calc(var(--unit) * -4);
+    }
 
-page-fight [fight-bottom-bar] {
-  background: linear-gradient(to top, rgba(30, 41, 59, 0.95), transparent);
-}
+    page[the-arena-fightId] [fight-bottom-bar] {
+      background: linear-gradient(to top, rgba(30, 41, 59, 0.95), transparent);
+    }
 
-page-fight [fight-btn] {
-  font-size: 1.125rem;
-  padding: calc(var(--unit) * 2) calc(var(--unit) * 8);
-}
+    page[the-arena-fightId] [fight-btn] {
+      font-size: 1.125rem;
+      padding: calc(var(--unit) * 2) calc(var(--unit) * 8);
+    }
 
-page-fight [fight-btn][data-disabled="true"] {
-  opacity: 0.5;
-  pointer-events: none;
-}
+    page[the-arena-fightId] [fight-btn][data-disabled="true"] {
+      opacity: 0.5;
+      pointer-events: none;
+    }
 
 
-page-fight [fight-empty] {
-  align-items: center;
-}
+    page[the-arena-fightId] [fight-empty] {
+      align-items: center;
+    }
   </style>
 </body>
+
 </html>

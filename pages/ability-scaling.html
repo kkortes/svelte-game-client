@@ -43,7 +43,7 @@
   </script>
 
   <component src="/components/Layout.html">
-    <page-ability-scaling>
+    <page-content>
     <crow vertical g-4 left>
       <crow justify-between left>
         <h3>Ability Scaling</h3>
@@ -71,14 +71,14 @@
         <!-- /each -->
       </crow>
     </crow>
-    </page-ability-scaling>
+    </page-content>
   </component>
   <style>
-page-ability-scaling select { padding: var(--unit) calc(var(--unit) * 2); border: 1px solid var(--border); border-radius: var(--radius); }
-page-ability-scaling [scaling-row] { align-items: center; }
-page-ability-scaling [scaling-ticks] { width: calc(var(--unit) * 15); flex: none; font-size: 0.875rem; }
-page-ability-scaling scaling-bar { display: block; flex: none; }
-page-ability-scaling ability-preview-cell {
+page[ability-scaling] select { padding: var(--unit) calc(var(--unit) * 2); border: 1px solid var(--border); border-radius: var(--radius); }
+page[ability-scaling] [scaling-row] { align-items: center; }
+page[ability-scaling] [scaling-ticks] { width: calc(var(--unit) * 15); flex: none; font-size: 0.875rem; }
+page[ability-scaling] scaling-bar { display: block; flex: none; }
+page[ability-scaling] ability-preview-cell {
   display: flex;
   align-items: center;
   justify-content: center;

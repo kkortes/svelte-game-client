@@ -54,7 +54,7 @@
   </script>
 
   <component src="/components/Layout.html">
-    <page-char-scaling>
+    <page-content>
     <crow vertical g-4 left>
       <crow justify-between left>
         <h3>Character Scaling</h3>
@@ -101,12 +101,12 @@
         <!-- /each -->
       </crow>
     </crow>
-    </page-char-scaling>
+    </page-content>
   </component>
   <style>
-page-char-scaling select { padding: var(--unit) calc(var(--unit) * 2); border: 1px solid var(--border); border-radius: var(--radius); }
-page-char-scaling [scaling-row] { align-items: center; }
-page-char-scaling [scaling-label] { width: calc(var(--unit) * 15); flex: none; font-size: 0.875rem; }
+page[character-scaling] select { padding: var(--unit) calc(var(--unit) * 2); border: 1px solid var(--border); border-radius: var(--radius); }
+page[character-scaling] [scaling-row] { align-items: center; }
+page[character-scaling] [scaling-label] { width: calc(var(--unit) * 15); flex: none; font-size: 0.875rem; }
   </style>
 </body>
 </html>

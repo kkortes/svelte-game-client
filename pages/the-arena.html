@@ -77,7 +77,7 @@
   </script>
 
   <component src="/components/Layout.html">
-    <page-arena>
+    <page-content>
 
     <crow justify-between left>
       <h3>The arena</h3>
@@ -150,26 +150,26 @@
       <!-- /each -->
     </crow>
 
-    </page-arena>
+    </page-content>
   </component>
   <style>
-page-arena [arena-table] {
+page[the-arena] [arena-table] {
   margin: 0 calc(var(--unit) * -4);
   width: calc(100% + calc(var(--unit) * 8));
 }
 
-page-arena [arena-header] {
+page[the-arena] [arena-header] {
   padding: calc(var(--unit) * 2) calc(var(--unit) * 6);
   color: var(--foreground);
 }
 
-page-arena arena-col-name { display: block; }
-page-arena [arena-col-name] { flex: 1; white-space: nowrap; }
-page-arena arena-col-level { display: block; width: calc(var(--unit) * 12); flex: none; }
-page-arena arena-col-loot { display: block; width: calc(var(--unit) * 12); flex: none; }
-page-arena [arena-col-preview] { width: calc(var(--unit) * 30); flex: none; }
+page[the-arena] arena-col-name { display: block; }
+page[the-arena] [arena-col-name] { flex: 1; white-space: nowrap; }
+page[the-arena] arena-col-level { display: block; width: calc(var(--unit) * 12); flex: none; }
+page[the-arena] arena-col-loot { display: block; width: calc(var(--unit) * 12); flex: none; }
+page[the-arena] [arena-col-preview] { width: calc(var(--unit) * 30); flex: none; }
 
-page-arena [arena-row] {
+page[the-arena] [arena-row] {
   display: flex;
   align-items: center;
   gap: calc(var(--unit) * 4);
@@ -181,53 +181,53 @@ page-arena [arena-row] {
   width: 100%;
 }
 
-page-arena [arena-row][data-even="true"] { background: #fafaf9; }
-page-arena [arena-row][data-even="false"] { background: #f5f5f4; }
+page[the-arena] [arena-row][data-even="true"] { background: #fafaf9; }
+page[the-arena] [arena-row][data-even="false"] { background: #f5f5f4; }
 
-page-arena [arena-row][data-boss="true"] {
+page[the-arena] [arena-row][data-boss="true"] {
   margin-top: calc(var(--unit) * 12);
   padding-top: calc(var(--unit) * 8);
   padding-bottom: calc(var(--unit) * 8);
 }
 
-page-arena [arena-row][data-boss="true"] + [arena-row][data-boss="true"] {
+page[the-arena] [arena-row][data-boss="true"] + [arena-row][data-boss="true"] {
   margin-top: 0;
 }
 
-page-arena [arena-row]:not([data-locked="true"]):not([data-completed="true"]):hover {
+page[the-arena] [arena-row]:not([data-locked="true"]):not([data-completed="true"]):hover {
   background: linear-gradient(to right, transparent, rgba(120, 110, 100, 0.15), transparent);
 }
 
-page-arena [arena-row][data-locked="true"] {
+page[the-arena] [arena-row][data-locked="true"] {
   opacity: 0.5;
   cursor: default;
 }
 
-page-arena [arena-row][data-completed="true"] {
+page[the-arena] [arena-row][data-completed="true"] {
   cursor: default;
 }
 
-page-arena [arena-pill] {
+page[the-arena] [arena-pill] {
   font-size: 0.65rem;
   padding: calc(var(--unit) * 0.25) calc(var(--unit) * 1.5);
 }
 
-page-arena [arena-xp-dimmed] {
+page[the-arena] [arena-xp-dimmed] {
   color: var(--muted-foreground);
   text-decoration: line-through;
 }
 
-page-arena arena-enemy-wrap {
+page[the-arena] arena-enemy-wrap {
   display: block;
   width: calc(var(--unit) * 4);
   flex: none;
 }
 
-page-arena arena-enemy-wrap[data-boss="true"] {
+page[the-arena] arena-enemy-wrap[data-boss="true"] {
   width: calc(var(--unit) * 12);
 }
 
-page-arena [arena-enemy-box] {
+page[the-arena] [arena-enemy-box] {
   width: calc(var(--unit) * 10);
   aspect-ratio: 1;
   overflow: hidden;
@@ -236,15 +236,15 @@ page-arena [arena-enemy-box] {
   position: relative;
 }
 
-page-arena arena-enemy-wrap[data-boss="true"] [arena-enemy-box] {
+page[the-arena] arena-enemy-wrap[data-boss="true"] [arena-enemy-box] {
   width: calc(var(--unit) * 20);
 }
 
-page-arena [arena-enemy-box]:not([data-locked="true"]) {
+page[the-arena] [arena-enemy-box]:not([data-locked="true"]) {
   align-items: flex-start;
 }
 
-page-arena [arena-enemy-locked] {
+page[the-arena] [arena-enemy-locked] {
   width: calc(var(--unit) * 5);
   flex: none;
   border-radius: 50%;
@@ -258,14 +258,14 @@ page-arena [arena-enemy-locked] {
   font-size: 0.75rem;
 }
 
-page-arena [arena-enemy-img] {
+page[the-arena] [arena-enemy-img] {
   width: 120%;
   max-width: none;
   height: auto;
   transform: scaleX(-1);
 }
 
-page-arena [arena-enemy-img][data-completed="true"] {
+page[the-arena] [arena-enemy-img][data-completed="true"] {
   filter: grayscale(1);
 }
   </style>

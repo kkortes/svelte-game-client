@@ -88,7 +88,7 @@ a:hover {
 
 /* Game-specific modifiers */
 [glass] {
-  border-radius: var(--radius);
+  border-radius: calc(var(--radius) * 0.25);
   border: 1px solid rgba(255, 255, 255, 0.5);
   background: rgba(255, 255, 255, 0.5);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
@@ -135,7 +135,12 @@ eq-link eq-bg-right {
 
 eq-link eq-bg-center {
   background: var(--eq-color);
-  clip-path: polygon(calc(var(--unit) * 4.75) 0%, calc(100% - calc(var(--unit) * 4.25)) 0%, calc(100% - calc(var(--unit) * 4.25)) 100%, calc(var(--unit) * 4.75) 100%);
+  clip-path: polygon(
+    calc(var(--unit) * 4.75) 0%,
+    calc(100% - calc(var(--unit) * 4.25)) 0%,
+    calc(100% - calc(var(--unit) * 4.25)) 100%,
+    calc(var(--unit) * 4.75) 100%
+  );
   mask: url('/static/images/brush-center.png') repeat-x 0 0 / auto calc(var(--unit) * 5);
 }
 
@@ -147,7 +152,12 @@ eq-link eq-bg-left {
 
 eq-link eq-bg-right {
   background: var(--eq-color);
-  clip-path: polygon(100% 0, 100% 100%, calc(100% - calc(var(--unit) * 4.25)) 100%, calc(100% - calc(var(--unit) * 4.25)) 0);
+  clip-path: polygon(
+    100% 0,
+    100% 100%,
+    calc(100% - calc(var(--unit) * 4.25)) 100%,
+    calc(100% - calc(var(--unit) * 4.25)) 0
+  );
   mask: url('/static/images/brush-right.png') no-repeat 100% 0 / auto calc(var(--unit) * 5);
 }
 
@@ -229,26 +239,18 @@ button[data-disabled='true'] {
   opacity: 0.9;
 }
 
-/* Custom game elements */
-page-content {
-  display: block;
-  width: 100%;
+/* Page wrapper elements — all need block display */
+page {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
-/* Page wrapper elements — all need block display */
-page-home,
-page-brawlers,
-page-brawler-detail,
-page-arena,
-page-fight,
-page-vendor,
-page-pvp,
-page-debug,
-page-ability-scaling,
-page-char-scaling,
-page-equip-scaling,
-page-reset-pw {
-  display: block;
+page-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: calc(var(--unit) * 4);
 }
 
 spinner {

@@ -50,7 +50,6 @@
   <spacer></spacer>
   <combat-panel onclick="event.stopPropagation()">
 
-    <!-- COMBAT IN PROGRESS -->
     <!-- if elapsedMilliseconds < combat.duration -->
     <crow justify-between mb-3>
       <h3 m-0>Combat</h3>
@@ -70,7 +69,6 @@
     </crow>
 
     <crow combat-teams g-4>
-      <!-- Team 0 (player) -->
       <combat-team-col>
         <!-- each combatTeam0 as c -->
         <combat-card data-combat-card="@[c.cardId]">
@@ -102,36 +100,16 @@
           <span combat-ko>KO</span>
           <!-- /if -->
           <combat-statuses>
-            <!-- if c.bleedTicks > 0 -->
-            <span combat-status bleeding>
-              <icon bleeding></icon>@[c.bleedTicks]
+            <!-- each c.statusEffects as s -->
+            <span combat-status data-status="@[s.key]">
+              <icon @[s.key]></icon>@[s.ticks]
             </span>
-            <!-- /if -->
-            <!-- if c.stunTicks > 0 -->
-            <span combat-status stunned>
-              <icon stunned></icon>@[c.stunTicks]
+            <!-- /each -->
+            <!-- each c.statusStacks as s -->
+            <span combat-status data-status="@[s.key]">
+              <icon @[s.key]></icon>@[s.value]/@[s.max]
             </span>
-            <!-- /if -->
-            <!-- if c.vulnTicks > 0 -->
-            <span combat-status vulnerable>
-              <icon vulnerable></icon>@[c.vulnTicks]
-            </span>
-            <!-- /if -->
-            <!-- if c.woundedVal > 0 -->
-            <span combat-status wounded>
-              <icon wounded></icon>@[c.woundedVal]/@[c.woundedMax]
-            </span>
-            <!-- /if -->
-            <!-- if c.concussedVal > 0 -->
-            <span combat-status concussed>
-              <icon concussed></icon>@[c.concussedVal]/@[c.concussedMax]
-            </span>
-            <!-- /if -->
-            <!-- if c.exposedVal > 0 -->
-            <span combat-status exposed>
-              <icon exposed></icon>@[c.exposedVal]/@[c.exposedMax]
-            </span>
-            <!-- /if -->
+            <!-- /each -->
           </combat-statuses>
         </combat-card>
         <!-- /each -->
@@ -169,36 +147,16 @@
           <span combat-ko>KO</span>
           <!-- /if -->
           <combat-statuses>
-            <!-- if c.bleedTicks > 0 -->
-            <span combat-status bleeding>
-              <icon bleeding></icon>@[c.bleedTicks]
+            <!-- each c.statusEffects as s -->
+            <span combat-status data-status="@[s.key]">
+              <icon @[s.key]></icon>@[s.ticks]
             </span>
-            <!-- /if -->
-            <!-- if c.stunTicks > 0 -->
-            <span combat-status stunned>
-              <icon stunned></icon>@[c.stunTicks]
+            <!-- /each -->
+            <!-- each c.statusStacks as s -->
+            <span combat-status data-status="@[s.key]">
+              <icon @[s.key]></icon>@[s.value]/@[s.max]
             </span>
-            <!-- /if -->
-            <!-- if c.vulnTicks > 0 -->
-            <span combat-status vulnerable>
-              <icon vulnerable></icon>@[c.vulnTicks]
-            </span>
-            <!-- /if -->
-            <!-- if c.woundedVal > 0 -->
-            <span combat-status wounded>
-              <icon wounded></icon>@[c.woundedVal]/@[c.woundedMax]
-            </span>
-            <!-- /if -->
-            <!-- if c.concussedVal > 0 -->
-            <span combat-status concussed>
-              <icon concussed></icon>@[c.concussedVal]/@[c.concussedMax]
-            </span>
-            <!-- /if -->
-            <!-- if c.exposedVal > 0 -->
-            <span combat-status exposed>
-              <icon exposed></icon>@[c.exposedVal]/@[c.exposedMax]
-            </span>
-            <!-- /if -->
+            <!-- /each -->
           </combat-statuses>
         </combat-card>
         <!-- /each -->
@@ -207,7 +165,6 @@
     <!-- /if -->
     <!-- /if -->
 
-    <!-- RESULT: VICTORY -->
     <!-- if elapsedMilliseconds >= combat.duration && combat.duration > 0 && combat.winningTeam && combat.winningTeam.index === 0 -->
     <combat-result>
       <icon victory victory-icon></icon>
@@ -225,7 +182,6 @@
     </combat-result>
     <!-- /if -->
 
-    <!-- RESULT: DEFEAT -->
     <!-- if elapsedMilliseconds >= combat.duration && combat.duration > 0 && combat.winningTeam && combat.winningTeam.index !== 0 -->
     <combat-result>
       <icon defeat defeat-icon></icon>
@@ -321,7 +277,6 @@
   }
 
   [battle-brawlers] [bar-text] {
-    z-index: 1;
     padding: 0 var(--unit);
   }
 
@@ -356,7 +311,6 @@
     font-weight: 800;
     font-size: 1.25rem;
     pointer-events: none;
-    z-index: 10;
     animation: floatUp 800ms ease-out forwards;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
   }
@@ -415,34 +369,34 @@
     font-size: 0.65rem;
   }
 
-  [battle-brawlers] [combat-status][stunned] {
+  [battle-brawlers] [combat-status][data-status="stunned"] {
     background: #fbbf24;
     color: #000;
   }
 
-  [battle-brawlers] [combat-status][bleeding] {
+  [battle-brawlers] [combat-status][data-status="bleeding"] {
     background: #ef4444;
     color: #fff;
   }
 
-  [battle-brawlers] [combat-status][vulnerable] {
+  [battle-brawlers] [combat-status][data-status="vulnerable"] {
     background: #a855f7;
     color: #fff;
   }
 
-  [battle-brawlers] [combat-status][wounded] {
+  [battle-brawlers] [combat-status][data-status="wounded"] {
     background: #dc2626;
     color: #fff;
     opacity: 0.7;
   }
 
-  [battle-brawlers] [combat-status][concussed] {
+  [battle-brawlers] [combat-status][data-status="concussed"] {
     background: #d97706;
     color: #fff;
     opacity: 0.7;
   }
 
-  [battle-brawlers] [combat-status][exposed] {
+  [battle-brawlers] [combat-status][data-status="exposed"] {
     background: #7c3aed;
     color: #fff;
     opacity: 0.7;

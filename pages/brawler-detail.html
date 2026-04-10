@@ -219,7 +219,7 @@
           });
         }
         // Ability tooltips
-        const abilityBar = document.querySelector('page-brawler-detail ability-bar');
+        const abilityBar = document.querySelector('page-content ability-bar');
         if (abilityBar) {
           abilityBar.addEventListener('mouseenter', (e) => {
             const cell = e.target.closest('ability-cell');
@@ -249,7 +249,7 @@
         }
 
         // Available ability tooltips
-        const availGrid = document.querySelector('page-brawler-detail [available-grid]');
+        const availGrid = document.querySelector('page-content [available-grid]');
         if (availGrid) {
           availGrid.addEventListener('mouseenter', (e) => {
             const cell = e.target.closest('available-ability');
@@ -278,7 +278,7 @@
           }, true);
         }
         // Equipment slot tooltips
-        const eqSection = document.querySelector('page-brawler-detail [eq-section]');
+        const eqSection = document.querySelector('page-content [eq-section]');
         if (eqSection) {
           eqSection.addEventListener('mouseenter', (e) => {
             const row = e.target.closest('[eq-row]');
@@ -318,7 +318,7 @@
   </script>
 
   <component src="/components/Layout.html">
-    <page-brawler-detail>
+    <page-content>
     <!-- if currentCharacter -->
     <crow vertical g-4 left>
       <button go-back tertiary onclick="window.location.href='/brawlers'">&#x2039; Back</button>
@@ -516,61 +516,61 @@
       <button go-back tertiary onclick="window.location.href='/brawlers'">&#x2039; Back</button>
     </crow>
     <!-- /if -->
-    </page-brawler-detail>
+    </page-content>
   </component>
   <style>
-page-brawler-detail [go-back] {
+page[brawlers-characterIndex] [go-back] {
   position: absolute;
   top: calc(var(--unit) * -7);
   left: calc(var(--unit) * -5.5);
   font-size: 0.75rem;
   padding: calc(var(--unit) * 0.5) calc(var(--unit) * 2);
 }
-page-brawler-detail [headline-row] { align-items: center; }
-page-brawler-detail [core-stats] { font-size: 1.125rem; color: var(--muted-foreground); translate: 0 1px; }
-page-brawler-detail [stat-sep] { color: var(--border); }
-page-brawler-detail [toggle-btn] { padding: var(--unit) calc(var(--unit) * 2); }
-page-brawler-detail [toggle-btn] icon[data-flipped="true"] { transform: scaleY(-1); }
-page-brawler-detail [retire-btn] { padding: var(--unit) calc(var(--unit) * 2); background: rgba(248, 113, 113, 0.2); color: rgb(248, 113, 113); }
-page-brawler-detail [avatar-col] { flex: none; }
-page-brawler-detail [avatar-frame] { aspect-ratio: 11/12; width: 100%; max-width: calc(var(--unit) * 70); border-radius: var(--radius); overflow: hidden; border: 1px solid rgba(0,0,0,0.1); }
-page-brawler-detail [portrait-img] { width: 100%; height: 100%; object-fit: cover; }
-page-brawler-detail [detail-col] { flex: 2; }
-page-brawler-detail [stats-panel] { flex: none; }
-page-brawler-detail [stat-list] { min-width: calc(var(--unit) * 45); }
-page-brawler-detail [lucky-heading] { color: rgb(34, 197, 94); }
-page-brawler-detail [lucky-heading] ~ [stat-list] span:not([text-muted]) { color: rgb(34, 197, 94); }
-page-brawler-detail spacer-lg { display: block; height: calc(var(--unit) * 4); }
-page-brawler-detail spacer-sm { display: block; height: calc(var(--unit) * 2); }
-page-brawler-detail [eq-slot-label] { width: calc(var(--unit) * 20); flex: none; }
-page-brawler-detail [eq-row] { min-height: calc(var(--unit) * 7); }
-page-brawler-detail [unequip-btn] { padding: calc(var(--unit) * 0.5) calc(var(--unit) * 1.5); }
-page-brawler-detail [detail-empty] { align-items: center; }
+page[brawlers-characterIndex] [headline-row] { align-items: center; }
+page[brawlers-characterIndex] [core-stats] { font-size: 1.125rem; color: var(--muted-foreground); translate: 0 1px; }
+page[brawlers-characterIndex] [stat-sep] { color: var(--border); }
+page[brawlers-characterIndex] [toggle-btn] { padding: var(--unit) calc(var(--unit) * 2); }
+page[brawlers-characterIndex] [toggle-btn] icon[data-flipped="true"] { transform: scaleY(-1); }
+page[brawlers-characterIndex] [retire-btn] { padding: var(--unit) calc(var(--unit) * 2); background: rgba(248, 113, 113, 0.2); color: rgb(248, 113, 113); }
+page[brawlers-characterIndex] [avatar-col] { flex: none; }
+page[brawlers-characterIndex] [avatar-frame] { aspect-ratio: 11/12; width: 100%; max-width: calc(var(--unit) * 70); border-radius: var(--radius); overflow: hidden; border: 1px solid rgba(0,0,0,0.1); }
+page[brawlers-characterIndex] [portrait-img] { width: 100%; height: 100%; object-fit: cover; }
+page[brawlers-characterIndex] [detail-col] { flex: 2; }
+page[brawlers-characterIndex] [stats-panel] { flex: none; }
+page[brawlers-characterIndex] [stat-list] { min-width: calc(var(--unit) * 45); }
+page[brawlers-characterIndex] [lucky-heading] { color: rgb(34, 197, 94); }
+page[brawlers-characterIndex] [lucky-heading] ~ [stat-list] span:not([text-muted]) { color: rgb(34, 197, 94); }
+page[brawlers-characterIndex] spacer-lg { display: block; height: calc(var(--unit) * 4); }
+page[brawlers-characterIndex] spacer-sm { display: block; height: calc(var(--unit) * 2); }
+page[brawlers-characterIndex] [eq-slot-label] { width: calc(var(--unit) * 20); flex: none; }
+page[brawlers-characterIndex] [eq-row] { min-height: calc(var(--unit) * 7); }
+page[brawlers-characterIndex] [unequip-btn] { padding: calc(var(--unit) * 0.5) calc(var(--unit) * 1.5); }
+page[brawlers-characterIndex] [detail-empty] { align-items: center; }
 
-page-brawler-detail ability-bar { display: block; position: relative; width: 100%; padding: calc(var(--unit) * 2) var(--unit); }
-page-brawler-detail [tick-grid] { width: 100%; }
-page-brawler-detail tick-cell { display: block; flex: 1; height: calc(var(--unit) * 12); border: 1px dashed var(--border); margin-left: -1px; }
-page-brawler-detail tick-cell:first-child { margin-left: 0; }
-page-brawler-detail tick-marker-12 { display: block; position: absolute; top: 0; bottom: calc(var(--unit) * -2); left: calc((100% / 15) * 12); width: 1px; border-right: 1px solid var(--text); translate: -1px 0; }
-page-brawler-detail tick-marker-last { display: block; position: absolute; top: 0; bottom: 0; width: 1px; border-right: 1px dashed var(--text-muted); translate: -1px 0; }
-page-brawler-detail [tick-label] { position: absolute; bottom: 100%; right: 0; text-align: right; font-size: 0.75rem; white-space: nowrap; }
-page-brawler-detail [tick-label] strong { line-height: 1; color: var(--text); }
-page-brawler-detail [ability-overlay] { position: absolute; inset: calc(var(--unit) * 2) var(--unit); width: calc(100% - calc(var(--unit) * 2)); border-radius: var(--radius); }
-page-brawler-detail ability-cell { flex: none; height: 100%; margin-left: -1px; border: 1px solid rgb(107,114,128); background: white; border-radius: var(--unit); display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; position: relative; }
-page-brawler-detail ability-cell[data-basic="true"] { background: rgb(243,244,246); border-color: var(--border); }
-page-brawler-detail ability-cell[data-basic="true"] icon { color: rgb(156,163,175); }
-page-brawler-detail ability-cell[data-overtick="true"] { background: rgb(254,202,202); border-color: rgb(252,165,165); }
-page-brawler-detail ability-cell[data-overtick="true"] icon { color: rgb(252,165,165); }
-page-brawler-detail ability-cell:not([data-basic="true"]) { z-index: 1; }
-page-brawler-detail ability-cell icon { font-size: clamp(0.875rem, 3vw, 1.875rem); }
-page-brawler-detail ability-tick-count { position: absolute; bottom: calc(var(--unit) * -3); left: 50%; translate: -50% 0; width: calc(var(--unit) * 8); height: calc(var(--unit) * 5); display: flex; align-items: center; justify-content: center; font-size: 0.8125rem; font-weight: bold; border-radius: calc(var(--unit) * 0.5); border: 0.5px solid rgb(156,163,175); background: white; }
+page[brawlers-characterIndex] ability-bar { display: block; position: relative; width: 100%; padding: calc(var(--unit) * 2) var(--unit); }
+page[brawlers-characterIndex] [tick-grid] { width: 100%; }
+page[brawlers-characterIndex] tick-cell { display: block; flex: 1; height: calc(var(--unit) * 12); border: 1px dashed var(--border); margin-left: -1px; }
+page[brawlers-characterIndex] tick-cell:first-child { margin-left: 0; }
+page[brawlers-characterIndex] tick-marker-12 { display: block; position: absolute; top: 0; bottom: calc(var(--unit) * -2); left: calc((100% / 15) * 12); width: 1px; border-right: 1px solid var(--text); translate: -1px 0; }
+page[brawlers-characterIndex] tick-marker-last { display: block; position: absolute; top: 0; bottom: 0; width: 1px; border-right: 1px dashed var(--text-muted); translate: -1px 0; }
+page[brawlers-characterIndex] [tick-label] { position: absolute; bottom: 100%; right: 0; text-align: right; font-size: 0.75rem; white-space: nowrap; }
+page[brawlers-characterIndex] [tick-label] strong { line-height: 1; color: var(--text); }
+page[brawlers-characterIndex] [ability-overlay] { position: absolute; inset: calc(var(--unit) * 2) var(--unit); width: calc(100% - calc(var(--unit) * 2)); border-radius: var(--radius); }
+page[brawlers-characterIndex] ability-cell { flex: none; height: 100%; margin-left: -1px; border: 1px solid rgb(107,114,128); background: white; border-radius: var(--unit); display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+page[brawlers-characterIndex] ability-cell[data-basic="true"] { background: rgb(243,244,246); border-color: var(--border); }
+page[brawlers-characterIndex] ability-cell[data-basic="true"] icon { color: rgb(156,163,175); }
+page[brawlers-characterIndex] ability-cell[data-overtick="true"] { background: rgb(254,202,202); border-color: rgb(252,165,165); }
+page[brawlers-characterIndex] ability-cell[data-overtick="true"] icon { color: rgb(252,165,165); }
+page[brawlers-characterIndex] ability-cell:not([data-basic="true"]) { z-index: 1; }
+page[brawlers-characterIndex] ability-cell icon { font-size: clamp(0.875rem, 3vw, 1.875rem); }
+page[brawlers-characterIndex] ability-tick-count { position: absolute; bottom: calc(var(--unit) * -3); left: 50%; translate: -50% 0; width: calc(var(--unit) * 8); height: calc(var(--unit) * 5); display: flex; align-items: center; justify-content: center; font-size: 0.8125rem; font-weight: bold; border-radius: calc(var(--unit) * 0.5); border: 0.5px solid rgb(156,163,175); background: white; }
 
-page-brawler-detail [available-grid] { flex-wrap: wrap; gap: calc(var(--unit) * 2); align-items: flex-start; min-height: calc(var(--unit) * 20); padding: calc(var(--unit) * 2); border: 1px solid var(--border); border-radius: calc(var(--unit) * 2); background: rgb(249,250,251); box-shadow: inset 0 1px 2px rgba(0,0,0,0.05); }
-page-brawler-detail available-ability { width: calc(var(--unit) * 20); height: calc(var(--unit) * 20); border: 0.5px solid rgb(156,163,175); border-radius: var(--unit); background: white; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; flex: none; }
-page-brawler-detail available-ability[data-basic="true"] { background: rgb(243,244,246); border-color: var(--border); }
-page-brawler-detail available-ability[data-basic="true"] icon { color: rgb(156,163,175); }
-page-brawler-detail available-ability icon { font-size: clamp(0.875rem, 3vw, 1.875rem); }
-page-brawler-detail available-ability ability-tick-count { bottom: calc(var(--unit) * -2.5); width: calc(var(--unit) * 6); height: calc(var(--unit) * 4); font-size: 0.6875rem; }
+page[brawlers-characterIndex] [available-grid] { flex-wrap: wrap; gap: calc(var(--unit) * 2); align-items: flex-start; min-height: calc(var(--unit) * 20); padding: calc(var(--unit) * 2); border: 1px solid var(--border); border-radius: calc(var(--unit) * 2); background: rgb(249,250,251); box-shadow: inset 0 1px 2px rgba(0,0,0,0.05); }
+page[brawlers-characterIndex] available-ability { width: calc(var(--unit) * 20); height: calc(var(--unit) * 20); border: 0.5px solid rgb(156,163,175); border-radius: var(--unit); background: white; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; flex: none; }
+page[brawlers-characterIndex] available-ability[data-basic="true"] { background: rgb(243,244,246); border-color: var(--border); }
+page[brawlers-characterIndex] available-ability[data-basic="true"] icon { color: rgb(156,163,175); }
+page[brawlers-characterIndex] available-ability icon { font-size: clamp(0.875rem, 3vw, 1.875rem); }
+page[brawlers-characterIndex] available-ability ability-tick-count { bottom: calc(var(--unit) * -2.5); width: calc(var(--unit) * 6); height: calc(var(--unit) * 4); font-size: 0.6875rem; }
   </style>
 </body>
 </html>

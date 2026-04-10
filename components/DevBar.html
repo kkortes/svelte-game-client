@@ -1,0 +1,78 @@
+<crow up devbar>
+  <crow vertical left g-1 p-2>
+    <button devbar-btn onclick="document.dispatchEvent(new CustomEvent('pauseCombat'))">Pause
+      combat</button>
+    <button devbar-btn onclick="document.dispatchEvent(new CustomEvent('resumeCombat'))">Resume
+      combat</button>
+    <span text-xs>Elapsed ms: @[elapsedMilliseconds.toFixed(0)]</span>
+    <span text-xs>Duration: @[combat.duration]</span>
+  </crow>
+  <crow vertical left p-2>
+    <span text-xs>Server: @[new Date(serverTimestampSnapshot).toLocaleString()]</span>
+    <crow vertical up left mt-2>
+      <a href="/debug" devbar-link>Debug</a>
+      <a href="/ability-scaling" devbar-link>Ability Scaling</a>
+      <a href="/equipment-scaling" devbar-link>Equipment Scaling</a>
+      <a href="/character-scaling" devbar-link>Character Scaling</a>
+    </crow>
+  </crow>
+  <crow vertical left g-1 p-2>
+    <crow g-1>
+      <button devbar-btn
+        onclick="$.characters.forEach(c => { try { const ch = CHARACTERS(c, true); const s = calculateCombatStatsByCharacter(ch); c.overrides.combatStats.currentHealth = s.maxHealth; } catch {} }); $.characters = [...$.characters]">Heal
+        party</button>
+      <button devbar-btn
+        onclick="$.characters.forEach(c => { try { const ch = CHARACTERS(c, true); c.overrides.combatStats.currentHealth = ch.combatStats.currentHealth - 5; } catch {} }); $.characters = [...$.characters]">Damage
+        party</button>
+    </crow>
+    <crow g-1>
+      <button devbar-btn onclick="$.experience += 40">Gain exp</button>
+      <button devbar-btn onclick="$.experience = 0">Reset exp</button>
+    </crow>
+    <crow g-1>
+      <button devbar-btn onclick="$.coins += 100">Gain coins</button>
+      <button devbar-btn onclick="$.coins = 0">Reset coins</button>
+    </crow>
+    <crow g-1>
+      <button devbar-btn onclick="$.bossHighscore += 1">Increase boss</button>
+      <button devbar-btn onclick="$.bossHighscore = 0">Reset boss</button>
+    </crow>
+    <button devbar-btn onclick="$.characters = []">Reset characters</button>
+    <button devbar-btn onclick="$.accountRewards = 1">Reset rewards</button>
+  </crow>
+</crow>
+
+<style>
+  [devbar] {
+    background: #ffffff50;
+    font-size: 0.75rem;
+    width: 100%;
+  }
+
+  [devbar-btn] {
+    all: unset;
+    cursor: pointer;
+    font-size: 0.7rem;
+    padding: calc(var(--unit) * 0.5) calc(var(--unit) * 2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--card);
+  }
+
+  [devbar-btn]:hover {
+    background: var(--background);
+  }
+
+  [devbar-link] {
+    padding: calc(var(--unit) * 0.5) calc(var(--unit) * 2);
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+    text-decoration: none;
+    border: 1px solid transparent;
+    border-bottom: none;
+  }
+
+  [devbar-link]:hover {
+    color: var(--foreground);
+  }
+</style>

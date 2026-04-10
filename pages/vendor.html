@@ -72,7 +72,7 @@
 
     // Tooltip via event delegation — works even after filter changes
     window.vendorTooltipInit = () => {
-      const container = document.querySelector('page-vendor [vendor-table]');
+      const container = document.querySelector('page-content [vendor-table]');
       if (!container) return;
 
       container.addEventListener('mouseenter', (e) => {
@@ -112,7 +112,7 @@
   </script>
 
   <component src="/components/Layout.html">
-    <page-vendor>
+    <page-content>
     <crow justify-between left>
       <h3>Vendor</h3>
     </crow>
@@ -195,25 +195,25 @@
       </crow>
       <!-- /each -->
     </crow>
-    </page-vendor>
+    </page-content>
   </component>
   <style>
-page-vendor [vendor-filters] { display: flex; flex-wrap: wrap; align-items: stretch; justify-content: stretch; }
-page-vendor [vendor-filter-btn] { flex: 1; }
-page-vendor [vendor-filter-btn][data-active="true"] { opacity: 1; background: var(--accent); }
-page-vendor [vendor-table] { margin-left: calc(var(--unit) * -4); margin-right: calc(var(--unit) * -4); width: auto; }
-page-vendor [vendor-header] { gap: calc(var(--unit) * 4); padding: calc(var(--unit) * 2) calc(var(--unit) * 6); }
-page-vendor [vendor-row] { width: 100%; gap: calc(var(--unit) * 4); padding: calc(var(--unit) * 2) calc(var(--unit) * 6); font-size: 0.875rem; }
-page-vendor [vendor-row][data-even="true"] { background: #fafaf9; }
-page-vendor [vendor-row][data-even="false"] { background: white; }
-page-vendor vendor-col-name { display: block; }
-page-vendor [vendor-col-name] { flex: 1; }
-page-vendor vendor-col-slot { display: block; flex: 1; }
-page-vendor vendor-col-cost { display: block; flex: 1; }
-page-vendor vendor-col-action { display: block; }
-page-vendor [vendor-col-action] { width: calc(var(--unit) * 20); flex: none; }
-page-vendor [coin-silver] { color: oklch(0.6 0.12 200); }
-page-vendor [coin-copper] { color: oklch(0.6 0.15 60); }
+page[vendor] [vendor-filters] { display: flex; flex-wrap: wrap; align-items: stretch; justify-content: stretch; }
+page[vendor] [vendor-filter-btn] { flex: 1; }
+page[vendor] [vendor-filter-btn][data-active="true"] { opacity: 1; background: var(--accent); }
+page[vendor] [vendor-table] { margin-left: calc(var(--unit) * -4); margin-right: calc(var(--unit) * -4); width: auto; }
+page[vendor] [vendor-header] { gap: calc(var(--unit) * 4); padding: calc(var(--unit) * 2) calc(var(--unit) * 6); }
+page[vendor] [vendor-row] { width: 100%; gap: calc(var(--unit) * 4); padding: calc(var(--unit) * 2) calc(var(--unit) * 6); font-size: 0.875rem; }
+page[vendor] [vendor-row][data-even="true"] { background: #fafaf9; }
+page[vendor] [vendor-row][data-even="false"] { background: white; }
+page[vendor] vendor-col-name { display: block; }
+page[vendor] [vendor-col-name] { flex: 1; }
+page[vendor] vendor-col-slot { display: block; flex: 1; }
+page[vendor] vendor-col-cost { display: block; flex: 1; }
+page[vendor] vendor-col-action { display: block; }
+page[vendor] [vendor-col-action] { width: calc(var(--unit) * 20); flex: none; }
+page[vendor] [coin-silver] { color: oklch(0.6 0.12 200); }
+page[vendor] [coin-copper] { color: oklch(0.6 0.15 60); }
   </style>
 </body>
 </html>

@@ -1,34 +1,32 @@
-  <!-- DIALOG LAYER -->
-  <!-- if dialog -->
-  <dialog-backdrop>
-    <card dialog-card>
-      <p mb-4>@[dialog.props?.text || 'Are you sure?']</p>
-      <crow g-2 dialog-actions>
-        <button tertiary onclick="$.dialog = undefined">Cancel</button>
-        <button primary
-          onclick="if($.dialog?.props?.confirm) $.dialog.props.confirm(); $.dialog = undefined;">Confirm</button>
-      </crow>
-    </card>
-  </dialog-backdrop>
-  <!-- /if -->
+<!-- if dialog -->
+<dialog-backdrop>
+  <card dialog-card>
+    <p mb-4>@[dialog.props?.text || 'Are you sure?']</p>
+    <crow g-2 dialog-actions>
+      <button tertiary onclick="$.dialog = undefined">Cancel</button>
+      <button primary
+        onclick="if($.dialog?.props?.confirm) $.dialog.props.confirm(); $.dialog = undefined;">Confirm</button>
+    </crow>
+  </card>
+</dialog-backdrop>
+<!-- /if -->
 
 <style>
-    [battle-brawlers] dialog-backdrop {
-      position: fixed;
-      inset: 0;
-      z-index: 50;
-      background: rgba(0, 0, 0, 0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+  [battle-brawlers] dialog-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
-    [battle-brawlers] [dialog-card] {
-      min-width: calc(var(--unit) * 75);
-      max-width: calc(var(--unit) * 100);
-    }
+  [battle-brawlers] [dialog-card] {
+    min-width: calc(var(--unit) * 75);
+    max-width: calc(var(--unit) * 100);
+  }
 
-    [battle-brawlers] [dialog-actions] {
-      justify-content: flex-end;
-    }
+  [battle-brawlers] [dialog-actions] {
+    justify-content: flex-end;
+  }
 </style>

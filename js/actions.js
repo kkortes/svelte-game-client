@@ -11,7 +11,7 @@ export const notify = (payload) => {
   const message = error || warning || success || info;
 
   if (!$.notifications) return true;
-  if ($.notifications.find(n => n.message === message)) {
+  if ($.notifications.find((n) => n.message === message)) {
     return true;
   }
 

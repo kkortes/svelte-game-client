@@ -47,6 +47,16 @@ export const init = () => {
     woundedVal: c.statuses?.isWounded?.value || 0, woundedMax: c.statuses?.isWounded?.max || 0,
     concussedVal: c.statuses?.isConcussed?.value || 0, concussedMax: c.statuses?.isConcussed?.max || 0,
     exposedVal: c.statuses?.isExposed?.value || 0, exposedMax: c.statuses?.isExposed?.max || 0,
+    statusEffects: [
+      { key: 'bleeding', ticks: c.statuses?.isBleeding?.ticks || 0 },
+      { key: 'stunned', ticks: c.statuses?.isStunned?.ticks || 0 },
+      { key: 'vulnerable', ticks: c.statuses?.isVulnerable?.ticks || 0 },
+    ].filter(s => s.ticks > 0).sort((a, b) => a.ticks - b.ticks),
+    statusStacks: [
+      { key: 'wounded', value: c.statuses?.isWounded?.value || 0, max: c.statuses?.isWounded?.max || 0 },
+      { key: 'concussed', value: c.statuses?.isConcussed?.value || 0, max: c.statuses?.isConcussed?.max || 0 },
+      { key: 'exposed', value: c.statuses?.isExposed?.value || 0, max: c.statuses?.isExposed?.max || 0 },
+    ].filter(s => s.value > 0).sort((a, b) => b.value - a.value),
     cardId: `${ti}-${ci}`
   });
 

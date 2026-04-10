@@ -1,64 +1,63 @@
-<sidebar-content>
-  <!-- Combat status -->
-  <combat-status>
-    <!-- if elapsedMilliseconds < combat.duration -->
-    <a href="#" onclick="event.preventDefault(); $.overlay = 'Combat'" combat-link>
-      <spinner></spinner>
-      <span>Fighting..</span>
-    </a>
-    <!-- /if -->
-    <!-- if elapsedMilliseconds >= combat.duration && combat.duration !== 0 -->
-    <a href="#" onclick="event.preventDefault(); $.overlay = 'Combat'" combat-link>
-      <span>View outcome</span>
-    </a>
-    <!-- /if -->
-  </combat-status>
-
-  <!-- MY LUDUS -->
-  <crow justify-between>
-    <h5 m-0>MY LUDUS</h5>
-    <span cinzel flex-none>level @[sidebarLevel]</span>
-  </crow>
-  <hr headline-hr-sm />
-
-  <crow vertical left w-full g-2>
-    <!-- Coins -->
-    <crow justify-between w-full>
-      <span text-sm>Coins</span>
-      <!-- if coins === 0 -->
-      <span>-</span>
-      <!-- /if -->
-      <!-- if coins > 0 -->
-      <crow coin-stack>
-        <!-- if Math.floor(coins / 100) > 0 -->
-        <crow g-1 flex-none>@[Math.floor(coins / 100)]×<icon coin coin-silver></icon></crow>
+<sidebar>
+  <sidebar-content>
+    <div>
+      <combat-status>
+        <!-- if elapsedMilliseconds < combat.duration -->
+        <a href="#" onclick="event.preventDefault(); $.overlay = 'Combat'" combat-link>
+          <spinner></spinner>
+          <span>Fighting..</span>
+        </a>
         <!-- /if -->
-        <!-- if coins % 100 > 0 -->
-        <crow g-1 flex-none>@[coins % 100]×<icon coin coin-copper></icon></crow>
+        <!-- if elapsedMilliseconds >= combat.duration && combat.duration !== 0 -->
+        <a href="#" onclick="event.preventDefault(); $.overlay = 'Combat'" combat-link>
+          <span>View outcome</span>
+        </a>
         <!-- /if -->
-      </crow>
-      <!-- /if -->
-    </crow>
+      </combat-status>
 
-    <!-- Experience -->
-    <crow vertical left w-full>
-      <crow justify-between w-full>
-        <span text-sm>Experience</span>
-        <button tertiary text-xs onclick="$.showAccountProgression = true">See progress</button>
+      <crow justify-between>
+        <h5 m-0>MY LUDUS</h5>
+        <span cinzel flex-none>level @[sidebarLevel]</span>
       </crow>
-      <!-- if sidebarLevel < 25 -->
-      <bar-track xp-bar>
-        <bar-fill xp-fill style="width: @[sidebarXpPct]%"></bar-fill>
-        <crow bar-text text-sm>@[sidebarXpCurrent] / @[sidebarXpNeeded]</crow>
-      </bar-track>
-      <!-- /if -->
-    </crow>
+      <hr headline-hr-sm />
 
-    <!-- Medical area -->
-    <crow vertical left w-full>
-      <crow justify-between w-full>
-        <span text-sm>Medical area</span>
-        <button tertiary text-xs onclick="
+      <crow vertical left w-full g-2>
+        <crow justify-between w-full>
+          <span text-sm>Coins</span>
+          <!-- if coins === 0 -->
+          <span>-</span>
+          <!-- /if -->
+          <!-- if coins > 0 -->
+          <crow coin-stack>
+            <!-- if Math.floor(coins / 100) > 0 -->
+            <crow g-1 flex-none>@[Math.floor(coins / 100)]×<icon coin coin-silver></icon>
+            </crow>
+            <!-- /if -->
+            <!-- if coins % 100 > 0 -->
+            <crow g-1 flex-none>@[coins % 100]×<icon coin coin-copper></icon>
+            </crow>
+            <!-- /if -->
+          </crow>
+          <!-- /if -->
+        </crow>
+
+        <crow vertical left w-full>
+          <crow justify-between w-full>
+            <span text-sm>Experience</span>
+            <button tertiary text-xs onclick="$.showAccountProgression = true">See progress</button>
+          </crow>
+          <!-- if sidebarLevel < 25 -->
+          <bar-track xp-bar>
+            <bar-fill xp-fill style="width: @[sidebarXpPct]%"></bar-fill>
+            <crow bar-text text-sm>@[sidebarXpCurrent] / @[sidebarXpNeeded]</crow>
+          </bar-track>
+          <!-- /if -->
+        </crow>
+
+        <crow vertical left w-full>
+          <crow justify-between w-full>
+            <span text-sm>Medical area</span>
+            <button tertiary text-xs onclick="
           $.characters.forEach(c => {
             try {
               const ch = CHARACTERS(c, true);
@@ -69,262 +68,268 @@
           });
           $.healTimer = 120;
         ">Heal now</button>
-      </crow>
-      <bar-track heal-timer-bar>
-        <bar-fill heal-timer-fill style="width: @[healTimerPct]%"></bar-fill>
-        <crow bar-text text-sm>@[String(Math.floor(healTimer / 60)).padStart(2, '0')]:@[String(healTimer % 60).padStart(2, '0')]</crow>
-      </bar-track>
-    </crow>
-  </crow>
-
-  <spacer></spacer>
-
-  <!-- MY BRAWLERS -->
-  <crow justify-between>
-    <h5 m-0>MY BRAWLERS</h5>
-    <span cinzel flex-none>@[sidebarChars.length] / @[sidebarMaxChars]</span>
-  </crow>
-  <hr headline-hr-sm />
-
-  <brawler-list onmouseenter="$.showSequence = true" onmouseleave="$.showSequence = false">
-    <crow vertical up left>
-      <!-- if characters.length === 0 -->
-      <crow vertical w-full g-2 text-sm text-muted>
-        You have no brawlers yet.
-        <a href="/brawlers" tertiary>Recruit brawler</a>
-      </crow>
-      <!-- /if -->
-
-      <!-- each sidebarChars as schar, i -->
-      <a href="/brawlers/@[i]" onclick="selectBrawler(event, characters[@[i]]?.uuid, @[i])" brawler-link>
-        <crow left brawler-row data-active="@[Number(routeParams.characterIndex) === i || selectedBrawlers.includes(characters[i]?.uuid)]">
-          <avatar-wrap>
-            <avatar-frame glass>
-              <img data-src="/static/images/races/@[schar.mugshot]" alt="" brawler-img />
-            </avatar-frame>
-          </avatar-wrap>
-          <crow vertical left brawler-info>
-            <crow w-full>
-              <bar-track hp-bar>
-                <bar-fill hp-fill style="width: @[schar.healthPct]%"></bar-fill>
-                <crow bar-text text-sm justify-between>
-                  <span>@[schar.name]</span>
-                  <!-- if showSequence || maxBrawlers || Number(routeParams.characterIndex) === i || selectedBrawlers.includes(characters[i]?.uuid) -->
-                  <span>@[schar.currentHealth] / @[schar.maxHealth]</span>
-                  <!-- /if -->
-                  <!-- if !showSequence && !maxBrawlers && Number(routeParams.characterIndex) !== i && !selectedBrawlers.includes(characters[i]?.uuid) -->
-                  <span>@[schar.healthPct]%</span>
-                  <!-- /if -->
-                </crow>
-              </bar-track>
-            </crow>
-            <ability-accordion data-open="@[showSequence || !!maxBrawlers || Number(routeParams.characterIndex) === i || selectedBrawlers.includes(characters[i]?.uuid)]">
-              <ability-accordion-content>
-              <ability-preview>
-                <!-- each schar.abilities as ab -->
-                <ability-preview-cell style="width: calc(12px * @[ab.ticks])">
-                  <icon @[ab.icon]></icon>
-                </ability-preview-cell>
-                <!-- /each -->
-              </ability-preview>
-              </ability-accordion-content>
-            </ability-accordion>
           </crow>
+          <bar-track heal-timer-bar>
+            <bar-fill heal-timer-fill style="width: @[healTimerPct]%"></bar-fill>
+            <crow bar-text text-sm>@[String(Math.floor(healTimer / 60)).padStart(2,
+              '0')]:@[String(healTimer % 60).padStart(2, '0')]</crow>
+          </bar-track>
         </crow>
-      </a>
-      <!-- /each -->
-    </crow>
-  </brawler-list>
+      </crow>
 
-  <style>
-    sidebar-content combat-status {
-      position: absolute;
-      top: calc(var(--unit) * -6);
-      left: 0;
-    }
+      <spacer></spacer>
 
-    sidebar-content [combat-link] {
-      display: flex;
-      align-items: center;
-      gap: calc(var(--unit) * 2);
-      text-decoration: none;
-      color: inherit;
-    }
+      <crow justify-between>
+        <h5 m-0>MY BRAWLERS</h5>
+        <span cinzel flex-none>@[sidebarChars.length] / @[sidebarMaxChars]</span>
+      </crow>
+      <hr headline-hr-sm />
 
-    sidebar-content spacer {
-      display: block;
-      height: calc(var(--unit) * 8);
-    }
+      <brawler-list onmouseenter="$.showSequence = true" onmouseleave="$.showSequence = false">
+        <crow vertical up left>
+          <!-- if characters.length === 0 -->
+          <crow vertical w-full g-2 text-sm text-muted>
+            You have no brawlers yet.
+            <a href="/brawlers" tertiary>Recruit brawler</a>
+          </crow>
+          <!-- /if -->
 
-    /* Bar component - shared */
-    sidebar-content bar-track {
-      position: relative;
-      display: grid;
-      height: calc(var(--unit) * 7);
-      width: 100%;
-      background: rgba(0,0,0,0.2);
-      color: white;
-      box-shadow: inset 0 1px 2px rgba(0,0,0,0.15);
-    }
+          <!-- each sidebarChars as schar, i -->
+          <a href="/brawlers/@[i]" onclick="selectBrawler(event, characters[@[i]]?.uuid, @[i])"
+            brawler-link>
+            <crow left brawler-row
+              data-active="@[Number(routeParams.characterIndex) === i || selectedBrawlers.includes(characters[i]?.uuid)]">
+              <avatar-wrap>
+                <avatar-frame glass>
+                  <img data-src="/static/images/races/@[schar.mugshot]" alt="" brawler-img />
+                </avatar-frame>
+              </avatar-wrap>
+              <crow vertical left brawler-info>
+                <crow w-full>
+                  <bar-track hp-bar>
+                    <bar-fill hp-fill style="width: @[schar.healthPct]%"></bar-fill>
+                    <crow bar-text text-sm justify-between>
+                      <span>@[schar.name]</span>
+                      <!-- if showSequence || maxBrawlers || Number(routeParams.characterIndex) === i || selectedBrawlers.includes(characters[i]?.uuid) -->
+                      <span>@[schar.currentHealth] / @[schar.maxHealth]</span>
+                      <!-- /if -->
+                      <!-- if !showSequence && !maxBrawlers && Number(routeParams.characterIndex) !== i && !selectedBrawlers.includes(characters[i]?.uuid) -->
+                      <span>@[schar.healthPct]%</span>
+                      <!-- /if -->
+                    </crow>
+                  </bar-track>
+                </crow>
+                <ability-accordion
+                  data-open="@[showSequence || !!maxBrawlers || Number(routeParams.characterIndex) === i || selectedBrawlers.includes(characters[i]?.uuid)]">
+                  <ability-accordion-content>
+                    <ability-preview>
+                      <!-- each schar.abilities as ab -->
+                      <ability-preview-cell style="width: calc(12px * @[ab.ticks])">
+                        <icon @[ab.icon]></icon>
+                      </ability-preview-cell>
+                      <!-- /each -->
+                    </ability-preview>
+                  </ability-accordion-content>
+                </ability-accordion>
+              </crow>
+            </crow>
+          </a>
+          <!-- /each -->
+        </crow>
+      </brawler-list>
 
-    sidebar-content bar-fill {
-      display: block;
-      height: 100%;
-      transition: width 200ms ease;
-      grid-area: 1/1;
-    }
 
-    sidebar-content [bar-text] {
-      grid-area: 1/1;
-      padding: 0 calc(var(--unit) * 2);
-      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-      z-index: 1;
-    }
+      <style>
+        sidebar-content combat-status {
+          position: absolute;
+          top: calc(var(--unit) * -6);
+          left: 0;
+        }
 
-    /* XP bar */
-    sidebar-content [xp-bar] {
-      height: calc(var(--unit) * 6);
-      border-radius: calc(var(--unit) * 0.5);
-      overflow: hidden;
-    }
+        sidebar-content [combat-link] {
+          display: flex;
+          align-items: center;
+          gap: calc(var(--unit) * 2);
+          text-decoration: none;
+          color: inherit;
+        }
 
-    sidebar-content [xp-fill] {
-      background: oklch(0.5 0.15 65);
-    }
+        sidebar-content spacer {
+          display: block;
+          height: calc(var(--unit) * 8);
+        }
 
-    /* Heal timer */
-    sidebar-content [heal-timer-bar] {
-      height: calc(var(--unit) * 6);
-      border-radius: calc(var(--unit) * 0.5);
-      overflow: hidden;
-    }
+        /* Bar component - shared */
+        sidebar-content bar-track {
+          position: relative;
+          display: grid;
+          height: calc(var(--unit) * 7);
+          width: 100%;
+          background: rgba(0, 0, 0, 0.2);
+          color: white;
+          box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15);
+        }
 
-    sidebar-content [heal-timer-fill] {
-      background: rgba(100, 100, 100, 0.6);
-      transition: width 1s linear;
-    }
+        sidebar-content bar-fill {
+          display: block;
+          height: 100%;
+          transition: width 200ms ease;
+          grid-area: 1/1;
+        }
 
-    /* HP bar */
-    sidebar-content [hp-bar] {
-      height: calc(var(--unit) * 7);
-    }
+        sidebar-content [bar-text] {
+          grid-area: 1/1;
+          padding: 0 calc(var(--unit) * 2);
+          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+          z-index: 1;
+        }
 
-    sidebar-content [hp-fill] {
-      background: oklch(0.35 0.08 20);
-    }
+        /* XP bar */
+        sidebar-content [xp-bar] {
+          height: calc(var(--unit) * 6);
+          border-radius: calc(var(--unit) * 0.5);
+          overflow: hidden;
+        }
 
-    /* Coins */
-    sidebar-content [coin-stack] {
-      gap: calc(var(--unit) * 2);
-      flex-wrap: wrap-reverse;
-      justify-content: flex-end;
-    }
+        sidebar-content [xp-fill] {
+          background: oklch(0.5 0.15 65);
+        }
 
-    sidebar-content [coin-silver] {
-      color: oklch(0.6 0.12 200);
-    }
+        /* Heal timer */
+        sidebar-content [heal-timer-bar] {
+          height: calc(var(--unit) * 6);
+          border-radius: calc(var(--unit) * 0.5);
+          overflow: hidden;
+        }
 
-    sidebar-content [coin-copper] {
-      color: oklch(0.6 0.15 60);
-    }
+        sidebar-content [heal-timer-fill] {
+          background: rgba(100, 100, 100, 0.6);
+          transition: width 1s linear;
+        }
 
-    /* Brawler list */
-    sidebar-content brawler-list {
-      display: block;
-      margin: calc(var(--unit) * 2) calc(var(--unit) * -4);
-    }
+        /* HP bar */
+        sidebar-content [hp-bar] {
+          height: calc(var(--unit) * 7);
+        }
 
-    sidebar-content [brawler-link] {
-      display: block;
-      width: 100%;
-      text-decoration: none;
-      color: inherit;
-    }
+        sidebar-content [hp-fill] {
+          background: oklch(0.35 0.08 20);
+        }
 
-    sidebar-content [brawler-row] {
-      transition: all 75ms;
-    }
+        /* Coins */
+        sidebar-content [coin-stack] {
+          gap: calc(var(--unit) * 2);
+          flex-wrap: wrap-reverse;
+          justify-content: flex-end;
+        }
 
-    sidebar-content [brawler-row][data-active="true"] {
-      background: rgba(255, 255, 255, 0.5);
-      border-radius: calc(var(--unit) * 0.5);
-      margin: calc(var(--unit) * -1) calc(var(--unit) * -1.5);
-      padding: var(--unit) calc(var(--unit) * 1.5);
-      width: auto;
-      border: none;
-      backdrop-filter: blur(4px);
-      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-    }
+        sidebar-content [coin-silver] {
+          color: oklch(0.6 0.12 200);
+        }
 
-    sidebar-content avatar-wrap {
-      display: block;
-      width: calc(var(--unit) * 16);
-      height: calc(var(--unit) * 16);
-      padding: var(--unit);
-      flex: none;
-    }
+        sidebar-content [coin-copper] {
+          color: oklch(0.6 0.15 60);
+        }
 
-    sidebar-content avatar-frame {
-      display: block;
-      width: 100%;
-      height: 100%;
-      border-radius: calc(var(--unit) * 0.5);
-      overflow: hidden;
-      border: 1px solid rgba(75, 85, 99, 1);
-    }
+        /* Brawler list */
+        sidebar-content brawler-list {
+          display: block;
+          margin: calc(var(--unit) * 2) calc(var(--unit) * -4);
+        }
 
-    sidebar-content [brawler-img] {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+        sidebar-content [brawler-link] {
+          display: block;
+          width: 100%;
+          text-decoration: none;
+          color: inherit;
+        }
 
-    sidebar-content [brawler-info] {
-      flex: 1;
-      min-width: 0;
-      overflow: hidden;
-      padding: var(--unit);
-    }
+        sidebar-content [brawler-row] {
+          transition: all 75ms;
+        }
 
-    sidebar-content ability-accordion {
-      display: grid;
-      grid-template-rows: 0fr;
-      transition: grid-template-rows 200ms ease;
-    }
+        sidebar-content [brawler-row][data-active="true"] {
+          background: rgba(255, 255, 255, 0.5);
+          border-radius: calc(var(--unit) * 0.5);
+          margin: calc(var(--unit) * -1) calc(var(--unit) * -1.5);
+          padding: var(--unit) calc(var(--unit) * 1.5);
+          width: auto;
+          border: none;
+          backdrop-filter: blur(4px);
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
 
-    sidebar-content ability-accordion[data-open="true"] {
-      grid-template-rows: 1fr;
-    }
+        sidebar-content avatar-wrap {
+          display: block;
+          width: calc(var(--unit) * 16);
+          height: calc(var(--unit) * 16);
+          padding: var(--unit);
+          flex: none;
+        }
 
-    sidebar-content ability-accordion-content {
-      display: block;
-      overflow: hidden;
-      min-height: 0;
-    }
+        sidebar-content avatar-frame {
+          display: block;
+          width: 100%;
+          height: 100%;
+          border-radius: calc(var(--unit) * 0.5);
+          overflow: hidden;
+          border: 1px solid rgba(75, 85, 99, 1);
+        }
 
-    sidebar-content ability-preview {
-      display: flex;
-      border: 0.5px solid rgb(120, 113, 108);
-      border-radius: 0 0 var(--unit) var(--unit);
-      background: rgb(214, 211, 209);
-      overflow: hidden;
-      width: calc(var(--unit) * 36.25);
-      padding-right: calc(var(--unit) * 0.25);
-    }
+        sidebar-content [brawler-img] {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
 
-    sidebar-content ability-preview-cell {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: calc(var(--unit) * 6);
-      flex: none;
-      border-right: 0.5px solid rgb(120, 113, 108);
-      color: rgb(120, 113, 108);
-      font-size: 0.875rem;
-    }
+        sidebar-content [brawler-info] {
+          flex: 1;
+          min-width: 0;
+          overflow: hidden;
+          padding: var(--unit);
+        }
 
-    sidebar-content ability-preview-cell:last-child {
-      border-right: none;
-    }
-  </style>
-</sidebar-content>
+        sidebar-content ability-accordion {
+          display: grid;
+          grid-template-rows: 0fr;
+          transition: grid-template-rows 200ms ease;
+        }
+
+        sidebar-content ability-accordion[data-open="true"] {
+          grid-template-rows: 1fr;
+        }
+
+        sidebar-content ability-accordion-content {
+          display: block;
+          overflow: hidden;
+          min-height: 0;
+        }
+
+        sidebar-content ability-preview {
+          display: flex;
+          border: 0.5px solid rgb(120, 113, 108);
+          border-radius: 0 0 var(--unit) var(--unit);
+          background: rgb(214, 211, 209);
+          overflow: hidden;
+          width: calc(var(--unit) * 36.25);
+          padding-right: calc(var(--unit) * 0.25);
+        }
+
+        sidebar-content ability-preview-cell {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: calc(var(--unit) * 6);
+          flex: none;
+          border-right: 0.5px solid rgb(120, 113, 108);
+          color: rgb(120, 113, 108);
+          font-size: 0.875rem;
+        }
+
+        sidebar-content ability-preview-cell:last-child {
+          border-right: none;
+        }
+      </style>
+  </sidebar-content>
+  </div>
+</sidebar>

@@ -1,217 +1,45 @@
-<script type="module">
-  import config from '/js/config.js';
-  import { notify } from '/js/actions.js';
-
-  // Matches: src/components/Authorization.svelte
-  window.loadGameState = async (token) => {
-    try {
-      const { gameState, serverTimestampSnapshot } = await $.socket.sendAsync('user/authenticate', {
-        token, clientVersion: '0.1.0', isDev: config.IS_DEV
-      });
-      if (gameState) {
-        if (gameState.characters) $.characters = gameState.characters;
-        if (gameState.inventory) $.inventory = gameState.inventory;
-        if (gameState.experience) $.experience = gameState.experience;
-        if (gameState.coins !== undefined) $.coins = gameState.coins;
-        if (gameState.accountRewards) $.accountRewards = gameState.accountRewards;
-      }
-      if (serverTimestampSnapshot) {
-        $.serverTimestampSnapshot = serverTimestampSnapshot;
-        $.syncPerformanceNow = performance.now();
-      }
-    } catch (e) {
-      notify(e);
-      $.token = undefined;
-    }
-  };
-
-  // Matches: src/components/Login.svelte
-  window.authLogin = async () => {
-    if (!$.authCodeOfConduct) {
-      notify({ error: 'you must to agree to the Code of Conduct in order to play' });
-      return;
-    }
-    try {
-      const t = await $.socket.sendAsync('user/login', { email: $.authEmail, password: $.authPassword });
-      let expiration = '';
-      if ($.authRememberMe) {
-        const future = new Date();
-        future.setDate(future.getDate() + 30);
-        expiration = ` Expires=${future};`;
-      }
-      document.cookie = `token=${t};${expiration}`;
-      $.token = t;
-      notify({ success: 'Logged in successfully' });
-    } catch (e) {
-      notify(e);
-    }
-  };
-
-  // Matches: src/components/Register.svelte
-  window.authRegister = async () => {
-    try {
-      await $.socket.sendAsync('user/register', { email: $.authEmail, password: $.authPassword });
-      notify({ success: 'Account was created. You can now log in.' });
-      $.authEmail = '';
-      $.authPassword = '';
-      $.authMode = 'login';
-    } catch (e) {
-      notify(e);
-    }
-  };
-
-  // Matches: src/components/ForgotPassword.svelte
-  window.authForgotPassword = async () => {
-    try {
-      await $.socket.sendAsync('user/password/request-reset', {
-        email: $.authEmail,
-        url: window.location.origin
-      });
-      $.authEmail = '';
-      notify({ info: 'if an account was registered on that email address, check your email' });
-      $.authMode = 'login';
-    } catch (e) {
-      notify(e);
-    }
-  };
-</script>
-
-<game-layout layout>
-  <!-- DEVBAR -->
-  <!-- if isDev -->
-  <crow up devbar glass>
-    <crow vertical left g-1 p-2>
-      <button devbar-btn onclick="document.dispatchEvent(new CustomEvent('pauseCombat'))">Pause combat</button>
-      <button devbar-btn onclick="document.dispatchEvent(new CustomEvent('resumeCombat'))">Resume combat</button>
-      <span text-xs>Elapsed ms: @[elapsedMilliseconds.toFixed(0)]</span>
-      <span text-xs>Duration: @[combat.duration]</span>
-    </crow>
-    <crow vertical left p-2>
-      <span text-xs>Server: @[new Date(serverTimestampSnapshot).toLocaleString()]</span>
-      <crow vertical up left mt-2>
-        <a href="/debug" devbar-link>Debug</a>
-        <a href="/ability-scaling" devbar-link>Ability Scaling</a>
-        <a href="/equipment-scaling" devbar-link>Equipment Scaling</a>
-        <a href="/character-scaling" devbar-link>Character Scaling</a>
-      </crow>
-    </crow>
-    <crow vertical left g-1 p-2>
-      <crow g-1>
-        <button devbar-btn onclick="$.characters.forEach(c => { try { const ch = CHARACTERS(c, true); const s = calculateCombatStatsByCharacter(ch); c.overrides.combatStats.currentHealth = s.maxHealth; } catch {} }); $.characters = [...$.characters]">Heal party</button>
-        <button devbar-btn onclick="$.characters.forEach(c => { try { const ch = CHARACTERS(c, true); c.overrides.combatStats.currentHealth = ch.combatStats.currentHealth - 5; } catch {} }); $.characters = [...$.characters]">Damage party</button>
-      </crow>
-      <crow g-1>
-        <button devbar-btn onclick="$.experience += 40">Gain exp</button>
-        <button devbar-btn onclick="$.experience = 0">Reset exp</button>
-      </crow>
-      <crow g-1>
-        <button devbar-btn onclick="$.coins += 100">Gain coins</button>
-        <button devbar-btn onclick="$.coins = 0">Reset coins</button>
-      </crow>
-      <crow g-1>
-        <button devbar-btn onclick="$.bossHighscore += 1">Increase boss</button>
-        <button devbar-btn onclick="$.bossHighscore = 0">Reset boss</button>
-      </crow>
-      <button devbar-btn onclick="$.characters = []">Reset characters</button>
-      <button devbar-btn onclick="$.accountRewards = 1">Reset rewards</button>
-    </crow>
-  </crow>
+<game-layout>
+  <!-- if isDev && token -->
+  <component src="/components/DevBar.html"></component>
   <!-- /if -->
 
-  <!-- AUTH / GAME SHELL -->
-  <!-- if !socket -->
-  <center-full>
-    <crow g-2 text-muted>
-      <spinner></spinner> Connecting to server
-    </crow>
-  </center-full>
-  <!-- /if -->
-
-  <!-- if socket && !token -->
-  <center-full auth-padding>
-    <auth-scene>
-      <img src="/static/images/races/troll/male-01.png" alt="" auth-char-left />
-      <auth-form glass>
-        <!-- if authMode === 'login' -->
-        <form onsubmit="event.preventDefault(); authLogin();">
-          <crow g-2 mb-3>
-            <input type="email" placeholder="Email" value="@[authEmail]" oninput="$.authEmail = this.value" required auth-input />
-            <input type="password" placeholder="Password" value="@[authPassword]" oninput="$.authPassword = this.value" required auth-input />
-            <button primary type="submit">Log in</button>
-          </crow>
-          <crow g-2 mb-2>
-            <input type="checkbox" id="codeOfConduct" checked="@[authCodeOfConduct]" onchange="$.authCodeOfConduct = this.checked" />
-            <label for="codeOfConduct" text-sm>I agree to the <a href="#" onclick="event.preventDefault(); $.overlay = 'CodeOfConduct'">Code of Conduct</a></label>
-          </crow>
-          <crow g-2 mb-2>
-            <input type="checkbox" id="rememberMe" checked="@[authRememberMe]" onchange="$.authRememberMe = this.checked" />
-            <label for="rememberMe" text-sm>Remember me</label>
-          </crow>
-          <crow g-2>
-            <button tertiary type="button" onclick="$.authMode = 'register'">Register</button>
-            <button tertiary type="button" onclick="$.authMode = 'forgot'">Forgot password</button>
-          </crow>
-        </form>
-        <!-- /if -->
-
-        <!-- if authMode === 'register' -->
-        <form onsubmit="event.preventDefault(); authRegister();">
-          <crow g-2 mb-3>
-            <input type="email" placeholder="Email" value="@[authEmail]" oninput="$.authEmail = this.value" required auth-input />
-            <input type="password" placeholder="Password" value="@[authPassword]" oninput="$.authPassword = this.value" required auth-input />
-            <button primary type="submit">Register</button>
-          </crow>
-          <p text-sm text-muted>
-            Already have an account? <a href="#" onclick="event.preventDefault(); $.authMode = 'login';">Log in</a>
-          </p>
-        </form>
-        <!-- /if -->
-
-        <!-- if authMode === 'forgot' -->
-        <form onsubmit="event.preventDefault(); authForgotPassword();">
-          <crow g-2 mb-3>
-            <input type="email" placeholder="Email" value="@[authEmail]" oninput="$.authEmail = this.value" required auth-input />
-            <button primary type="submit">Submit</button>
-          </crow>
-          <p text-sm text-muted>
-            <a href="#" onclick="event.preventDefault(); $.authMode = 'login';">Back to login</a>
-          </p>
-        </form>
-        <!-- /if -->
-      </auth-form>
-      <img src="/static/images/races/elf/female-01.png" alt="" auth-char-right />
-    </auth-scene>
-  </center-full>
-  <!-- /if -->
-
-  <!-- if token -->
-  <crow game-shell>
-    <sidebar sm-hide>
+  <component src="/components/Authorization.html">
+    <crow game-shell>
       <component src="/components/Sidebar.html"></component>
-    </sidebar>
 
-    <crow vertical up game-main>
-      <crow up right g-1 tab-row>
-        <a href="/" data-tab="" tab-link data-active="@[route ? route.split('/')[1] || '' : '']">Game Guide</a>
-        <a href="/the-arena" data-tab="the-arena" tab-link data-active="@[route ? route.split('/')[1] || '' : '']">The Arena</a>
-        <a href="/random-duel" data-tab="random-duel" tab-link data-active="@[route ? route.split('/')[1] || '' : '']">Random duel</a>
-        <a href="/vendor" data-tab="vendor" tab-link data-active="@[route ? route.split('/')[1] || '' : '']">Vendor</a>
-        <a href="/brawlers" data-tab="brawlers" tab-link data-active="@[route ? route.split('/')[1] || '' : '']">Brawlers</a>
+
+      <crow vertical game-main>
+        <card content-area p-0>
+          <page @[pageName]>
+            <slot></slot>
+          </page>
+
+          <stay w-full sm:reverse>
+            <crow up g-1 tab-row w-full py-3>
+              <a href="/" data-tab="" tab-link
+                data-active="@[route ? route.split('/')[1] || '' : '']">Game Guide</a>
+              <a href="/the-arena" data-tab="the-arena" tab-link
+                data-active="@[route ? route.split('/')[1] || '' : '']">The Arena</a>
+              <a href="/random-duel" data-tab="random-duel" tab-link
+                data-active="@[route ? route.split('/')[1] || '' : '']">Random duel</a>
+              <a href="/vendor" data-tab="vendor" tab-link
+                data-active="@[route ? route.split('/')[1] || '' : '']">Vendor</a>
+              <a href="/brawlers" data-tab="brawlers" tab-link
+                data-active="@[route ? route.split('/')[1] || '' : '']">Brawlers</a>
+            </crow>
+            <hr sm:order-first />
+          </stay>
+        </card>
+
+
       </crow>
-      <card content-area>
-        <slot></slot>
-      </card>
+
+
+      <!-- <component src="/components/Armory.html"></component> -->
+
     </crow>
+  </component>
 
-    <!-- if routeParams.characterIndex !== undefined || route === '/vendor' -->
-    <sidebar sm-hide armory>
-      <component src="/components/Armory.html"></component>
-    </sidebar>
-    <!-- /if -->
-  </crow>
-  <!-- /if -->
-
-  <!-- OVERLAY LAYER -->
   <component src="/components/Combat.html"></component>
 
   <!-- if overlay === 'GameMenu' -->
@@ -233,42 +61,234 @@
   <component src="/components/Topbar.html"></component>
 
   <style>
-    [layout] center-full { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
-    [layout] [auth-padding] { padding: 0 calc(var(--unit) * 4) calc(var(--unit) * 4); }
-    [layout] auth-scene { position: relative; display: flex; align-items: flex-end; justify-content: center; gap: 0; }
-    [layout] [auth-char-left] { max-width: calc(var(--unit) * 80); height: auto; pointer-events: none; }
-    [layout] [auth-char-right] { max-width: calc(var(--unit) * 32); height: auto; pointer-events: none; z-index: 1; transform: scaleX(-1); }
-    [layout] auth-form { position: relative; z-index: 2; width: 100%; margin-right: calc(var(--unit) * -18); margin-left: calc(var(--unit) * -24); margin-bottom: calc(var(--unit) * 10); padding: calc(var(--unit) * 10) calc(var(--unit) * 10) calc(var(--unit) * 6); }
-    [layout] auth-error { display: block; background: var(--destructive); color: white; padding: calc(var(--unit) * 2) calc(var(--unit) * 3); border-radius: var(--radius); }
-    [layout] [auth-input] { padding: calc(var(--unit) * 2) calc(var(--unit) * 3); border: 1px solid var(--border); border-radius: var(--radius); flex: 1; min-width: 0; }
-    [layout] [game-shell] { align-items: flex-start; min-height: 100vh; width: 100%; max-width: calc(var(--unit) * 320); margin: 0 auto; padding: calc(var(--unit) * 20) calc(var(--unit) * 3) calc(var(--unit) * 3); gap: calc(var(--unit) * 3); }
-    [layout] sidebar { order: 0; top: calc(var(--unit) * 3); height: calc(100vh - calc(var(--unit) * 6)); overflow-y: auto; }
-    [layout] sidebar-content { background: rgba(255, 255, 255, 0.3); border-radius: var(--radius); border: 1px solid transparent; }
-    [layout] sidebar[armory] { order: 1; transition: all 200ms; }
-    [layout] [game-main] { flex: 1; min-width: 0; width: 100%; }
-    [layout] [content-area] { flex: 1; width: 100%; border-radius: var(--radius); }
-    [layout] [tab-row] { height: calc(var(--unit) * 7); flex: none; padding: 0 var(--unit); }
-    [layout] [tab-link] { padding: calc(var(--unit) * 0.5) calc(var(--unit) * 2); font-size: 0.8rem; border: 1px solid transparent; border-bottom: none; border-radius: var(--radius) var(--radius) 0 0; color: var(--muted-foreground); text-decoration: none; }
+    game-layout {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
 
-    [battle-brawlers] overlay-backdrop { position: fixed; inset: 0; z-index: 20; display: grid; grid-template-rows: calc(var(--unit) * 20) 1fr calc(var(--unit) * 20); place-items: center; overflow-x: hidden; overflow-y: auto; background: rgba(0, 0, 0, 0.2); box-shadow: inset 0 0 10vw rgba(0, 0, 0, 0.5); backdrop-filter: blur(1px); animation: overlayIn 200ms ease-out 75ms both; }
-    [battle-brawlers] dialog-backdrop { animation: overlayIn 150ms ease-out both; }
-    @keyframes overlayIn { from { opacity: 0; transform: scale(0.95); } }
+    game-layout center-full {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
 
-    combat-panel, combat-arena, combatant-slot, combatant-card, combatant-sprite, combatant-statuses, combat-result, combat-rewards, combat-floater, hp-track, hp-fill, armor-track, armor-fill, progress-track, progress-fill, game-frame, menu-label, dialog-backdrop, progression-panel, progression-scroll, progression-rewards, tooltip-layer, tooltip-stats, spacer { display: block; }
+    game-layout [auth-padding] {
+      padding: 0 calc(var(--unit) * 4) calc(var(--unit) * 4);
+    }
 
-    [battle-brawlers] overlay-panel { display: block; position: relative; max-width: calc(var(--unit) * 175); min-width: calc(var(--unit) * 80); width: calc(100% - var(--unit) * 24); max-height: 90vh; overflow-y: auto; text-align: left; }
-    [battle-brawlers] overlay-panel[overlay-sm] { max-width: calc(var(--unit) * 80); }
-    [battle-brawlers] game-frame { border: calc(var(--unit) * 0.75) solid; border-image-source: url('/static/images/ui/frame.png'); border-image-slice: 3; border-image-repeat: repeat; background: rgba(0, 0, 0, 0.75); box-shadow: inset 0 0 100px rgb(0 0 0 / 80%); color: rgb(156, 163, 175); }
-    [battle-brawlers] [close-btn] { all: unset; position: absolute; top: calc(var(--unit) * -3); right: calc(var(--unit) * -3); width: calc(var(--unit) * 6); height: calc(var(--unit) * 6); display: flex; align-items: center; justify-content: center; cursor: pointer; color: rgb(220, 38, 38); font-size: 0.75rem; }
-    [battle-brawlers] menu-label { width: calc(var(--unit) * 40); flex: none; }
-    [battle-brawlers] [menu-divider] { border: 0; height: calc(var(--unit) * 0.25); background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent); margin: var(--unit) 0; width: 100%; }
-    [battle-brawlers] [game-frame-title] { position: relative; margin: calc(var(--unit) * -0.75) 0 0 0; padding: 0 calc(var(--unit) * 2); height: calc(var(--unit) * 8.25); background-image: url('/static/images/ui/frame-header.jpg'); background-position: left calc(var(--unit) * 0.5); background-repeat: repeat-x; font-family: var(--font-heading); color: rgb(156, 163, 175); }
-    [battle-brawlers] [stretch] { align-items: stretch; }
-    [battle-brawlers] [range-input] { width: 60%; }
-    [battle-brawlers] [devbar] { position: sticky; top: 0; z-index: 50; font-size: 0.75rem; width: 100%; }
-    [battle-brawlers] [devbar-btn] { all: unset; cursor: pointer; font-size: 0.7rem; padding: calc(var(--unit) * 0.5) calc(var(--unit) * 2); border: 1px solid var(--border); border-radius: var(--radius); background: var(--card); }
-    [battle-brawlers] [devbar-btn]:hover { background: var(--background); }
-    [battle-brawlers] [devbar-link] { padding: calc(var(--unit) * 0.5) calc(var(--unit) * 2); font-size: 0.75rem; color: var(--muted-foreground); text-decoration: none; border: 1px solid transparent; border-bottom: none; }
-    [battle-brawlers] [devbar-link]:hover { color: var(--foreground); }
+    game-layout auth-scene {
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 0;
+    }
+
+
+    game-layout auth-form {
+      position: relative;
+      width: 100%;
+      max-width: 600px;
+      margin-bottom: calc(var(--unit) * 10);
+      padding: calc(var(--unit) * 10) calc(var(--unit) * 10) calc(var(--unit) * 6);
+    }
+
+    game-layout [auth-input] {
+      flex: 1;
+      min-width: 0;
+    }
+
+    game-layout [game-shell] {
+      align-items: flex-start;
+      display: flex;
+      flex: 1;
+      align-self: stretch;
+      width: 100%;
+      max-width: calc(var(--unit) * 320);
+      margin: 0 auto;
+      padding: calc(var(--unit) * 20) calc(var(--unit) * 3) calc(var(--unit) * 0) calc(var(--unit) * 3);
+      gap: calc(var(--unit) * 3);
+    }
+
+    game-layout sidebar {
+      order: 0;
+      top: calc(var(--unit) * 3);
+      height: calc(100vh - calc(var(--unit) * 6));
+      overflow-y: auto;
+    }
+
+    game-layout sidebar-content {
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: var(--radius);
+      border: 1px solid transparent;
+    }
+
+    game-layout sidebar[armory] {
+      order: 1;
+      transition: opacity 200ms, transform 200ms;
+      opacity: 0;
+      transform: translateX(calc(var(--unit) * 4));
+      pointer-events: none;
+    }
+
+    game-layout sidebar[armory][data-visible="true"] {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+
+    game-layout [game-main] {
+      flex: 1;
+      min-width: 0;
+      width: 100%;
+      align-self: stretch;
+    }
+
+    game-layout [content-area] {
+      flex: 1;
+      width: 100%;
+      border-radius: calc(var(--radius) * 0);
+      box-shadow: none;
+    }
+
+    game-layout [tab-row] {
+      background: #fff;
+    }
+
+    game-layout [tab-link] {
+      padding: calc(var(--unit) * 0.5) calc(var(--unit) * 2);
+      border: 1px solid transparent;
+      border-bottom: none;
+      border-radius: var(--radius) var(--radius) 0 0;
+      color: var(--muted-foreground);
+      text-decoration: none;
+    }
+
+    [battle-brawlers] overlay-backdrop {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      grid-template-rows: calc(var(--unit) * 20) 1fr calc(var(--unit) * 20);
+      place-items: center;
+      overflow-x: hidden;
+      overflow-y: auto;
+      background: rgba(0, 0, 0, 0.2);
+      box-shadow: inset 0 0 10vw rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(1px);
+      animation: overlayIn 200ms ease-out 75ms both;
+    }
+
+    [battle-brawlers] dialog-backdrop {
+      animation: overlayIn 150ms ease-out both;
+    }
+
+    @keyframes overlayIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+    }
+
+    combat-panel,
+    combat-arena,
+    combatant-slot,
+    combatant-card,
+    combatant-sprite,
+    combatant-statuses,
+    combat-result,
+    combat-rewards,
+    combat-floater,
+    hp-track,
+    hp-fill,
+    armor-track,
+    armor-fill,
+    progress-track,
+    progress-fill,
+    game-frame,
+    menu-label,
+    dialog-backdrop,
+    progression-panel,
+    progression-scroll,
+    progression-rewards,
+    tooltip-layer,
+    tooltip-stats,
+    spacer {
+      display: block;
+    }
+
+    [battle-brawlers] overlay-panel {
+      display: block;
+      position: relative;
+      max-width: calc(var(--unit) * 175);
+      min-width: calc(var(--unit) * 80);
+      width: calc(100% - var(--unit) * 24);
+      max-height: 90vh;
+      overflow-y: auto;
+      text-align: left;
+    }
+
+    [battle-brawlers] overlay-panel[overlay-sm] {
+      max-width: calc(var(--unit) * 80);
+    }
+
+    [battle-brawlers] game-frame {
+      border: calc(var(--unit) * 0.75) solid;
+      border-image-source: url('/static/images/ui/frame.png');
+      border-image-slice: 3;
+      border-image-repeat: repeat;
+      background: rgba(0, 0, 0, 0.75);
+      box-shadow: inset 0 0 100px rgb(0 0 0 / 80%);
+      color: rgb(156, 163, 175);
+    }
+
+    [battle-brawlers] [close-btn] {
+      all: unset;
+      position: absolute;
+      top: calc(var(--unit) * -3);
+      right: calc(var(--unit) * -3);
+      width: calc(var(--unit) * 6);
+      height: calc(var(--unit) * 6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: rgb(220, 38, 38);
+      font-size: 0.75rem;
+    }
+
+    [battle-brawlers] menu-label {
+      width: calc(var(--unit) * 40);
+      flex: none;
+    }
+
+    [battle-brawlers] [menu-divider] {
+      border: 0;
+      height: calc(var(--unit) * 0.25);
+      background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent);
+      margin: var(--unit) 0;
+      width: 100%;
+    }
+
+    [battle-brawlers] [game-frame-title] {
+      position: relative;
+      margin: calc(var(--unit) * -0.75) 0 0 0;
+      padding: 0 calc(var(--unit) * 2);
+      height: calc(var(--unit) * 8.25);
+      background-image: url('/static/images/ui/frame-header.jpg');
+      background-position: left calc(var(--unit) * 0.5);
+      background-repeat: repeat-x;
+      font-family: var(--font-heading);
+      color: rgb(156, 163, 175);
+    }
+
+    [battle-brawlers] [stretch] {
+      align-items: stretch;
+    }
+
+    [battle-brawlers] [range-input] {
+      width: 60%;
+    }
   </style>
 </game-layout>

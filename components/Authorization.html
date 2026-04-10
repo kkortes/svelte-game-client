@@ -1,0 +1,69 @@
+<script type="module">
+  import config from '/js/config.js';
+  import { notify } from '/js/actions.js';
+
+  // Matches: src/components/Authorization.svelte
+  window.loadGameState = async (token) => {
+    try {
+      const { gameState, serverTimestampSnapshot } = await $.socket.sendAsync('user/authenticate', {
+        token, clientVersion: '0.1.0', isDev: config.IS_DEV
+      });
+      if (gameState) {
+        if (gameState.characters) $.characters = gameState.characters;
+        if (gameState.inventory) $.inventory = gameState.inventory;
+        if (gameState.experience) $.experience = gameState.experience;
+        if (gameState.coins !== undefined) $.coins = gameState.coins;
+        if (gameState.accountRewards) $.accountRewards = gameState.accountRewards;
+      }
+      if (serverTimestampSnapshot) {
+        $.serverTimestampSnapshot = serverTimestampSnapshot;
+        $.syncPerformanceNow = performance.now();
+      }
+    } catch (e) {
+      notify(e);
+      $.token = undefined;
+    }
+  };
+</script>
+
+<!-- if !socket -->
+<center-full>
+  <crow g-2 text-muted><spinner></spinner> Connecting to server</crow>
+</center-full>
+<!-- /if -->
+
+<!-- if socket && !token -->
+<center-full auth-padding>
+  <auth-scene w-full>
+    <auth-form glass>
+      <!-- if authMode === 'login' -->
+      <component src="/components/Login.html"></component>
+      <!-- /if -->
+
+      <!-- if authMode === 'register' -->
+      <component src="/components/Register.html"></component>
+      <!-- /if -->
+
+      <!-- if authMode === 'forgot' -->
+      <component src="/components/ForgotPassword.html"></component>
+      <!-- /if -->
+
+      <crow g-2>
+        <!-- if authMode !== 'login' -->
+        <button secondary type="button" onclick="$.authMode = 'login'">Login</button>
+        <!-- /if -->
+        <!-- if authMode !== 'register' -->
+        <button secondary type="button" onclick="$.authMode = 'register'">Register</button>
+        <!-- /if -->
+        <!-- if authMode !== 'forgot' -->
+        <button secondary type="button" onclick="$.authMode = 'forgot'">Forgot password</button>
+        <!-- /if -->
+      </crow>
+    </auth-form>
+  </auth-scene>
+</center-full>
+<!-- /if -->
+
+<!-- if token -->
+<slot></slot>
+<!-- /if -->

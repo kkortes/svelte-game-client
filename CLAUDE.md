@@ -4,6 +4,11 @@
 
 Strategy auto-battler rewritten from SvelteKit + Tailwind to Vibe + Stylecheat. Branch: `chore/major-rewrite-to-stylecheat-and-vibe`.
 
+## Testing
+
+- Don't use Playwright MCP unless explicitly asked
+- The user tests in the browser manually and reports issues
+
 ## Reference
 
 The **`main` branch** contains the original SvelteKit implementation. Use `git show main:<path>` or `git ls-tree main <dir>` to inspect without switching branches. The original is the source of truth for all functionality and design.
@@ -88,9 +93,9 @@ Run from `svelte-game-server/`: `bun run index.js` (port 1337). Config in `js/co
 **Combat (Combat.html):**
 - [ ] Card-based grid instead of circular arena with character sprites
 - [ ] No combatant sprites rendered
-- [ ] Floating damage numbers: CSS exists but template may not match combat-loop selectors
+- [x] Floating damage numbers: selectors verified matching
 - [ ] No ability bars in combat display
-- [ ] Status effects not sorted (original sorts by ticks/value)
+- [x] Status effects sorted (precomputed in combat-loop, rendered via each loops)
 
 **Pages:**
 - [ ] Brawler detail: DnD causes `window.location.reload()` — original updates in-place reactively
@@ -99,9 +104,9 @@ Run from `svelte-game-server/`: `bun run index.js` (port 1337). Config in `js/co
 - [x] Fight detail: mugshot image `.replace()` inside `@[...]` breaks Vibe attribute parsing
 
 **Components:**
-- [ ] Notifications: no auto-dismiss (original has 3s dismiss with animation + hover pause)
+- [x] Notifications: auto-dismiss via setTimeout in actions.js (hover pause is polish)
 - [ ] Dialog: only supports confirm type — original accepts any component
 - [x] AccountProgression: claim sound effect + auto-close on current level
-- [ ] AccountProgression: no auto-scroll to current level
-- [ ] Layout: no armory sidebar transition (original has opacity + translate CSS transition)
-- [ ] Layout: no background image switching for debug page
+- [x] AccountProgression: auto-scroll to current level on open
+- [x] Layout: armory sidebar transition (opacity + translate via data-visible)
+- [x] Layout: debug page background image
