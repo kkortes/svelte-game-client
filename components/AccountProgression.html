@@ -66,13 +66,17 @@
                 </crow>
               </crow>
             </crow>
-            <progression-premium>Premium rewards TBA.</progression-premium>
+
             <!-- if lvl > accountRewards && lvl <= sidebarLevel -->
             <button primary onclick="claimAccountReward(@[lvl])">Claim</button>
             <!-- /if -->
             <!-- if lvl > sidebarLevel -->
             <button primary disabled>Locked</button>
             <!-- /if -->
+
+            <progression-premium mt-auto>Premium rewards TBA.</progression-premium>
+
+
           </card>
         </slide-center>
       </slide>
@@ -132,7 +136,8 @@
     align-items: center;
     justify-content: center;
     width: calc(100% + var(--unit) * 8);
-    margin-inline: calc(var(--unit) * 4) calc(var(--unit) * -4) calc(var(--unit) * -4);
+    margin-inline: calc(var(--unit) * -4);
+    margin-bottom: calc(var(--unit) * -4);
     padding: calc(var(--unit) * 4);
     background: oklch(0.85 0.05 85 / 0.2);
     border-radius: 0 0 var(--radius) var(--radius);
