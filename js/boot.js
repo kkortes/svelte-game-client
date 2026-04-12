@@ -343,7 +343,7 @@ export default () => {
         try {
           new Howl({
             src: [AUDIO['Fire & Shimmer']],
-            volume: ($.settings?.volume?.sfx || 0.5) * ($.settings?.volume?.master || 0.5)
+            volume: ($.settings?.volume?.sfx ?? 0.5) * ($.settings?.volume?.master ?? 0.5)
           }).play();
         } catch {}
       }

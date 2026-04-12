@@ -73,7 +73,7 @@ export const init = () => {
     if (!src || !window.Howl) return;
     new window.Howl({
       src: [src],
-      volume: ($.settings?.volume?.combat || 1) * ($.settings?.volume?.master || 0.5)
+      volume: ($.settings?.volume?.combat ?? 1) * ($.settings?.volume?.master ?? 0.5)
     }).play();
   };
 

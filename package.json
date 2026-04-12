@@ -3,12 +3,15 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "bunx live-server --port=3000 --no-browser"
+    "dev": "bunx vite"
   },
   "dependencies": {
     "@ape-egg/vibe": "latest",
     "async-await-websockets": "^3.0.5",
     "howler": "^2.2.4",
     "seedrandom": "^3.0.5"
+  },
+  "devDependencies": {
+    "vite": "^8.0.8"
   }
 }
