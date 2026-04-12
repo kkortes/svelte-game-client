@@ -1,4 +1,4 @@
-<game-menu>
+<component src="/components/Modal.html" when="@[overlay === 'GameMenu']">
   <game-frame relative>
     <crow left game-frame-title cinzel>options</crow>
     <crow vertical g-2 p-4>
@@ -40,7 +40,7 @@
         <button secondary onclick="$.overlay = 'ReleaseNotes'">
           Release notes
         </button>
-        <!-- if token -->
+        <!-- if !!token -->
         <button primary
           onclick="document.cookie = 'token=; Max-Age=0'; $.token = undefined; $.characters = []; $.inventory = []; $.overlay = ''">
           Logout
@@ -53,4 +53,4 @@
       <icon cross></icon>
     </button>
   </game-frame>
-</game-menu>
+</component>

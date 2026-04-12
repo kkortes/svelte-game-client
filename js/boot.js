@@ -155,10 +155,6 @@ export default () => {
           $.dialog = undefined;
           return;
         }
-        if ($.showAccountProgression) {
-          $.showAccountProgression = false;
-          return;
-        }
         $.overlay = $.overlay ? '' : 'GameMenu';
       }
     });
@@ -334,7 +330,7 @@ export default () => {
       // Level-up detection
       const prevLevel = getLevelByExperience(prev.experience || 0);
       if (level > prevLevel && prev.experience > 0) {
-        $.showAccountProgression = true;
+        $.overlay = 'AccountProgression';
         $.characters.forEach((c) => {
           try {
             correctHealth(c);

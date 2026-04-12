@@ -1,14 +1,8 @@
-  <!-- if overlay === 'ReleaseNotes' -->
-  <overlay-backdrop onclick="$.overlay = ''">
-    <spacer></spacer>
-    <overlay-panel glass p-4 onclick="event.stopPropagation()">
-      <crow justify-between mb-4>
-        <h3 m-0>Release Notes</h3>
-        <button tertiary onclick="$.overlay = ''">Close</button>
-      </crow>
-      <h5 cinzel m-0>v0.1.0</h5>
-      <p text-sm text-muted mt-2>Initial Vibe + Stylecheat rewrite.</p>
-    </overlay-panel>
-    <spacer></spacer>
-  </overlay-backdrop>
-  <!-- /if -->
+<component src="/components/Modal.html" when="@[overlay === 'ReleaseNotes']">
+  <crow justify-between mb-4>
+    <h3 m-0>Release Notes</h3>
+    <button tertiary onclick="$.overlay = ''">Close</button>
+  </crow>
+  <h5 cinzel m-0>v0.1.0</h5>
+  <p text-sm text-muted mt-2>Initial Vibe + Stylecheat rewrite.</p>
+</component>

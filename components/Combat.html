@@ -45,8 +45,8 @@
   };
 </script>
 
-<!-- if overlay === 'Combat' -->
-<overlay-backdrop combat-bg>
+<component src="/components/Modal.html" when="@[overlay === 'Combat']" bare="true">
+<combat-bg>
   <spacer></spacer>
   <combat-panel onclick="event.stopPropagation()">
 
@@ -193,14 +193,21 @@
 
   </combat-panel>
   <spacer></spacer>
-</overlay-backdrop>
-<!-- /if -->
+</combat-bg>
+</component>
 
 <style>
-  [battle-brawlers] overlay-backdrop[combat-bg] {
+  [battle-brawlers] combat-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    display: grid;
+    grid-template-rows: calc(var(--unit) * 20) 1fr calc(var(--unit) * 20);
+    place-items: center;
+    overflow-x: hidden;
+    overflow-y: auto;
     background: url('/static/images/arena.png') center / cover no-repeat;
     box-shadow: inset 0 0 10vw rgba(0, 0, 0, 1);
-    backdrop-filter: none;
   }
 
   [battle-brawlers] combat-panel {

@@ -4,7 +4,7 @@
   import { getLevelByExperience } from '/js/level.js';
 
   $.on('afterUpdate', (current, prev) => {
-    if (current.showAccountProgression && !prev.showAccountProgression) {
+    if (current.overlay === 'AccountProgression' && prev.overlay !== 'AccountProgression') {
       const el = document.querySelector('[progression-scroll] slides');
       if (!el) return;
       const target = el.children[current.accountRewards - 1];
@@ -22,7 +22,7 @@
   window.claimAccountReward = (lvl) => {
     if (lvl > $.accountRewards && lvl <= $.sidebarLevel) {
       if (lvl === getLevelByExperience($.experience)) {
-        setTimeout(() => { $.showAccountProgression = false; }, 500);
+        setTimeout(() => { $.overlay = ''; }, 500);
       }
       try {
         new Howl({
@@ -36,50 +36,50 @@
   };
 </script>
 
-<!-- if showAccountProgression -->
-<carousel progression-scroll onclick="$.showAccountProgression = false">
-  <slides x scrollbar>
-    <!-- each progressionLevels as lvl -->
-    <slide>
-      <slide-center>
-        <card progression-card onclick="event.stopPropagation()"
-          data-claimed="@[lvl <= accountRewards]" data-reached="@[lvl <= sidebarLevel]">
-          <!-- if lvl <= accountRewards -->
-          <icon checkmark progression-check></icon>
-          <!-- /if -->
-          <h4 m-0>Level @[lvl]</h4>
-          <hr my-2 />
-          <crow g-8 up left>
-            <crow vertical up left>
-              <strong sm>Account</strong>
-              <crow g-1>+1 <icon coin coin-silver></icon>
+<component src="/components/Modal.html" when="@[overlay === 'AccountProgression']" bare="true">
+  <carousel progression-scroll onclick="$.overlay = ''">
+    <slides x scrollbar>
+      <!-- each progressionLevels as lvl -->
+      <slide>
+        <slide-center>
+          <card progression-card onclick="event.stopPropagation()"
+            data-claimed="@[lvl <= accountRewards]" data-reached="@[lvl <= sidebarLevel]">
+            <!-- if lvl <= accountRewards -->
+            <icon checkmark progression-check></icon>
+            <!-- /if -->
+            <h4 m-0>Level @[lvl]</h4>
+            <hr my-2 />
+            <crow g-8 up left>
+              <crow vertical up left>
+                <strong sm>Account</strong>
+                <crow g-1>+1 <icon coin coin-silver></icon>
+                </crow>
+                <!-- if lvl % 5 === 0 || lvl === 1 -->
+                <span sm>+1 brawler</span>
+                <!-- /if -->
               </crow>
-              <!-- if lvl % 5 === 0 || lvl === 1 -->
-              <span sm>+1 brawler</span>
-              <!-- /if -->
+              <crow vertical up left>
+                <strong sm>Brawlers</strong>
+                <crow g-1>+4 <icon maxHealth></icon>
+                </crow>
+                <crow g-1>+2 <icon damage></icon>
+                </crow>
+              </crow>
             </crow>
-            <crow vertical up left>
-              <strong sm>Brawlers</strong>
-              <crow g-1>+4 <icon maxHealth></icon>
-              </crow>
-              <crow g-1>+2 <icon damage></icon>
-              </crow>
-            </crow>
-          </crow>
-          <progression-premium>Premium rewards TBA.</progression-premium>
-          <!-- if lvl > accountRewards && lvl <= sidebarLevel -->
-          <button primary onclick="claimAccountReward(@[lvl])">Claim</button>
-          <!-- /if -->
-          <!-- if lvl > sidebarLevel -->
-          <button primary disabled>Locked</button>
-          <!-- /if -->
-        </card>
-      </slide-center>
-    </slide>
-    <!-- /each -->
-  </slides>
-</carousel>
-<!-- /if -->
+            <progression-premium>Premium rewards TBA.</progression-premium>
+            <!-- if lvl > accountRewards && lvl <= sidebarLevel -->
+            <button primary onclick="claimAccountReward(@[lvl])">Claim</button>
+            <!-- /if -->
+            <!-- if lvl > sidebarLevel -->
+            <button primary disabled>Locked</button>
+            <!-- /if -->
+          </card>
+        </slide-center>
+      </slide>
+      <!-- /each -->
+    </slides>
+  </carousel>
+</component>
 
 <style>
   [progression-scroll] {
