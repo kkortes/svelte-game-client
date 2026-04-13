@@ -24,21 +24,7 @@
       <crow vertical left w-full g-2>
         <crow justify-between w-full>
           <span text-sm>Coins</span>
-          <!-- if coins === 0 -->
-          <span>-</span>
-          <!-- /if -->
-          <!-- if coins > 0 -->
-          <crow coin-stack>
-            <!-- if Math.floor(coins / 100) > 0 -->
-            <crow g-1 flex-none>@[Math.floor(coins / 100)]×<icon coin coin-silver></icon>
-            </crow>
-            <!-- /if -->
-            <!-- if coins % 100 > 0 -->
-            <crow g-1 flex-none>@[coins % 100]×<icon coin coin-copper></icon>
-            </crow>
-            <!-- /if -->
-          </crow>
-          <!-- /if -->
+          <component src="/components/Coins.html" amount="@[coins]"></component>
         </crow>
 
         <crow vertical left w-full>
@@ -225,14 +211,6 @@
           gap: calc(var(--unit) * 2);
           flex-wrap: wrap-reverse;
           justify-content: flex-end;
-        }
-
-        sidebar-content [coin-silver] {
-          color: oklch(0.6 0.12 200);
-        }
-
-        sidebar-content [coin-copper] {
-          color: oklch(0.6 0.15 60);
         }
 
         /* Brawler list */

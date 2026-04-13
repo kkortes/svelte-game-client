@@ -29,6 +29,30 @@
   --font-heading: 'Cinzel', serif;
   --font-display: 'Alfa Slab One', cursive;
   --font-accent: 'Bree Serif', serif;
+
+  --coin-copper: oklch(0.666 0.156 63);  /* amber-600 */
+  --coin-silver: oklch(0.705 0.015 286); /* gray-400 */
+  --coin-gold: oklch(0.795 0.17 86);     /* yellow-500 */
+  --coin-platinum: oklch(0.715 0.143 215); /* cyan-500 */
+}
+
+/* Visibility toggle driven by Vibe attribute bindings */
+[data-hidden='true'] {
+  display: none;
+}
+
+/* Coin colors */
+[coin-copper] {
+  color: var(--coin-copper);
+}
+[coin-silver] {
+  color: var(--coin-silver);
+}
+[coin-gold] {
+  color: var(--coin-gold);
+}
+[coin-platinum] {
+  color: var(--coin-platinum);
 }
 
 [dark] {

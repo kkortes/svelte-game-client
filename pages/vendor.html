@@ -172,19 +172,10 @@
           </crow>
           <vendor-col-slot text-sm text-muted>@[item.slotLabel]</vendor-col-slot>
           <vendor-col-cost>
-            <crow g-1 text-sm right>
-              <!-- if Math.floor(item.cost / 100) > 0 -->
-              <span>@[Math.floor(item.cost / 100)]×</span>
-              <icon coin coin-silver></icon>
-              <!-- /if -->
-              <!-- if item.cost % 100 > 0 -->
-              <span>@[item.cost % 100]×</span>
-              <icon coin coin-copper></icon>
-              <!-- /if -->
-            </crow>
+            <component src="/components/Coins.html" amount="@[item.cost]"></component>
           </vendor-col-cost>
           <crow vendor-col-action right>
-            <button tertiary text-sm onclick="vendorAcquire('@[item.id]')"
+            <button secondary sm onclick="vendorAcquire('@[item.id]')"
               data-disabled="@[$.coins < item.cost]">Acquire</button>
           </crow>
         </crow>
@@ -260,14 +251,6 @@
     page[vendor] [vendor-col-action] {
       width: calc(var(--unit) * 20);
       flex: none;
-    }
-
-    page[vendor] [coin-silver] {
-      color: oklch(0.6 0.12 200);
-    }
-
-    page[vendor] [coin-copper] {
-      color: oklch(0.6 0.15 60);
     }
   </style>
 </body>
