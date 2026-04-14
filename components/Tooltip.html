@@ -17,7 +17,7 @@
     <!-- /if -->
 
     <!-- if tooltip.props && tooltip.props.basic !== undefined -->
-    <span tooltip-tag data-basic="@[tooltip.props.basic]">@[tooltip.props.basic ? 'Basic' :
+    <span tooltip-tag basic="@[tooltip.props.basic]">@[tooltip.props.basic ? 'Basic' :
       'Special']</span>
     <!-- /if -->
 
@@ -126,7 +126,7 @@
     color: var(--muted-foreground);
   }
 
-  [battle-brawlers] [tooltip-tag][data-basic="false"] {
+  [battle-brawlers] [tooltip-tag]:not([basic]) {
     background: oklch(0.85 0.1 280);
     color: oklch(0.4 0.15 280);
   }

@@ -3,7 +3,6 @@ import { boot as vibeBoot } from '/nodemodules/@ape-egg/vibe/boot.js';
 import appState, { INITIAL_COMBAT } from '/js/app.js';
 import config from '/js/config.js';
 import { getCookie } from '/js/helpers.js';
-import { init as initKeystrokes } from '/js/keystrokes.js';
 import { init as initCombatLoop } from '/js/combat-loop.js';
 import { init as initSocket } from '/js/connectSocket.js';
 import { init as initAmbient } from '/js/ambient.js';
@@ -78,9 +77,15 @@ export default () => {
     }
   };
 
+  // Restore token from cookie BEFORE vibe initializes so the first hydration
+  // already knows we're logged in — avoids a login-screen flash before the
+  // ready hook would otherwise restore it.
+  const cookie = getCookie();
+
   window.$ = vibe(
     {
       ...appState,
+      token: cookie?.token,
       showSequence: false,
       authMode: 'login',
       authEmail: config.IS_DEV ? config.AUTO_EMAIL : '',
@@ -134,17 +139,13 @@ export default () => {
     mqls[key].addEventListener('change', updateMedia);
   });
 
-  // Initialize services
-  initKeystrokes();
+  // Initialize services (keystroke handling lives in <Keystrokes> component, mounted via Layout)
   initCombatLoop();
   initSocket();
   initAmbient();
 
-  // Restore token from cookie
-  const cookie = getCookie();
   $.on('ready', () => {
     updateMedia();
-    if (cookie?.token) $.token = cookie.token;
 
     // Apply dark mode from saved settings
     document.body.toggleAttribute('dark', !!$.settings?.darkMode);
@@ -155,11 +156,14 @@ export default () => {
           $.dialog = undefined;
           return;
         }
-        if ($.showAccountProgression) {
-          $.showAccountProgression = false;
-          return;
-        }
         $.overlay = $.overlay ? '' : 'GameMenu';
+      }
+
+      // Shift + Option/Alt + D toggles the DevBar. Match on e.code so we don't
+      // have to deal with Option producing the special `∂` character on macOS.
+      if ($.isDev && e.shiftKey && e.altKey && e.code === 'KeyD') {
+        e.preventDefault();
+        $.devbarOpen = !$.devbarOpen;
       }
     });
 
@@ -175,15 +179,20 @@ export default () => {
     const FULL_TIME = MINUTES_TO_REFILL * 60 * 1000;
 
     setInterval(() => {
-      if (!$.serverTimestamp || !$.token || $.characters.length === 0) return;
+      // Anchor the cycle to a real timestamp — prefer the server-synced clock
+      // when available so heals stay aligned across sessions; fall back to
+      // client time so the countdown keeps ticking even before the socket
+      // handshake (or if the server never sends a snapshot).
+      const anchor = $.serverTimestampSnapshot || Date.now();
+      const nowMs = $.serverTimestamp || Date.now();
 
-      const now = new Date($.serverTimestampSnapshot);
+      const now = new Date(anchor);
       const minutes = now.getMinutes();
       const nextMarkMinute = minutes + (MINUTES_TO_REFILL - (minutes % MINUTES_TO_REFILL));
       const nextMark = new Date(now);
       nextMark.setMinutes(nextMarkMinute, 0, 0);
 
-      const timeToRefill = nextMark.getTime() - $.serverTimestamp;
+      const timeToRefill = nextMark.getTime() - nowMs;
       $.healTimer = Math.max(0, Math.ceil(timeToRefill / 1000));
       $.healTimerPct = Math.round(((FULL_TIME - timeToRefill) / FULL_TIME) * 100);
 
@@ -199,7 +208,7 @@ export default () => {
             );
           } catch {}
         });
-        $.serverTimestampSnapshot = $.serverTimestamp;
+        $.serverTimestampSnapshot = nowMs;
         $.syncPerformanceNow = performance.now();
       }
     }, 1000);
@@ -334,7 +343,7 @@ export default () => {
       // Level-up detection
       const prevLevel = getLevelByExperience(prev.experience || 0);
       if (level > prevLevel && prev.experience > 0) {
-        $.showAccountProgression = true;
+        $.overlay = 'AccountProgression';
         $.characters.forEach((c) => {
           try {
             correctHealth(c);
@@ -343,7 +352,7 @@ export default () => {
         try {
           new Howl({
             src: [AUDIO['Fire & Shimmer']],
-            volume: ($.settings?.volume?.sfx || 0.5) * ($.settings?.volume?.master || 0.5)
+            volume: ($.settings?.volume?.sfx ?? 0.5) * ($.settings?.volume?.master ?? 0.5)
           }).play();
         } catch {}
       }

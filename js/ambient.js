@@ -1,7 +1,7 @@
 let currentTrack = null;
 let tracks = null;
 
-const getVolume = () => ($.settings?.volume?.master || 0.5) * ($.settings?.volume?.ambient || 0.25);
+const getVolume = () => ($.settings?.volume?.master ?? 0.5) * ($.settings?.volume?.ambient ?? 0.25);
 
 const crossfade = (next) => {
   if (!next || currentTrack === next) return;

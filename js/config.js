@@ -1,10 +1,10 @@
-const IS_DEV = ['localhost', '127.0.0.1'].includes(location.hostname);
+const IS_DEV = import.meta.env.VITE_VERCEL_ENV === 'development';
 
 export default {
-  WEBSOCKET_CONNECT: IS_DEV ? 'ws://localhost:1337' : 'wss://battle-brawlers-server.vercel.app',
-  ENVIRONMENT: IS_DEV ? 'development' : 'production',
+  WEBSOCKET_CONNECT: import.meta.env.VITE_WEBSOCKET_CONNECT ?? '',
+  ENVIRONMENT: import.meta.env.VITE_VERCEL_ENV ?? 'production',
   IS_DEV,
   IS_PROD: !IS_DEV,
-  AUTO_EMAIL: IS_DEV ? 'me@korte.kim' : '',
-  AUTO_PASSWORD: IS_DEV ? 'qwe123' : ''
+  AUTO_EMAIL: import.meta.env.VITE_AUTO_EMAIL ?? '',
+  AUTO_PASSWORD: import.meta.env.VITE_AUTO_PASSWORD ?? ''
 };

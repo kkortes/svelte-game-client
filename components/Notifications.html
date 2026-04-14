@@ -2,9 +2,9 @@
   <!-- if notifications.length > 0 -->
   <notification-stack>
     <!-- each notifications as notification -->
-    <notification-card glass data-type="@[notification.type]">
+    <notification-card glass type="@[notification.type]">
       <crow g-2>
-        <crow notification-icon data-type="@[notification.type]">
+        <crow notification-icon type="@[notification.type]">
           <icon @[notification.type]></icon>
         </crow>
         <notification-body>
@@ -49,19 +49,19 @@
       padding: calc(var(--unit) * 3) calc(var(--unit) * 5) calc(var(--unit) * 3) calc(var(--unit) * 3);
     }
 
-    notification-panel notification-card[data-type="error"] {
+    notification-panel notification-card[type="error"] {
       border-color: #ef4444;
     }
 
-    notification-panel notification-card[data-type="warning"] {
+    notification-panel notification-card[type="warning"] {
       border-color: #f97316;
     }
 
-    notification-panel notification-card[data-type="success"] {
+    notification-panel notification-card[type="success"] {
       border-color: #22c55e;
     }
 
-    notification-panel notification-card[data-type="info"] {
+    notification-panel notification-card[type="info"] {
       border-color: #3b82f6;
     }
 
@@ -77,19 +77,19 @@
       font-size: 1.125rem;
     }
 
-    notification-panel [notification-icon][data-type="error"] {
+    notification-panel [notification-icon][type="error"] {
       background: #ef4444;
     }
 
-    notification-panel [notification-icon][data-type="warning"] {
+    notification-panel [notification-icon][type="warning"] {
       background: #f97316;
     }
 
-    notification-panel [notification-icon][data-type="success"] {
+    notification-panel [notification-icon][type="success"] {
       background: #22c55e;
     }
 
-    notification-panel [notification-icon][data-type="info"] {
+    notification-panel [notification-icon][type="info"] {
       background: #3b82f6;
     }
 

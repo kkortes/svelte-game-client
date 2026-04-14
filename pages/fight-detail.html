@@ -228,7 +228,7 @@
       <stay reverse>
         <crow right p-3 fight-bottom-bar>
           <button fight-btn primary onclick="startFight()"
-            data-disabled="@[selectedBrawlers.length === 0 || combat.duration !== 0]">Fight</button>
+            disabled="@[selectedBrawlers.length === 0 || combat.duration !== 0]">Fight</button>
         </crow>
       </stay>
       <!-- /if -->
@@ -403,7 +403,7 @@
       padding: calc(var(--unit) * 2) calc(var(--unit) * 8);
     }
 
-    page[the-arena-fightId] [fight-btn][data-disabled="true"] {
+    page[the-arena-fightId] [fight-btn][disabled] {
       opacity: 0.5;
       pointer-events: none;
     }
