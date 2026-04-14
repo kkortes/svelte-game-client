@@ -1,4 +1,6 @@
-<crow up devbar sm>
+<hr w-full />
+
+<crow up devbar sm py-4>
   <crow vertical left g-1 p-2>
     <button secondary onclick="document.dispatchEvent(new CustomEvent('pauseCombat'))">Pause
       combat</button>
@@ -11,6 +13,7 @@
     <span>My Server: @[new Date(serverTimestampSnapshot).toLocaleString()]</span>
     <crow vertical up left mt-2>
       <a href="/debug" secondary>Debug</a>
+      <a href="/styleguide" secondary>Styleguide</a>
       <a href="/ability-scaling" secondary>Ability Scaling</a>
       <a href="/equipment-scaling" secondary>Equipment Scaling</a>
       <a href="/character-scaling" secondary>Character Scaling</a>
@@ -41,9 +44,3 @@
     <button secondary onclick="$.accountRewards = 1">Reset rewards</button>
   </crow>
 </crow>
-
-<style>
-  [devbar] {
-    background: #ffffff50;
-  }
-</style>

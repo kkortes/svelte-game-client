@@ -1,12 +1,4 @@
 <game-layout>
-  <!-- if isDev && token -->
-  <accordion devbar-accordion open="@[devbarOpen]">
-    <accordion-content>
-      <component src="/components/DevBar.html"></component>
-    </accordion-content>
-  </accordion>
-  <!-- /if -->
-
   <component src="/components/Authorization.html">
     <crow game-shell>
 
@@ -17,7 +9,7 @@
             <slot></slot>
           </page>
 
-          <stay w-full sm:reverse>
+          <stay w-full sm:reverse t="8">
             <crow up g-1 tab-row w-full py-3 sm:h="8" overflow-hidden>
               <a href="/" class="button" tertiary="@[pageName !== 'home']"
                 primary="@[pageName === 'home']">
@@ -125,6 +117,10 @@
         background-color: rgba(255, 255, 255, 0.3);
         border-radius: calc(var(--radius) * 0.5);
       }
+
+      [dark] sidebar-content {
+        background-color: oklch(from var(--card) calc(l*0.75) c h / 0.6);
+      }
     }
 
     game-layout sidebar[armory] {
@@ -158,7 +154,7 @@
     }
 
     game-layout [tab-row] {
-      background: #ffffff;
+      background: var(--background);
       border-top-left-radius: calc(var(--radius) * 1);
       border-top-right-radius: calc(var(--radius) * 1);
     }

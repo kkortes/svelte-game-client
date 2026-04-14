@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Styleguide · Battle Brawlers</title>
+  <link rel="icon" href="/static/favicon.png" />
+  <link rel="stylesheet" href="/css/index.css" />
+</head>
+
+<body battle-brawlers vibe vibe-fouc stylecheat>
+  <script type="module">
+    import boot from '/js/boot.js';
+    boot();
+  </script>
+
+  <component src="/components/Layout.html">
+    <page-content>
+
+      <typography>
+        <h1>Styleguide</h1>
+        <p>Canonical colors and design tokens for <strong>Battle Brawlers</strong>. Use these
+          when styling components; derive lightness/chroma variants with
+          <code>oklch(from var(--bb-x) calc(l ± n) c h)</code> rather than hard-coding shades.
+        </p>
+
+
+        <sg-section>
+          <sg-head>
+            <h2>Palette · <code>--bb-*</code></h2>
+            <p>Eleven hue anchors distilled from the original SvelteKit theme — covers elements,
+              teams, rarity tiers, coins, and damage/healing feedback.</p>
+          </sg-head>
+          <swatch-grid>
+            <color-swatch><swatch-fill
+                bb-red></swatch-fill><swatch-meta><swatch-name>--bb-red</swatch-name><swatch-value>oklch(0.58
+                  0.22 27)</swatch-value><swatch-role>fire · team-red · mythic · health ·
+                  damage</swatch-role></swatch-meta></color-swatch>
+            <color-swatch><swatch-fill
+                bb-orange></swatch-fill><swatch-meta><swatch-name>--bb-orange</swatch-name><swatch-value>oklch(0.66
+                  0.19 55)</swatch-value><swatch-role>fire-light · earth-light · legendary ·
+                  copper</swatch-role></swatch-meta></color-swatch>
+            <color-swatch><swatch-fill
+                bb-yellow></swatch-fill><swatch-meta><swatch-name>--bb-yellow</swatch-name><swatch-value>oklch(0.80
+                  0.17 90)</swatch-value><swatch-role>lightning · gold ·
+                  premium</swatch-role></swatch-meta></color-swatch>
+            <color-swatch><swatch-fill
+                bb-olive></swatch-fill><swatch-meta><swatch-name>--bb-olive</swatch-name><swatch-value>oklch(0.68
+                  0.13
+                  110)</swatch-value><swatch-role>team-olive</swatch-role></swatch-meta></color-swatch>
+            <color-swatch><swatch-fill
+                bb-green></swatch-fill><swatch-meta><swatch-name>--bb-green</swatch-name><swatch-value>oklch(0.65
+                  0.18 140)</swatch-value><swatch-role>nature · team-green · uncommon ·
+                  healing</swatch-role></swatch-meta></color-swatch>
+            <color-swatch><swatch-fill
+                bb-cyan></swatch-fill><swatch-meta><swatch-name>--bb-cyan</swatch-name><swatch-value>oklch(0.78
+                  0.08 205)</swatch-value><swatch-role>frost · platinum
+                  coin</swatch-role></swatch-meta></color-swatch>
+            <color-swatch><swatch-fill
+                bb-blue></swatch-fill><swatch-meta><swatch-name>--bb-blue</swatch-name><swatch-value>oklch(0.55
+                  0.20 260)</swatch-value><swatch-role>team-blue · primary ·
+                  rare</swatch-role></swatch-meta></color-swatch>
+            <color-swatch><swatch-fill
+                bb-purple></swatch-fill><swatch-meta><swatch-name>--bb-purple</swatch-name><swatch-value>oklch(0.50
+                  0.20 310)</swatch-value><swatch-role>team-purple ·
+                  epic</swatch-role></swatch-meta></color-swatch>
+            <color-swatch><swatch-fill
+                bb-pink></swatch-fill><swatch-meta><swatch-name>--bb-pink</swatch-name><swatch-value>oklch(0.65
+                  0.09
+                  340)</swatch-value><swatch-role>team-mauve</swatch-role></swatch-meta></color-swatch>
+            <color-swatch><swatch-fill
+                bb-brown></swatch-fill><swatch-meta><swatch-name>--bb-brown</swatch-name><swatch-value>oklch(0.50
+                  0.10 70)</swatch-value><swatch-role>earth ·
+                  team-brown</swatch-role></swatch-meta></color-swatch>
+            <color-swatch><swatch-fill
+                bb-stone></swatch-fill><swatch-meta><swatch-name>--bb-stone</swatch-name><swatch-value>oklch(0.60
+                  0.02 80)</swatch-value><swatch-role>UI neutrals · scrollbar · muted
+                  text</swatch-role></swatch-meta></color-swatch>
+          </swatch-grid>
+        </sg-section>
+
+        <sg-section>
+          <sg-head>
+            <h2>Lightness ramps</h2>
+            <p>Each hue at five lightness stops — demonstrates how to derive shades with
+              <code>oklch(from var(--bb-x) &lt;l&gt; c h)</code>. The anchor stop is outlined.
+            </p>
+          </sg-head>
+          <ramp-grid>
+            <ramp-row bb-red> <ramp-label>--bb-red</ramp-label> <ramp-stop
+                l-35></ramp-stop><ramp-stop l-50></ramp-stop><ramp-stop l-65
+                anchor></ramp-stop><ramp-stop l-80></ramp-stop><ramp-stop
+                l-92></ramp-stop></ramp-row>
+            <ramp-row bb-orange> <ramp-label>--bb-orange</ramp-label> <ramp-stop
+                l-35></ramp-stop><ramp-stop l-50></ramp-stop><ramp-stop l-65
+                anchor></ramp-stop><ramp-stop l-80></ramp-stop><ramp-stop
+                l-92></ramp-stop></ramp-row>
+            <ramp-row bb-yellow> <ramp-label>--bb-yellow</ramp-label> <ramp-stop
+                l-35></ramp-stop><ramp-stop l-50></ramp-stop><ramp-stop l-65></ramp-stop><ramp-stop
+                l-80 anchor></ramp-stop><ramp-stop l-92></ramp-stop></ramp-row>
+            <ramp-row bb-olive> <ramp-label>--bb-olive</ramp-label> <ramp-stop
+                l-35></ramp-stop><ramp-stop l-50></ramp-stop><ramp-stop l-65
+                anchor></ramp-stop><ramp-stop l-80></ramp-stop><ramp-stop
+                l-92></ramp-stop></ramp-row>
+            <ramp-row bb-green> <ramp-label>--bb-green</ramp-label> <ramp-stop
+                l-35></ramp-stop><ramp-stop l-50></ramp-stop><ramp-stop l-65
+                anchor></ramp-stop><ramp-stop l-80></ramp-stop><ramp-stop
+                l-92></ramp-stop></ramp-row>
+            <ramp-row bb-cyan> <ramp-label>--bb-cyan</ramp-label> <ramp-stop
+                l-35></ramp-stop><ramp-stop l-50></ramp-stop><ramp-stop l-65></ramp-stop><ramp-stop
+                l-80 anchor></ramp-stop><ramp-stop l-92></ramp-stop></ramp-row>
+            <ramp-row bb-blue> <ramp-label>--bb-blue</ramp-label> <ramp-stop
+                l-35></ramp-stop><ramp-stop l-50 anchor></ramp-stop><ramp-stop
+                l-65></ramp-stop><ramp-stop l-80></ramp-stop><ramp-stop l-92></ramp-stop></ramp-row>
+            <ramp-row bb-purple> <ramp-label>--bb-purple</ramp-label> <ramp-stop
+                l-35></ramp-stop><ramp-stop l-50 anchor></ramp-stop><ramp-stop
+                l-65></ramp-stop><ramp-stop l-80></ramp-stop><ramp-stop l-92></ramp-stop></ramp-row>
+            <ramp-row bb-pink> <ramp-label>--bb-pink</ramp-label> <ramp-stop
+                l-35></ramp-stop><ramp-stop l-50></ramp-stop><ramp-stop l-65
+                anchor></ramp-stop><ramp-stop l-80></ramp-stop><ramp-stop
+                l-92></ramp-stop></ramp-row>
+            <ramp-row bb-brown> <ramp-label>--bb-brown</ramp-label> <ramp-stop
+                l-35></ramp-stop><ramp-stop l-50 anchor></ramp-stop><ramp-stop
+                l-65></ramp-stop><ramp-stop l-80></ramp-stop><ramp-stop l-92></ramp-stop></ramp-row>
+            <ramp-row bb-stone> <ramp-label>--bb-stone</ramp-label> <ramp-stop
+                l-35></ramp-stop><ramp-stop l-50></ramp-stop><ramp-stop l-65
+                anchor></ramp-stop><ramp-stop l-80></ramp-stop><ramp-stop
+                l-92></ramp-stop></ramp-row>
+          </ramp-grid>
+        </sg-section>
+
+        <sg-section>
+          <sg-head>
+            <h2>Theme tokens</h2>
+            <p>Core UI tokens driving stylecheat — text/surface pairs used across layout, forms,
+              and the sidebar.</p>
+          </sg-head>
+          <swatch-grid>
+            <color-swatch><swatch-fill
+                theme-background></swatch-fill><swatch-meta><swatch-name>--background</swatch-name><swatch-value>oklch(0.94
+                  0.02 60)</swatch-value><swatch-role>page
+                  surface</swatch-role></swatch-meta></color-swatch>
+            <color-swatch><swatch-fill
+                theme-foreground></swatch-fill><swatch-meta><swatch-name>--foreground</swatch-name><swatch-value>oklch(0.20
+                  0 0)</swatch-value><swatch-role>body
+                  text</swatch-role></swatch-meta></color-swatch>
+            <color-swatch><swatch-fill
+                theme-muted></swatch-fill><swatch-meta><swatch-name>--muted</swatch-name><swatch-value>oklch(0.70
+                  0.03 50)</swatch-value><swatch-role>muted
+                  surface</swatch-role></swatch-meta></color-swatch>
+            <color-swatch><swatch-fill
+                theme-muted-foreground></swatch-fill><swatch-meta><swatch-name>--muted-foreground</swatch-name><swatch-value>oklch(0.50
+                  0.03 50)</swatch-value><swatch-role>muted text · scrollbar
+                  thumb</swatch-role></swatch-meta></color-swatch>
+            <color-swatch><swatch-fill
+                theme-border></swatch-fill><swatch-meta><swatch-name>--border</swatch-name><swatch-value>oklch(0.85
+                  0.02 60)</swatch-value><swatch-role>dividers · input
+                  borders</swatch-role></swatch-meta></color-swatch>
+            <color-swatch><swatch-fill
+                theme-primary></swatch-fill><swatch-meta><swatch-name>--primary</swatch-name><swatch-value>oklch(0.60
+                  0.15 70)</swatch-value><swatch-role>primary actions ·
+                  accents</swatch-role></swatch-meta></color-swatch>
+            <color-swatch><swatch-fill
+                theme-primary-foreground></swatch-fill><swatch-meta><swatch-name>--primary-foreground</swatch-name><swatch-value>#fff</swatch-value><swatch-role>text
+                  on primary</swatch-role></swatch-meta></color-swatch>
+            <color-swatch><swatch-fill
+                theme-destructive></swatch-fill><swatch-meta><swatch-name>--destructive</swatch-name><swatch-value>oklch(0.55
+                  0.20 25)</swatch-value><swatch-role>delete · error ·
+                  warning</swatch-role></swatch-meta></color-swatch>
+            <color-swatch><swatch-fill
+                theme-sidebar></swatch-fill><swatch-meta><swatch-name>--sidebar</swatch-name><swatch-value>oklch(0.20
+                  0.03 50)</swatch-value><swatch-role>sidebar
+                  surface</swatch-role></swatch-meta></color-swatch>
+            <color-swatch><swatch-fill
+                theme-sidebar-foreground></swatch-fill><swatch-meta><swatch-name>--sidebar-foreground</swatch-name><swatch-value>oklch(0.85
+                  0.02 60)</swatch-value><swatch-role>sidebar
+                  text</swatch-role></swatch-meta></color-swatch>
+            <color-swatch><swatch-fill
+                theme-sidebar-primary></swatch-fill><swatch-meta><swatch-name>--sidebar-primary</swatch-name><swatch-value>oklch(0.60
+                  0.15 70)</swatch-value><swatch-role>sidebar
+                  accent</swatch-role></swatch-meta></color-swatch>
+          </swatch-grid>
+        </sg-section>
+
+        <sg-section>
+          <sg-head>
+            <h2>Coins</h2>
+            <p>Currency token colors — used by <code>[coin-*]</code> attributes on icons and
+              stat displays.</p>
+          </sg-head>
+          <swatch-grid>
+            <color-swatch><swatch-fill
+                coin-copper></swatch-fill><swatch-meta><swatch-name>--coin-copper</swatch-name><swatch-value>oklch(0.666
+                  0.156 63)</swatch-value><swatch-role>amber-600
+                  equivalent</swatch-role></swatch-meta></color-swatch>
+            <color-swatch><swatch-fill
+                coin-silver></swatch-fill><swatch-meta><swatch-name>--coin-silver</swatch-name><swatch-value>oklch(0.705
+                  0.015 286)</swatch-value><swatch-role>gray-400
+                  equivalent</swatch-role></swatch-meta></color-swatch>
+            <color-swatch><swatch-fill
+                coin-gold></swatch-fill><swatch-meta><swatch-name>--coin-gold</swatch-name><swatch-value>oklch(0.795
+                  0.17 86)</swatch-value><swatch-role>yellow-500
+                  equivalent</swatch-role></swatch-meta></color-swatch>
+            <color-swatch><swatch-fill
+                coin-platinum></swatch-fill><swatch-meta><swatch-name>--coin-platinum</swatch-name><swatch-value>oklch(0.715
+                  0.143 215)</swatch-value><swatch-role>cyan-500
+                  equivalent</swatch-role></swatch-meta></color-swatch>
+          </swatch-grid>
+        </sg-section>
+
+        <sg-section>
+          <sg-head>
+            <h2>Equipment rarity</h2>
+            <p>Tier colors driven by <code>--eq-color</code> on <code>eq-link[tier]</code>.
+              Common is the fallback (gray); tiers 5 / 10 / 15 / 20 / 25+ each get a dedicated hue.
+            </p>
+          </sg-head>
+          <swatch-grid>
+            <color-swatch><swatch-fill rarity-common></swatch-fill><swatch-meta><swatch-name>Common
+                  ·
+                  lvl 0–4</swatch-name><swatch-value>rgb(156, 163,
+                  175)</swatch-value><swatch-role>fallback gray (no tier
+                  attr)</swatch-role></swatch-meta></color-swatch>
+            <color-swatch><swatch-fill rarity-green></swatch-fill><swatch-meta><swatch-name>Uncommon
+                  ·
+                  lvl
+                  5–9</swatch-name><swatch-value>#16a34a</swatch-value><swatch-role>[tier="green"]</swatch-role></swatch-meta></color-swatch>
+            <color-swatch><swatch-fill rarity-blue></swatch-fill><swatch-meta><swatch-name>Rare ·
+                  lvl
+                  10–14</swatch-name><swatch-value>#2563eb</swatch-value><swatch-role>[tier="blue"]</swatch-role></swatch-meta></color-swatch>
+            <color-swatch><swatch-fill rarity-purple></swatch-fill><swatch-meta><swatch-name>Epic ·
+                  lvl
+                  15–19</swatch-name><swatch-value>#9333ea</swatch-value><swatch-role>[tier="purple"]</swatch-role></swatch-meta></color-swatch>
+            <color-swatch><swatch-fill
+                rarity-orange></swatch-fill><swatch-meta><swatch-name>Legendary
+                  · lvl
+                  20–24</swatch-name><swatch-value>#ea580c</swatch-value><swatch-role>[tier="orange"]</swatch-role></swatch-meta></color-swatch>
+            <color-swatch><swatch-fill rarity-red></swatch-fill><swatch-meta><swatch-name>Mythic ·
+                  lvl
+                  25+</swatch-name><swatch-value>#dc2626</swatch-value><swatch-role>[tier="red"]</swatch-role></swatch-meta></color-swatch>
+          </swatch-grid>
+        </sg-section>
+
+        <sg-section>
+          <sg-head>
+            <h2>Derivation examples</h2>
+            <p>A few real usage patterns that replace the SvelteKit originals — shown live so you
+              can verify the derived shades.</p>
+          </sg-head>
+          <usage-grid>
+            <usage-card>
+              <usage-preview damage-number>-124</usage-preview>
+              <usage-meta>
+                <usage-name>Damage number</usage-name>
+                <usage-code>oklch(from var(--bb-red) 0.78 0.09 h)</usage-code>
+              </usage-meta>
+            </usage-card>
+            <usage-card>
+              <usage-preview critical-number>-248</usage-preview>
+              <usage-meta>
+                <usage-name>Critical damage</usage-name>
+                <usage-code>var(--bb-red)</usage-code>
+              </usage-meta>
+            </usage-card>
+            <usage-card>
+              <usage-preview heal-number>+56</usage-preview>
+              <usage-meta>
+                <usage-name>Healing number</usage-name>
+                <usage-code>oklch(from var(--bb-green) 0.85 c h)</usage-code>
+              </usage-meta>
+            </usage-card>
+            <usage-card>
+              <usage-preview health-bar><health-fill></health-fill></usage-preview>
+              <usage-meta>
+                <usage-name>Health bar fill</usage-name>
+                <usage-code>oklch(from var(--bb-red) 0.44 c h)</usage-code>
+              </usage-meta>
+            </usage-card>
+            <usage-card>
+              <usage-preview muted-text>Muted label</usage-preview>
+              <usage-meta>
+                <usage-name>Muted text</usage-name>
+                <usage-code>oklch(from var(--bb-stone) 0.40 c h)</usage-code>
+              </usage-meta>
+            </usage-card>
+            <usage-card>
+              <usage-preview gold-badge>LEGENDARY</usage-preview>
+              <usage-meta>
+                <usage-name>Premium badge</usage-name>
+                <usage-code>radial-gradient with --bb-yellow / --bb-orange / --bb-brown</usage-code>
+              </usage-meta>
+            </usage-card>
+          </usage-grid>
+        </sg-section>
+      </typography>
+    </page-content>
+  </component>
+
+  <style>
+    sg-section {
+      display: flex;
+      flex-direction: column;
+      gap: calc(var(--unit) * 4);
+    }
+
+    sg-head {
+      display: flex;
+      flex-direction: column;
+      gap: calc(var(--unit) * 1);
+    }
+
+    sg-head h2 {
+      margin: 0;
+    }
+
+    sg-head p {
+      margin: 0;
+      color: var(--muted-foreground);
+      max-width: 80ch;
+    }
+
+    sg-section code {
+      font-family: monospace;
+      font-size: 0.85em;
+      padding: 0.1em 0.35em;
+      background: oklch(from var(--muted) l c h / 0.5);
+      border-radius: calc(var(--radius) * 0.5);
+    }
+
+    swatch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(calc(var(--unit) * 48), 1fr));
+      gap: calc(var(--unit) * 3);
+    }
+
+    color-swatch {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: oklch(from var(--background) calc(l - 0.04) c h);
+    }
+
+    swatch-fill {
+      display: block;
+      height: calc(var(--unit) * 20);
+    }
+
+    swatch-meta {
+      display: flex;
+      flex-direction: column;
+      gap: calc(var(--unit) * 0.5);
+      padding: calc(var(--unit) * 2.5) calc(var(--unit) * 3);
+    }
+
+    swatch-name {
+      font-family: var(--font-accent);
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    swatch-value {
+      font-family: monospace;
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+    }
+
+    swatch-role {
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+    }
+
+    /* --bb-* palette swatches */
+    swatch-fill[bb-red] {
+      background: var(--bb-red);
+    }
+
+    swatch-fill[bb-orange] {
+      background: var(--bb-orange);
+    }
+
+    swatch-fill[bb-yellow] {
+      background: var(--bb-yellow);
+    }
+
+    swatch-fill[bb-olive] {
+      background: var(--bb-olive);
+    }
+
+    swatch-fill[bb-green] {
+      background: var(--bb-green);
+    }
+
+    swatch-fill[bb-cyan] {
+      background: var(--bb-cyan);
+    }
+
+    swatch-fill[bb-blue] {
+      background: var(--bb-blue);
+    }
+
+    swatch-fill[bb-purple] {
+      background: var(--bb-purple);
+    }
+
+    swatch-fill[bb-pink] {
+      background: var(--bb-pink);
+    }
+
+    swatch-fill[bb-brown] {
+      background: var(--bb-brown);
+    }
+
+    swatch-fill[bb-stone] {
+      background: var(--bb-stone);
+    }
+
+    /* Theme token swatches */
+    swatch-fill[theme-background] {
+      background: var(--background);
+    }
+
+    swatch-fill[theme-foreground] {
+      background: var(--foreground);
+    }
+
+    swatch-fill[theme-muted] {
+      background: var(--muted);
+    }
+
+    swatch-fill[theme-muted-foreground] {
+      background: var(--muted-foreground);
+    }
+
+    swatch-fill[theme-border] {
+      background: var(--border);
+    }
+
+    swatch-fill[theme-primary] {
+      background: var(--primary);
+    }
+
+    swatch-fill[theme-primary-foreground] {
+      background: var(--primary-foreground);
+    }
+
+    swatch-fill[theme-destructive] {
+      background: var(--destructive);
+    }
+
+    swatch-fill[theme-sidebar] {
+      background: var(--sidebar);
+    }
+
+    swatch-fill[theme-sidebar-foreground] {
+      background: var(--sidebar-foreground);
+    }
+
+    swatch-fill[theme-sidebar-primary] {
+      background: var(--sidebar-primary);
+    }
+
+    /* Coin swatches */
+    swatch-fill[coin-copper] {
+      background: var(--coin-copper);
+    }
+
+    swatch-fill[coin-silver] {
+      background: var(--coin-silver);
+    }
+
+    swatch-fill[coin-gold] {
+      background: var(--coin-gold);
+    }
+
+    swatch-fill[coin-platinum] {
+      background: var(--coin-platinum);
+    }
+
+    /* Rarity swatches */
+    swatch-fill[rarity-common] {
+      background: rgb(156, 163, 175);
+    }
+
+    swatch-fill[rarity-green] {
+      background: #16a34a;
+    }
+
+    swatch-fill[rarity-blue] {
+      background: #2563eb;
+    }
+
+    swatch-fill[rarity-purple] {
+      background: #9333ea;
+    }
+
+    swatch-fill[rarity-orange] {
+      background: #ea580c;
+    }
+
+    swatch-fill[rarity-red] {
+      background: #dc2626;
+    }
+
+    /* Lightness ramps */
+    ramp-grid {
+      display: flex;
+      flex-direction: column;
+      gap: calc(var(--unit) * 2);
+    }
+
+    ramp-row {
+      display: grid;
+      grid-template-columns: calc(var(--unit) * 30) repeat(5, 1fr);
+      gap: calc(var(--unit) * 1);
+      align-items: stretch;
+    }
+
+    ramp-label {
+      display: flex;
+      align-items: center;
+      font-family: var(--font-accent);
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    ramp-stop {
+      display: block;
+      height: calc(var(--unit) * 10);
+      border-radius: calc(var(--radius) * 0.5);
+    }
+
+    ramp-stop[anchor] {
+      outline: 2px solid var(--foreground);
+      outline-offset: 2px;
+    }
+
+    ramp-row[bb-red] ramp-stop[l-35] {
+      background: oklch(from var(--bb-red) 0.35 c h);
+    }
+
+    ramp-row[bb-red] ramp-stop[l-50] {
+      background: oklch(from var(--bb-red) 0.50 c h);
+    }
+
+    ramp-row[bb-red] ramp-stop[l-65] {
+      background: oklch(from var(--bb-red) 0.65 c h);
+    }
+
+    ramp-row[bb-red] ramp-stop[l-80] {
+      background: oklch(from var(--bb-red) 0.80 c h);
+    }
+
+    ramp-row[bb-red] ramp-stop[l-92] {
+      background: oklch(from var(--bb-red) 0.92 c h);
+    }
+
+    ramp-row[bb-orange] ramp-stop[l-35] {
+      background: oklch(from var(--bb-orange) 0.35 c h);
+    }
+
+    ramp-row[bb-orange] ramp-stop[l-50] {
+      background: oklch(from var(--bb-orange) 0.50 c h);
+    }
+
+    ramp-row[bb-orange] ramp-stop[l-65] {
+      background: oklch(from var(--bb-orange) 0.65 c h);
+    }
+
+    ramp-row[bb-orange] ramp-stop[l-80] {
+      background: oklch(from var(--bb-orange) 0.80 c h);
+    }
+
+    ramp-row[bb-orange] ramp-stop[l-92] {
+      background: oklch(from var(--bb-orange) 0.92 c h);
+    }
+
+    ramp-row[bb-yellow] ramp-stop[l-35] {
+      background: oklch(from var(--bb-yellow) 0.35 c h);
+    }
+
+    ramp-row[bb-yellow] ramp-stop[l-50] {
+      background: oklch(from var(--bb-yellow) 0.50 c h);
+    }
+
+    ramp-row[bb-yellow] ramp-stop[l-65] {
+      background: oklch(from var(--bb-yellow) 0.65 c h);
+    }
+
+    ramp-row[bb-yellow] ramp-stop[l-80] {
+      background: oklch(from var(--bb-yellow) 0.80 c h);
+    }
+
+    ramp-row[bb-yellow] ramp-stop[l-92] {
+      background: oklch(from var(--bb-yellow) 0.92 c h);
+    }
+
+    ramp-row[bb-olive] ramp-stop[l-35] {
+      background: oklch(from var(--bb-olive) 0.35 c h);
+    }
+
+    ramp-row[bb-olive] ramp-stop[l-50] {
+      background: oklch(from var(--bb-olive) 0.50 c h);
+    }
+
+    ramp-row[bb-olive] ramp-stop[l-65] {
+      background: oklch(from var(--bb-olive) 0.65 c h);
+    }
+
+    ramp-row[bb-olive] ramp-stop[l-80] {
+      background: oklch(from var(--bb-olive) 0.80 c h);
+    }
+
+    ramp-row[bb-olive] ramp-stop[l-92] {
+      background: oklch(from var(--bb-olive) 0.92 c h);
+    }
+
+    ramp-row[bb-green] ramp-stop[l-35] {
+      background: oklch(from var(--bb-green) 0.35 c h);
+    }
+
+    ramp-row[bb-green] ramp-stop[l-50] {
+      background: oklch(from var(--bb-green) 0.50 c h);
+    }
+
+    ramp-row[bb-green] ramp-stop[l-65] {
+      background: oklch(from var(--bb-green) 0.65 c h);
+    }
+
+    ramp-row[bb-green] ramp-stop[l-80] {
+      background: oklch(from var(--bb-green) 0.80 c h);
+    }
+
+    ramp-row[bb-green] ramp-stop[l-92] {
+      background: oklch(from var(--bb-green) 0.92 c h);
+    }
+
+    ramp-row[bb-cyan] ramp-stop[l-35] {
+      background: oklch(from var(--bb-cyan) 0.35 c h);
+    }
+
+    ramp-row[bb-cyan] ramp-stop[l-50] {
+      background: oklch(from var(--bb-cyan) 0.50 c h);
+    }
+
+    ramp-row[bb-cyan] ramp-stop[l-65] {
+      background: oklch(from var(--bb-cyan) 0.65 c h);
+    }
+
+    ramp-row[bb-cyan] ramp-stop[l-80] {
+      background: oklch(from var(--bb-cyan) 0.80 c h);
+    }
+
+    ramp-row[bb-cyan] ramp-stop[l-92] {
+      background: oklch(from var(--bb-cyan) 0.92 c h);
+    }
+
+    ramp-row[bb-blue] ramp-stop[l-35] {
+      background: oklch(from var(--bb-blue) 0.35 c h);
+    }
+
+    ramp-row[bb-blue] ramp-stop[l-50] {
+      background: oklch(from var(--bb-blue) 0.50 c h);
+    }
+
+    ramp-row[bb-blue] ramp-stop[l-65] {
+      background: oklch(from var(--bb-blue) 0.65 c h);
+    }
+
+    ramp-row[bb-blue] ramp-stop[l-80] {
+      background: oklch(from var(--bb-blue) 0.80 c h);
+    }
+
+    ramp-row[bb-blue] ramp-stop[l-92] {
+      background: oklch(from var(--bb-blue) 0.92 c h);
+    }
+
+    ramp-row[bb-purple] ramp-stop[l-35] {
+      background: oklch(from var(--bb-purple) 0.35 c h);
+    }
+
+    ramp-row[bb-purple] ramp-stop[l-50] {
+      background: oklch(from var(--bb-purple) 0.50 c h);
+    }
+
+    ramp-row[bb-purple] ramp-stop[l-65] {
+      background: oklch(from var(--bb-purple) 0.65 c h);
+    }
+
+    ramp-row[bb-purple] ramp-stop[l-80] {
+      background: oklch(from var(--bb-purple) 0.80 c h);
+    }
+
+    ramp-row[bb-purple] ramp-stop[l-92] {
+      background: oklch(from var(--bb-purple) 0.92 c h);
+    }
+
+    ramp-row[bb-pink] ramp-stop[l-35] {
+      background: oklch(from var(--bb-pink) 0.35 c h);
+    }
+
+    ramp-row[bb-pink] ramp-stop[l-50] {
+      background: oklch(from var(--bb-pink) 0.50 c h);
+    }
+
+    ramp-row[bb-pink] ramp-stop[l-65] {
+      background: oklch(from var(--bb-pink) 0.65 c h);
+    }
+
+    ramp-row[bb-pink] ramp-stop[l-80] {
+      background: oklch(from var(--bb-pink) 0.80 c h);
+    }
+
+    ramp-row[bb-pink] ramp-stop[l-92] {
+      background: oklch(from var(--bb-pink) 0.92 c h);
+    }
+
+    ramp-row[bb-brown] ramp-stop[l-35] {
+      background: oklch(from var(--bb-brown) 0.35 c h);
+    }
+
+    ramp-row[bb-brown] ramp-stop[l-50] {
+      background: oklch(from var(--bb-brown) 0.50 c h);
+    }
+
+    ramp-row[bb-brown] ramp-stop[l-65] {
+      background: oklch(from var(--bb-brown) 0.65 c h);
+    }
+
+    ramp-row[bb-brown] ramp-stop[l-80] {
+      background: oklch(from var(--bb-brown) 0.80 c h);
+    }
+
+    ramp-row[bb-brown] ramp-stop[l-92] {
+      background: oklch(from var(--bb-brown) 0.92 c h);
+    }
+
+    ramp-row[bb-stone] ramp-stop[l-35] {
+      background: oklch(from var(--bb-stone) 0.35 c h);
+    }
+
+    ramp-row[bb-stone] ramp-stop[l-50] {
+      background: oklch(from var(--bb-stone) 0.50 c h);
+    }
+
+    ramp-row[bb-stone] ramp-stop[l-65] {
+      background: oklch(from var(--bb-stone) 0.65 c h);
+    }
+
+    ramp-row[bb-stone] ramp-stop[l-80] {
+      background: oklch(from var(--bb-stone) 0.80 c h);
+    }
+
+    ramp-row[bb-stone] ramp-stop[l-92] {
+      background: oklch(from var(--bb-stone) 0.92 c h);
+    }
+
+    /* Usage examples */
+    usage-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(calc(var(--unit) * 56), 1fr));
+      gap: calc(var(--unit) * 3);
+    }
+
+    usage-card {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: oklch(from var(--background) calc(l - 0.04) c h);
+    }
+
+    usage-preview {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: calc(var(--unit) * 24);
+      background: oklch(from var(--foreground) 0.15 c h);
+      color: var(--background);
+      font-family: var(--font-display);
+      font-size: 2rem;
+      letter-spacing: 0.02em;
+    }
+
+    usage-meta {
+      display: flex;
+      flex-direction: column;
+      gap: calc(var(--unit) * 0.5);
+      padding: calc(var(--unit) * 2.5) calc(var(--unit) * 3);
+    }
+
+    usage-name {
+      font-family: var(--font-accent);
+      font-weight: 600;
+    }
+
+    usage-code {
+      font-family: monospace;
+      font-size: 0.7rem;
+      color: var(--muted-foreground);
+    }
+
+    usage-preview[damage-number] {
+      color: oklch(from var(--bb-red) 0.78 0.09 h);
+    }
+
+    usage-preview[critical-number] {
+      color: var(--bb-red);
+      font-size: 3rem;
+      text-shadow: 0 2px 6px oklch(from var(--bb-red) 0.2 c h);
+    }
+
+    usage-preview[heal-number] {
+      color: oklch(from var(--bb-green) 0.85 c h);
+    }
+
+    usage-preview[muted-text] {
+      color: oklch(from var(--bb-stone) 0.40 c h);
+      font-size: 1rem;
+      font-family: var(--font-sans);
+      letter-spacing: normal;
+      text-transform: uppercase;
+    }
+
+    usage-preview[health-bar] {
+      background: oklch(from var(--foreground) 0.35 0.02 h / 0.5);
+      padding: calc(var(--unit) * 3);
+      align-items: stretch;
+    }
+
+    health-fill {
+      display: block;
+      flex: 1;
+      height: calc(var(--unit) * 5);
+      border-radius: calc(var(--radius) * 0.4);
+      background: oklch(from var(--bb-red) 0.44 c h);
+      margin-block: auto;
+      max-width: 60%;
+    }
+
+    usage-preview[gold-badge] {
+      color: oklch(from var(--bb-brown) 0.25 c h);
+      background:
+        radial-gradient(circle at 30% 30%, oklch(from var(--bb-yellow) 0.95 c h), oklch(from var(--bb-yellow) 0.80 c h) 40%, oklch(from var(--bb-orange) 0.55 c h) 75%, oklch(from var(--bb-brown) 0.35 c h));
+      font-size: 1.2rem;
+      letter-spacing: 0.2em;
+    }
+  </style>
+</body>
+
+</html>
