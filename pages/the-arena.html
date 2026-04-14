@@ -88,17 +88,17 @@
 
       <crow vertical up left arena-table mx="-6" w="auto" mt-4>
         <crow up left g-4 arena-header>
-          <arena-col-name cinzel>name</arena-col-name>
-          <arena-col-level cinzel text-center>level</arena-col-level>
-          <arena-col-loot cinzel>loot</arena-col-loot>
+          <arena-col-name>name</arena-col-name>
+          <arena-col-level text-center>level</arena-col-level>
+          <arena-col-loot>loot</arena-col-loot>
           <crow arena-col-preview right></crow>
         </crow>
 
         <!-- each arenaFights as fight, i -->
         <a href="/the-arena/@[fight.id]"
           onclick="arenaClick(event, '@[fight.id]', @[fight.isLocked], @[fight.bossCompleted])"
-          arena-row even="@[fight.even]" boss="@[fight.boss]"
-          locked="@[fight.isLocked]" completed="@[fight.bossCompleted]">
+          arena-row even="@[fight.even]" boss="@[fight.boss]" locked="@[fight.isLocked]"
+          completed="@[fight.bossCompleted]">
           <crow left arena-col-name cinzel g-2>
             <!-- if fight.isLocked -->
             <span>?</span>
@@ -150,9 +150,13 @@
       display: flex;
       align-items: center;
       gap: calc(var(--unit) * 4);
-      padding: calc(var(--unit) * 2) calc(var(--unit) * 6);
-      color: var(--foreground);
+      padding: calc(var(--unit) * 3) calc(var(--unit) * 6);
       width: 100%;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: oklch(from var(--foreground) l c h / 0.5);
+      border-bottom: 1px solid oklch(from var(--bb-brown) l c h / 0.2);
     }
 
     page[the-arena] arena-col-name,
@@ -183,12 +187,18 @@
       display: flex;
       align-items: center;
       gap: calc(var(--unit) * 4);
-      padding: calc(var(--unit) * 2) calc(var(--unit) * 6);
+      padding: calc(var(--unit) * 3) calc(var(--unit) * 6);
       text-decoration: none;
-      color: inherit;
+      color: var(--foreground);
       font-size: 0.875rem;
-      transition: all 500ms;
+      transition: background 200ms ease;
       width: 100%;
+    }
+
+    page[the-arena] [arena-row] arena-col-level,
+    page[the-arena] [arena-row] arena-col-loot {
+      font-variant-numeric: tabular-nums;
+      color: var(--muted-foreground);
     }
 
     page[the-arena] [arena-row][even] {
@@ -214,7 +224,7 @@
     }
 
     page[the-arena] [arena-row]:not([locked]):not([completed]):hover {
-      background: linear-gradient(to right, transparent, rgba(120, 110, 100, 0.15), transparent);
+      background: oklch(from var(--bb-brown) l c h / 0.08);
     }
 
     page[the-arena] [arena-row][locked] {
@@ -247,16 +257,18 @@
     }
 
     page[the-arena] [arena-enemy-box] {
-      width: calc(var(--unit) * 10);
+      width: calc(var(--unit) * 11);
       aspect-ratio: 1;
       overflow: hidden;
       border-radius: 0;
-      margin: calc(var(--unit) * -2) calc(var(--unit) * -6) calc(var(--unit) * -2) 0;
+      margin: calc(var(--unit) * -3) 0 calc(var(--unit) * -3) calc(var(--unit) * -1);
       position: relative;
     }
 
     page[the-arena] arena-enemy-wrap[boss] [arena-enemy-box] {
-      width: calc(var(--unit) * 20);
+      width: calc(var(--unit) * 18);
+      margin-top: calc(var(--unit) * -8);
+      margin-bottom: calc(var(--unit) * -8);
     }
 
     page[the-arena] [arena-enemy-box]:not([locked]) {

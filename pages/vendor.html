@@ -152,9 +152,10 @@
       </crow>
 
       <crow vertical up left vendor-table mx="-6" w="auto" mt-4>
-        <crow up left vendor-header <vendor-col-name cinzel>Name</vendor-col-name>
-          <vendor-col-slot cinzel>Slots in</vendor-col-slot>
-          <vendor-col-cost cinzel>Cost</vendor-col-cost>
+        <crow up left vendor-header>
+          <vendor-col-name>Name</vendor-col-name>
+          <vendor-col-slot>Slots in</vendor-col-slot>
+          <vendor-col-cost>Cost</vendor-col-cost>
           <vendor-col-action></vendor-col-action>
         </crow>
 
@@ -188,15 +189,32 @@
     }
 
     page[vendor] [vendor-header] {
+      display: flex;
+      align-items: center;
       gap: calc(var(--unit) * 4);
-      padding: calc(var(--unit) * 2) calc(var(--unit) * 6);
+      padding: calc(var(--unit) * 3) calc(var(--unit) * 6);
+      width: 100%;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: oklch(from var(--foreground) l c h / 0.5);
+      border-bottom: 1px solid oklch(from var(--bb-brown) l c h / 0.2);
     }
 
     page[vendor] [vendor-row] {
       width: 100%;
       gap: calc(var(--unit) * 4);
-      padding: calc(var(--unit) * 2) calc(var(--unit) * 6);
+      padding: calc(var(--unit) * 3) calc(var(--unit) * 6);
       font-size: 0.875rem;
+      transition: background 200ms ease;
+    }
+
+    page[vendor] [vendor-row]:hover {
+      background: oklch(from var(--bb-brown) l c h / 0.08);
+    }
+
+    page[vendor] [vendor-col-cost] {
+      font-variant-numeric: tabular-nums;
     }
 
     page[vendor] [vendor-row][even] {
@@ -231,6 +249,12 @@
     page[vendor] vendor-col-cost,
     page[vendor] vendor-col-action {
       display: block;
+    }
+
+    page[vendor] vendor-col-cost,
+    page[vendor] [vendor-col-cost] {
+      display: flex;
+      justify-content: flex-end;
     }
   </style>
 </body>

@@ -13,7 +13,6 @@
   --background: oklch(0.94 0.02 60);
   --foreground: oklch(0.2 0 0);
   --muted: oklch(0.7 0.03 50);
-  --muted-foreground: oklch(0.5 0.03 50);
   /* --border: oklch(0.85 0.02 60 / 45%); */
 
   --primary: oklch(0.6 0.15 70);
@@ -76,7 +75,6 @@
 [dark] {
   --background: oklch(0.15 0.01 60);
   --foreground: oklch(0.9 0 0);
-  --muted-foreground: oklch(0.6 0.02 50);
   --border: oklch(0.3 0.02 60 / 15%);
 }
 
@@ -123,14 +121,14 @@ hr {
 
 /* Game-specific modifiers */
 [glass] {
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  /* border-block: 1px solid rgba(255, 255, 255, 0.5); */
   background: rgba(255, 255, 255, 0.5);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(4px);
 }
 
 [dark] [glass] {
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  /* border: 1px solid rgba(255, 255, 255, 0.1); */
   background-color: oklch(from var(--card) calc(l * 0.75) c h / 0.6);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
 }
@@ -255,12 +253,12 @@ button[disabled] {
   width: 10px;
 }
 ::-webkit-scrollbar-track {
-  background-color: oklch(from var(--background) l c h / 0.75);
-  border-radius: calc(var(--radius) - (8px - var(--unit)));
+  background-color: oklch(from var(--background) l c h / 50%);
+  border-radius: calc(var(--radius) - (var(--unit) - 12px));
 }
 ::-webkit-scrollbar-thumb {
-  background-color: var(--muted-foreground);
-  border-radius: calc(var(--radius) - (8px - var(--unit)));
+  background-color: var(--slate);
+  border-radius: calc(var(--radius) - (var(--unit) - 12px));
 }
 ::-webkit-scrollbar-thumb:hover {
   background-color: var(--muted-foreground);
