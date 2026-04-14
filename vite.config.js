@@ -5,13 +5,15 @@ import vibe from '@ape-egg/vite-plugin-vibe';
 const dynamicRoutes = [
   { pattern: /^\/brawlers\/\d+$/, file: '/pages/brawler-detail.html' },
   { pattern: /^\/the-arena\/.+$/, file: '/pages/fight-detail.html' },
-  { pattern: /^\/reset-password\/.+$/, file: '/pages/reset-password.html' },
+  { pattern: /^\/reset-password\/.+$/, file: '/pages/reset-password.html' }
 ];
 
 export default defineConfig({
   server: { port: 3001 },
   plugins: [
-    vibe(),
+    vibe({
+      debug: true
+    }),
     {
       name: 'mpa-routes',
       configureServer(server) {
@@ -19,16 +21,22 @@ export default defineConfig({
           const url = req.url.split('?')[0];
 
           for (const { pattern, file } of dynamicRoutes) {
-            if (pattern.test(url)) { req.url = file; return next(); }
+            if (pattern.test(url)) {
+              req.url = file;
+              return next();
+            }
           }
 
           const page = url === '/' ? 'home' : url.slice(1);
           const pagePath = `pages/${page}.html`;
-          if (existsSync(pagePath)) { req.url = `/${pagePath}`; return next(); }
+          if (existsSync(pagePath)) {
+            req.url = `/${pagePath}`;
+            return next();
+          }
 
           next();
         });
-      },
-    },
-  ],
+      }
+    }
+  ]
 });

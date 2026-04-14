@@ -1,4 +1,4 @@
-<component src="/components/Modal.html" when="@[overlay === 'ReleaseNotes']">
+<component src="/components/Modal.html" when="@[overlay === 'ReleaseNotes']" dismiss="$.overlay = ''">
   <crow justify-between mb-4>
     <h3 m-0>Release Notes</h3>
     <button tertiary onclick="$.overlay = ''">Close</button>

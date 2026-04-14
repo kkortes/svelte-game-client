@@ -12,35 +12,35 @@
   <crow vertical left p-2>
     <span>My Server: @[new Date(serverTimestampSnapshot).toLocaleString()]</span>
     <crow vertical up left mt-2>
-      <a href="/debug" secondary>Debug</a>
-      <a href="/styleguide" secondary>Styleguide</a>
-      <a href="/ability-scaling" secondary>Ability Scaling</a>
-      <a href="/equipment-scaling" secondary>Equipment Scaling</a>
-      <a href="/character-scaling" secondary>Character Scaling</a>
+      <a href="/debug" primary>Debug</a>
+      <a href="/styleguide" primary>Styleguide</a>
+      <a href="/ability-scaling" primary>Ability Scaling</a>
+      <a href="/equipment-scaling" primary>Equipment Scaling</a>
+      <a href="/character-scaling" primary>Character Scaling</a>
     </crow>
   </crow>
   <crow vertical left g-1 p-2>
     <crow g-1>
-      <button secondary
+      <button primary
         onclick="$.characters.forEach(c => { try { const ch = CHARACTERS(c, true); const s = calculateCombatStatsByCharacter(ch); c.overrides.combatStats.currentHealth = s.maxHealth; } catch {} }); $.characters = [...$.characters]">Heal
         party</button>
-      <button secondary
+      <button primary
         onclick="$.characters.forEach(c => { try { const ch = CHARACTERS(c, true); c.overrides.combatStats.currentHealth = ch.combatStats.currentHealth - 5; } catch {} }); $.characters = [...$.characters]">Damage
         party</button>
     </crow>
     <crow g-1>
-      <button secondary onclick="$.experience += 40">Gain exp</button>
-      <button secondary onclick="$.experience = 0">Reset exp</button>
+      <button primary onclick="$.experience += 40">Gain exp</button>
+      <button primary onclick="$.experience = 0">Reset exp</button>
     </crow>
     <crow g-1>
-      <button secondary onclick="$.coins += 100">Gain coins</button>
-      <button secondary onclick="$.coins = 0">Reset coins</button>
+      <button primary onclick="$.coins += 100">Gain coins</button>
+      <button primary onclick="$.coins = 0">Reset coins</button>
     </crow>
     <crow g-1>
-      <button secondary onclick="$.bossHighscore += 1">Increase boss</button>
-      <button secondary onclick="$.bossHighscore = 0">Reset boss</button>
+      <button primary onclick="$.bossHighscore += 1">Increase boss</button>
+      <button primary onclick="$.bossHighscore = 0">Reset boss</button>
     </crow>
-    <button secondary onclick="$.characters = []">Reset characters</button>
-    <button secondary onclick="$.accountRewards = 1">Reset rewards</button>
+    <button primary onclick="$.characters = []">Reset characters</button>
+    <button primary onclick="$.accountRewards = 1">Reset rewards</button>
   </crow>
 </crow>

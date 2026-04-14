@@ -62,395 +62,467 @@
   --icon-stunned: url('data:image/svg+xml;utf8,%3C!--%20Generated%20by%20IcoMoon.io%20--%3E%0A%3Csvg%20version%3D%221.1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22996%22%20height%3D%221024%22%20viewBox%3D%220%200%20996%201024%22%3E%0A%3Cg%20id%3D%22icomoon-ignore%22%3E%0A%3C%2Fg%3E%0A%3Cpath%20fill%3D%22%23ab31c9%22%20d%3D%22M496.26%20601.438c0%200-54.441-34.072-28.516-128.139%2015.184-55.552%2081.846-112.584%20170.728-88.142%20115.918%2032.22%20158.137%20191.097%2049.996%20335.531%200%200-134.064%20178.135-360.344%2077.031%200%200-147.026-67.032-170.728-234.057-28.146-199.245%20109.251-337.383%20109.251-337.383s145.545-179.617%20391.453-125.546c252.574%2055.922%20341.086%20277.017%20337.753%20411.452-2.963%20126.658-37.034%20294.053-224.428%20426.265-199.615%20140.731-442.931%2084.068-560.7%200-88.512-62.958-207.022-181.839-210.725-391.453-3.703-206.281%20111.103-381.454%20249.241-471.077%2087.771-57.033%20228.872-84.438%20334.050-73.698%2015.925%202.222%2014.073%2022.221-0.37%2021.85-9.629-1.111-177.765-1.481-326.273%20118.51-120.362%2097.4-174.061%20262.944-164.062%20379.602%208.888%20106.289%2046.663%20255.907%20238.131%20339.235s455.152-42.96%20482.558-280.35c26.294-224.428-159.988-278.498-240.353-267.758-96.66%2012.592-185.912%2071.106-185.912%20198.875%204.814%2062.588%2051.848%20112.214%20109.251%2089.253z%22%3E%3C%2Fpath%3E%0A%3Cpath%20fill%3D%22%236d219e%22%20d%3D%22M496.26%20601.438c0%200-54.070-41.849-24.813-98.511%2038.145-73.328%20117.769-43.701%20138.138-6.666%2029.257%2052.959%2012.962%20155.174-75.92%20184.431%200%200-81.105%2028.516-158.137-21.85%200%200-74.069-49.626-76.661-146.656-1.111-37.775%205.555-75.18%2019.258-109.992%2024.443-60.366%2071.476-108.511%20131.102-134.435%2056.292-24.813%20144.434-48.145%20240.353-15.184%20155.174%2053.7%20191.468%20182.209%20197.763%20259.611%205.925%2072.217-18.888%20245.908-162.581%20345.901-169.988%20118.51-363.307%2099.622-481.447%2015.554-88.142-62.958-183.32-141.842-187.024-351.456-3.703-206.281%2098.511-344.79%20241.464-429.599%2089.993-53.329%20203.689-87.031%20289.238-80.365%2011.11%200.741%207.777%2012.221-3.703%2012.221-9.629-1.111-177.765-1.481-326.273%20118.51-120.732%2097.4-174.432%20262.944-164.803%20379.602%208.888%20106.289%2046.663%20255.907%20238.131%20339.235s455.152-42.96%20482.558-280.35c26.294-224.428-159.618-277.017-240.353-267.758-91.475%2010.37-177.024%2065.551-185.172%20180.357-1.481%2015.925%200.37%2031.85%204.444%2047.034%2015.184%2047.404%2055.922%2079.624%20104.437%2060.366z%22%3E%3C%2Fpath%3E%0A%3C%2Fsvg%3E%0A');
   --icon-vulnerable: url('data:image/svg+xml;utf8,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%0A%3Csvg%20id%3D%22Layer_1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20version%3D%221.1%22%20viewBox%3D%220%200%20786%201024%22%3E%0A%20%20%3C!--%20Generator%3A%20Adobe%20Illustrator%2029.7.1%2C%20SVG%20Export%20Plug-In%20.%20SVG%20Version%3A%202.1.1%20Build%208)%20%20--%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3Cstyle%3E%0A%20%20%20%20%20%20.st0%20%7B%0A%20%20%20%20%20%20%20%20fill%3A%20%236c7cd8%3B%0A%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20.st1%20%7B%0A%20%20%20%20%20%20%20%20fill%3A%20%232b3eaf%3B%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%3C%2Fstyle%3E%0A%20%20%3C%2Fdefs%3E%0A%20%20%3Cpath%20class%3D%22st1%22%20d%3D%22M784.6%2C868.7c2.8%2C8.9%2C1.2%2C14.2-6.8%2C20.3-83.5%2C62.2-174.7%2C108.5-277.6%2C129.1-8.9%2C1.8-17.9%2C3.1-26.8%2C4.6-29.3-78-31.7-393.8-3.7-495.8%2C71.8%2C9.5%2C138.7%2C33%2C204.6%2C65.3.6-6.2%2C1.5-10.2%2C1.5-14.5%2C0-44.1-.3-88.4.3-132.5.3-11.1-3.7-15.1-14.2-16.9-89-16.8-178.5-27.7-268.9-28.6-18.9-.2-37.8%2C0-56.8.8-68.7%2C2.8-136.8%2C11.7-203.4%2C30.8v161.2c67.2-33.6%2C135.6-58.9%2C210.5-66.2%2C29%2C167.3%2C35.1%2C332.8-2.2%2C498C240.9%2C1018.8%2C95.5%2C957.7%2C0%2C881c3.4-9.9%2C7.1-20.3%2C10.8-30.8%2C21.6-61.6%2C43.1-123.6%2C54.2-188.6%2C12-71.2%2C5.5-141.1-15.1-209.5-14.5-49-32-97.1-47.5-145.8-1.8-6.2-1.5-16%2C2.2-20.3%2C36.1-41.6%2C72.7-82.6%2C109.4-123%2C2.5-2.8%2C8.3-5.2%2C11.7-4%2C57.6%2C17.6%2C114.9%2C35.7%2C170.7%2C53.6-20%2C22.2-40.4%2C44.7-61.3%2C67.8%2C52.5%2C16.4%2C105.2%2C32.8%2C157.9%2C49.2%2C56.2%2C17.5%2C112.5%2C35%2C168.8%2C52.5.6-1.2%2C1.2-2.1%2C1.8-3.4-56.1-42.8-112.2-85.5-170.6-130-1-.7-1.9-1.5-2.9-2.2%2C1-.8%2C1.9-1.7%2C2.9-2.5%2C16.6-14.5%2C33-28.9%2C50.4-44.6-17-13.2-33.8-26.2-50.4-39.1-45-34.9-89.2-69.2-136-105.4%2C45.6-19.1%2C87.8-37%2C130-54.2C388.7%2C0%2C390.8%2C0%2C393%2C.4c3%2C.5%2C6.2%2C1.7%2C8.8%2C2.7%2C124.8%2C46.5%2C235.7%2C114.9%2C326.6%2C213.2%2C19.7%2C21.3%2C36.7%2C45.3%2C53.9%2C69%2C3.7%2C5.2%2C4.6%2C14.5%2C3.1%2C20.7-14.8%2C60.1-32.7%2C119.2-45.6%2C179.7-19.4%2C90.6-11.1%2C180.6%2C12.9%2C269.3%2C10.2%2C37.9%2C21%2C75.8%2C31.7%2C113.7h.2Z%22%2F%3E%0A%20%20%3Cpath%20class%3D%22st0%22%20d%3D%22M784.6%2C868.7c2.8%2C8.9%2C1.2%2C14.2-6.8%2C20.3-83.5%2C62.2-174.7%2C108.5-277.6%2C129.1-8.9%2C1.8-17.9%2C3.1-26.8%2C4.6-29.3-78-31.7-393.8-3.7-495.8%2C71.8%2C9.5%2C138.7%2C33%2C204.6%2C65.3.6-6.2%2C1.5-10.2%2C1.5-14.5%2C0-44.1-.3-88.4.3-132.5.3-11.1-3.7-15.1-14.2-16.9-89-16.8-178.5-27.7-268.9-28.6v-70.1c56.2%2C17.5%2C112.5%2C35%2C168.8%2C52.5.6-1.2%2C1.2-2.1%2C1.8-3.4-56.1-42.8-112.2-85.5-170.6-130v-4.7c16.6-14.5%2C33-28.9%2C50.4-44.6-17-13.2-33.8-26.2-50.4-39.1V.3c3%2C.5%2C6.2%2C1.7%2C8.8%2C2.7%2C124.8%2C46.5%2C235.7%2C114.9%2C326.6%2C213.2%2C19.7%2C21.3%2C36.7%2C45.3%2C53.9%2C69%2C3.7%2C5.2%2C4.6%2C14.5%2C3.1%2C20.7-14.8%2C60.1-32.7%2C119.2-45.6%2C179.7-19.4%2C90.6-11.1%2C180.6%2C12.9%2C269.3%2C10.2%2C37.9%2C21%2C75.8%2C31.7%2C113.7h.2Z%22%2F%3E%0A%3C%2Fsvg%3E');
   --icon-wounded: url('data:image/svg+xml;utf8,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%0A%3Csvg%20id%3D%22Layer_1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20version%3D%221.1%22%20viewBox%3D%220%200%201024%201024%22%3E%0A%20%20%3C!--%20Generator%3A%20Adobe%20Illustrator%2029.7.1%2C%20SVG%20Export%20Plug-In%20.%20SVG%20Version%3A%202.1.1%20Build%208)%20%20--%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3Cstyle%3E%0A%20%20%20%20%20%20.st0%20%7B%0A%20%20%20%20%20%20%20%20fill%3A%20%23f85656%3B%0A%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20.st1%20%7B%0A%20%20%20%20%20%20%20%20fill%3A%20%23e20000%3B%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%3C%2Fstyle%3E%0A%20%20%3C%2Fdefs%3E%0A%20%20%3Cpath%20class%3D%22st0%22%20d%3D%22M1024%2C512c0%2C282.6-229.4%2C512-512%2C512S0%2C794.6%2C0%2C512%2C229.4%2C0%2C512%2C0s512%2C229.4%2C512%2C512Z%22%2F%3E%0A%20%20%3Ccircle%20class%3D%22st1%22%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22401.7%22%2F%3E%0A%3C%2Fsvg%3E');
+  --icon-cog: url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2016%2016%22%3E%0A%3Cpath%20fill%3D%22%23000%22%20d%3D%22M14.59%209.535c-0.839-1.454-0.335-3.317%201.127-4.164l-1.572-2.723c-0.449%200.263-0.972%200.414-1.529%200.414-1.68%200-3.042-1.371-3.042-3.062h-3.145c0.004%200.522-0.126%201.051-0.406%201.535-0.839%201.454-2.706%201.948-4.17%201.106l-1.572%202.723c0.453%200.257%200.845%200.634%201.123%201.117%200.838%201.452%200.336%203.311-1.12%204.16l1.572%202.723c0.448-0.261%200.967-0.41%201.522-0.41%201.675%200%203.033%201.362%203.042%203.046h3.145c-0.001-0.517%200.129-1.040%200.406-1.519%200.838-1.452%202.7-1.947%204.163-1.11l1.572-2.723c-0.45-0.257-0.839-0.633-1.116-1.113zM8%2011.24c-1.789%200-3.24-1.45-3.24-3.24s1.45-3.24%203.24-3.24c1.789%200%203.24%201.45%203.24%203.24s-1.45%203.24-3.24%203.24z%22%3E%3C%2Fpath%3E%0A%3C%2Fsvg%3E%0A');
 }
 
 @layer elements {
-icon, .icon {
-  --icon: url("data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20viewBox%3D%220%200%20120%20120%22%3E%0A%20%20%3Cpath%0A%20%20%20%20d%3D%22M111.82%2C60.419c-26.177%2C4.938-46.869%2C25.364-52.226%2C51.388-4.951-26.164-25.377-46.844-51.414-52.201%2C26.177-4.951%2C46.869-25.377%2C52.214-51.414%2C4.938%2C26.177%2C25.39%2C46.882%2C51.427%2C52.226Z%22%20%2F%3E%0A%3C%2Fsvg%3E");
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  background-color: var(--color, currentColor);
-  mask-image: var(--icon);
-  mask-repeat: no-repeat;
-  mask-size: cover;
-}
+  icon,
+  .icon {
+    --icon: url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20viewBox%3D%220%200%20120%20120%22%3E%0A%20%20%3Cpath%0A%20%20%20%20d%3D%22M111.82%2C60.419c-26.177%2C4.938-46.869%2C25.364-52.226%2C51.388-4.951-26.164-25.377-46.844-51.414-52.201%2C26.177-4.951%2C46.869-25.377%2C52.214-51.414%2C4.938%2C26.177%2C25.39%2C46.882%2C51.427%2C52.226Z%22%20%2F%3E%0A%3C%2Fsvg%3E');
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    background-color: var(--color, currentColor);
+    mask-image: var(--icon);
+    mask-repeat: no-repeat;
+    mask-size: cover;
+  }
 
-icon[checkmark], icon.checkmark {
-  --icon: var(--icon-checkmark);
-  width: 1em;
-  height: 1em;
-}
+  icon[checkmark],
+  icon.checkmark {
+    --icon: var(--icon-checkmark);
+    width: 1em;
+    height: 1em;
+  }
 
-icon[maxArmor], icon.maxArmor {
-  --icon: var(--icon-maxArmor);
-  width: 1.009765625em;
-  height: 1em;
-}
+  icon[maxArmor],
+  icon.maxArmor {
+    --icon: var(--icon-maxArmor);
+    width: 1.009765625em;
+    height: 1em;
+  }
 
-icon[down-dynamic], icon.down-dynamic {
-  --icon: var(--icon-down-dynamic);
-  width: 1em;
-  height: 1em;
-}
+  icon[down-dynamic],
+  icon.down-dynamic {
+    --icon: var(--icon-down-dynamic);
+    width: 1em;
+    height: 1em;
+  }
 
-icon[h1h], icon.h1h {
-  --icon: var(--icon-h1h);
-  width: 1em;
-  height: 1.009861932938856em;
-}
+  icon[h1h],
+  icon.h1h {
+    --icon: var(--icon-h1h);
+    width: 1em;
+    height: 1.009861932938856em;
+  }
 
-icon[criticalChance], icon.criticalChance {
-  --icon: var(--icon-criticalChance);
-  width: 1em;
-  height: 1.0921501706484642em;
-}
+  icon[criticalChance],
+  icon.criticalChance {
+    --icon: var(--icon-criticalChance);
+    width: 1em;
+    height: 1.0921501706484642em;
+  }
 
-icon[criticalDamage], icon.criticalDamage {
-  --icon: var(--icon-criticalDamage);
-  width: 1em;
-  height: 1.0062893081761006em;
-}
+  icon[criticalDamage],
+  icon.criticalDamage {
+    --icon: var(--icon-criticalDamage);
+    width: 1em;
+    height: 1.0062893081761006em;
+  }
 
-icon[h], icon.h {
-  --icon: var(--icon-h);
-  width: 1em;
-  height: 1.009861932938856em;
-}
+  icon[h],
+  icon.h {
+    --icon: var(--icon-h);
+    width: 1em;
+    height: 1.009861932938856em;
+  }
 
-icon[spin], icon.spin {
-  --icon: var(--icon-spin);
-  width: 1em;
-  height: 1em;
-}
+  icon[spin],
+  icon.spin {
+    --icon: var(--icon-spin);
+    width: 1em;
+    height: 1em;
+  }
 
-icon[blockChance], icon.blockChance {
-  --icon: var(--icon-blockChance);
-  width: 0.763671875em;
-  height: 1em;
-}
+  icon[blockChance],
+  icon.blockChance {
+    --icon: var(--icon-blockChance);
+    width: 0.763671875em;
+    height: 1em;
+  }
 
-icon[error], icon.error {
-  --icon: var(--icon-error);
-  width: 1em;
-  height: 1em;
-}
+  icon[error],
+  icon.error {
+    --icon: var(--icon-error);
+    width: 1em;
+    height: 1em;
+  }
 
-icon[right], icon.right {
-  --icon: var(--icon-right);
-  width: 1em;
-  height: 1.4736842105263157em;
-}
+  icon[right],
+  icon.right {
+    --icon: var(--icon-right);
+    width: 1em;
+    height: 1.4736842105263157em;
+  }
 
-icon[defeat], icon.defeat {
-  --icon: var(--icon-defeat);
-  width: 1em;
-  height: 1em;
-}
+  icon[defeat],
+  icon.defeat {
+    --icon: var(--icon-defeat);
+    width: 1em;
+    height: 1em;
+  }
 
-icon[up], icon.up {
-  --icon: var(--icon-up);
-  width: 1em;
-  height: 1em;
-}
+  icon[up],
+  icon.up {
+    --icon: var(--icon-up);
+    width: 1em;
+    height: 1em;
+  }
 
-icon[coin], icon.coin {
-  --icon: var(--icon-coin);
-  width: 1.0011547344110856em;
-  height: 1em;
-}
+  icon[coin],
+  icon.coin {
+    --icon: var(--icon-coin);
+    width: 1.0011547344110856em;
+    height: 1em;
+  }
 
-icon[menu], icon.menu {
-  --icon: var(--icon-menu);
-  width: 1em;
-  height: 1em;
-}
+  icon[menu],
+  icon.menu {
+    --icon: var(--icon-menu);
+    width: 1em;
+    height: 1em;
+  }
 
-icon[left], icon.left {
-  --icon: var(--icon-left);
-  width: 1em;
-  height: 1.3333333333333333em;
-}
+  icon[left],
+  icon.left {
+    --icon: var(--icon-left);
+    width: 1em;
+    height: 1.3333333333333333em;
+  }
 
-icon[info], icon.info {
-  --icon: var(--icon-info);
-  width: 1em;
-  height: 1em;
-}
+  icon[info],
+  icon.info {
+    --icon: var(--icon-info);
+    width: 1em;
+    height: 1em;
+  }
 
-icon[light], icon.light {
-  --icon: var(--icon-light);
-  width: 1em;
-  height: 1em;
-}
+  icon[light],
+  icon.light {
+    --icon: var(--icon-light);
+    width: 1em;
+    height: 1em;
+  }
 
-icon[spinner-circle], icon.spinner-circle {
-  --icon: var(--icon-spinner-circle);
-  width: 1em;
-  height: 1em;
-}
+  icon[spinner-circle],
+  icon.spinner-circle {
+    --icon: var(--icon-spinner-circle);
+    width: 1em;
+    height: 1em;
+  }
 
-icon[success], icon.success {
-  --icon: var(--icon-success);
-  width: 1em;
-  height: 1em;
-}
+  icon[success],
+  icon.success {
+    --icon: var(--icon-success);
+    width: 1em;
+    height: 1em;
+  }
 
-icon[maxHealth], icon.maxHealth {
-  --icon: var(--icon-maxHealth);
-  width: 1.080078125em;
-  height: 1em;
-}
+  icon[maxHealth],
+  icon.maxHealth {
+    --icon: var(--icon-maxHealth);
+    width: 1.080078125em;
+    height: 1em;
+  }
 
-icon[h], icon.h {
-  --icon: var(--icon-h);
-  width: 1em;
-  height: 1em;
-}
+  icon[h],
+  icon.h {
+    --icon: var(--icon-h);
+    width: 1em;
+    height: 1em;
+  }
 
-icon[__armor], icon.__armor {
-  --icon: var(--icon-__armor);
-  width: 0.7841796875em;
-  height: 1em;
-}
+  icon[__armor],
+  icon.__armor {
+    --icon: var(--icon-__armor);
+    width: 0.7841796875em;
+    height: 1em;
+  }
 
-icon[dice], icon.dice {
-  --icon: var(--icon-dice);
-  width: 1em;
-  height: 1.0062893081761006em;
-}
+  icon[dice],
+  icon.dice {
+    --icon: var(--icon-dice);
+    width: 1em;
+    height: 1.0062893081761006em;
+  }
 
-icon[spinner-inner], icon.spinner-inner {
-  --icon: var(--icon-spinner-inner);
-  width: 1em;
-  height: 1em;
-}
+  icon[spinner-inner],
+  icon.spinner-inner {
+    --icon: var(--icon-spinner-inner);
+    width: 1em;
+    height: 1em;
+  }
 
-icon[stun], icon.stun {
-  --icon: var(--icon-stun);
-  width: 1em;
-  height: 1.005893909626719em;
-}
+  icon[stun],
+  icon.stun {
+    --icon: var(--icon-stun);
+    width: 1em;
+    height: 1.005893909626719em;
+  }
 
-icon[warning], icon.warning {
-  --icon: var(--icon-warning);
-  width: 1em;
-  height: 1em;
-}
+  icon[warning],
+  icon.warning {
+    --icon: var(--icon-warning);
+    width: 1em;
+    height: 1em;
+  }
 
-icon[victory], icon.victory {
-  --icon: var(--icon-victory);
-  width: 0.9580078125em;
-  height: 1em;
-}
+  icon[victory],
+  icon.victory {
+    --icon: var(--icon-victory);
+    width: 0.9580078125em;
+    height: 1em;
+  }
 
-icon[down], icon.down {
-  --icon: var(--icon-down);
-  width: 1em;
-  height: 1em;
-}
+  icon[down],
+  icon.down {
+    --icon: var(--icon-down);
+    width: 1em;
+    height: 1em;
+  }
 
-icon[magicChance], icon.magicChance {
-  --icon: var(--icon-magicChance);
-  width: 1.159375em;
-  height: 1em;
-}
+  icon[magicChance],
+  icon.magicChance {
+    --icon: var(--icon-magicChance);
+    width: 1.159375em;
+    height: 1em;
+  }
 
-icon[damage], icon.damage {
-  --icon: var(--icon-damage);
-  width: 1em;
-  height: 1.009861932938856em;
-}
+  icon[damage],
+  icon.damage {
+    --icon: var(--icon-damage);
+    width: 1em;
+    height: 1.009861932938856em;
+  }
 
-icon[claw], icon.claw {
-  --icon: var(--icon-claw);
-  width: 1.154296875em;
-  height: 1em;
-}
+  icon[claw],
+  icon.claw {
+    --icon: var(--icon-claw);
+    width: 1.154296875em;
+    height: 1em;
+  }
 
-icon[logo-apeegg-simple], icon.logo-apeegg-simple {
-  --icon: var(--icon-logo-apeegg-simple);
-  width: 1em;
-  height: 1.3176470588235294em;
-}
+  icon[logo-apeegg-simple],
+  icon.logo-apeegg-simple {
+    --icon: var(--icon-logo-apeegg-simple);
+    width: 1em;
+    height: 1.3176470588235294em;
+  }
 
-icon[cross], icon.cross {
-  --icon: var(--icon-cross);
-  width: 1em;
-  height: 1em;
-}
+  icon[cross],
+  icon.cross {
+    --icon: var(--icon-cross);
+    width: 1em;
+    height: 1em;
+  }
 
-icon[dodgeChance], icon.dodgeChance {
-  --icon: var(--icon-dodgeChance);
-  width: 1.009375em;
-  height: 1em;
-}
+  icon[dodgeChance],
+  icon.dodgeChance {
+    --icon: var(--icon-dodgeChance);
+    width: 1.009375em;
+    height: 1em;
+  }
 
-icon[logo-apeegg], icon.logo-apeegg {
-  --icon: var(--icon-logo-apeegg);
-  width: 1.734375em;
-  height: 1em;
-}
+  icon[logo-apeegg],
+  icon.logo-apeegg {
+    --icon: var(--icon-logo-apeegg);
+    width: 1.734375em;
+    height: 1em;
+  }
 
-icon[dark], icon.dark {
-  --icon: var(--icon-dark);
-  width: 1em;
-  height: 1em;
-}
+  icon[dark],
+  icon.dark {
+    --icon: var(--icon-dark);
+    width: 1em;
+    height: 1em;
+  }
 
-icon[bite], icon.bite {
-  --icon: var(--icon-bite);
-  width: 1.019047619047619em;
-  height: 1em;
-}
+  icon[bite],
+  icon.bite {
+    --icon: var(--icon-bite);
+    width: 1.019047619047619em;
+    height: 1em;
+  }
 
-icon[block], icon.block {
-  --icon: var(--icon-block);
-  width: 0.763671875em;
-  height: 1em;
-}
+  icon[block],
+  icon.block {
+    --icon: var(--icon-block);
+    width: 0.763671875em;
+    height: 1em;
+  }
 
-icon[bowshot], icon.bowshot {
-  --icon: var(--icon-bowshot);
-  width: 1em;
-  height: 1.0037604859704947em;
-}
+  icon[bowshot],
+  icon.bowshot {
+    --icon: var(--icon-bowshot);
+    width: 1em;
+    height: 1.0037604859704947em;
+  }
 
-icon[demoShout], icon.demoShout {
-  --icon: var(--icon-demoShout);
-  width: 1.0243829018663457em;
-  height: 1em;
-}
+  icon[demoShout],
+  icon.demoShout {
+    --icon: var(--icon-demoShout);
+    width: 1.0243829018663457em;
+    height: 1em;
+  }
 
-icon[fillArmor], icon.fillArmor {
-  --icon: var(--icon-fillArmor);
-  width: 1em;
-  height: 1.1360294117647058em;
-}
+  icon[fillArmor],
+  icon.fillArmor {
+    --icon: var(--icon-fillArmor);
+    width: 1em;
+    height: 1.1360294117647058em;
+  }
 
-icon[cheese], icon.cheese {
-  --icon: var(--icon-cheese);
-  width: 1.1668372569089047em;
-  height: 1em;
-}
+  icon[cheese],
+  icon.cheese {
+    --icon: var(--icon-cheese);
+    width: 1.1668372569089047em;
+    height: 1em;
+  }
 
-icon[lacerate], icon.lacerate {
-  --icon: var(--icon-lacerate);
-  width: 1em;
-  height: 1.0130133024869867em;
-}
+  icon[lacerate],
+  icon.lacerate {
+    --icon: var(--icon-lacerate);
+    width: 1em;
+    height: 1.0130133024869867em;
+  }
 
-icon[kick], icon.kick {
-  --icon: var(--icon-kick);
-  width: 1em;
-  height: 1.0394668737060042em;
-}
+  icon[kick],
+  icon.kick {
+    --icon: var(--icon-kick);
+    width: 1em;
+    height: 1.0394668737060042em;
+  }
 
-icon[punch], icon.punch {
-  --icon: var(--icon-punch);
-  width: 0.6884765625em;
-  height: 1em;
-}
+  icon[punch],
+  icon.punch {
+    --icon: var(--icon-punch);
+    width: 0.6884765625em;
+    height: 1em;
+  }
 
-icon[shieldBash], icon.shieldBash {
-  --icon: var(--icon-shieldBash);
-  width: 1.1842708517016398em;
-  height: 1em;
-}
+  icon[shieldBash],
+  icon.shieldBash {
+    --icon: var(--icon-shieldBash);
+    width: 1.1842708517016398em;
+    height: 1em;
+  }
 
-icon[slam], icon.slam {
-  --icon: var(--icon-slam);
-  width: 1.343124165554072em;
-  height: 1em;
-}
+  icon[slam],
+  icon.slam {
+    --icon: var(--icon-slam);
+    width: 1.343124165554072em;
+    height: 1em;
+  }
 
-icon[stab], icon.stab {
-  --icon: var(--icon-stab);
-  width: 1em;
-  height: 1.0063492063492063em;
-}
+  icon[stab],
+  icon.stab {
+    --icon: var(--icon-stab);
+    width: 1em;
+    height: 1.0063492063492063em;
+  }
 
-icon[slash], icon.slash {
-  --icon: var(--icon-slash);
-  width: 1em;
-  height: 1.0224719101123596em;
-}
+  icon[slash],
+  icon.slash {
+    --icon: var(--icon-slash);
+    width: 1em;
+    height: 1.0224719101123596em;
+  }
 
-icon[whirlwind], icon.whirlwind {
-  --icon: var(--icon-whirlwind);
-  width: 1em;
-  height: 1.0084033613445378em;
-}
+  icon[whirlwind],
+  icon.whirlwind {
+    --icon: var(--icon-whirlwind);
+    width: 1em;
+    height: 1.0084033613445378em;
+  }
 
-icon[earth], icon.earth {
-  --icon: var(--icon-earth);
-  width: 1.04375em;
-  height: 1em;
-}
+  icon[earth],
+  icon.earth {
+    --icon: var(--icon-earth);
+    width: 1.04375em;
+    height: 1em;
+  }
 
-icon[fire], icon.fire {
-  --icon: var(--icon-fire);
-  width: 1em;
-  height: 1.3882863340563991em;
-}
+  icon[fire],
+  icon.fire {
+    --icon: var(--icon-fire);
+    width: 1em;
+    height: 1.3882863340563991em;
+  }
 
-icon[frost], icon.frost {
-  --icon: var(--icon-frost);
-  width: 1em;
-  height: 1.1149825783972125em;
-}
+  icon[frost],
+  icon.frost {
+    --icon: var(--icon-frost);
+    width: 1em;
+    height: 1.1149825783972125em;
+  }
 
-icon[lightning], icon.lightning {
-  --icon: var(--icon-lightning);
-  width: 1em;
-  height: 1.4746543778801844em;
-}
+  icon[lightning],
+  icon.lightning {
+    --icon: var(--icon-lightning);
+    width: 1em;
+    height: 1.4746543778801844em;
+  }
 
-icon[nature], icon.nature {
-  --icon: var(--icon-nature);
-  width: 1em;
-  height: 1.1940298507462686em;
-}
+  icon[nature],
+  icon.nature {
+    --icon: var(--icon-nature);
+    width: 1em;
+    height: 1.1940298507462686em;
+  }
 
-icon[bleeding], icon.bleeding {
-  --icon: var(--icon-bleeding);
-  width: 0.6962890625em;
-  height: 1em;
-}
+  icon[bleeding],
+  icon.bleeding {
+    --icon: var(--icon-bleeding);
+    width: 0.6962890625em;
+    height: 1em;
+  }
 
-icon[exposed], icon.exposed {
-  --icon: var(--icon-exposed);
-  width: 1em;
-  height: 1em;
-}
+  icon[exposed],
+  icon.exposed {
+    --icon: var(--icon-exposed);
+    width: 1em;
+    height: 1em;
+  }
 
-icon[concussed], icon.concussed {
-  --icon: var(--icon-concussed);
-  width: 1em;
-  height: 1em;
-}
+  icon[concussed],
+  icon.concussed {
+    --icon: var(--icon-concussed);
+    width: 1em;
+    height: 1em;
+  }
 
-icon[isBlocking], icon.isBlocking {
-  --icon: var(--icon-isBlocking);
-  width: 1em;
-  height: 1.3139705882352941em;
-}
+  icon[isBlocking],
+  icon.isBlocking {
+    --icon: var(--icon-isBlocking);
+    width: 1em;
+    height: 1.3139705882352941em;
+  }
 
-icon[stunned], icon.stunned {
-  --icon: var(--icon-stunned);
-  width: 0.97265625em;
-  height: 1em;
-}
+  icon[stunned],
+  icon.stunned {
+    --icon: var(--icon-stunned);
+    width: 0.97265625em;
+    height: 1em;
+  }
 
-icon[vulnerable], icon.vulnerable {
-  --icon: var(--icon-vulnerable);
-  width: 0.767578125em;
-  height: 1em;
-}
+  icon[vulnerable],
+  icon.vulnerable {
+    --icon: var(--icon-vulnerable);
+    width: 0.767578125em;
+    height: 1em;
+  }
 
-icon[wounded], icon.wounded {
-  --icon: var(--icon-wounded);
-  width: 1em;
-  height: 1em;
-}
+  icon[wounded],
+  icon.wounded {
+    --icon: var(--icon-wounded);
+    width: 1em;
+    height: 1em;
+  }
+
+  icon[cog],
+  icon.cog {
+    --icon: var(--icon-cog);
+    width: 1em;
+    height: 1em;
+  }
 }

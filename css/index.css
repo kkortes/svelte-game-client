@@ -41,17 +41,17 @@
        oklch(from var(--bb-x) calc(l ± n) c h)
      rather than hard-coding shades. Covers: elements, team badges, rarity
      tiers, coins, damage/healing feedback, and UI neutrals. */
-  --bb-red:    oklch(0.58 0.22 27);    /* fire · team-red · mythic · health · damage */
-  --bb-orange: oklch(0.66 0.19 55);    /* fire-light · earth-light · legendary · copper */
-  --bb-yellow: oklch(0.80 0.17 90);    /* lightning · gold · premium */
-  --bb-olive:  oklch(0.68 0.13 110);   /* team-olive */
-  --bb-green:  oklch(0.65 0.18 140);   /* nature · team-green · uncommon · healing */
-  --bb-cyan:   oklch(0.78 0.08 205);   /* frost · platinum coin */
-  --bb-blue:   oklch(0.55 0.20 260);   /* team-blue · primary · rare */
-  --bb-purple: oklch(0.50 0.20 310);   /* team-purple · epic */
-  --bb-pink:   oklch(0.65 0.09 340);   /* team-mauve */
-  --bb-brown:  oklch(0.50 0.10 70);    /* earth · team-brown */
-  --bb-stone:  oklch(0.60 0.02 80);    /* UI neutrals · scrollbar · muted text */
+  --bb-red: oklch(0.58 0.22 27); /* fire · team-red · mythic · health · damage */
+  --bb-orange: oklch(0.66 0.19 55); /* fire-light · earth-light · legendary · copper */
+  --bb-yellow: oklch(0.8 0.17 90); /* lightning · gold · premium */
+  --bb-olive: oklch(0.68 0.13 110); /* team-olive */
+  --bb-green: oklch(0.65 0.18 140); /* nature · team-green · uncommon · healing */
+  --bb-cyan: oklch(0.78 0.08 205); /* frost · platinum coin */
+  --bb-blue: oklch(0.55 0.2 260); /* team-blue · primary · rare */
+  --bb-purple: oklch(0.5 0.2 310); /* team-purple · epic */
+  --bb-pink: oklch(0.65 0.09 340); /* team-mauve */
+  --bb-brown: oklch(0.5 0.1 70); /* earth · team-brown */
+  --bb-stone: oklch(0.6 0.02 80); /* UI neutrals · scrollbar · muted text */
 }
 
 /* Visibility toggle driven by Vibe attribute bindings */

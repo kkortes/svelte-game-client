@@ -82,7 +82,6 @@
 
       <crow justify-between left>
         <h3>Random duel</h3>
-        <!-- @[Math.random()] -->
         <crow left g-2>
           <badge>@[selectedBrawlers.length || maxBrawlers]&nbsp;vs&nbsp;@[selectedBrawlers.length ||
             maxBrawlers]</badge>
@@ -130,8 +129,10 @@
     </page-content>
 
     <stay reverse w-full sm:b="8" p="3">
-      <button primary big onclick="runPvpCombat()"
-        disabled="@[selectedBrawlers.length === 0 || combat.duration !== 0]">Fight</button>
+      <button mx-auto primary onclick="runPvpCombat()"
+        disabled="@[selectedBrawlers.length === 0 || combat.duration !== 0]">
+        Fight
+      </button>
     </stay>
   </component>
   <style>
@@ -223,16 +224,11 @@
 
     page[random-duel] stay {
       justify-content: center;
-      background: #fafafa;
+      background: var(--background);
     }
 
     page[random-duel] stay button {
       min-width: calc(var(--unit) * 50);
-    }
-
-    page[random-duel] stay button[disabled] {
-      opacity: 0.5;
-      pointer-events: none;
     }
   </style>
 </body>

@@ -1,4 +1,4 @@
-<component src="/components/Modal.html" when="@[overlay === 'GameMenu']">
+<component src="/components/Modal.html" when="@[overlay === 'GameMenu']" dismiss="$.overlay = ''">
   <game-frame relative>
     <crow left game-frame-title cinzel>options</crow>
     <crow vertical g-2 p-4>

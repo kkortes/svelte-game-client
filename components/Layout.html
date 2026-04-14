@@ -1,33 +1,31 @@
 <game-layout>
   <component src="/components/Authorization.html">
     <crow game-shell>
-
-
       <crow vertical game-main>
         <card content-area p-0>
           <page @[pageName]>
             <slot></slot>
           </page>
 
-          <stay w-full sm:reverse t="8">
-            <crow up g-1 tab-row w-full py-3 sm:h="8" overflow-hidden>
-              <a href="/" class="button" tertiary="@[pageName !== 'home']"
+          <stay w-full sm:reverse tab-bar t="8">
+            <crow up sm:g="0" g-1 tab-row w-full py-3 sm:h="8" overflow-hidden sm:p="0">
+              <a href="/" sm:px="6" class="button" tertiary="@[pageName !== 'home']"
                 primary="@[pageName === 'home']">
                 <icon info hide sm:block></icon><span sm:hide>Game Guide</span>
               </a>
-              <a href="/the-arena" data-tab="the-arena" class="button"
+              <a href="/the-arena" sm:px="6" data-tab="the-arena" class="button"
                 tertiary="@[pageName !== 'the-arena']" primary="@[pageName === 'the-arena']">
                 <icon damage hide sm:block></icon><span sm:hide>The Arena</span>
               </a>
-              <a href="/random-duel" data-tab="random-duel" class="button"
+              <a href="/random-duel" sm:px="6" data-tab="random-duel" class="button"
                 tertiary="@[pageName !== 'random-duel']" primary="@[pageName === 'random-duel']">
                 <icon dice hide sm:block></icon><span sm:hide>Random duel</span>
               </a>
-              <a href="/vendor" data-tab="vendor" class="button" tertiary="@[pageName !== 'vendor']"
-                primary="@[pageName === 'vendor']">
+              <a href="/vendor" sm:px="6" data-tab="vendor" class="button"
+                tertiary="@[pageName !== 'vendor']" primary="@[pageName === 'vendor']">
                 <icon coin hide sm:block></icon><span sm:hide>Vendor</span>
               </a>
-              <a href="/brawlers" data-tab="brawlers" class="button"
+              <a href="/brawlers" sm:px="6" data-tab="brawlers" class="button"
                 tertiary="@[pageName !== 'brawlers']" primary="@[pageName === 'brawlers']">
                 <icon maxHealth hide sm:block></icon><span sm:hide>Brawlers</span>
               </a>
@@ -115,7 +113,7 @@
     @layer elements {
       sidebar-content {
         background-color: rgba(255, 255, 255, 0.3);
-        border-radius: calc(var(--radius) * 0.5);
+        border-radius: var(--radius);
       }
 
       [dark] sidebar-content {
@@ -153,8 +151,8 @@
       border-top-right-radius: calc(var(--radius) * 1);
     }
 
-    game-layout [tab-row] {
-      background: var(--background);
+    game-layout [tab-bar] {
+      background-color: var(--background);
       border-top-left-radius: calc(var(--radius) * 1);
       border-top-right-radius: calc(var(--radius) * 1);
     }
@@ -237,7 +235,7 @@
 
 
     [battle-brawlers] menu-label {
-      width: calc(var(--unit) * 40);
+      width: min(calc(var(--unit) * 40), 50%);
       flex: none;
     }
 
