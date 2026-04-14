@@ -1,5 +1,16 @@
 # Battle Brawlers — Vibe + Stylecheat Rewrite
 
+When a prompt looks dictated — missing punctuation, run-on sentences, transcription artifacts (random tokens like 'asfas'), filler words ('um', 'so'), or conversational/spoken phrasing — interpret intent loosely, normalize obvious transcription errors, and ask for clarification when ambiguous. When voice is detected, append the request as a one-line bullet under `## Todo` instead of acting on it immediately.
+
+## Todo
+
+Autonomous work queue. Add tasks as one-line bullets (verbs like Do / Fix / Create / Refactor).
+When invoked with `/loop` (no interval), work top-to-bottom: pick the first item, complete it,
+remove it from this list, commit the edit to CLAUDE.md, then continue with the next item.
+When the list is empty, stop the loop.
+
+<!-- Add tasks below this line -->
+
 ## Overview
 
 Strategy auto-battler rewritten from SvelteKit + Tailwind to Vibe + Stylecheat. Branch: `chore/major-rewrite-to-stylecheat-and-vibe`.
@@ -18,6 +29,7 @@ The **`main` branch** contains the original SvelteKit implementation. Use `git s
 The original SvelteKit project had these components (`src/components/`). Each should have a Vibe equivalent in `components/`:
 
 **Root-level (general purpose):**
+
 - Accordion, Armory, Coin, Coins, DevBar, EquipmentFilter, EquipmentLink
 - ForgotPassword, Frame, GameAudio, Headline, Hr, Loader, Login, Logo
 - MyLudus, RefillHealthTimer, Register, Topbar
@@ -55,7 +67,7 @@ The original SvelteKit project had these components (`src/components/`). Each sh
 - **Router**: custom pushState SPA router at `/js/router.js` — pages loaded via fetch + innerHTML + script execution
 - **Component scripts**: `<script type="module">` in Vibe components have imports STRIPPED by processComponent — use index.html's script for logic that needs imports
 - **Dynamic values**: for per-element dynamic values (colors, widths, positions), use custom attributes that map to CSS custom properties: `<element color="@[val]">` with CSS `[color] { --color: attr(color); }` or use `data-*` attributes. Where CSS `attr()` is insufficient, a minimal `style="--var: @[val]"` is acceptable as last resort.
-- **Stylecheat boolean attributes**: Stylecheat uses attribute presence (`[open]` vs `:not([open])`) for boolean states. Vibe's `@[expr]` sets attribute VALUES ("true"/"false"), not presence/absence. Use `data-*` attributes with value matching (`[data-open="true"]`) instead of Stylecheat's native boolean attributes for dynamic state.
+- **Stylecheat boolean attributes**: Non-`data-*`/`aria-*`/`on*` attributes bound with a pure `@[expr]` become proper boolean-like attributes — Vibe sets the attribute (empty value) when truthy and removes it when falsy. So `<modal-root open="@[when]">` with CSS `modal-root[open]` / `modal-root:not([open])` works directly. No `data-` prefix needed.
 - **No string methods with quotes in `@[...]` inside `src` attributes**: `@[x.replace('.png', '-mugshot.png')]` fails because single quotes inside Vibe expressions conflict with HTML attribute parsing. Precompute the value in JS instead.
 - **Flatten deeply nested data for `<!-- each -->` loops**: Vibe's each-loop variable binding works best with flat top-level arrays on `$`. Deeply nested paths like `liveTeams[0].combatants` may not resolve properties in `@[c.name]`. Precompute flat arrays (e.g., `$.combatTeam0`) with simple property names.
 - **`onerror` on images with `@[...]` src**: Vibe briefly sets `src` to the literal `@[expr]` string before resolving, causing a 404. Guard onerror handlers: `onerror="if(!this.src.includes('@['))this.style.display='none'"`
@@ -84,6 +96,7 @@ Run from `svelte-game-server/`: `bun run index.js` (port 1337). Config in `js/co
 ### Discrepancies vs original (compare to `main` branch line-by-line before fixing):
 
 **Auth/Login (Layout.html):**
+
 - [x] Login error handling uses `$.authError` (inline div) — original uses `notify()` (toast)
 - [x] No success notification after login — original shows "Logged in successfully"
 - [x] Registration: no success notification, no form clearing — original shows "Account was created"
@@ -91,6 +104,7 @@ Run from `svelte-game-server/`: `bun run index.js` (port 1337). Config in `js/co
 - [x] Auth failure doesn't clear token — original does `app.token = undefined` on catch
 
 **Combat (Combat.html):**
+
 - [ ] Card-based grid instead of circular arena with character sprites
 - [ ] No combatant sprites rendered
 - [x] Floating damage numbers: selectors verified matching
@@ -98,15 +112,17 @@ Run from `svelte-game-server/`: `bun run index.js` (port 1337). Config in `js/co
 - [x] Status effects sorted (precomputed in combat-loop, rendered via each loops)
 
 **Pages:**
+
 - [ ] Brawler detail: DnD causes `window.location.reload()` — original updates in-place reactively
 - [ ] Brawlers page: `brawlerCharCapped` computed once, not reactive
 - [ ] Arena: `hideTreshold` (fight locking) computed once, not reactive
 - [x] Fight detail: mugshot image `.replace()` inside `@[...]` breaks Vibe attribute parsing
 
 **Components:**
+
 - [x] Notifications: auto-dismiss via setTimeout in actions.js (hover pause is polish)
 - [ ] Dialog: only supports confirm type — original accepts any component
 - [x] AccountProgression: claim sound effect + auto-close on current level
 - [x] AccountProgression: auto-scroll to current level on open
-- [x] Layout: armory sidebar transition (opacity + translate via data-visible)
+- [x] Layout: armory sidebar transition (opacity + translate via visible attr)
 - [x] Layout: debug page background image

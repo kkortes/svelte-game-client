@@ -22,25 +22,23 @@ const saveGameState = () => {
   }, 1000);
 };
 
-const connectWebSocket = () => {
+let wasConnected = false;
+
+export const init = () => {
   const ws = AsyncAwaitWebsocket(config.WEBSOCKET_CONNECT);
 
-  ws.on('open', () => {
-    $.socket = ws;
-    notify({ success: 'Connected to game server' });
+  ws.on('open', (e) => {
+    $.socket = e.target;
+    if (wasConnected) notify({ success: 'Connected to game server' });
+    wasConnected = true;
   });
 
   ws.on('close', () => {
-    notify({ error: "Can't connect to game server" });
+    if ($.socket) notify({ error: "Can't connect to game server" });
+    $.socket = undefined;
   });
 
-  ws.on('broadcast', (data) => {
-    console.info('Broadcast:', data);
-  });
-};
-
-export const init = () => {
-  connectWebSocket();
+  ws.on('broadcast', (data) => console.info('Broadcast:', data));
 
   // Flush pending save before page unloads (MPA navigation, tab close, etc.)
   window.addEventListener('beforeunload', () => {

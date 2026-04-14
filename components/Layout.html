@@ -1,11 +1,14 @@
 <game-layout>
   <!-- if isDev && token -->
-  <component src="/components/DevBar.html"></component>
+  <accordion devbar-accordion open="@[devbarOpen]">
+    <accordion-content>
+      <component src="/components/DevBar.html"></component>
+    </accordion-content>
+  </accordion>
   <!-- /if -->
 
   <component src="/components/Authorization.html">
     <crow game-shell>
-      <component src="/components/Sidebar.html"></component>
 
 
       <crow vertical game-main>
@@ -44,6 +47,8 @@
 
       </crow>
 
+      <component src="/components/Sidebar.html"></component>
+
 
       <!-- <component src="/components/Armory.html"></component> -->
 
@@ -60,6 +65,7 @@
   <component src="/components/Tooltip.html"></component>
   <component src="/components/Notifications.html"></component>
   <component src="/components/Topbar.html"></component>
+  <component src="/components/Keystrokes.html"></component>
 
   <style>
     game-layout {
@@ -114,8 +120,8 @@
       gap: calc(var(--unit) * 3);
     }
 
-    game-layout sidebar-content {
-      background: rgba(255, 255, 255, 0.3);
+    sidebar-content {
+      /* background-color: rgba(255, 255, 255, 0.3); */
       border-radius: calc(var(--radius) * 0.5);
     }
 
@@ -127,7 +133,7 @@
       pointer-events: none;
     }
 
-    game-layout sidebar[armory][data-visible="true"] {
+    game-layout sidebar[armory][visible] {
       opacity: 1;
       transform: translateX(0);
       pointer-events: auto;

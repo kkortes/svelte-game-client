@@ -125,19 +125,19 @@ eq-link {
   --eq-color: rgb(156, 163, 175);
 }
 
-eq-link[data-tier='green'] {
+eq-link[tier='green'] {
   --eq-color: #16a34a;
 }
-eq-link[data-tier='blue'] {
+eq-link[tier='blue'] {
   --eq-color: #2563eb;
 }
-eq-link[data-tier='purple'] {
+eq-link[tier='purple'] {
   --eq-color: #9333ea;
 }
-eq-link[data-tier='orange'] {
+eq-link[tier='orange'] {
   --eq-color: #ea580c;
 }
-eq-link[data-tier='red'] {
+eq-link[tier='red'] {
   --eq-color: #dc2626;
 }
 
@@ -190,7 +190,7 @@ eq-link [eq-name] {
 }
 
 /* Disabled state for buttons via data attribute */
-button[data-disabled='true'] {
+button[disabled] {
   pointer-events: none;
   opacity: 0.4;
 }

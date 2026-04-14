@@ -1,0 +1,32 @@
+<script type="module">
+  // Listen globally to keydown/keyup and push pressed state into $.keys.
+  // $.keys is pre-seeded in app.js with the keys we care about; keys not in
+  // that whitelist are ignored so random typing doesn't grow the state shape.
+  if (!window.__keystrokesBound) {
+    window.__keystrokesBound = true;
+
+    const toggle = (e) => {
+      if (!(e instanceof KeyboardEvent)) return; // autofill events can lack .code
+      const { type, code, metaKey, ctrlKey } = e;
+      const lcKey = code.toLowerCase();
+
+      // Cmd/Ctrl shortcuts — clear all tracked keys so nothing stays "held"
+      if (metaKey || ctrlKey) {
+        Object.keys($.keys).forEach((k) => { if ($.keys[k]) $.keys[k] = false; });
+        return;
+      }
+
+      // Respect gameKeyboardDisabled, but always allow enter/escape/shift.
+      if ($.gameKeyboardDisabled && !['enter', 'escape', 'shiftleft', 'shiftright'].includes(lcKey)) return;
+
+      if (lcKey in $.keys) {
+        const down = type === 'keydown';
+        if ($.keys[lcKey] !== down) $.keys[lcKey] = down;
+      }
+    };
+
+    window.addEventListener('keydown', toggle);
+    window.addEventListener('keyup', toggle);
+  }
+</script>
+<keystrokes></keystrokes>

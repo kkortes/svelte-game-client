@@ -114,8 +114,8 @@
 
       <crow brawlers-grid>
         <!-- each recruitableCharacters as char, idx -->
-        <brawler-card p-2 flex-none onclick="pickCharacter(@[idx])" data-element="@[char.element]"
-          data-recruited="@[char.isRecruited]">
+        <brawler-card p-2 flex-none onclick="pickCharacter(@[idx])" element="@[char.element]"
+          recruited="@[char.isRecruited]">
           <crow vertical left g-2>
             <span cinzel brawler-name>@[char.name]</span>
             <hr divider />
@@ -183,38 +183,39 @@
       cursor: pointer;
       border: 0.5px solid var(--border);
       min-height: calc(var(--unit) * 50);
+      background-color: #f3f4f6;
     }
 
     page[brawlers] brawler-card:active {
       translate: 0 1px;
     }
 
-    page[brawlers] brawler-card[data-element="nature"] {
+    page[brawlers] brawler-card[element="nature"] {
       border-color: #8bb737;
       background: linear-gradient(135deg, rgba(139, 183, 55, 0.2), rgba(160, 206, 62, 0.2));
     }
 
-    page[brawlers] brawler-card[data-element="earth"] {
+    page[brawlers] brawler-card[element="earth"] {
       border-color: #7f5322;
       background: linear-gradient(135deg, rgba(127, 83, 34, 0.2), rgba(198, 133, 51, 0.2));
     }
 
-    page[brawlers] brawler-card[data-element="lightning"] {
+    page[brawlers] brawler-card[element="lightning"] {
       border-color: #eac303;
       background: linear-gradient(135deg, rgba(234, 195, 3, 0.2), rgba(252, 237, 96, 0.2));
     }
 
-    page[brawlers] brawler-card[data-element="frost"] {
+    page[brawlers] brawler-card[element="frost"] {
       border-color: #88c6cb;
       background: linear-gradient(135deg, rgba(136, 198, 203, 0.2), rgba(234, 255, 255, 0.2));
     }
 
-    page[brawlers] brawler-card[data-element="fire"] {
+    page[brawlers] brawler-card[element="fire"] {
       border-color: #f45f31;
       background: linear-gradient(135deg, rgba(244, 95, 49, 0.2), rgba(244, 160, 49, 0.2));
     }
 
-    page[brawlers] brawler-card[data-recruited="true"] {
+    page[brawlers] brawler-card[recruited] {
       opacity: 0.5;
       filter: grayscale(1);
       cursor: not-allowed;

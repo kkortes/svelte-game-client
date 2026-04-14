@@ -71,7 +71,7 @@
     <crow combat-teams g-4>
       <combat-team-col>
         <!-- each combatTeam0 as c -->
-        <combat-card data-combat-card="@[c.cardId]">
+        <combat-card combat-card="@[c.cardId]">
           <crow justify-between mb-1>
             <span text-sm font-medium>@[c.name]</span>
             <crow combat-badges g-2>
@@ -101,12 +101,12 @@
           <!-- /if -->
           <combat-statuses>
             <!-- each c.statusEffects as s -->
-            <span combat-status data-status="@[s.key]">
+            <span combat-status status="@[s.key]">
               <icon @[s.key]></icon>@[s.ticks]
             </span>
             <!-- /each -->
             <!-- each c.statusStacks as s -->
-            <span combat-status data-status="@[s.key]">
+            <span combat-status status="@[s.key]">
               <icon @[s.key]></icon>@[s.value]/@[s.max]
             </span>
             <!-- /each -->
@@ -118,7 +118,7 @@
       <!-- Team 1 (enemy) -->
       <combat-team-col>
         <!-- each combatTeam1 as c -->
-        <combat-card data-combat-card="@[c.cardId]">
+        <combat-card combat-card="@[c.cardId]">
           <crow justify-between mb-1>
             <span text-sm font-medium>@[c.name]</span>
             <crow combat-badges g-2>
@@ -148,12 +148,12 @@
           <!-- /if -->
           <combat-statuses>
             <!-- each c.statusEffects as s -->
-            <span combat-status data-status="@[s.key]">
+            <span combat-status status="@[s.key]">
               <icon @[s.key]></icon>@[s.ticks]
             </span>
             <!-- /each -->
             <!-- each c.statusStacks as s -->
-            <span combat-status data-status="@[s.key]">
+            <span combat-status status="@[s.key]">
               <icon @[s.key]></icon>@[s.value]/@[s.max]
             </span>
             <!-- /each -->
@@ -322,15 +322,15 @@
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
   }
 
-  [battle-brawlers] combat-floater[data-type="hurt"] {
+  [battle-brawlers] combat-floater[type="hurt"] {
     color: #ef4444;
   }
 
-  [battle-brawlers] combat-floater[data-type="armorHurt"] {
+  [battle-brawlers] combat-floater[type="armorHurt"] {
     color: #60a5fa;
   }
 
-  [battle-brawlers] combat-floater[data-type="heal"] {
+  [battle-brawlers] combat-floater[type="heal"] {
     color: #22c55e;
   }
 
@@ -376,34 +376,34 @@
     font-size: 0.65rem;
   }
 
-  [battle-brawlers] [combat-status][data-status="stunned"] {
+  [battle-brawlers] [combat-status][status="stunned"] {
     background: #fbbf24;
     color: #000;
   }
 
-  [battle-brawlers] [combat-status][data-status="bleeding"] {
+  [battle-brawlers] [combat-status][status="bleeding"] {
     background: #ef4444;
     color: #fff;
   }
 
-  [battle-brawlers] [combat-status][data-status="vulnerable"] {
+  [battle-brawlers] [combat-status][status="vulnerable"] {
     background: #a855f7;
     color: #fff;
   }
 
-  [battle-brawlers] [combat-status][data-status="wounded"] {
+  [battle-brawlers] [combat-status][status="wounded"] {
     background: #dc2626;
     color: #fff;
     opacity: 0.7;
   }
 
-  [battle-brawlers] [combat-status][data-status="concussed"] {
+  [battle-brawlers] [combat-status][status="concussed"] {
     background: #d97706;
     color: #fff;
     opacity: 0.7;
   }
 
-  [battle-brawlers] [combat-status][data-status="exposed"] {
+  [battle-brawlers] [combat-status][status="exposed"] {
     background: #7c3aed;
     color: #fff;
     opacity: 0.7;

@@ -1,5 +1,6 @@
 <sidebar>
-  <sidebar-content>
+  <input type="checkbox" id="sidebar-toggle" />
+  <sidebar-content sm:bg="var(--blue)">
     <div>
       <combat-status>
         <!-- if elapsedMilliseconds < combat.duration -->
@@ -88,7 +89,7 @@
           <a href="/brawlers/@[i]" onclick="selectBrawler(event, characters[@[i]]?.uuid, @[i])"
             brawler-link>
             <crow left brawler-row
-              data-active="@[Number(routeParams.characterIndex) === i || selectedBrawlers.includes(characters[i]?.uuid)]">
+              active="@[Number(routeParams.characterIndex) === i || selectedBrawlers.includes(characters[i]?.uuid)]">
               <avatar-wrap>
                 <avatar-frame glass>
                   <img data-src="/static/images/races/@[schar.mugshot]" alt="" brawler-img />
@@ -110,7 +111,7 @@
                   </bar-track>
                 </crow>
                 <ability-accordion
-                  data-open="@[showSequence || !!maxBrawlers || Number(routeParams.characterIndex) === i || selectedBrawlers.includes(characters[i]?.uuid)]">
+                  open="@[showSequence || !!maxBrawlers || Number(routeParams.characterIndex) === i || selectedBrawlers.includes(characters[i]?.uuid)]">
                   <ability-accordion-content>
                     <ability-preview>
                       <!-- each schar.abilities as ab -->
@@ -230,7 +231,7 @@
           transition: all 75ms;
         }
 
-        sidebar-content [brawler-row][data-active="true"] {
+        sidebar-content [brawler-row][active] {
           background: rgba(255, 255, 255, 0.5);
           border-radius: calc(var(--unit) * 0.5);
           margin: calc(var(--unit) * -1) calc(var(--unit) * -1.5);
@@ -277,7 +278,7 @@
           transition: grid-template-rows 200ms ease;
         }
 
-        sidebar-content ability-accordion[data-open="true"] {
+        sidebar-content ability-accordion[open] {
           grid-template-rows: 1fr;
         }
 

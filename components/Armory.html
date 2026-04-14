@@ -5,7 +5,7 @@
   window.dismantleItem = dismantle;
 </script>
 <sidebar sm-hide armory
-  data-visible="@[routeParams.characterIndex !== undefined || route === '/vendor']">
+  visible="@[routeParams.characterIndex !== undefined || route === '/vendor']">
 
   <sidebar-content>
     <crow justify-between>
@@ -17,7 +17,7 @@
       <!-- each inventory as item, idx -->
       <crow justify-between w-full g-2 armory-row>
         <eq-link
-          data-tier="@[item.overrides?.level >= 25 ? 'red' : item.overrides?.level >= 20 ? 'orange' : item.overrides?.level >= 15 ? 'purple' : item.overrides?.level >= 10 ? 'blue' : item.overrides?.level >= 5 ? 'green' : 'gray']">
+          tier="@[item.overrides?.level >= 25 ? 'red' : item.overrides?.level >= 20 ? 'orange' : item.overrides?.level >= 15 ? 'purple' : item.overrides?.level >= 10 ? 'blue' : item.overrides?.level >= 5 ? 'green' : 'gray']">
           <eq-bg-center></eq-bg-center>
           <eq-bg-left></eq-bg-left>
           <eq-bg-right></eq-bg-right>

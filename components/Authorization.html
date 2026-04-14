@@ -26,13 +26,13 @@
   };
 </script>
 
-<!-- if !socket -->
-<center-full>
-  <crow g-2 text-muted>
-    <spinner></spinner> Connecting to server
-  </crow>
-</center-full>
-<!-- /if -->
+<component src="/components/Modal.html" when="@[!socket]">
+  <card auth-form glass>
+    <crow g-2 text-muted>
+      <spinner></spinner> Connecting to server
+    </crow>
+  </card>
+</component>
 
 <!-- if socket && !token -->
 <center-full auth-padding>

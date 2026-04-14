@@ -8,7 +8,7 @@ export const init = () => {
   const spawnFloater = (cardEl, amount, type) => {
     const el = document.createElement('combat-floater');
     el.textContent = type === 'heal' ? `+${amount}` : `-${amount}`;
-    el.setAttribute('data-type', type);
+    el.setAttribute('type', type);
     cardEl.appendChild(el);
     el.addEventListener('animationend', () => el.remove());
   };
@@ -27,7 +27,7 @@ export const init = () => {
           if (!['hurt', 'armorHurt', 'heal'].includes(anim.vfxName)) return;
 
           shownVfx.add(anim.id);
-          const card = document.querySelector(`[data-combat-card="${ti}-${ci}"]`);
+          const card = document.querySelector(`[combat-card="${ti}-${ci}"]`);
           if (card && anim.amount) spawnFloater(card, anim.amount, anim.vfxName);
         });
       });

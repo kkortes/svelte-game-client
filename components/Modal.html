@@ -1,4 +1,4 @@
-<modal-root data-open="@[when]" data-bare="@[bare]" onclick="$.overlay = ''">
+<modal-root open="@[when]" bare="@[bare]" onclick="$.overlay = ''">
   <spacer modal-spacer></spacer>
   <modal-panel onclick="event.stopPropagation()">
     <slot></slot>
@@ -25,7 +25,7 @@
     transition: opacity 200ms ease-out, transform 200ms ease-out;
   }
 
-  [battle-brawlers] modal-root[data-open="true"] {
+  [battle-brawlers] modal-root[open] {
     opacity: 1;
     pointer-events: auto;
     transform: scale(1);
@@ -43,15 +43,15 @@
     overflow-x: hidden;
   }
 
-  [battle-brawlers] modal-root[data-bare="true"] {
+  [battle-brawlers] modal-root[bare] {
     display: block;
     background: transparent;
     box-shadow: none;
     backdrop-filter: none;
   }
 
-  [battle-brawlers] modal-root[data-bare="true"] [modal-spacer],
-  [battle-brawlers] modal-root[data-bare="true"] modal-panel {
+  [battle-brawlers] modal-root[bare] [modal-spacer],
+  [battle-brawlers] modal-root[bare] modal-panel {
     display: contents;
   }
 </style>

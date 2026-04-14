@@ -349,7 +349,7 @@
 
         <crow g-2 right>
           <button tertiary toggle-btn onclick="toggleDetailedView()">
-            <icon down data-flipped="@[settings.showDetailedCharacterView]"></icon>
+            <icon down flipped="@[settings.showDetailedCharacterView]"></icon>
             <!-- if settings.showDetailedCharacterView -->
             Simple view
             <!-- /if -->
@@ -430,7 +430,7 @@
                 <!-- /if -->
                 <!-- if !eq.disabled -->
                 <!-- if eq.hasItem -->
-                <eq-link data-tier="@[eq.level >= 25 ? 'red' : eq.level >= 20 ? 'orange' : eq.level >= 15 ? 'purple' : eq.level >= 10 ? 'blue' : eq.level >= 5 ? 'green' : 'gray']">
+                <eq-link tier="@[eq.level >= 25 ? 'red' : eq.level >= 20 ? 'orange' : eq.level >= 15 ? 'purple' : eq.level >= 10 ? 'blue' : eq.level >= 5 ? 'green' : 'gray']">
                   <eq-bg-center></eq-bg-center>
                   <eq-bg-left></eq-bg-left>
                   <eq-bg-right></eq-bg-right>
@@ -482,8 +482,8 @@
             <ability-cell
               dnd-item
               style="width: calc(((100% / 15) * @[ability.ticks]) + 1px)"
-              data-basic="@[ability.basic]"
-              data-overtick="@[ability.overTick]"
+              basic="@[ability.basic]"
+              overtick="@[ability.overTick]"
             >
               <icon @[ability.icon]></icon>
               <ability-tick-count>@[ability.ticks]</ability-tick-count>
@@ -497,7 +497,7 @@
         <h5 cinzel m-0>Available Abilities</h5>
         <crow available-grid>
           <!-- each currentAvailableAbilities as ability -->
-          <available-ability dnd-item data-basic="@[ability.basic]">
+          <available-ability dnd-item basic="@[ability.basic]">
             <icon @[ability.icon]></icon>
             <ability-tick-count>@[ability.ticks]</ability-tick-count>
           </available-ability>
@@ -530,7 +530,7 @@ page[brawlers-characterIndex] [headline-row] { align-items: center; }
 page[brawlers-characterIndex] [core-stats] { font-size: 1.125rem; color: var(--muted-foreground); translate: 0 1px; }
 page[brawlers-characterIndex] [stat-sep] { color: var(--border); }
 page[brawlers-characterIndex] [toggle-btn] { padding: var(--unit) calc(var(--unit) * 2); }
-page[brawlers-characterIndex] [toggle-btn] icon[data-flipped="true"] { transform: scaleY(-1); }
+page[brawlers-characterIndex] [toggle-btn] icon[flipped] { transform: scaleY(-1); }
 page[brawlers-characterIndex] [retire-btn] { padding: var(--unit) calc(var(--unit) * 2); background: rgba(248, 113, 113, 0.2); color: rgb(248, 113, 113); }
 page[brawlers-characterIndex] [avatar-col] { flex: none; }
 page[brawlers-characterIndex] [avatar-frame] { aspect-ratio: 11/12; width: 100%; max-width: calc(var(--unit) * 70); border-radius: var(--radius); overflow: hidden; border: 1px solid rgba(0,0,0,0.1); }
@@ -557,18 +557,18 @@ page[brawlers-characterIndex] [tick-label] { position: absolute; bottom: 100%; r
 page[brawlers-characterIndex] [tick-label] strong { line-height: 1; color: var(--text); }
 page[brawlers-characterIndex] [ability-overlay] { position: absolute; inset: calc(var(--unit) * 2) var(--unit); width: calc(100% - calc(var(--unit) * 2)); border-radius: var(--radius); }
 page[brawlers-characterIndex] ability-cell { flex: none; height: 100%; margin-left: -1px; border: 1px solid rgb(107,114,128); background: white; border-radius: var(--unit); display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; position: relative; }
-page[brawlers-characterIndex] ability-cell[data-basic="true"] { background: rgb(243,244,246); border-color: var(--border); }
-page[brawlers-characterIndex] ability-cell[data-basic="true"] icon { color: rgb(156,163,175); }
-page[brawlers-characterIndex] ability-cell[data-overtick="true"] { background: rgb(254,202,202); border-color: rgb(252,165,165); }
-page[brawlers-characterIndex] ability-cell[data-overtick="true"] icon { color: rgb(252,165,165); }
-page[brawlers-characterIndex] ability-cell:not([data-basic="true"]) { z-index: 1; }
+page[brawlers-characterIndex] ability-cell[basic] { background: rgb(243,244,246); border-color: var(--border); }
+page[brawlers-characterIndex] ability-cell[basic] icon { color: rgb(156,163,175); }
+page[brawlers-characterIndex] ability-cell[overtick] { background: rgb(254,202,202); border-color: rgb(252,165,165); }
+page[brawlers-characterIndex] ability-cell[overtick] icon { color: rgb(252,165,165); }
+page[brawlers-characterIndex] ability-cell:not([basic]) { z-index: 1; }
 page[brawlers-characterIndex] ability-cell icon { font-size: clamp(0.875rem, 3vw, 1.875rem); }
 page[brawlers-characterIndex] ability-tick-count { position: absolute; bottom: calc(var(--unit) * -3); left: 50%; translate: -50% 0; width: calc(var(--unit) * 8); height: calc(var(--unit) * 5); display: flex; align-items: center; justify-content: center; font-size: 0.8125rem; font-weight: bold; border-radius: calc(var(--unit) * 0.5); border: 0.5px solid rgb(156,163,175); background: white; }
 
 page[brawlers-characterIndex] [available-grid] { flex-wrap: wrap; gap: calc(var(--unit) * 2); align-items: flex-start; min-height: calc(var(--unit) * 20); padding: calc(var(--unit) * 2); border: 1px solid var(--border); border-radius: calc(var(--unit) * 2); background: rgb(249,250,251); box-shadow: inset 0 1px 2px rgba(0,0,0,0.05); }
 page[brawlers-characterIndex] available-ability { width: calc(var(--unit) * 20); height: calc(var(--unit) * 20); border: 0.5px solid rgb(156,163,175); border-radius: var(--unit); background: white; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; flex: none; }
-page[brawlers-characterIndex] available-ability[data-basic="true"] { background: rgb(243,244,246); border-color: var(--border); }
-page[brawlers-characterIndex] available-ability[data-basic="true"] icon { color: rgb(156,163,175); }
+page[brawlers-characterIndex] available-ability[basic] { background: rgb(243,244,246); border-color: var(--border); }
+page[brawlers-characterIndex] available-ability[basic] icon { color: rgb(156,163,175); }
 page[brawlers-characterIndex] available-ability icon { font-size: clamp(0.875rem, 3vw, 1.875rem); }
 page[brawlers-characterIndex] available-ability ability-tick-count { bottom: calc(var(--unit) * -2.5); width: calc(var(--unit) * 6); height: calc(var(--unit) * 4); font-size: 0.6875rem; }
   </style>

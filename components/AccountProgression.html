@@ -43,13 +43,13 @@
       <slide>
         <slide-center>
           <card progression-card onclick="event.stopPropagation()"
-            data-claimed="@[lvl <= accountRewards]" data-reached="@[lvl <= sidebarLevel]">
+            claimed="@[lvl <= accountRewards]" reached="@[lvl <= sidebarLevel]">
             <!-- if lvl <= accountRewards -->
             <icon checkmark progression-check></icon>
             <!-- /if -->
             <h4 m-0>Level @[lvl]</h4>
             <hr my-2 />
-            <crow g-8 up left>
+            <crow g-8 up>
               <crow vertical up left>
                 <strong sm>Account</strong>
                 <crow g-1>+1 <icon coin coin-platinum></icon>
@@ -115,11 +115,11 @@
     min-height: calc(var(--unit) * 60);
   }
 
-  [progression-card][data-claimed="true"] {
+  [progression-card][claimed] {
     background-color: var(--secondary);
   }
 
-  [progression-card][data-reached="false"] {
+  [progression-card]:not([reached]) {
     background-color: var(--secondary);
     color: var(--muted-foreground);
   }

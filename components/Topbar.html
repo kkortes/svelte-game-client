@@ -1,14 +1,24 @@
-<crow ml="auto" glass order-first>
-  <button tertiary
-    onclick="$.settings = { ...$.settings, darkMode: !$.settings.darkMode }; document.body.toggleAttribute('dark', $.settings.darkMode)">
-    <!-- if settings.darkMode -->
-    <icon light text-yellow></icon>
+<crow justify-between glass order-first>
+  <logo px-2>
+    Battle Brawlers
+  </logo>
+  <crow>
+    <button tertiary
+      onclick="$.settings = { ...$.settings, darkMode: !$.settings.darkMode }; document.body.toggleAttribute('dark', $.settings.darkMode)">
+      <!-- if settings.darkMode -->
+      <icon light text-yellow></icon>
+      <!-- /if -->
+      <!-- if !settings.darkMode -->
+      <icon dark text-blue></icon>
+      <!-- /if -->
+    </button>
+    <button tertiary onclick="$.overlay = 'GameMenu'">
+      <icon menu></icon>
+    </button>
+    <!-- if token -->
+    <label class="button" tertiary for="sidebar-toggle" hide sm:flex aria-label="Open sidebar">
+      <icon menu></icon>
+    </label>
     <!-- /if -->
-    <!-- if !settings.darkMode -->
-    <icon dark text-blue></icon>
-    <!-- /if -->
-  </button>
-  <button tertiary onclick="$.overlay = 'GameMenu'">
-    <icon menu></icon>
-  </button>
+  </crow>
 </crow>
