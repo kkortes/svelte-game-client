@@ -120,9 +120,11 @@
       gap: calc(var(--unit) * 3);
     }
 
-    sidebar-content {
-      /* background-color: rgba(255, 255, 255, 0.3); */
-      border-radius: calc(var(--radius) * 0.5);
+    @layer elements {
+      sidebar-content {
+        background-color: rgba(255, 255, 255, 0.3);
+        border-radius: calc(var(--radius) * 0.5);
+      }
     }
 
     game-layout sidebar[armory] {

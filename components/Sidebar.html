@@ -1,6 +1,6 @@
 <sidebar>
   <input type="checkbox" id="sidebar-toggle" />
-  <sidebar-content sm:bg="var(--blue)">
+  <sidebar-content sm:bg="white">
     <div>
       <combat-status>
         <!-- if elapsedMilliseconds < combat.duration -->
@@ -131,6 +131,12 @@
 
 
       <style>
+        @media (width <=768px) {
+          sidebar {
+            z-index: 1;
+          }
+        }
+
         sidebar-content combat-status {
           position: absolute;
           top: calc(var(--unit) * -6);
