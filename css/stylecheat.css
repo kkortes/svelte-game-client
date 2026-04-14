@@ -1214,8 +1214,9 @@ button:is(.primary, .secondary, .tertiary, [primary], [secondary], [tertiary]) {
     outline-color: transparent;
 
     &:not(:disabled):hover {
-      background-color: oklch(from var(--secondary) calc(l * (1 - 0.1 * var(--theme-sign))) c h);
-      color: oklch(from var(--secondary-foreground) calc(l * (1 - 0.1 * var(--theme-sign))) c h);
+      background-color: oklch(from var(--primary) l c h / 0.12);
+      color: oklch(from var(--primary) calc(l - 0.2 * var(--theme-sign)) c h);
+      outline-color: transparent;
     }
 
     &:focus-visible:not(:disabled) {

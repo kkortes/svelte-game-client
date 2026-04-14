@@ -7,7 +7,7 @@
             <slot></slot>
           </page>
 
-          <stay w-full sm:reverse tab-bar t="8">
+          <stay w-full sm:reverse tab-bar t="8.5">
             <crow up sm:g="0" g-1 tab-row w-full py-3 sm:h="8" overflow-hidden sm:p="0">
               <a href="/" sm:px="6" class="button" tertiary="@[pageName !== 'home']"
                 primary="@[pageName === 'home']">
@@ -117,7 +117,7 @@
       }
 
       [dark] sidebar-content {
-        background-color: oklch(from var(--card) calc(l*0.75) c h / 0.6);
+        background-color: var(--card);
       }
     }
 
@@ -152,7 +152,7 @@
     }
 
     game-layout [tab-bar] {
-      background-color: var(--background);
+      background: var(--background);
       border-top-left-radius: calc(var(--radius) * 1);
       border-top-right-radius: calc(var(--radius) * 1);
     }

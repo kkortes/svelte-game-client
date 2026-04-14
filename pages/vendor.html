@@ -121,46 +121,38 @@
       <hr />
 
       <crow g-1 sm vendor-filters>
-        <button f-1 primary="@[$.vendorFilter === 'all']"
-          tertiary="@[$.vendorFilter !== 'all']"
+        <button f-1 primary="@[$.vendorFilter === 'all']" tertiary="@[$.vendorFilter !== 'all']"
           onclick="vendorFilterBy('all')">
           All (@[$.vendorItems.length])
         </button>
         <button f-1 primary="@[$.vendorFilter === 'oneHand']"
-          tertiary="@[$.vendorFilter !== 'oneHand']"
-          onclick="vendorFilterBy('oneHand')">
+          tertiary="@[$.vendorFilter !== 'oneHand']" onclick="vendorFilterBy('oneHand')">
           One-Handed (@[vendorCounts.oneHand])
         </button>
         <button f-1 primary="@[$.vendorFilter === 'offHand']"
-          tertiary="@[$.vendorFilter !== 'offHand']"
-          onclick="vendorFilterBy('offHand')">
+          tertiary="@[$.vendorFilter !== 'offHand']" onclick="vendorFilterBy('offHand')">
           Off-Hand (@[vendorCounts.offHand])
         </button>
         <button f-1 primary="@[$.vendorFilter === 'twoHand']"
-          tertiary="@[$.vendorFilter !== 'twoHand']"
-          onclick="vendorFilterBy('twoHand')">
+          tertiary="@[$.vendorFilter !== 'twoHand']" onclick="vendorFilterBy('twoHand')">
           Two-Handed (@[vendorCounts.twoHand])
         </button>
-        <button f-1 primary="@[$.vendorFilter === 'armor']"
-          tertiary="@[$.vendorFilter !== 'armor']"
+        <button f-1 primary="@[$.vendorFilter === 'armor']" tertiary="@[$.vendorFilter !== 'armor']"
           onclick="vendorFilterBy('armor')">
           Armor (@[vendorCounts.armor])
         </button>
         <button f-1 primary="@[$.vendorFilter === 'accessory']"
-          tertiary="@[$.vendorFilter !== 'accessory']"
-          onclick="vendorFilterBy('accessory')">
+          tertiary="@[$.vendorFilter !== 'accessory']" onclick="vendorFilterBy('accessory')">
           Accessory (@[vendorCounts.accessory])
         </button>
         <button f-1 primary="@[$.vendorFilter === 'trinket']"
-          tertiary="@[$.vendorFilter !== 'trinket']"
-          onclick="vendorFilterBy('trinket')">
+          tertiary="@[$.vendorFilter !== 'trinket']" onclick="vendorFilterBy('trinket')">
           Trinket (@[vendorCounts.trinket])
         </button>
       </crow>
 
-      <crow vertical up left vendor-table mt-4>
-        <crow up left vendor-header>
-          <vendor-col-name cinzel>Name</vendor-col-name>
+      <crow vertical up left vendor-table mx="-6" w="auto" mt-4>
+        <crow up left vendor-header <vendor-col-name cinzel>Name</vendor-col-name>
           <vendor-col-slot cinzel>Slots in</vendor-col-slot>
           <vendor-col-cost cinzel>Cost</vendor-col-cost>
           <vendor-col-action></vendor-col-action>
@@ -195,12 +187,6 @@
       flex-wrap: wrap;
     }
 
-    page[vendor] [vendor-table] {
-      margin-left: calc(var(--unit) * -4);
-      margin-right: calc(var(--unit) * -4);
-      width: auto;
-    }
-
     page[vendor] [vendor-header] {
       gap: calc(var(--unit) * 4);
       padding: calc(var(--unit) * 2) calc(var(--unit) * 6);
@@ -214,11 +200,15 @@
     }
 
     page[vendor] [vendor-row][even] {
-      background: #fafaf9;
+      background: oklch(from var(--foreground) l c h / 0.04);
+    }
+
+    [dark] page[vendor] [vendor-row][even] {
+      background: oklch(from var(--foreground) l c h / 0.08);
     }
 
     page[vendor] [vendor-row]:not([even]) {
-      background: white;
+      background: transparent;
     }
 
     page[vendor] vendor-col-name,

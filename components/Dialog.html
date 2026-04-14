@@ -1,7 +1,7 @@
 <component src="/components/Modal.html" when="@[dialog]" dismiss="$.dialog = undefined">
   <card dialog-card>
     <p mb-4>@[dialog?.props?.text || 'Are you sure?']</p>
-    <crow g-2 dialog-actions>
+    <crow g-2 dialog-actions right>
       <button tertiary onclick="$.dialog = undefined">Cancel</button>
       <button primary
         onclick="if($.dialog?.props?.confirm) $.dialog.props.confirm(); $.dialog = undefined;">Confirm</button>
@@ -13,9 +13,6 @@
   [battle-brawlers] [dialog-card] {
     min-width: calc(var(--unit) * 75);
     max-width: calc(var(--unit) * 100);
-  }
-
-  [battle-brawlers] [dialog-actions] {
-    justify-content: flex-end;
+    border-radius: var(--radius);
   }
 </style>

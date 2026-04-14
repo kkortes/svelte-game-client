@@ -86,7 +86,7 @@
       </crow>
       <hr />
 
-      <crow vertical up left arena-table mt-4>
+      <crow vertical up left arena-table mx="-6" w="auto" mt-4>
         <crow up left g-4 arena-header>
           <arena-col-name cinzel>name</arena-col-name>
           <arena-col-level cinzel text-center>level</arena-col-level>
@@ -146,21 +146,18 @@
     </page-content>
   </component>
   <style>
-    page[the-arena] [arena-table] {
-      margin: 0 calc(var(--unit) * -4);
-      width: calc(100% + calc(var(--unit) * 8));
-    }
-
     page[the-arena] [arena-header] {
+      display: flex;
+      align-items: center;
+      gap: calc(var(--unit) * 4);
       padding: calc(var(--unit) * 2) calc(var(--unit) * 6);
       color: var(--foreground);
+      width: 100%;
     }
 
-    page[the-arena] arena-col-name {
-      display: block;
-    }
-
+    page[the-arena] arena-col-name,
     page[the-arena] [arena-col-name] {
+      display: block;
       flex: 1;
       white-space: nowrap;
     }
@@ -195,11 +192,15 @@
     }
 
     page[the-arena] [arena-row][even] {
-      background: #fafaf9;
+      background: oklch(from var(--foreground) l c h / 0.04);
+    }
+
+    [dark] page[the-arena] [arena-row][even] {
+      background: oklch(from var(--foreground) l c h / 0.08);
     }
 
     page[the-arena] [arena-row]:not([even]) {
-      background: #f5f5f4;
+      background: transparent;
     }
 
     page[the-arena] [arena-row][boss] {
