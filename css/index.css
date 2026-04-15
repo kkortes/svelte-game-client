@@ -85,6 +85,10 @@ html {
   overflow-y: scroll;
 }
 
+card {
+  color: var(--muted-foreground);
+}
+
 body {
   background-color: var(--background);
   background-size: cover;
@@ -102,10 +106,22 @@ h4,
 h5,
 h6 {
   font-family: var(--font-heading);
+  color: var(--foreground);
+  font-weight: 300;
 }
 
 hr {
   border-color: oklch(from var(--bb-brown) l c h / 0.35);
+}
+
+icon[maxHealth] {
+  --color: oklch(from var(--bb-red) 0.42 0.2 h);
+}
+icon[maxArmor] {
+  --color: oklch(from var(--bb-blue) 0.48 0.18 h);
+}
+icon[damage] {
+  --color: oklch(from var(--bb-green) 0.42 0.2 h);
 }
 
 /* Game-specific font attributes */

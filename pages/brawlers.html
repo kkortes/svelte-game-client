@@ -56,6 +56,7 @@
         hp: stats.maxHealth,
         armor: stats.maxArmor,
         damage: stats.damage,
+        size: char.size || 1,
         luckyBonuses,
         modBonuses
       };
@@ -95,9 +96,7 @@
 
   <component src="/components/Layout.html">
     <page-content>
-      <crow justify-between left>
-        <h3>Brawlers</h3>
-      </crow>
+      <component src="/components/TitleBar.html" title="Brawlers"></component>
       <hr />
 
       <crow vertical cinzel brawlers-heading>
@@ -114,43 +113,30 @@
 
       <crow brawlers-grid>
         <!-- each recruitableCharacters as char, idx -->
-        <brawler-card p-2 flex-none onclick="pickCharacter(@[idx])" element="@[char.element]"
+        <brawler-card onclick="pickCharacter(@[idx])"
+          style="--card-primary: @[char.primary]; --card-secondary: @[char.secondary]"
           recruited="@[char.isRecruited]">
-          <crow vertical left g-2>
-            <span cinzel brawler-name>@[char.name]</span>
-            <hr divider />
-            <crow g-4 left w-full>
-              <char-portrait glass>
-                <img data-src="/static/images/races/@[char.image]" alt="@[char.name]"
-                  portrait-img />
-              </char-portrait>
-              <crow vertical left g-1>
-                <span text-sm text-muted>@[char.race]</span>
-                <span text-sm text-muted>@[char.element]</span>
-                <crow g-2 mt-2 core-stats>
-                  <crow g-1>
-                    <icon maxHealth></icon> @[char.hp]
-                  </crow>
-                  <span text-muted>/</span>
-                  <crow g-1>
-                    <icon maxArmor></icon> @[char.armor]
-                  </crow>
-                  <span text-muted>/</span>
-                  <crow g-1>
-                    <icon damage></icon> @[char.damage]
-                  </crow>
-                </crow>
+          <span cinzel brawler-name>@[char.name]</span>
+          <hr />
+          <crow left brawler-row>
+            <char-portrait style="--char-size: @[char.size]">
+              <img data-src="/static/images/races/@[char.image]" alt="@[char.name]" portrait-img />
+            </char-portrait>
+            <crow vertical left brawler-info>
+              <component src="/components/CoreStats.html" hp="@[char.hp]" armor="@[char.armor]"
+                damage="@[char.damage]" vertical></component>
+              <crow vertical left>
                 <!-- if char.luckyBonuses.length > 0 -->
-                <crow g-2 bonus-row>
+                <crow bonus-row>
                   <!-- each char.luckyBonuses as bonus -->
-                  <span text-xs bonus-stat>@[bonus.label] @[bonus.value]</span>
+                  <span bonus-stat>@[bonus.label] @[bonus.value]</span>
                   <!-- /each -->
                 </crow>
                 <!-- /if -->
                 <!-- if char.modBonuses.length > 0 -->
-                <crow g-2 bonus-row>
+                <crow bonus-row>
                   <!-- each char.modBonuses as bonus -->
-                  <span text-xs bonus-stat>@[bonus.label] @[bonus.value]</span>
+                  <span bonus-stat>@[bonus.label] @[bonus.value]</span>
                   <!-- /each -->
                 </crow>
                 <!-- /if -->
@@ -175,45 +161,28 @@
       justify-content: flex-start;
     }
 
+    /* brawler-card = main's <Clickable class="crow vertical up !h-70 w-90 !flex-none overflow-hidden bg-gray-100 p-2">
+       Border + element gradient come from --card-primary / --card-secondary inline style, populated from ELEMENTS.js. */
     page[brawlers] brawler-card {
-      display: block;
-      width: min(calc(var(--unit) * 90), 100%);
-      border-radius: var(--radius);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      width: calc(var(--unit) * 90);
+      height: calc(var(--unit) * 70);
+      flex: none;
       overflow: hidden;
+      padding: calc(var(--unit) * 2);
       cursor: pointer;
-      border: 0.5px solid var(--border);
-      min-height: calc(var(--unit) * 50);
-      background-color: oklch(from var(--card) calc(l*0.9) c h);
+      border: 0.5px solid var(--card-primary, var(--border));
+      background:
+        linear-gradient(135deg,
+          oklch(from var(--card-primary, transparent) l c h / 0.2),
+          oklch(from var(--card-secondary, transparent) l c h / 0.2)),
+        oklch(0.96 0.005 85);
     }
 
-    page[brawlers] brawler-card:active {
-      translate: 0 1px;
-    }
 
-    page[brawlers] brawler-card[element="nature"] {
-      border-color: #8bb737;
-      background: linear-gradient(135deg, rgba(139, 183, 55, 0.2), rgba(160, 206, 62, 0.2));
-    }
-
-    page[brawlers] brawler-card[element="earth"] {
-      border-color: #7f5322;
-      background: linear-gradient(135deg, rgba(127, 83, 34, 0.2), rgba(198, 133, 51, 0.2));
-    }
-
-    page[brawlers] brawler-card[element="lightning"] {
-      border-color: #eac303;
-      background: linear-gradient(135deg, rgba(234, 195, 3, 0.2), rgba(252, 237, 96, 0.2));
-    }
-
-    page[brawlers] brawler-card[element="frost"] {
-      border-color: #88c6cb;
-      background: linear-gradient(135deg, rgba(136, 198, 203, 0.2), rgba(234, 255, 255, 0.2));
-    }
-
-    page[brawlers] brawler-card[element="fire"] {
-      border-color: #f45f31;
-      background: linear-gradient(135deg, rgba(244, 95, 49, 0.2), rgba(244, 160, 49, 0.2));
-    }
 
     page[brawlers] brawler-card[recruited] {
       opacity: 0.5;
@@ -223,37 +192,48 @@
 
     page[brawlers] [brawler-name] {
       font-size: 1.5rem;
+      text-align: center;
+      width: 100%;
+      position: relative;
+      z-index: 1;
     }
 
     page[brawlers] [divider] {
       width: 100%;
       border: none;
-      border-top: 1px solid var(--border);
+      border-top: 1px solid oklch(from var(--bb-brown) l c h / 0.35);
+      margin: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    page[brawlers] [brawler-row] {
+      align-items: flex-start;
     }
 
     page[brawlers] char-portrait {
-      display: block;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
       width: calc(var(--unit) * 30);
+      height: calc(var(--unit) * 33);
       flex: none;
-      aspect-ratio: 11/12;
-      border-radius: var(--radius);
-      overflow: hidden;
-      border: 1px solid rgba(0, 0, 0, 0.1);
+      overflow: visible;
+      background: var(--slate)
     }
 
     page[brawlers] [portrait-img] {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+      max-width: none;
+      width: auto;
+      height: calc(100% * var(--char-size, 1));
+      object-fit: contain;
+      pointer-events: none;
     }
 
-    page[brawlers] [core-stats] {
-      font-size: 1rem;
-      color: var(--muted-foreground);
-    }
 
     page[brawlers] [bonus-stat] {
-      color: #16a34a;
+      color: oklch(from var(--bb-green) 0.58 0.2 h);
     }
 
     page[brawlers] [bonus-row] {
