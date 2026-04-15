@@ -1,46 +1,70 @@
+<script type="module">
+  // Reactive snapshot of $. Excludes DataInspector's internal state keys so
+  // its own writes (dataInspectorLines/Json) don't trigger a snapshot churn
+  // and loop; excludes devbarInspectData itself so the snapshot doesn't
+  // accumulate its own previous value. The JSON-equality guard makes the
+  // refresh idempotent — afterUpdate fires for every state write, but we
+  // only publish a new snapshot when the *relevant* subset actually changes.
+  let lastJson = '';
+  const refresh = () => {
+    const { devbarInspectData, dataInspectorLines, dataInspectorJson, ...rest } = $;
+    const json = JSON.stringify(rest);
+    if (json === lastJson) return;
+    lastJson = json;
+    $.devbarInspectData = JSON.parse(json);
+  };
+  refresh();
+  $.on('afterUpdate', refresh);
+</script>
+
 <hr w-full />
 
-<crow up devbar sm py-4>
-  <crow vertical left g-1 p-2>
-    <button secondary onclick="document.dispatchEvent(new CustomEvent('pauseCombat'))">Pause
-      combat</button>
-    <button secondary onclick="document.dispatchEvent(new CustomEvent('resumeCombat'))">Resume
-      combat</button>
-    <span>Elapsed ms: @[elapsedMilliseconds.toFixed(0)]</span>
-    <span>Duration: @[combat.duration]</span>
-  </crow>
-  <crow vertical left p-2>
-    <span>My Server: @[new Date(serverTimestampSnapshot).toLocaleString()]</span>
-    <crow vertical up left mt-2>
-      <a href="/debug" primary>Debug</a>
-      <a href="/styleguide" primary>Styleguide</a>
-      <a href="/ability-scaling" primary>Ability Scaling</a>
-      <a href="/equipment-scaling" primary>Equipment Scaling</a>
-      <a href="/character-scaling" primary>Character Scaling</a>
+<crow vertical>
+  <crow up sm py-4 w-full>
+    <crow vertical left g-1 p-2>
+      <button secondary onclick="document.dispatchEvent(new CustomEvent('pauseCombat'))">Pause
+        combat</button>
+      <button secondary onclick="document.dispatchEvent(new CustomEvent('resumeCombat'))">Resume
+        combat</button>
+      <span>Elapsed ms: @[elapsedMilliseconds.toFixed(0)]</span>
+      <span>Duration: @[combat.duration]</span>
+    </crow>
+    <crow vertical left p-2>
+      <span>My Server: @[new Date(serverTimestampSnapshot).toLocaleString()]</span>
+      <crow vertical up left mt-2>
+        <a href="/debug" primary>Debug</a>
+        <a href="/styleguide" primary>Styleguide</a>
+        <a href="/ability-scaling" primary>Ability Scaling</a>
+        <a href="/equipment-scaling" primary>Equipment Scaling</a>
+        <a href="/character-scaling" primary>Character Scaling</a>
+      </crow>
+    </crow>
+    <crow vertical left g-1 p-2>
+      <crow g-1>
+        <button primary
+          onclick="$.characters.forEach(c => { try { const ch = CHARACTERS(c, true); const s = calculateCombatStatsByCharacter(ch); c.overrides.combatStats.currentHealth = s.maxHealth; } catch {} }); $.characters = [...$.characters]">Heal
+          party</button>
+        <button primary
+          onclick="$.characters.forEach(c => { try { const ch = CHARACTERS(c, true); c.overrides.combatStats.currentHealth = ch.combatStats.currentHealth - 5; } catch {} }); $.characters = [...$.characters]">Damage
+          party</button>
+      </crow>
+      <crow g-1>
+        <button primary onclick="$.experience += 40">Gain exp</button>
+        <button primary onclick="$.experience = 0">Reset exp</button>
+      </crow>
+      <crow g-1>
+        <button primary onclick="$.coins += 100">Gain coins</button>
+        <button primary onclick="$.coins = 0">Reset coins</button>
+      </crow>
+      <crow g-1>
+        <button primary onclick="$.bossHighscore += 1">Increase boss</button>
+        <button primary onclick="$.bossHighscore = 0">Reset boss</button>
+      </crow>
+      <button primary onclick="$.characters = []">Reset characters</button>
+      <button primary onclick="$.accountRewards = 1">Reset rewards</button>
     </crow>
   </crow>
-  <crow vertical left g-1 p-2>
-    <crow g-1>
-      <button primary
-        onclick="$.characters.forEach(c => { try { const ch = CHARACTERS(c, true); const s = calculateCombatStatsByCharacter(ch); c.overrides.combatStats.currentHealth = s.maxHealth; } catch {} }); $.characters = [...$.characters]">Heal
-        party</button>
-      <button primary
-        onclick="$.characters.forEach(c => { try { const ch = CHARACTERS(c, true); c.overrides.combatStats.currentHealth = ch.combatStats.currentHealth - 5; } catch {} }); $.characters = [...$.characters]">Damage
-        party</button>
-    </crow>
-    <crow g-1>
-      <button primary onclick="$.experience += 40">Gain exp</button>
-      <button primary onclick="$.experience = 0">Reset exp</button>
-    </crow>
-    <crow g-1>
-      <button primary onclick="$.coins += 100">Gain coins</button>
-      <button primary onclick="$.coins = 0">Reset coins</button>
-    </crow>
-    <crow g-1>
-      <button primary onclick="$.bossHighscore += 1">Increase boss</button>
-      <button primary onclick="$.bossHighscore = 0">Reset boss</button>
-    </crow>
-    <button primary onclick="$.characters = []">Reset characters</button>
-    <button primary onclick="$.accountRewards = 1">Reset rewards</button>
-  </crow>
+  <div w="50%">
+    <component src="/components/DataInspector.html" data="@[devbarInspectData]" />
+  </div>
 </crow>

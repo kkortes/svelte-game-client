@@ -4,22 +4,36 @@ import { notify } from '/js/actions.js';
 
 let saveTimeout = null;
 
+const buildSavePayload = () => ({
+  token: $.token,
+  inventory: JSON.parse(JSON.stringify($.inventory)),
+  characters: JSON.parse(JSON.stringify($.characters)),
+  experience: $.experience,
+  coins: $.coins,
+  accountRewards: $.accountRewards,
+});
+
 const saveGameState = () => {
   clearTimeout(saveTimeout);
   saveTimeout = setTimeout(async () => {
     if (!$.socket || !$.token) return;
 
-    await $.socket.sendAsync('store-game-state', {
-      token: $.token,
-      inventory: JSON.parse(JSON.stringify($.inventory)),
-      characters: JSON.parse(JSON.stringify($.characters)),
-      experience: $.experience,
-      coins: $.coins,
-      accountRewards: $.accountRewards
-    });
+    await $.socket.sendAsync('store-game-state', buildSavePayload());
 
     console.info('Game state saved');
   }, 1000);
+};
+
+// Flush any pending debounced save immediately, wait for server ACK, and
+// return. Use this before a full-page navigation that depends on the saved
+// state being readable by the destination page (e.g. recruiting a brawler
+// and redirecting to /brawlers/<index>).
+export const saveNow = async () => {
+  clearTimeout(saveTimeout);
+  saveTimeout = null;
+  if (!$.socket || !$.token) return;
+  await $.socket.sendAsync('store-game-state', buildSavePayload());
+  console.info('Game state saved (forced)');
 };
 
 let wasConnected = false;

@@ -1,0 +1,246 @@
+<script type="module">
+  const getValueType = (val) => {
+    if (val === null || val === undefined || typeof val !== 'object') return 0;
+    if (Array.isArray(val)) return 1;
+    return 2;
+  };
+
+  const sortEntries = (entries) =>
+    entries.sort(([aKey, aVal], [bKey, bVal]) => {
+      const aType = getValueType(aVal);
+      const bType = getValueType(bVal);
+      if (aType !== bType) return aType - bType;
+      return aKey.localeCompare(bKey);
+    });
+
+  const sortData = (value) => {
+    if (value === null || value === undefined) return value;
+    if (typeof value !== 'object') return value;
+    if (Array.isArray(value)) return value.map((item) => sortData(item));
+    const sorted = {};
+    sortEntries(Object.entries(value)).forEach(([key, val]) => {
+      sorted[key] = sortData(val);
+    });
+    return sorted;
+  };
+
+  const renderValue = (value, indent, seen, isRoot = false) => {
+    if (value === null) return 'null';
+    if (value === undefined) return 'undefined';
+    if (typeof value === 'function') return '[Function]';
+    if (typeof value !== 'object') return String(value);
+    if (seen.has(value)) return '[Circular]';
+    seen.add(value);
+
+    if (Array.isArray(value)) {
+      if (value.length === 0) return '';
+      let result = '';
+      value.forEach((item, index) => {
+        const nextIndent = isRoot ? indent : indent + 1;
+        const itemIndent = ' '.repeat(nextIndent);
+        if (typeof item === 'object' && item !== null) {
+          const itemCount = Array.isArray(item) ? `[${item.length}]` : `{${Object.keys(item).length}}`;
+          const rendered = renderValue(item, nextIndent + 1, seen);
+          result += `${itemIndent}#${index + 1}~${itemCount}\n`;
+          if (rendered) result += `${rendered}\n`;
+        } else {
+          const rendered = renderValue(item, nextIndent, seen);
+          result += `${itemIndent}#${index + 1}~${rendered}\n`;
+        }
+      });
+      return result.trimEnd();
+    }
+
+    const entries = sortEntries(Object.entries(value));
+    if (entries.length === 0) return '';
+    let result = '';
+    entries.forEach(([key, val]) => {
+      const nextIndent = isRoot ? indent : indent + 1;
+      const keyIndent = ' '.repeat(nextIndent);
+      if (typeof val === 'object' && val !== null) {
+        if (seen.has(val)) {
+          result += `${keyIndent}${key}~[Circular]\n`;
+        } else {
+          const valCount = Array.isArray(val) ? `[${val.length}]` : `{${Object.keys(val).length}}`;
+          const rendered = renderValue(val, nextIndent + 1, seen);
+          result += `${keyIndent}${key}~${valCount}\n`;
+          if (rendered) result += `${rendered}\n`;
+        }
+      } else {
+        const rendered = renderValue(val, nextIndent, seen);
+        result += `${keyIndent}${key}~${rendered}\n`;
+      }
+    });
+    return result.trimEnd();
+  };
+
+  const BRACKET_REGEX = /[\[\{].*?[\]\}]/;
+
+  const computeLines = (data) => {
+    try {
+      if (data === null || data === undefined) return [{ raw: true, text: String(data), odd: false }];
+      if (typeof data !== 'object') return [{ raw: true, text: String(data), odd: false }];
+      const formatted = renderValue(data, 0, new WeakSet(), true).trim();
+      return formatted.split('\n').map((line, i) => {
+        const even = i % 2 === 0;
+        const match = line.match(/^(\s*)(.+?)~(.*)$/);
+        // Stable `id` by position so the iteration diff hits UPDATE instead
+        // of REMOVE + ADD when a value changes.
+        if (match) {
+          const [, indent, key, value] = match;
+          return { id: i, raw: false, depth: indent.length, key, value, isBracket: BRACKET_REGEX.test(value), even };
+        }
+        return { id: i, raw: true, text: line, even };
+      });
+    } catch (e) {
+      return [{ id: 0, raw: true, text: `Error: ${e.message || e}`, even: false }];
+    }
+  };
+
+  if ($.dataInspectorLines === undefined) $.dataInspectorLines = [];
+  if ($.dataInspectorJson === undefined) $.dataInspectorJson = '';
+
+  // Binding side-effect: the `data` prop is a reactive binding into caller state;
+  // when it changes, Vibe re-evaluates this expression and we push the formatted
+  // lines + copy-payload into state keys the template iterates/binds below.
+  window.syncDataInspector = (data) => {
+    $.dataInspectorLines = computeLines(data);
+    try {
+      $.dataInspectorJson = JSON.stringify(sortData(data), null, 2);
+    } catch {
+      $.dataInspectorJson = '';
+    }
+    return '';
+  };
+
+  window.copyDataInspectorJson = () => {
+    if (!$.dataInspectorJson) return;
+    navigator.clipboard?.writeText($.dataInspectorJson);
+  };
+</script>
+
+<data-inspector>
+  <data-inspector-sync>@[window.syncDataInspector(data)]</data-inspector-sync>
+  <data-inspector-header>
+    <data-inspector-title>Showing Data</data-inspector-title>
+    <button onclick="window.copyDataInspectorJson()" data-inspector-copy>Copy JSON</button>
+  </data-inspector-header>
+  <data-inspector-lines>
+    <!-- each dataInspectorLines as line, i -->
+    <!-- if line.raw -->
+    <data-inspector-raw even="@[line.even]">@[line.text]</data-inspector-raw>
+    <!-- /if -->
+    <!-- if !line.raw -->
+    <data-inspector-row even="@[line.even]">
+      <data-inspector-key
+        style="padding-left: calc(@[line.depth] * 1ch)">@[line.key]</data-inspector-key>
+      <data-inspector-value bracket="@[line.isBracket]">@[line.value]</data-inspector-value>
+    </data-inspector-row>
+    <!-- /if -->
+    <!-- /each -->
+  </data-inspector-lines>
+</data-inspector>
+
+<style>
+  data-inspector {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-height: 60vh;
+    overflow: auto;
+    font-size: 0.875rem;
+    border-top: 1px solid var(--border);
+  }
+
+  data-inspector-sync {
+    display: none;
+  }
+
+  data-inspector-header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: calc(var(--unit) * 4);
+    padding: calc(var(--unit) * 4);
+    background: oklch(from var(--background) l c h / 0.6);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  data-inspector-title {
+    font-weight: 600;
+    font-size: 0.875rem;
+    letter-spacing: 0.01em;
+    color: var(--foreground);
+  }
+
+  [data-inspector-copy] {
+    height: calc(var(--unit) * 8);
+    padding: 0 calc(var(--unit) * 3);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--foreground);
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: calc(var(--unit) * 1.5);
+    cursor: pointer;
+  }
+
+  [data-inspector-copy]:hover {
+    background: oklch(from var(--foreground) l c h / 0.06);
+  }
+
+  data-inspector-lines {
+    display: flex;
+    flex-direction: column;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    white-space: pre-wrap;
+  }
+
+  data-inspector-row,
+  data-inspector-raw {
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+    gap: calc(var(--unit) * 2);
+    padding: calc(var(--unit) * 1) calc(var(--unit) * 2);
+  }
+
+  data-inspector-row[even],
+  data-inspector-raw[even] {
+    background: oklch(from var(--foreground) l c h / 0.04);
+  }
+
+  [dark] data-inspector-row[even],
+  [dark] data-inspector-raw[even] {
+    background: oklch(from var(--foreground) l c h / 0.08);
+  }
+
+  data-inspector-raw {
+    text-align: left;
+    color: var(--muted-foreground);
+  }
+
+  data-inspector-key {
+    display: inline-block;
+    flex-shrink: 0;
+    color: var(--muted-foreground);
+  }
+
+  data-inspector-value {
+    flex: 1;
+    min-width: 0;
+    text-align: right;
+    word-break: break-all;
+    color: var(--foreground);
+  }
+
+  data-inspector-value[bracket] {
+    color: oklch(0.62 0.15 280);
+  }
+</style>

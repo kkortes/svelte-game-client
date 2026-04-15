@@ -18,6 +18,7 @@
     import { RECRUITABLE_CHARACTERS } from '/js/constants/RECRUITABLE_CHARACTERS.js';
     import { ALL_ELEMENTS } from '/js/constants/ELEMENTS.js';
     import { correctHealth } from '/js/equipment.js';
+    import { saveNow } from '/js/connectSocket.js';
     import { allowedNumberOfCharacters } from '/js/level.js';
     import { notify } from '/js/actions.js';
     import { calculateCombatStatsByCharacter } from '/js/utils.js';
@@ -85,9 +86,14 @@
         dialogId: 'confirm',
         props: {
           text: `Recruiting ${char.name} to your Ludus.`,
-          confirm: () => {
+          confirm: async () => {
             $.characters.push(correctHealth(ref));
-            window.location.href = `/brawlers/${$.characters.length - 1}`;
+            const targetIndex = $.characters.length - 1;
+            // Wait for the server to acknowledge the new characters list
+            // before navigating — the destination page reads fresh state
+            // from the socket on mount, so the ACK must land first.
+            await saveNow();
+            window.location.href = `/brawlers/${targetIndex}`;
           }
         }
       };
