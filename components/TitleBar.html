@@ -1,0 +1,36 @@
+<crow items-center justify-between w-full g-4 title-bar pb-4>
+  <crow left g-4 title-bar-main>
+
+    <crow vertical left w-full g-1 title-bar-stack>
+      <h3 m-0>@[title]</h3>
+      <!-- if description -->
+      <span title-bar-description>@[description]as</span>
+      <!-- /if -->
+    </crow>
+  </crow>
+  <crow left g-2 title-bar-after>
+    <slot></slot>
+  </crow>
+</crow>
+
+<style>
+  [battle-brawlers] [title-bar-main] {
+    flex: 1;
+    flex-wrap: nowrap;
+    min-width: 0;
+  }
+
+  [battle-brawlers] [title-bar-stack] {
+    min-width: 0;
+  }
+
+  [battle-brawlers] [title-bar-description] {
+    color: var(--muted-foreground);
+    font-size: 0.875rem;
+    line-height: 1.4;
+  }
+
+  [battle-brawlers] [title-bar-after] {
+    flex: none;
+  }
+</style>

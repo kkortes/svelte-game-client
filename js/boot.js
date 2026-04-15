@@ -55,6 +55,9 @@ export default () => {
       .replace(/^\/|\/$/g, '')
       .replace(/:(\w+)/g, '$1')
       .replace(/\//g, '-') || 'home';
+  // Top-level route segment — used by nav tabs so a detail page like
+  // `/the-arena/giant-rat` still highlights the "The Arena" tab.
+  const pageSection = (route.split('/').filter(Boolean)[0] || 'home');
 
   // Window globals for components and services
   window.Howl = Howl;
@@ -105,7 +108,8 @@ export default () => {
       audio: AUDIO,
       route,
       routeParams,
-      pageName
+      pageName,
+      pageSection
     },
     { debug: false }
   );

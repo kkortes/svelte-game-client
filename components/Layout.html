@@ -9,24 +9,24 @@
 
           <stay w-full sm:reverse tab-bar t="8.5">
             <crow up sm:g="0" g-1 tab-row w-full py-3 sm:h="8" overflow-hidden sm:p="0">
-              <a href="/" sm:px="6" class="button" tertiary="@[pageName !== 'home']"
-                primary="@[pageName === 'home']">
+              <a href="/" sm:px="6" class="button" tertiary="@[pageSection !== 'home']"
+                primary="@[pageSection === 'home']">
                 <icon info hide sm:block></icon><span sm:hide>Game Guide</span>
               </a>
               <a href="/the-arena" sm:px="6" data-tab="the-arena" class="button"
-                tertiary="@[pageName !== 'the-arena']" primary="@[pageName === 'the-arena']">
+                tertiary="@[pageSection !== 'the-arena']" primary="@[pageSection === 'the-arena']">
                 <icon damage hide sm:block></icon><span sm:hide>The Arena</span>
               </a>
               <a href="/random-duel" sm:px="6" data-tab="random-duel" class="button"
-                tertiary="@[pageName !== 'random-duel']" primary="@[pageName === 'random-duel']">
+                tertiary="@[pageSection !== 'random-duel']" primary="@[pageSection === 'random-duel']">
                 <icon dice hide sm:block></icon><span sm:hide>Random duel</span>
               </a>
               <a href="/vendor" sm:px="6" data-tab="vendor" class="button"
-                tertiary="@[pageName !== 'vendor']" primary="@[pageName === 'vendor']">
+                tertiary="@[pageSection !== 'vendor']" primary="@[pageSection === 'vendor']">
                 <icon coin hide sm:block></icon><span sm:hide>Vendor</span>
               </a>
               <a href="/brawlers" sm:px="6" data-tab="brawlers" class="button"
-                tertiary="@[pageName !== 'brawlers']" primary="@[pageName === 'brawlers']">
+                tertiary="@[pageSection !== 'brawlers']" primary="@[pageSection === 'brawlers']">
                 <icon maxHealth hide sm:block></icon><span sm:hide>Brawlers</span>
               </a>
             </crow>

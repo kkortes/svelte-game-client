@@ -20,6 +20,8 @@
     import { calculateCombatStatsByCharacter } from '/js/utils.js';
     import ABILITIES from '/js/constants/ABILITIES.js';
     import { notify } from '/js/actions.js';
+    import formatDescription from '/js/formatDescription.js';
+    window.formatDescription = formatDescription;
 
     const fightId = $.routeParams.fightId;
     const fight = ALL_FIGHTS.find(f => f.id === fightId);
@@ -126,18 +128,15 @@
       <!-- if currentFight -->
       <button go-back tertiary onclick="window.location.href='/the-arena'">&#x2039; Back</button>
 
-      <crow justify-between w-full>
-        <h3>@[currentFight.name]</h3>
-        <crow left g-2>
-          <badge>
-            @[currentFight.allowedNumberOfCharacters]&nbsp;vs&nbsp;@[currentFight.enemies.length]
-          </badge>
-          <!-- if currentFight.boss -->
-          <badge>bossfight</badge>
-          <badge fight-badge-luck>luck disabled</badge>
-          <!-- /if -->
-        </crow>
-      </crow>
+      <component src="/components/TitleBar.html" title="@[currentFight.name]">
+        <badge>
+          @[currentFight.allowedNumberOfCharacters]&nbsp;vs&nbsp;@[currentFight.enemies.length]
+        </badge>
+        <!-- if currentFight.boss -->
+        <badge bg="var(--red)">Bossfight</badge>
+        <badge bg="var(--slate)">Luck disabled</badge>
+        <!-- /if -->
+      </component>
       <hr />
 
       <!-- each currentFight.enemies as enemy -->
@@ -145,13 +144,13 @@
         <crow fight-stats-col>
           <crow vertical g-1>
             <crow g-1>
-              <icon maxHealth></icon> @[enemy.maxHealth]
+              <icon maxHealth text-red></icon> @[enemy.maxHealth]
             </crow>
             <crow g-1>
-              <icon maxArmor></icon> @[enemy.maxArmor]
+              <icon maxArmor text-blue></icon> @[enemy.maxArmor]
             </crow>
             <crow g-1>
-              <icon damage></icon> @[enemy.damage]
+              <icon damage text-green></icon> @[enemy.damage]
             </crow>
           </crow>
         </crow>
@@ -159,20 +158,20 @@
         <crow vertical up left fight-info-col>
           <crow left g-2 mb-4>
             <crow g-1 text-lg>
-              <icon maxHealth></icon> @[enemy.maxHealth]
+              <icon maxHealth text-red></icon> @[enemy.maxHealth]
             </crow>
             <span text-muted>/</span>
             <crow g-1 text-lg>
-              <icon maxArmor></icon> @[enemy.maxArmor]
+              <icon maxArmor text-blue></icon> @[enemy.maxArmor]
             </crow>
             <span text-muted>/</span>
             <crow g-1 text-lg>
-              <icon damage></icon> @[enemy.damage]
+              <icon damage text-green></icon> @[enemy.damage]
             </crow>
           </crow>
 
           <!-- if enemy.description -->
-          <p text-sm mb-4>@[enemy.description]</p>
+          <p text-sm mb-4 fight-enemy-description>@[formatDescription(enemy.description)]</p>
           <!-- /if -->
 
           <h5>Abilities</h5>
@@ -225,14 +224,6 @@
         <!-- /each -->
       </crow>
 
-      <stay reverse>
-        <crow right p-3 fight-bottom-bar>
-          <button fight-btn primary onclick="startFight()"
-            disabled="@[selectedBrawlers.length === 0 || combat.duration !== 0]">
-            Fight
-          </button>
-        </crow>
-      </stay>
       <!-- /if -->
 
       <!-- if !currentFight -->
@@ -243,6 +234,15 @@
       <!-- /if -->
 
     </page-content>
+
+    <!-- if currentFight -->
+    <stay reverse w-full sm:b="8" p="3">
+      <button mx-auto primary onclick="startFight()"
+        disabled="@[selectedBrawlers.length === 0 || combat.duration !== 0]">
+        Fight
+      </button>
+    </stay>
+    <!-- /if -->
   </component>
   <style>
     page[the-arena-fightId] [go-back] {
@@ -253,15 +253,14 @@
       padding: calc(var(--unit) * 0.5) calc(var(--unit) * 2);
     }
 
-    page[the-arena-fightId] [fight-badge-luck] {
-      background: oklch(0.85 0.1 20);
-      color: oklch(0.5 0.15 20);
-    }
-
     page[the-arena-fightId] [fight-enemy-row] {
       align-items: stretch;
       overflow: hidden;
       margin-bottom: calc(var(--unit) * 4);
+    }
+
+    page[the-arena-fightId] [fight-enemy-description] {
+      white-space: pre-line;
     }
 
     page[the-arena-fightId] [fight-stats-col] {
@@ -387,29 +386,14 @@
       border-right: none;
     }
 
-    page[the-arena-fightId] fight-sticky-bottom {
-      display: block;
-      position: sticky;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      margin: calc(var(--unit) * 4) calc(var(--unit) * -4) calc(var(--unit) * -4);
+    page[the-arena-fightId] stay {
+      justify-content: center;
+      background: var(--background);
     }
 
-    page[the-arena-fightId] [fight-bottom-bar] {
-      background: linear-gradient(to top, rgba(30, 41, 59, 0.95), transparent);
+    page[the-arena-fightId] stay button {
+      min-width: calc(var(--unit) * 50);
     }
-
-    page[the-arena-fightId] [fight-btn] {
-      font-size: 1.125rem;
-      padding: calc(var(--unit) * 2) calc(var(--unit) * 8);
-    }
-
-    page[the-arena-fightId] [fight-btn][disabled] {
-      opacity: 0.5;
-      pointer-events: none;
-    }
-
 
     page[the-arena-fightId] [fight-empty] {
       align-items: center;

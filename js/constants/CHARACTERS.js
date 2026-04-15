@@ -93,12 +93,7 @@ export const ALL_CHARACTERS = {
       modifiers: DEFAULT_MODIFIERS
     },
     maxTicks: DEFAULT_MAX_TICKS,
-    abilities: [
-      ABILITIES('pierce'),
-      ABILITIES('pierce'),
-      ABILITIES('pierce'),
-      ABILITIES('pierce')
-    ]
+    abilities: [ABILITIES('pierce'), ABILITIES('pierce'), ABILITIES('pierce'), ABILITIES('pierce')]
   },
   humanMale: {
     name: 'Brawler',
@@ -330,12 +325,7 @@ export const ALL_CHARACTERS = {
       modifiers: DEFAULT_MODIFIERS
     },
     maxTicks: DEFAULT_MAX_TICKS,
-    abilities: [
-      ABILITIES('swing'),
-      ABILITIES('swing'),
-      ABILITIES('swing'),
-      ABILITIES('swing')
-    ]
+    abilities: [ABILITIES('swing'), ABILITIES('swing'), ABILITIES('swing'), ABILITIES('swing')]
   },
   succubus: {
     name: 'Succubus',
@@ -366,7 +356,7 @@ export const ALL_CHARACTERS = {
     size: 1.15,
     equipment: DEFAULT_NPC_EQUIPMENT,
     description:
-      'The Giant Rat is a vile and tenacious creature, driven by an insatiable hunger. Its bite is vicious and infectious, leaving deep wounds that continue to bleed long after the initial strike.<br /><br />When not attacking, it retreats to feast on nearby scraps of food. This gluttonous act rapidly restores its health, making it a persistent and frustrating foe to defeat if left unchecked',
+      'The Giant Rat is a vile and tenacious creature, driven by an insatiable hunger. Its bite is vicious and infectious, leaving deep wounds that continue to bleed long after the initial strike.<br /><br />When not attacking, it retreats to feast on nearby scraps of food. This gluttonous act rapidly restores its health, making it a persistent and frustrating foe to defeat if left unchecked.',
     element: '',
     combatStats: {
       maxHealth: 50,

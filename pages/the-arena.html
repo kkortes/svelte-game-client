@@ -104,10 +104,10 @@
             <span>?</span>
             <!-- /if -->
             <!-- if !fight.isLocked -->
-            <span>@[fight.name]</span>
+            <span fight-name>@[fight.name]</span>
             <!-- /if -->
             <!-- if fight.boss -->
-            <badge arena-pill>Bossfight</badge>
+            <badge bg="var(--red)">Bossfight</badge>
             <!-- /if -->
           </crow>
 
@@ -159,17 +159,24 @@
       border-bottom: 1px solid oklch(from var(--bb-brown) l c h / 0.2);
     }
 
-    page[the-arena] arena-col-name,
+
     page[the-arena] [arena-col-name] {
-      display: block;
+      display: flex;
       flex: 1;
-      white-space: nowrap;
+    }
+
+    page[the-arena] [arena-col-name] [fight-name] {
+      line-height: 0;
     }
 
     page[the-arena] arena-col-level {
       display: block;
       width: calc(var(--unit) * 12);
       flex: none;
+    }
+
+    page[the-arena] badge {
+      font-weight: 300;
     }
 
     page[the-arena] arena-col-loot {
@@ -236,11 +243,6 @@
       cursor: default;
     }
 
-    page[the-arena] [arena-pill] {
-      font-size: 0.65rem;
-      padding: calc(var(--unit) * 0.25) calc(var(--unit) * 1.5);
-    }
-
     page[the-arena] [arena-xp-dimmed] {
       color: var(--muted-foreground);
       text-decoration: line-through;
@@ -248,12 +250,12 @@
 
     page[the-arena] arena-enemy-wrap {
       display: block;
-      width: calc(var(--unit) * 4);
+      width: calc(var(--unit) * 7);
       flex: none;
     }
 
     page[the-arena] arena-enemy-wrap[boss] {
-      width: calc(var(--unit) * 12);
+      width: calc(var(--unit) * 14);
     }
 
     page[the-arena] [arena-enemy-box] {
@@ -261,7 +263,7 @@
       aspect-ratio: 1;
       overflow: hidden;
       border-radius: 0;
-      margin: calc(var(--unit) * -3) 0 calc(var(--unit) * -3) calc(var(--unit) * -1);
+      margin: calc(var(--unit) * -3) 0 calc(var(--unit) * -3) calc(var(--unit) * 2);
       position: relative;
     }
 

@@ -1034,9 +1034,9 @@ a:is(.primary, .secondary, .tertiary, [primary], [secondary], [tertiary]) {
     outline-color: transparent;
 
     &:hover {
-      background-color: oklch(from var(--secondary) calc(l * (1 - 0.1 * var(--theme-sign))) c h);
-      color: oklch(from var(--secondary-foreground) calc(l * (1 - 0.1 * var(--theme-sign))) c h);
-      outline-color: oklch(from var(--secondary) calc(l * (1 - 0.075 * var(--theme-sign))) c h);
+      background-color: oklch(from var(--primary) l c h / 0.12);
+      color: oklch(from var(--primary) calc(l - 0.2 * var(--theme-sign)) c h);
+      outline-color: transparent;
     }
 
     &:active {
@@ -1085,6 +1085,7 @@ badge {
   gap: calc(var(--unit) * 1);
   padding: calc(var(--unit) * 0.5) calc(var(--unit) * 2);
   border-radius: 9999px;
+  font-family: var(--font-sans);
   font-size: calc(var(--unit) * 3);
   font-weight: 500;
   white-space: nowrap;

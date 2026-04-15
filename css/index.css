@@ -212,12 +212,6 @@ eq-link [eq-name] {
   z-index: 1;
 }
 
-/* Disabled state for buttons via data attribute */
-button[disabled] {
-  pointer-events: none;
-  opacity: 0.4;
-}
-
 /* Text utilities (not in Stylecheat) */
 [text-sm] {
   font-size: 0.875rem;
