@@ -2,16 +2,15 @@
   import config from '/js/config.js';
   import { notify } from '/js/actions.js';
 
-  // Auth form fields — only seeded when login form is visible.
-  // MPA handles cleanup: next navigation is a fresh page load.
-  if (!$.token) {
-    $.authMode = 'login';
-    $.authEmail = config.IS_DEV ? config.AUTO_EMAIL : '';
-    $.authPassword = config.IS_DEV ? config.AUTO_PASSWORD : '';
-    $.authRememberMe = config.IS_DEV;
-    $.authCodeOfConduct = config.IS_DEV;
-    $.authError = '';
-  }
+
+  $.authMode = 'login';
+  component({
+    email: config.IS_DEV ? config.AUTO_EMAIL : '',
+    password: config.IS_DEV ? config.AUTO_PASSWORD : '',
+    rememberMe: config.IS_DEV,
+    codeOfConduct: config.IS_DEV,
+  });
+
 
   window.loadGameState = async (token) => {
     try {
@@ -49,15 +48,17 @@
   <auth-scene w-full>
     <card auth-form glass>
       <!-- if authMode === 'login' -->
-      <component src="/components/Login.html"></component>
+      <component src="/components/Login.html" email="@[this.email]" password="@[this.password]"
+        rememberMe="@[this.rememberMe]" codeOfConduct="@[this.codeOfConduct]"></component>
       <!-- /if -->
 
       <!-- if authMode === 'register' -->
-      <component src="/components/Register.html"></component>
+      <component src="/components/Register.html" email="@[this.email]" password="@[this.password]">
+      </component>
       <!-- /if -->
 
       <!-- if authMode === 'forgot' -->
-      <component src="/components/ForgotPassword.html"></component>
+      <component src="/components/ForgotPassword.html" email="@[this.email]"></component>
       <!-- /if -->
 
       <crow g-2 mt="4">

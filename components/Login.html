@@ -1,16 +1,15 @@
 <script type="module">
-  import config from '/js/config.js';
   import { notify } from '/js/actions.js';
 
-  authLogin = async () => {
-    if (!$.authCodeOfConduct) {
+  window.authLogin = async (email, password, rememberMe, codeOfConduct) => {
+    if (!codeOfConduct) {
       notify({ error: 'you must to agree to the Code of Conduct in order to play' });
       return;
     }
     try {
-      const t = await $.socket.sendAsync('user/login', { email: $.authEmail, password: $.authPassword });
+      const t = await $.socket.sendAsync('user/login', { email, password });
       let expiration = '';
-      if ($.authRememberMe) {
+      if (rememberMe) {
         const future = new Date();
         future.setDate(future.getDate() + 30);
         expiration = ` Expires=${future};`;
@@ -24,19 +23,19 @@
   };
 </script>
 
-<form onsubmit="event.preventDefault(); authLogin();">
+<form onsubmit="event.preventDefault(); authLogin($.email, $.password, $.rememberMe, $.codeOfConduct)">
   <crow g-2 mb-3>
-    <input type="email" placeholder="Email" value="@[authEmail]" oninput="$.authEmail = this.value"
+    <input type="email" placeholder="Email" value="@[email]" oninput="$.email = this.value"
       required auth-input />
-    <input type="password" placeholder="Password" value="@[authPassword]"
-      oninput="$.authPassword = this.value" required auth-input />
+    <input type="password" placeholder="Password" value="@[password]"
+      oninput="$.password = this.value" required auth-input />
     <button primary type="submit">
       Log in
     </button>
   </crow>
   <crow g-2 mb-2 left>
-    <input type="checkbox" id="codeOfConduct" checked="@[authCodeOfConduct]"
-      onchange="$.authCodeOfConduct = this.checked" />
+    <input type="checkbox" id="codeOfConduct" checked="@[codeOfConduct]"
+      onchange="$.codeOfConduct = this.checked" />
     <label for="codeOfConduct" text-sm>I agree to the <a href="#" primary
         onclick="event.preventDefault(); $.overlay = 'CodeOfConduct'">
         Code of Conduct
@@ -44,8 +43,8 @@
     </label>
   </crow>
   <crow g-2 mb-2 left>
-    <input type="checkbox" id="rememberMe" checked="@[authRememberMe]"
-      onchange="$.authRememberMe = this.checked" />
+    <input type="checkbox" id="rememberMe" checked="@[rememberMe]"
+      onchange="$.rememberMe = this.checked" />
     <label for="rememberMe" text-sm>Remember me</label>
   </crow>
 </form>
