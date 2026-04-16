@@ -1,56 +1,54 @@
-<component src="/components/Modal.html" when="@[overlay === 'GameMenu']" dismiss="$.overlay = ''">
-  <game-frame relative>
-    <crow left game-frame-title cinzel>options</crow>
-    <crow vertical g-2 p-4>
-      <crow justify-between w-full>
-        <span cinzel>Audio settings</span>
-        <button secondary
-          onclick="$.settings = { ...$.settings, volume: { master: 0.5, ambient: 0.25, sfx: 0.5, combat: 1 } }">
-          Reset to default
-        </button>
-      </crow>
-      <crow w-full g-4>
-        <menu-label>Master</menu-label>
-        <input type="range" min="0" max="1" step="0.05" value="@[settings.volume.master]"
-          oninput="$.settings = { ...$.settings, volume: { ...$.settings.volume, master: +this.value } }"
-          w-full />
-      </crow>
-      <crow w-full g-4>
-        <menu-label>Ambient</menu-label>
-        <input type="range" min="0" max="1" step="0.05" value="@[settings.volume.ambient]"
-          oninput="$.settings = { ...$.settings, volume: { ...$.settings.volume, ambient: +this.value } }"
-          w-full />
-      </crow>
-      <crow w-full g-4>
-        <menu-label>Sound effect</menu-label>
-        <input type="range" min="0" max="1" step="0.05" value="@[settings.volume.sfx]"
-          oninput="$.settings = { ...$.settings, volume: { ...$.settings.volume, sfx: +this.value } }"
-          w-full />
-      </crow>
-      <crow w-full g-4>
-        <menu-label>Combat</menu-label>
-        <input type="range" min="0" max="1" step="0.05" value="@[settings.volume.combat]"
-          oninput="$.settings = { ...$.settings, volume: { ...$.settings.volume, combat: +this.value } }"
-          w-full />
-      </crow>
-
-      <hr menu-divider />
-
-      <crow g-2 vertical>
-        <button secondary onclick="$.overlay = 'ReleaseNotes'">
-          Release notes
-        </button>
-        <!-- if token -->
-        <button primary
-          onclick="document.cookie = 'token=; Max-Age=0'; window.location.href = '/'">
-          Logout
-        </button>
-        <!-- /if -->
-      </crow>
+<game-frame relative>
+  <crow left game-frame-title cinzel>options</crow>
+  <crow vertical g-2 p-4>
+    <crow justify-between w-full>
+      <span cinzel>Audio settings</span>
+      <button secondary
+        onclick="$.settings = { ...$.settings, volume: { master: 0.5, ambient: 0.25, sfx: 0.5, combat: 1 } }">
+        Reset to default
+      </button>
+    </crow>
+    <crow w-full g-4>
+      <menu-label>Master</menu-label>
+      <input type="range" min="0" max="1" step="0.05" value="@[settings.volume.master]"
+        oninput="$.settings = { ...$.settings, volume: { ...$.settings.volume, master: +this.value } }"
+        w-full />
+    </crow>
+    <crow w-full g-4>
+      <menu-label>Ambient</menu-label>
+      <input type="range" min="0" max="1" step="0.05" value="@[settings.volume.ambient]"
+        oninput="$.settings = { ...$.settings, volume: { ...$.settings.volume, ambient: +this.value } }"
+        w-full />
+    </crow>
+    <crow w-full g-4>
+      <menu-label>Sound effect</menu-label>
+      <input type="range" min="0" max="1" step="0.05" value="@[settings.volume.sfx]"
+        oninput="$.settings = { ...$.settings, volume: { ...$.settings.volume, sfx: +this.value } }"
+        w-full />
+    </crow>
+    <crow w-full g-4>
+      <menu-label>Combat</menu-label>
+      <input type="range" min="0" max="1" step="0.05" value="@[settings.volume.combat]"
+        oninput="$.settings = { ...$.settings, volume: { ...$.settings.volume, combat: +this.value } }"
+        w-full />
     </crow>
 
-    <button absolute text-red tertiary t="-.5" r="-.5" onclick="$.overlay = ''">
-      <icon cross></icon>
-    </button>
-  </game-frame>
-</component>
+    <hr menu-divider />
+
+    <crow g-2 vertical>
+      <button secondary onclick="$.overlay = 'releaseNotes'">
+        Release notes
+      </button>
+      <!-- if token -->
+      <button primary
+        onclick="document.cookie = 'token=; Max-Age=0'; window.location.href = '/'">
+        Logout
+      </button>
+      <!-- /if -->
+    </crow>
+  </crow>
+
+  <button absolute text-red tertiary t="-.5" r="-.5" onclick="$.overlay = ''">
+    <icon cross></icon>
+  </button>
+</game-frame>

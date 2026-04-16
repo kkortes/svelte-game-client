@@ -82,21 +82,16 @@
         return;
       }
 
-      $.dialog = {
-        dialogId: 'confirm',
-        props: {
-          text: `Recruiting ${char.name} to your Ludus.`,
-          confirm: async () => {
-            $.characters.push(correctHealth(ref));
-            const targetIndex = $.characters.length - 1;
-            // Wait for the server to acknowledge the new characters list
-            // before navigating — the destination page reads fresh state
-            // from the socket on mount, so the ACK must land first.
-            await saveNow();
-            window.location.href = `/brawlers/${targetIndex}`;
-          }
+      $.dialogProps = {
+        text: `Recruiting ${char.name} to your Ludus.`,
+        confirm: async () => {
+          $.characters.push(correctHealth(ref));
+          const targetIndex = $.characters.length - 1;
+          await saveNow();
+          window.location.href = `/brawlers/${targetIndex}`;
         }
       };
+      $.overlay = 'confirm';
     };
   </script>
 

@@ -61,7 +61,6 @@
   });
 </script>
 
-<component src="/components/Modal.html" when="@[overlay === 'Combat']" bare="true" dismiss="$.overlay = ''">
 <combat-bg>
   <spacer></spacer>
   <combat-panel onclick="event.stopPropagation()">
@@ -210,7 +209,6 @@
   </combat-panel>
   <spacer></spacer>
 </combat-bg>
-</component>
 
 <style>
   [battle-brawlers] combat-bg {

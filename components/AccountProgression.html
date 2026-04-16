@@ -36,9 +36,7 @@
   };
 </script>
 
-<component src="/components/Modal.html" when="@[overlay === 'AccountProgression']" bare="true"
-  dismiss="$.overlay = ''">
-  <carousel progression-scroll onclick="$.overlay = ''">
+<carousel progression-scroll onclick="$.overlay = ''">
     <slides x scrollbar>
       <!-- each this.levels as lvl -->
       <slide>
@@ -83,8 +81,7 @@
       </slide>
       <!-- /each -->
     </slides>
-  </carousel>
-</component>
+</carousel>
 
 <style>
   [progression-scroll] {

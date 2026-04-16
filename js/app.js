@@ -44,7 +44,7 @@ export default {
   selectedBrawlers: [],
   maxBrawlers: 0,
   tooltip: undefined,
-  dialog: undefined,
+  dialogProps: '',
   notifications: [],
   overlay: '',
   settings: loadLocalStorage({

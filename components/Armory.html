@@ -29,12 +29,12 @@
         <!-- if route === '/vendor' -->
         <!-- if item.overrides?.cost > 0 -->
         <button tertiary text-xs armory-refund onclick="
-        $.dialog = { dialogId: 'confirm', props: { text: 'Refund this item?', confirm: () => { $.coins += $.inventory[@[idx]].overrides?.cost || 0; dismantleItem($.inventory[@[idx]]); } } }
+        $.dialogProps = { text: 'Refund this item?', confirm: () => { $.coins += $.inventory[@[idx]].overrides?.cost || 0; dismantleItem($.inventory[@[idx]]); } }; $.overlay = 'confirm'
       ">Refund</button>
         <!-- /if -->
         <!-- if !item.overrides?.cost -->
         <button tertiary text-xs armory-refund onclick="
-        $.dialog = { dialogId: 'confirm', props: { text: 'Dismantle this item?', confirm: () => { dismantleItem($.inventory[@[idx]]); } } }
+        $.dialogProps = { text: 'Dismantle this item?', confirm: () => { dismantleItem($.inventory[@[idx]]); } }; $.overlay = 'confirm'
       ">Dismantle</button>
         <!-- /if -->
         <!-- /if -->

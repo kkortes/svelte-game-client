@@ -172,17 +172,15 @@
 
     window.retireCharacter = () => {
       const char = $.currentCharacter;
-      $.dialog = {
-        dialogId: 'confirm',
-        props: {
-          text: `You are retiring ${char.name}. Do you wish to proceed?`,
-          confirm: () => {
-            $.selectedBrawlers = $.selectedBrawlers.filter(uuid => uuid !== char.uuid);
-            window.location.href = '/brawlers';
-            $.characters = [];
-          }
+      $.dialogProps = {
+        text: `You are retiring ${char.name}. Do you wish to proceed?`,
+        confirm: () => {
+          $.selectedBrawlers = $.selectedBrawlers.filter(uuid => uuid !== char.uuid);
+          window.location.href = '/brawlers';
+          $.characters = [];
         }
       };
+      $.overlay = 'confirm';
     };
 
     window.tryOutBuild = () => {

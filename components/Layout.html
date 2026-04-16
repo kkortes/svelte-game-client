@@ -45,13 +45,7 @@
     </crow>
   </component>
 
-  <component src="/components/Combat.html"></component>
-
-  <component src="/components/GameMenu.html"></component>
-  <component src="/components/CodeOfConduct.html"></component>
-  <component src="/components/ReleaseNotes.html"></component>
-  <component src="/components/Dialog.html"></component>
-  <component src="/components/AccountProgression.html"></component>
+  <component src="/components/Overlay.html"></component>
   <component src="/components/Tooltip.html"></component>
   <component src="/components/Notifications.html"></component>
   <component src="/components/Topbar.html"></component>
@@ -220,7 +214,7 @@
       display: block;
       position: relative;
       max-width: calc(var(--unit) * 175);
-      min-width: calc(var(--unit) * 80);
+      min-width: min(calc(var(--unit) * 80), 100%);
       width: calc(100% - var(--unit) * 24);
       max-height: 90vh;
       overflow-y: auto;

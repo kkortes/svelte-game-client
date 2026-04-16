@@ -1,3 +1,4 @@
-export const confirmWithDialog = (dialogId, props) => {
-  $.dialog = { dialogId, props };
+export const confirmWithDialog = (text, confirm) => {
+  $.dialogProps = { text, confirm };
+  $.overlay = 'confirm';
 };

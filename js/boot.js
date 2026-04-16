@@ -134,10 +134,6 @@ export default () => {
 
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && !$.gameKeyboardDisabled) {
-        if ($.dialog) {
-          $.dialog = undefined;
-          return;
-        }
         $.overlay = $.overlay ? '' : 'GameMenu';
       }
 

@@ -59,17 +59,15 @@
       const { silver, copper } = formatCoins(cost);
       const coinText = (silver ? silver + 's ' : '') + copper + 'c';
 
-      $.dialog = {
-        dialogId: 'confirm',
-        props: {
-          text: `Are you sure you want to acquire this equipment for ${coinText}?`,
-          confirm: () => {
-            $.coins -= cost;
-            $.inventory.push(item);
-            notify({ success: 'Equipment acquired!' });
-          }
+      $.dialogProps = {
+        text: `Are you sure you want to acquire this equipment for ${coinText}?`,
+        confirm: () => {
+          $.coins -= cost;
+          $.inventory.push(item);
+          notify({ success: 'Equipment acquired!' });
         }
       };
+      $.overlay = 'confirm';
     };
 
     // Tooltip via event delegation — works even after filter changes
