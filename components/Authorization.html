@@ -3,8 +3,8 @@
   import { notify } from '/js/actions.js';
 
 
-  $.authMode = 'login';
   component({
+    mode: 'login',
     email: config.IS_DEV ? config.AUTO_EMAIL : '',
     password: config.IS_DEV ? config.AUTO_PASSWORD : '',
     rememberMe: config.IS_DEV,
@@ -47,33 +47,34 @@
 <center-full auth-padding>
   <auth-scene w-full>
     <card auth-form glass>
-      <!-- if authMode === 'login' -->
+      <!-- if this.mode === 'login' -->
       <component src="/components/Login.html" email="@[this.email]" password="@[this.password]"
         rememberMe="@[this.rememberMe]" codeOfConduct="@[this.codeOfConduct]"></component>
       <!-- /if -->
 
-      <!-- if authMode === 'register' -->
-      <component src="/components/Register.html" email="@[this.email]" password="@[this.password]">
+      <!-- if this.mode === 'register' -->
+      <component src="/components/Register.html" email="@[this.email]" password="@[this.password]"
+        mode="@[this.mode]"></component>
+      <!-- /if -->
+
+      <!-- if this.mode === 'forgot' -->
+      <component src="/components/ForgotPassword.html" email="@[this.email]" mode="@[this.mode]">
       </component>
       <!-- /if -->
 
-      <!-- if authMode === 'forgot' -->
-      <component src="/components/ForgotPassword.html" email="@[this.email]"></component>
-      <!-- /if -->
-
       <crow g-2 mt="4">
-        <!-- if authMode !== 'login' -->
-        <button secondary type="button" onclick="$.authMode = 'login'">
+        <!-- if this.mode !== 'login' -->
+        <button secondary type="button" onclick="$.this.mode = 'login'">
           Login
         </button>
         <!-- /if -->
-        <!-- if authMode !== 'register' -->
-        <button secondary type="button" onclick="$.authMode = 'register'">
+        <!-- if this.mode !== 'register' -->
+        <button secondary type="button" onclick="$.this.mode = 'register'">
           Register
         </button>
         <!-- /if -->
-        <!-- if authMode !== 'forgot' -->
-        <button secondary type="button" onclick="$.authMode = 'forgot'">
+        <!-- if this.mode !== 'forgot' -->
+        <button secondary type="button" onclick="$.this.mode = 'forgot'">
           Forgot password
         </button>
         <!-- /if -->

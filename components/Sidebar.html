@@ -1,21 +1,14 @@
 <script type="module">
   import CHARACTERS from '/js/constants/CHARACTERS.js';
   import { calculateCombatStatsByCharacter } from '/js/utils.js';
-  import {
-    getLevelByExperience,
-    getCurrentExperienceAtLevel,
-    getExperienceForNextLevel,
-    allowedNumberOfCharacters
-  } from '/js/level.js';
 
+  component({ showSequence: false });
+
+  // sidebarChars stays on $ — it's a reactive derived array that the
+  // template iterates. Iteration needs a state path for proper diffing.
+  // All other sidebar values (level, xp, maxChars) are computed inline
+  // in the template via window globals.
   const refresh = () => {
-    const level = getLevelByExperience($.experience || 0);
-    $.sidebarLevel = level;
-    $.sidebarXpCurrent = getCurrentExperienceAtLevel($.experience || 0);
-    $.sidebarXpNeeded = getExperienceForNextLevel(level);
-    $.sidebarXpPct = level >= 25 ? 100 : Math.round(($.sidebarXpCurrent / Math.max(1, $.sidebarXpNeeded)) * 100);
-    $.sidebarMaxChars = allowedNumberOfCharacters();
-
     const AB = window.ABILITIES_FN;
     $.sidebarChars = ($.characters || []).map((ref) => {
       try {
@@ -38,12 +31,43 @@
 
   refresh();
   $.on('afterUpdate', (current, prev) => {
-    if (current.experience !== prev.experience ||
-        current.characters !== prev.characters ||
-        current.accountRewards !== prev.accountRewards) {
-      refresh();
-    }
+    if (current.characters !== prev.characters) refresh();
   });
+
+  // Heal timer — owned by Sidebar (only runs while logged in / Sidebar mounted).
+  const MINUTES_TO_REFILL = 2;
+  const FULL_TIME = MINUTES_TO_REFILL * 60 * 1000;
+
+  setInterval(() => {
+    const anchor = $.serverTimestampSnapshot || Date.now();
+    const nowMs = $.serverTimestamp || Date.now();
+
+    const now = new Date(anchor);
+    const minutes = now.getMinutes();
+    const nextMarkMinute = minutes + (MINUTES_TO_REFILL - (minutes % MINUTES_TO_REFILL));
+    const nextMark = new Date(now);
+    nextMark.setMinutes(nextMarkMinute, 0, 0);
+
+    const timeToRefill = nextMark.getTime() - nowMs;
+    $.healTimer = Math.max(0, Math.ceil(timeToRefill / 1000));
+    $.healTimerPct = Math.round(((FULL_TIME - timeToRefill) / FULL_TIME) * 100);
+
+    if (timeToRefill < 0) {
+      $.characters.forEach((ref) => {
+        try {
+          const char = CHARACTERS(ref, true);
+          const stats = calculateCombatStatsByCharacter(char);
+          const heal = Math.ceil(stats.maxHealth * 0.33);
+          ref.overrides.combatStats.currentHealth = Math.min(
+            char.combatStats.currentHealth + heal,
+            stats.maxHealth
+          );
+        } catch {}
+      });
+      $.serverTimestampSnapshot = nowMs;
+      $.syncPerformanceNow = performance.now();
+    }
+  }, 1000);
 </script>
 
 <sidebar sm:t="8.5" t="12">
@@ -66,7 +90,7 @@
 
       <crow justify-between>
         <h5 m-0>MY LUDUS</h5>
-        <span cinzel flex-none>level @[sidebarLevel]</span>
+        <span cinzel flex-none>level @[getLevelByExperience(experience)]</span>
       </crow>
       <hr />
 
@@ -83,10 +107,10 @@
               See progress
             </button>
           </crow>
-          <!-- if sidebarLevel < 25 -->
+          <!-- if getLevelByExperience(experience) < 25 -->
           <bar-track xp-bar>
-            <bar-fill xp-fill style="width: @[sidebarXpPct]%"></bar-fill>
-            <crow bar-text text-sm>@[sidebarXpCurrent] / @[sidebarXpNeeded]</crow>
+            <bar-fill xp-fill style="width: @[Math.round((getCurrentExperienceAtLevel(experience) / Math.max(1, getExperienceForNextLevel(getLevelByExperience(experience)))) * 100)]%"></bar-fill>
+            <crow bar-text text-sm>@[getCurrentExperienceAtLevel(experience)] / @[getExperienceForNextLevel(getLevelByExperience(experience))]</crow>
           </bar-track>
           <!-- /if -->
         </crow>
@@ -118,11 +142,11 @@
 
       <crow justify-between>
         <h5 m-0>MY BRAWLERS</h5>
-        <span cinzel flex-none>@[sidebarChars.length] / @[sidebarMaxChars]</span>
+        <span cinzel flex-none>@[sidebarChars.length] / @[allowedNumberOfCharacters()]</span>
       </crow>
       <hr />
 
-      <brawler-list onmouseenter="$.showSequence = true" onmouseleave="$.showSequence = false">
+      <brawler-list onmouseenter="$.this.showSequence = true" onmouseleave="$.this.showSequence = false">
         <crow vertical up left>
           <!-- if characters.length === 0 -->
           <crow vertical w-full g-2 text-sm>
@@ -149,17 +173,17 @@
                     <bar-fill hp-fill style="width: @[schar.healthPct]%"></bar-fill>
                     <crow bar-text text-sm justify-between>
                       <span>@[schar.name]</span>
-                      <!-- if showSequence || maxBrawlers || Number(routeParams.characterIndex) === i || selectedBrawlers.includes(characters[i]?.uuid) -->
+                      <!-- if this.showSequence || maxBrawlers || Number(routeParams.characterIndex) === i || selectedBrawlers.includes(characters[i]?.uuid) -->
                       <span>@[schar.currentHealth] / @[schar.maxHealth]</span>
                       <!-- /if -->
-                      <!-- if !showSequence && !maxBrawlers && Number(routeParams.characterIndex) !== i && !selectedBrawlers.includes(characters[i]?.uuid) -->
+                      <!-- if !this.showSequence && !maxBrawlers && Number(routeParams.characterIndex) !== i && !selectedBrawlers.includes(characters[i]?.uuid) -->
                       <span>@[schar.healthPct]%</span>
                       <!-- /if -->
                     </crow>
                   </bar-track>
                 </crow>
                 <ability-accordion
-                  open="@[showSequence || !!maxBrawlers || Number(routeParams.characterIndex) === i || selectedBrawlers.includes(characters[i]?.uuid)]">
+                  open="@[this.showSequence || !!maxBrawlers || Number(routeParams.characterIndex) === i || selectedBrawlers.includes(characters[i]?.uuid)]">
                   <ability-accordion-content>
                     <ability-preview>
                       <!-- each schar.abilities as ab -->
@@ -176,197 +200,147 @@
           <!-- /each -->
         </crow>
       </brawler-list>
-
-
-      <style>
-        @media (width <=768px) {
-          sidebar {
-            z-index: 1;
-          }
-        }
-
-        sidebar-content combat-status {
-          position: absolute;
-          top: calc(var(--unit) * -6);
-          left: 0;
-        }
-
-        sidebar-content [combat-link] {
-          display: flex;
-          align-items: center;
-          gap: calc(var(--unit) * 2);
-          text-decoration: none;
-          color: inherit;
-        }
-
-        sidebar-content spacer {
-          display: block;
-          height: calc(var(--unit) * 8);
-        }
-
-        /* Bar component - shared */
-        sidebar-content bar-track {
-          position: relative;
-          display: grid;
-          height: calc(var(--unit) * 7);
-          width: 100%;
-          background: rgba(0, 0, 0, 0.2);
-          color: white;
-          box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15);
-        }
-
-        sidebar-content bar-fill {
-          display: block;
-          height: 100%;
-          transition: width 200ms ease;
-          grid-area: 1/1;
-        }
-
-        sidebar-content [bar-text] {
-          grid-area: 1/1;
-          padding: 0 calc(var(--unit) * 2);
-          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-          z-index: 1;
-        }
-
-        /* XP bar */
-        sidebar-content [xp-bar] {
-          height: calc(var(--unit) * 6);
-          border-radius: calc(var(--unit) * 0.5);
-          overflow: hidden;
-        }
-
-        sidebar-content [xp-fill] {
-          background: var(--yellow);
-        }
-
-        /* Heal timer */
-        sidebar-content [heal-timer-bar] {
-          height: calc(var(--unit) * 6);
-          border-radius: calc(var(--unit) * 0.5);
-          overflow: hidden;
-        }
-
-        sidebar-content [heal-timer-fill] {
-          background: rgba(100, 100, 100, 0.6);
-          transition: width 1s linear;
-        }
-
-        /* HP bar */
-        sidebar-content [hp-bar] {
-          height: calc(var(--unit) * 7);
-        }
-
-        sidebar-content [hp-fill] {
-          background: oklch(0.35 0.08 20);
-        }
-
-        /* Coins */
-        sidebar-content [coin-stack] {
-          gap: calc(var(--unit) * 2);
-          flex-wrap: wrap-reverse;
-          justify-content: flex-end;
-        }
-
-        /* Brawler list */
-        sidebar-content brawler-list {
-          display: block;
-          margin: calc(var(--unit) * 2) calc(var(--unit) * -4);
-        }
-
-        sidebar-content [brawler-link] {
-          display: block;
-          width: 100%;
-          text-decoration: none;
-          color: inherit;
-        }
-
-        sidebar-content [brawler-row] {
-          transition: all 75ms;
-        }
-
-        sidebar-content [brawler-row][active] {
-          background: rgba(255, 255, 255, 0.5);
-          border-radius: calc(var(--unit) * 0.5);
-          margin: calc(var(--unit) * -1) calc(var(--unit) * -1.5);
-          padding: var(--unit) calc(var(--unit) * 1.5);
-          width: auto;
-          border: none;
-          backdrop-filter: blur(4px);
-          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
-        sidebar-content avatar-wrap {
-          display: block;
-          width: calc(var(--unit) * 16);
-          height: calc(var(--unit) * 16);
-          padding: var(--unit);
-          flex: none;
-        }
-
-        sidebar-content avatar-frame {
-          display: block;
-          width: 100%;
-          height: 100%;
-          border-radius: calc(var(--unit) * 0.5);
-          overflow: hidden;
-          border: 1px solid rgba(75, 85, 99, 1);
-        }
-
-        sidebar-content [brawler-img] {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
-
-        sidebar-content [brawler-info] {
-          flex: 1;
-          min-width: 0;
-          overflow: hidden;
-          padding: var(--unit);
-        }
-
-        sidebar-content ability-accordion {
-          display: grid;
-          grid-template-rows: 0fr;
-          transition: grid-template-rows 200ms ease;
-        }
-
-        sidebar-content ability-accordion[open] {
-          grid-template-rows: 1fr;
-        }
-
-        sidebar-content ability-accordion-content {
-          display: block;
-          overflow: hidden;
-          min-height: 0;
-        }
-
-        sidebar-content ability-preview {
-          display: flex;
-          border: 0.5px solid rgb(120, 113, 108);
-          border-radius: 0 0 var(--unit) var(--unit);
-          background: rgb(214, 211, 209);
-          overflow: hidden;
-          width: calc(var(--unit) * 36.25);
-          padding-right: calc(var(--unit) * 0.25);
-        }
-
-        sidebar-content ability-preview-cell {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          height: calc(var(--unit) * 6);
-          flex: none;
-          border-right: 0.5px solid rgb(120, 113, 108);
-          color: rgb(120, 113, 108);
-          font-size: 0.875rem;
-        }
-
-        sidebar-content ability-preview-cell:last-child {
-          border-right: none;
-        }
-      </style>
+    </div>
   </sidebar-content>
-  </div>
 </sidebar>
+
+<style>
+  [battle-brawlers] combat-status {
+    position: absolute;
+    top: calc(var(--unit) * -6);
+    left: 0;
+  }
+
+  [battle-brawlers] [combat-link] {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--unit) * 2);
+    text-decoration: none;
+    color: var(--foreground);
+    font-size: 0.875rem;
+  }
+
+  [battle-brawlers] bar-track {
+    display: flex;
+    position: relative;
+    width: 100%;
+    height: calc(var(--unit) * 5);
+    border-radius: calc(var(--unit) * 1);
+    overflow: hidden;
+    background: oklch(from var(--foreground) l c h / 0.1);
+  }
+
+  [battle-brawlers] bar-fill {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    transition: width 300ms ease-out;
+  }
+
+  [battle-brawlers] [bar-text] {
+    position: absolute;
+    inset: 0;
+    padding: 0 calc(var(--unit) * 2);
+    font-size: 0.6875rem;
+    line-height: calc(var(--unit) * 5);
+    color: var(--foreground);
+  }
+
+  [battle-brawlers] [xp-bar] bar-fill {
+    background: var(--bb-yellow, oklch(0.75 0.15 85));
+  }
+
+  [battle-brawlers] [hp-bar] bar-fill {
+    background: var(--bb-red, oklch(0.6 0.2 25));
+  }
+
+  [battle-brawlers] [heal-timer-bar] bar-fill {
+    background: var(--bb-green, oklch(0.65 0.17 145));
+  }
+
+  [battle-brawlers] brawler-list {
+    display: block;
+    margin: calc(var(--unit) * 2) calc(var(--unit) * -4);
+  }
+
+  [battle-brawlers] [brawler-link] {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  [battle-brawlers] [brawler-row] {
+    padding: calc(var(--unit) * 2) calc(var(--unit) * 4);
+    gap: calc(var(--unit) * 2);
+    transition: background 150ms;
+  }
+
+  [battle-brawlers] [brawler-row]:hover,
+  [battle-brawlers] [brawler-row][active] {
+    background: oklch(from var(--foreground) l c h / 0.06);
+  }
+
+  [battle-brawlers] avatar-wrap {
+    display: block;
+    flex: none;
+  }
+
+  [battle-brawlers] avatar-frame {
+    display: block;
+    width: calc(var(--unit) * 10);
+    height: calc(var(--unit) * 10);
+    border-radius: var(--unit);
+    overflow: hidden;
+    border: 1px solid oklch(from var(--foreground) l c h / 0.2);
+  }
+
+  [battle-brawlers] [brawler-img] {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  [battle-brawlers] [brawler-info] {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  [battle-brawlers] ability-accordion {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 200ms ease-out;
+  }
+
+  [battle-brawlers] ability-accordion[open] {
+    grid-template-rows: 1fr;
+  }
+
+  [battle-brawlers] ability-accordion-content {
+    overflow: hidden;
+  }
+
+  [battle-brawlers] ability-preview {
+    display: flex;
+    border: 0.5px solid oklch(from var(--foreground) l c h / 0.3);
+    border-radius: 0 0 var(--unit) var(--unit);
+    background: oklch(from var(--foreground) l c h / 0.08);
+    overflow: hidden;
+    margin-top: calc(var(--unit) * 1);
+  }
+
+  [battle-brawlers] ability-preview-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: calc(var(--unit) * 5);
+    flex: none;
+    border-right: 0.5px solid oklch(from var(--foreground) l c h / 0.2);
+    color: var(--muted-foreground);
+    font-size: 0.75rem;
+  }
+
+  [battle-brawlers] ability-preview-cell:last-child {
+    border-right: none;
+  }
+</style>

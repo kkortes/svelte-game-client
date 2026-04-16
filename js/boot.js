@@ -10,7 +10,12 @@ import CHARACTERS from '/js/constants/CHARACTERS.js';
 import ABILITIES from '/js/constants/ABILITIES.js';
 import EQUIPMENT from '/js/constants/EQUIPMENT.js';
 import { calculateCombatStatsByCharacter } from '/js/utils.js';
-import { getLevelByExperience } from '/js/level.js';
+import {
+  getLevelByExperience,
+  getCurrentExperienceAtLevel,
+  getExperienceForNextLevel,
+  allowedNumberOfCharacters
+} from '/js/level.js';
 import { Howl } from '/js/lib/howler.js';
 import AUDIO from '/js/audio.js';
 import { correctHealth } from '/js/equipment.js';
@@ -60,6 +65,11 @@ export default () => {
   window.ABILITIES_FN = ABILITIES;
   window.EQUIPMENT_FN = EQUIPMENT;
   window.calculateCombatStatsByCharacter = calculateCombatStatsByCharacter;
+  window.getLevelByExperience = getLevelByExperience;
+  window.getCurrentExperienceAtLevel = getCurrentExperienceAtLevel;
+  window.getExperienceForNextLevel = getExperienceForNextLevel;
+  window.allowedNumberOfCharacters = allowedNumberOfCharacters;
+  window.isDev = config.IS_DEV;
 
   window.selectBrawler = (e, uuid, index) => {
     if ($.maxBrawlers) {
@@ -83,7 +93,6 @@ export default () => {
     {
       ...appState,
       token: cookie?.token,
-      isDev: config.IS_DEV,
       route,
       routeParams,
       pageName,
@@ -139,11 +148,11 @@ export default () => {
 
       // Shift + Option/Alt + D toggles the DevBar. Match on e.code so we don't
       // have to deal with Option producing the special `∂` character on macOS.
-      if ($.isDev && e.shiftKey && e.altKey && e.code === 'KeyD') {
+      if (window.isDev && e.shiftKey && e.altKey && e.code === 'KeyD') {
         e.preventDefault();
         $.devbarOpen = !$.devbarOpen;
       }
-      if ($.isDev && e.shiftKey && e.altKey && e.code === 'KeyS') {
+      if (window.isDev && e.shiftKey && e.altKey && e.code === 'KeyS') {
         e.preventDefault();
         $.inspectorOpen = !$.inspectorOpen;
       }
@@ -156,44 +165,6 @@ export default () => {
       }
     }, 250);
 
-    // Heal timer
-    const MINUTES_TO_REFILL = 2;
-    const FULL_TIME = MINUTES_TO_REFILL * 60 * 1000;
-
-    setInterval(() => {
-      // Anchor the cycle to a real timestamp — prefer the server-synced clock
-      // when available so heals stay aligned across sessions; fall back to
-      // client time so the countdown keeps ticking even before the socket
-      // handshake (or if the server never sends a snapshot).
-      const anchor = $.serverTimestampSnapshot || Date.now();
-      const nowMs = $.serverTimestamp || Date.now();
-
-      const now = new Date(anchor);
-      const minutes = now.getMinutes();
-      const nextMarkMinute = minutes + (MINUTES_TO_REFILL - (minutes % MINUTES_TO_REFILL));
-      const nextMark = new Date(now);
-      nextMark.setMinutes(nextMarkMinute, 0, 0);
-
-      const timeToRefill = nextMark.getTime() - nowMs;
-      $.healTimer = Math.max(0, Math.ceil(timeToRefill / 1000));
-      $.healTimerPct = Math.round(((FULL_TIME - timeToRefill) / FULL_TIME) * 100);
-
-      if (timeToRefill < 0) {
-        $.characters.forEach((ref) => {
-          try {
-            const char = CHARACTERS(ref, true);
-            const stats = calculateCombatStatsByCharacter(char);
-            const heal = Math.ceil(stats.maxHealth * 0.33);
-            ref.overrides.combatStats.currentHealth = Math.min(
-              char.combatStats.currentHealth + heal,
-              stats.maxHealth
-            );
-          } catch {}
-        });
-        $.serverTimestampSnapshot = nowMs;
-        $.syncPerformanceNow = performance.now();
-      }
-    }, 1000);
 
     // Armory equipment tooltips via event delegation
     document.addEventListener(

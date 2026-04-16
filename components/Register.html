@@ -5,14 +5,13 @@
     try {
       await $.socket.sendAsync('user/register', { email, password });
       notify({ success: 'Account was created. You can now log in.' });
-      $.authMode = 'login';
     } catch (e) {
       notify(e);
     }
   };
 </script>
 
-<form onsubmit="event.preventDefault(); authRegister($.email, $.password)">
+<form onsubmit="event.preventDefault(); authRegister($.email, $.password).then(() => { $.mode = 'login' })">
   <crow g-2 mb-3>
     <input type="email" placeholder="Email" value="@[email]" oninput="$.email = this.value"
       required auth-input />
@@ -22,6 +21,6 @@
   </crow>
   <p text-sm text-muted>
     Already have an account? <a href="#" primary
-      onclick="event.preventDefault(); $.authMode = 'login';">Log in</a>
+      onclick="event.preventDefault(); $.mode = 'login';">Log in</a>
   </p>
 </form>
