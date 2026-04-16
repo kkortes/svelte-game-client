@@ -1,13 +1,15 @@
 <script type="module">
+  if ($.inspectorData === undefined) $.inspectorData = '';
+
   let lastJson = '';
   const refresh = () => {
+    if (!$.inspectorOpen) return;
     const { inspectorData, dataInspectorLines, dataInspectorJson, dataInspectorCount, ...rest } = $;
     const json = JSON.stringify(rest);
     if (json === lastJson) return;
     lastJson = json;
     $.inspectorData = JSON.parse(json);
   };
-  refresh();
   $.on('afterUpdate', refresh);
 </script>
 
