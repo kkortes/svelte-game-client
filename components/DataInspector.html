@@ -97,14 +97,22 @@
     }
   };
 
+  const countItems = (val) => {
+    if (val === null || val === undefined || typeof val !== 'object') return 1;
+    if (Array.isArray(val)) return val.reduce((n, v) => n + countItems(v), 0);
+    return Object.values(val).reduce((n, v) => n + countItems(v), 0);
+  };
+
   if ($.dataInspectorLines === undefined) $.dataInspectorLines = [];
   if ($.dataInspectorJson === undefined) $.dataInspectorJson = '';
+  if ($.dataInspectorCount === undefined) $.dataInspectorCount = 0;
 
   // Binding side-effect: the `data` prop is a reactive binding into caller state;
   // when it changes, Vibe re-evaluates this expression and we push the formatted
   // lines + copy-payload into state keys the template iterates/binds below.
   window.syncDataInspector = (data) => {
     $.dataInspectorLines = computeLines(data);
+    $.dataInspectorCount = countItems(data);
     try {
       $.dataInspectorJson = JSON.stringify(sortData(data), null, 2);
     } catch {
@@ -122,7 +130,7 @@
 <data-inspector>
   <data-inspector-sync>@[window.syncDataInspector(data)]</data-inspector-sync>
   <data-inspector-header>
-    <data-inspector-title>Showing Data</data-inspector-title>
+    <data-inspector-title>Showing Data (@[dataInspectorCount] items)</data-inspector-title>
     <button onclick="window.copyDataInspectorJson()" data-inspector-copy>Copy JSON</button>
   </data-inspector-header>
   <data-inspector-lines>
@@ -146,7 +154,7 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    max-height: 60vh;
+    max-height: 40vh;
     overflow: auto;
     font-size: 0.875rem;
     border-top: 1px solid var(--border);
