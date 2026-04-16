@@ -131,7 +131,7 @@
   <data-inspector-sync>@[window.syncDataInspector(data)]</data-inspector-sync>
   <data-inspector-header>
     <data-inspector-title>Vibe state (@[dataInspectorCount] items)</data-inspector-title>
-    <button onclick="window.copyDataInspectorJson()" data-inspector-copy>Copy JSON</button>
+    <button onclick="copyDataInspectorJson()" data-inspector-copy>Copy JSON</button>
   </data-inspector-header>
   <data-inspector-lines>
     <!-- each dataInspectorLines as line, i -->
@@ -215,9 +215,18 @@
     scrollbar-color: #424242 transparent;
   }
 
-  data-inspector-lines::-webkit-scrollbar { width: 8px; }
-  data-inspector-lines::-webkit-scrollbar-thumb { background: #424242; border-radius: 4px; }
-  data-inspector-lines::-webkit-scrollbar-track { background: transparent; }
+  data-inspector-lines::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  data-inspector-lines::-webkit-scrollbar-thumb {
+    background: #424242;
+    border-radius: 4px;
+  }
+
+  data-inspector-lines::-webkit-scrollbar-track {
+    background: transparent;
+  }
 
   data-inspector-row,
   data-inspector-raw {

@@ -18,54 +18,39 @@
     import CHARACTERS from '/js/constants/CHARACTERS.js';
     import { getExperienceReward, getLevelByExperience } from '/js/level.js';
 
-    const fights = [...ALL_FIGHTS].sort((a, b) => {
+    // Hydrate once — constant display data, not on $.
+    // Sorted and enriched from the FIGHTS + CHARACTERS registries.
+    const hideTreshold = $.bossHighscore + 5;
+    const ludusLevel = getLevelByExperience($.experience);
+
+    window.arenaFights = [...ALL_FIGHTS].sort((a, b) => {
       if (a.minLevel !== b.minLevel) return a.minLevel - b.minLevel;
       if (a.boss !== b.boss) return a.boss ? 1 : -1;
       return a.maxLevel - b.maxLevel;
-    });
-
-    $.arenaFights = fights.map((fight, i) => {
-      const hideTreshold = $.bossHighscore + 5;
-      const ludusLevel = getLevelByExperience($.experience);
-      const isLocked = hideTreshold < fight.minLevel;
-      const bossCompleted = fight.boss && $.bossHighscore >= fight.minLevel;
-
+    }).map((fight, i) => {
       const enemies = fight.characters.map(charRef => {
-        const withLevel = {
-          ...charRef,
-          overrides: {
-            ...charRef?.overrides,
-            level: fight.minLevel,
-            equipment: {
-              mainHand: { overrides: { level: fight.minLevel } },
-              offHand: { overrides: { level: fight.minLevel } },
-              armor: { overrides: { level: fight.minLevel } }
-            }
-          }
-        };
         try {
-          const hydrated = CHARACTERS(withLevel, true);
+          const hydrated = CHARACTERS({
+            ...charRef,
+            overrides: { ...charRef?.overrides, level: fight.minLevel,
+              equipment: { mainHand: { overrides: { level: fight.minLevel } },
+                offHand: { overrides: { level: fight.minLevel } },
+                armor: { overrides: { level: fight.minLevel } } } }
+          }, true);
           return { image: hydrated.image, name: hydrated.name };
-        } catch {
-          return { image: '', name: '?' };
-        }
+        } catch { return { image: '', name: '?' }; }
       });
-
-      const xp = getExperienceReward(fight.characters.length, fight.minLevel, fight.maxLevel, fight.boss);
-      const xpDimmed = ludusLevel > fight.maxLevel;
-
       return {
-        id: fight.id,
-        name: fight.name,
-        minLevel: fight.minLevel,
-        maxLevel: fight.maxLevel,
+        id: fight.id, name: fight.name,
+        minLevel: fight.minLevel, maxLevel: fight.maxLevel,
+        levelText: fight.minLevel === fight.maxLevel ? String(fight.minLevel) : `${fight.minLevel} - ${fight.maxLevel}`,
         boss: fight.boss,
-        isLocked,
-        bossCompleted,
+        xp: getExperienceReward(fight.characters.length, fight.minLevel, fight.maxLevel, fight.boss),
+        isLocked: hideTreshold < fight.minLevel,
+        bossCompleted: fight.boss && $.bossHighscore >= fight.minLevel,
+        xpDimmed: ludusLevel > fight.maxLevel,
+        even: i % 2 === 0,
         enemies,
-        xp,
-        xpDimmed,
-        even: i % 2 === 0
       };
     });
 
@@ -94,7 +79,7 @@
           <crow arena-col-preview right></crow>
         </crow>
 
-        <!-- each arenaFights as fight, i -->
+        <!-- each window.arenaFights as fight, i -->
         <a href="/the-arena/@[fight.id]"
           onclick="arenaClick(event, '@[fight.id]', @[fight.isLocked], @[fight.bossCompleted])"
           arena-row even="@[fight.even]" boss="@[fight.boss]" locked="@[fight.isLocked]"
@@ -112,7 +97,7 @@
           </crow>
 
           <arena-col-level text-center text-sm>
-            @[fight.minLevel]@[fight.minLevel === fight.maxLevel ? '' : ' - ' + fight.maxLevel]
+            @[fight.levelText]
           </arena-col-level>
 
           <arena-col-loot text-sm>

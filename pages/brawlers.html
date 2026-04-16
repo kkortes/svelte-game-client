@@ -23,69 +23,59 @@
     import { notify } from '/js/actions.js';
     import { calculateCombatStatsByCharacter } from '/js/utils.js';
 
-    $.recruitableCharacters = RECRUITABLE_CHARACTERS.map(ref => {
+    // Hydrate once into a window variable — display data is constant,
+    // doesn't belong on reactive state. Templates access via
+    // window.brawlerCards[idx] in @[...] bindings.
+    const formatBonuses = (current, defaults, labels) =>
+      Object.entries(labels)
+        .filter(([k]) => current[k] !== defaults[k])
+        .map(([k, label]) => `${label} +${Math.round((current[k] - defaults[k]) * 100)}%`)
+        .join('  ');
+
+    window.brawlerCards = RECRUITABLE_CHARACTERS.map(ref => {
       const char = CHARACTERS(ref, true);
       const element = ALL_ELEMENTS[char.element] || { color: { primary: '#888', secondary: '#aaa' } };
       const stats = calculateCombatStatsByCharacter(char);
-      const isRecruited = $.characters.some(c => c.id === char.id);
-
-      const luckyBonuses = [];
       const cs = char.combatStats;
-      if (cs.criticalChance !== DEFAULT_LUCKY_STATS.criticalChance) luckyBonuses.push({ label: 'Crit%', value: '+' + Math.round((cs.criticalChance - DEFAULT_LUCKY_STATS.criticalChance) * 100) + '%' });
-      if (cs.criticalDamage !== DEFAULT_LUCKY_STATS.criticalDamage) luckyBonuses.push({ label: 'CritDmg', value: '+' + Math.round((cs.criticalDamage - DEFAULT_LUCKY_STATS.criticalDamage) * 100) + '%' });
-      if (cs.dodgeChance !== DEFAULT_LUCKY_STATS.dodgeChance) luckyBonuses.push({ label: 'Dodge', value: '+' + Math.round((cs.dodgeChance - DEFAULT_LUCKY_STATS.dodgeChance) * 100) + '%' });
-      if (cs.blockChance !== DEFAULT_LUCKY_STATS.blockChance) luckyBonuses.push({ label: 'Block', value: '+' + Math.round((cs.blockChance - DEFAULT_LUCKY_STATS.blockChance) * 100) + '%' });
-      if (cs.magicChance !== DEFAULT_LUCKY_STATS.magicChance) luckyBonuses.push({ label: 'Magic', value: '+' + Math.round((cs.magicChance - DEFAULT_LUCKY_STATS.magicChance) * 100) + '%' });
-
-      const modBonuses = [];
-      const mods = cs.modifiers || {};
-      if (mods.maxHealth !== DEFAULT_MODIFIERS.maxHealth) modBonuses.push({ label: 'HP', value: '+' + Math.round((mods.maxHealth - DEFAULT_MODIFIERS.maxHealth) * 100) + '%' });
-      if (mods.maxArmor !== DEFAULT_MODIFIERS.maxArmor) modBonuses.push({ label: 'Armor', value: '+' + Math.round((mods.maxArmor - DEFAULT_MODIFIERS.maxArmor) * 100) + '%' });
-      if (mods.damage !== DEFAULT_MODIFIERS.damage) modBonuses.push({ label: 'Dmg', value: '+' + Math.round((mods.damage - DEFAULT_MODIFIERS.damage) * 100) + '%' });
-      if (mods.resistance !== DEFAULT_MODIFIERS.resistance) modBonuses.push({ label: 'Res', value: '+' + Math.round((mods.resistance - DEFAULT_MODIFIERS.resistance) * 100) + '%' });
-
       return {
         ref,
         name: char.name,
-        race: char.race,
+        id: char.id,
         image: char.image,
-        element: char.element,
+        size: char.size || 1,
         primary: element.color.primary,
         secondary: element.color.secondary,
-        id: char.id,
-        isRecruited,
         hp: stats.maxHealth,
         armor: stats.maxArmor,
         damage: stats.damage,
-        size: char.size || 1,
-        luckyBonuses,
-        modBonuses
+        luckyBonuses: formatBonuses(cs, DEFAULT_LUCKY_STATS, {
+          criticalChance: 'Crit%', criticalDamage: 'CritDmg',
+          dodgeChance: 'Dodge', blockChance: 'Block', magicChance: 'Magic'
+        }),
+        modBonuses: formatBonuses(cs.modifiers || {}, DEFAULT_MODIFIERS, {
+          maxHealth: 'HP', maxArmor: 'Armor', damage: 'Dmg', resistance: 'Res'
+        }),
       };
     });
 
-    $.brawlerCharCount = $.characters.length;
-    $.brawlerCharMax = allowedNumberOfCharacters();
     $.brawlerCharCapped = $.characters.length >= allowedNumberOfCharacters();
 
     window.pickCharacter = (index) => {
-      const capped = $.characters.length >= allowedNumberOfCharacters();
-      if (capped) {
+      if ($.characters.length >= allowedNumberOfCharacters()) {
         notify({ warning: 'You cannot recruit more brawlers. Level up your ludus first.' });
         return;
       }
 
-      const ref = RECRUITABLE_CHARACTERS[index];
-      const char = CHARACTERS(ref, true);
-      const isRecruited = $.characters.find(c => c.id === char.id);
-      if (isRecruited) {
-        notify({ warning: `${char.name} is already recruited` });
+      const card = window.brawlerCards[index];
+      if ($.characters.find(c => c.id === card.id)) {
+        notify({ warning: `${card.name} is already recruited` });
         return;
       }
 
       $.dialogProps = {
-        text: `Recruiting ${char.name} to your Ludus.`,
+        text: `Recruiting ${card.name} to your Ludus.`,
         confirm: async () => {
-          $.characters.push(correctHealth(ref));
+          $.characters.push(correctHealth(card.ref));
           const targetIndex = $.characters.length - 1;
           await saveNow();
           window.location.href = `/brawlers/${targetIndex}`;
@@ -113,32 +103,28 @@
       </crow>
 
       <crow brawlers-grid>
-        <!-- each recruitableCharacters as char, idx -->
+        <!-- each window.brawlerCards as card, idx -->
         <brawler-card onclick="pickCharacter(@[idx])"
-          style="--card-primary: @[char.primary]; --card-secondary: @[char.secondary]"
-          recruited="@[char.isRecruited]">
-          <span cinzel brawler-name>@[char.name]</span>
+          style="--card-primary: @[card.primary]; --card-secondary: @[card.secondary]"
+          recruited="@[characters.some(c => c.id === card.id)]">
+          <span cinzel brawler-name>@[card.name]</span>
           <hr />
           <crow left brawler-row>
-            <char-portrait style="--char-size: @[char.size]">
-              <img data-src="/static/images/races/@[char.image]" alt="@[char.name]" portrait-img />
+            <char-portrait style="--char-size: @[card.size]">
+              <img data-src="/static/images/races/@[card.image]" alt="@[card.name]" portrait-img />
             </char-portrait>
             <crow vertical left brawler-info>
-              <component src="/components/CoreStats.html" hp="@[char.hp]" armor="@[char.armor]"
-                damage="@[char.damage]" vertical></component>
+              <component src="/components/CoreStats.html" hp="@[card.hp]" armor="@[card.armor]"
+                damage="@[card.damage]" vertical></component>
               <crow vertical left>
-                <!-- if char.luckyBonuses.length > 0 -->
+                <!-- if card.luckyBonuses -->
                 <crow bonus-row>
-                  <!-- each char.luckyBonuses as bonus -->
-                  <span bonus-stat>@[bonus.label] @[bonus.value]</span>
-                  <!-- /each -->
+                  <span bonus-stat>@[card.luckyBonuses]</span>
                 </crow>
                 <!-- /if -->
-                <!-- if char.modBonuses.length > 0 -->
+                <!-- if card.modBonuses -->
                 <crow bonus-row>
-                  <!-- each char.modBonuses as bonus -->
-                  <span bonus-stat>@[bonus.label] @[bonus.value]</span>
-                  <!-- /each -->
+                  <span bonus-stat>@[card.modBonuses]</span>
                 </crow>
                 <!-- /if -->
               </crow>
@@ -162,8 +148,6 @@
       justify-content: flex-start;
     }
 
-    /* brawler-card = main's <Clickable class="crow vertical up !h-70 w-90 !flex-none overflow-hidden bg-gray-100 p-2">
-       Border + element gradient come from --card-primary / --card-secondary inline style, populated from ELEMENTS.js. */
     page[brawlers] brawler-card {
       display: flex;
       flex-direction: column;
@@ -183,8 +167,6 @@
         oklch(0.96 0.005 85);
     }
 
-
-
     page[brawlers] brawler-card[recruited] {
       opacity: 0.5;
       filter: grayscale(1);
@@ -196,6 +178,7 @@
       text-align: center;
       width: 100%;
       position: relative;
+      z-index: 1;
     }
 
     page[brawlers] [divider] {
@@ -230,7 +213,6 @@
       object-fit: contain;
       pointer-events: none;
     }
-
 
     page[brawlers] [bonus-stat] {
       color: oklch(from var(--bb-green) 0.58 0.2 h);
