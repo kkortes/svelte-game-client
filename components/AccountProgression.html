@@ -17,7 +17,7 @@
     }
   });
 
-  $.progressionLevels = Array.from({ length: 25 }, (_, i) => i + 1);
+  component({ levels: Array.from({ length: 25 }, (_, i) => i + 1) });
 
   window.claimAccountReward = (lvl) => {
     if (lvl > $.accountRewards && lvl <= $.sidebarLevel) {
@@ -40,7 +40,7 @@
   dismiss="$.overlay = ''">
   <carousel progression-scroll onclick="$.overlay = ''">
     <slides x scrollbar>
-      <!-- each progressionLevels as lvl -->
+      <!-- each this.levels as lvl -->
       <slide>
         <slide-center>
           <card progression-card onclick="event.stopPropagation()"

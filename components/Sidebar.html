@@ -1,3 +1,51 @@
+<script type="module">
+  import CHARACTERS from '/js/constants/CHARACTERS.js';
+  import { calculateCombatStatsByCharacter } from '/js/utils.js';
+  import {
+    getLevelByExperience,
+    getCurrentExperienceAtLevel,
+    getExperienceForNextLevel,
+    allowedNumberOfCharacters
+  } from '/js/level.js';
+
+  const refresh = () => {
+    const level = getLevelByExperience($.experience || 0);
+    $.sidebarLevel = level;
+    $.sidebarXpCurrent = getCurrentExperienceAtLevel($.experience || 0);
+    $.sidebarXpNeeded = getExperienceForNextLevel(level);
+    $.sidebarXpPct = level >= 25 ? 100 : Math.round(($.sidebarXpCurrent / Math.max(1, $.sidebarXpNeeded)) * 100);
+    $.sidebarMaxChars = allowedNumberOfCharacters();
+
+    const AB = window.ABILITIES_FN;
+    $.sidebarChars = ($.characters || []).map((ref) => {
+      try {
+        const char = CHARACTERS(ref, true);
+        const stats = calculateCombatStatsByCharacter(char);
+        const abilities = AB
+          ? char.abilities.map((a) => { try { const h = AB(a, true); return { icon: h.icon, ticks: h.ticks }; } catch { return null; } }).filter(Boolean)
+          : [];
+        return {
+          name: char.name, image: char.image,
+          mugshot: char.image.replace('.png', '-mugshot.png'),
+          currentHealth: char.combatStats.currentHealth,
+          maxHealth: stats.maxHealth,
+          healthPct: Math.max(0, Math.round((char.combatStats.currentHealth / stats.maxHealth) * 100)),
+          abilities
+        };
+      } catch { return null; }
+    }).filter(Boolean);
+  };
+
+  refresh();
+  $.on('afterUpdate', (current, prev) => {
+    if (current.experience !== prev.experience ||
+        current.characters !== prev.characters ||
+        current.accountRewards !== prev.accountRewards) {
+      refresh();
+    }
+  });
+</script>
+
 <sidebar sm:t="8.5" t="12">
   <input type="checkbox" id="sidebar-toggle" />
   <sidebar-content sm:bg="white">

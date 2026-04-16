@@ -10,13 +10,7 @@ import CHARACTERS from '/js/constants/CHARACTERS.js';
 import ABILITIES from '/js/constants/ABILITIES.js';
 import EQUIPMENT from '/js/constants/EQUIPMENT.js';
 import { calculateCombatStatsByCharacter } from '/js/utils.js';
-import {
-  getLevelByExperience,
-  getCurrentExperienceAtLevel,
-  getExperienceForNextLevel,
-  getExperienceReward
-} from '/js/level.js';
-import { ALL_FIGHTS } from '/js/constants/FIGHTS.js';
+import { getLevelByExperience } from '/js/level.js';
 import { Howl } from '/js/lib/howler.js';
 import AUDIO from '/js/audio.js';
 import { correctHealth } from '/js/equipment.js';
@@ -89,23 +83,7 @@ export default () => {
     {
       ...appState,
       token: cookie?.token,
-      showSequence: false,
-      authMode: 'login',
-      authEmail: config.IS_DEV ? config.AUTO_EMAIL : '',
-      authPassword: config.IS_DEV ? config.AUTO_PASSWORD : '',
-      authRememberMe: config.IS_DEV,
-      authCodeOfConduct: config.IS_DEV,
-      authError: '',
-      sidebarLevel: 1,
-      sidebarXpCurrent: 0,
-      sidebarXpNeeded: 100,
-      sidebarXpPct: 0,
-      sidebarChars: [],
-      sidebarMaxChars: 1,
-      healTimer: 120,
-      healTimerPct: 0,
       isDev: config.IS_DEV,
-      audio: AUDIO,
       route,
       routeParams,
       pageName,
@@ -270,89 +248,13 @@ export default () => {
       window.loadGameState?.(current.token);
     }
 
-    // Hydrate sidebar derived values
+    // Level-up detection (stays global — triggers overlay + heals all characters)
     try {
       const level = getLevelByExperience(current.experience || 0);
-      if (level !== current.sidebarLevel) $.sidebarLevel = level;
-
-      const xpCur = getCurrentExperienceAtLevel(current.experience || 0);
-      const xpNeeded = getExperienceForNextLevel(level);
-      if (xpCur !== current.sidebarXpCurrent) $.sidebarXpCurrent = xpCur;
-      if (xpNeeded !== current.sidebarXpNeeded) $.sidebarXpNeeded = xpNeeded;
-
-      const xpPct = level >= 25 ? 100 : Math.round((xpCur / Math.max(1, xpNeeded)) * 100);
-      if (xpPct !== current.sidebarXpPct) $.sidebarXpPct = xpPct;
-
-      const maxChars = Math.floor((current.accountRewards || 1) / 5) + 1;
-      if (maxChars !== current.sidebarMaxChars) $.sidebarMaxChars = maxChars;
-
-      const chars = (current.characters || [])
-        .map((ref) => {
-          try {
-            const char = CHARACTERS(ref, true);
-            const stats = calculateCombatStatsByCharacter(char);
-            const AB = window.ABILITIES_FN;
-            const abilities = AB
-              ? char.abilities
-                  .map((a) => {
-                    try {
-                      const h = AB(a, true);
-                      return { icon: h.icon, ticks: h.ticks };
-                    } catch {
-                      return null;
-                    }
-                  })
-                  .filter(Boolean)
-              : [];
-            return {
-              name: char.name,
-              image: char.image,
-              mugshot: char.image.replace('.png', '-mugshot.png'),
-              currentHealth: char.combatStats.currentHealth,
-              maxHealth: stats.maxHealth,
-              healthPct: Math.max(
-                0,
-                Math.round((char.combatStats.currentHealth / stats.maxHealth) * 100)
-              ),
-              abilities
-            };
-          } catch {
-            return null;
-          }
-        })
-        .filter(Boolean);
-
-      if (JSON.stringify(chars) !== JSON.stringify(current.sidebarChars)) {
-        $.sidebarChars = chars;
-      }
-
-      // Combat reward preview
-      if (
-        current.elapsedMilliseconds >= current.combat?.duration &&
-        current.combat?.duration > 0 &&
-        !current.combatRewardXp
-      ) {
-        const fight = ALL_FIGHTS.find((f) => f.id === current.combat.fightId);
-        if (fight && current.combat.winningTeam?.index === 0) {
-          $.combatRewardXp = getExperienceReward(
-            fight.characters.length,
-            fight.minLevel,
-            fight.maxLevel,
-            fight.boss
-          );
-          $.combatRewardBoss = fight.boss && fight.minLevel > current.bossHighscore;
-        }
-      }
-
-      // Level-up detection
       const prevLevel = getLevelByExperience(prev.experience || 0);
       if (level > prevLevel && prev.experience > 0) {
         $.overlay = 'AccountProgression';
-        $.characters.forEach((c) => {
-          try {
-            correctHealth(c);
-          } catch {}
-        });
+        $.characters.forEach((c) => { try { correctHealth(c); } catch {} });
         try {
           new Howl({
             src: [AUDIO['Fire & Shimmer']],

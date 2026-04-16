@@ -43,6 +43,22 @@
     $.combatRewardXp = 0;
     $.combatRewardBoss = false;
   };
+
+  // Combat reward preview — compute XP/boss reward when combat finishes.
+  // Was in boot.js but only Combat.html renders it.
+  $.on('afterUpdate', (current, prev) => {
+    if (
+      current.elapsedMilliseconds >= current.combat?.duration &&
+      current.combat?.duration > 0 &&
+      !current.combatRewardXp
+    ) {
+      const fight = ALL_FIGHTS.find((f) => f.id === current.combat.fightId);
+      if (fight && current.combat.winningTeam?.index === 0) {
+        $.combatRewardXp = getExperienceReward(fight.characters.length, fight.minLevel, fight.maxLevel, fight.boss);
+        $.combatRewardBoss = fight.boss && fight.minLevel > current.bossHighscore;
+      }
+    }
+  });
 </script>
 
 <component src="/components/Modal.html" when="@[overlay === 'Combat']" bare="true" dismiss="$.overlay = ''">
