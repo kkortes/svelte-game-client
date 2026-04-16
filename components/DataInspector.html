@@ -130,7 +130,7 @@
 <data-inspector>
   <data-inspector-sync>@[window.syncDataInspector(data)]</data-inspector-sync>
   <data-inspector-header>
-    <data-inspector-title>Showing Data (@[dataInspectorCount] items)</data-inspector-title>
+    <data-inspector-title>Vibe state (@[dataInspectorCount] items)</data-inspector-title>
     <button onclick="window.copyDataInspectorJson()" data-inspector-copy>Copy JSON</button>
   </data-inspector-header>
   <data-inspector-lines>
@@ -153,11 +153,13 @@
   data-inspector {
     display: flex;
     flex-direction: column;
-    width: 100%;
-    max-height: 40vh;
-    overflow: auto;
-    font-size: 0.875rem;
-    border-top: 1px solid var(--border);
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    font-size: 0.6875rem;
+    background: #1e1e1e;
+    color: #d4d4d4;
+    font-family: 'Geist Mono', 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
   }
 
   data-inspector-sync {
@@ -172,72 +174,80 @@
     align-items: center;
     justify-content: space-between;
     gap: calc(var(--unit) * 4);
-    padding: calc(var(--unit) * 4);
-    background: oklch(from var(--background) l c h / 0.6);
-    backdrop-filter: blur(8px);
-    border-bottom: 1px solid var(--border);
+    padding: calc(var(--unit) * 2.5) calc(var(--unit) * 3);
+    background: #252526;
+    border-bottom: 1px solid #3c3c3c;
   }
 
   data-inspector-title {
-    font-weight: 600;
-    font-size: 0.875rem;
-    letter-spacing: 0.01em;
-    color: var(--foreground);
+    font-weight: 500;
+    font-size: 0.6875rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #969696;
   }
 
   [data-inspector-copy] {
-    height: calc(var(--unit) * 8);
-    padding: 0 calc(var(--unit) * 3);
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: var(--foreground);
+    height: calc(var(--unit) * 6);
+    padding: 0 calc(var(--unit) * 2);
+    font-family: inherit;
+    font-size: 0.6875rem;
+    color: #969696;
     background: transparent;
-    border: 1px solid var(--border);
-    border-radius: calc(var(--unit) * 1.5);
+    border: 1px solid #3c3c3c;
+    border-radius: calc(var(--unit) * 1);
     cursor: pointer;
   }
 
   [data-inspector-copy]:hover {
-    background: oklch(from var(--foreground) l c h / 0.06);
+    color: #d4d4d4;
+    background: #2a2d2e;
+    border-color: #505050;
   }
 
   data-inspector-lines {
     display: flex;
     flex-direction: column;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 0.8125rem;
-    line-height: 1.4;
-    white-space: pre-wrap;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    line-height: 1.5;
+    scrollbar-color: #424242 transparent;
   }
+
+  data-inspector-lines::-webkit-scrollbar { width: 8px; }
+  data-inspector-lines::-webkit-scrollbar-thumb { background: #424242; border-radius: 4px; }
+  data-inspector-lines::-webkit-scrollbar-track { background: transparent; }
 
   data-inspector-row,
   data-inspector-raw {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     width: 100%;
     gap: calc(var(--unit) * 2);
-    padding: calc(var(--unit) * 1) calc(var(--unit) * 2);
+    padding: calc(var(--unit) * 1) calc(var(--unit) * 3);
+    min-height: 1.5em;
   }
 
   data-inspector-row[even],
   data-inspector-raw[even] {
-    background: oklch(from var(--foreground) l c h / 0.04);
+    background: #1a1a1a;
   }
 
-  [dark] data-inspector-row[even],
-  [dark] data-inspector-raw[even] {
-    background: oklch(from var(--foreground) l c h / 0.08);
+  data-inspector-row:hover,
+  data-inspector-raw:hover {
+    background: #2a2d2e;
   }
 
   data-inspector-raw {
     text-align: left;
-    color: var(--muted-foreground);
+    color: #808080;
   }
 
   data-inspector-key {
     display: inline-block;
     flex-shrink: 0;
-    color: var(--muted-foreground);
+    color: #9cdcfe;
   }
 
   data-inspector-value {
@@ -245,10 +255,10 @@
     min-width: 0;
     text-align: right;
     word-break: break-all;
-    color: var(--foreground);
+    color: #ce9178;
   }
 
   data-inspector-value[bracket] {
-    color: oklch(0.62 0.15 280);
+    color: #569cd6;
   }
 </style>

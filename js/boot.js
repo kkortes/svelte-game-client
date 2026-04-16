@@ -147,6 +147,10 @@ export default () => {
         e.preventDefault();
         $.devbarOpen = !$.devbarOpen;
       }
+      if ($.isDev && e.shiftKey && e.altKey && e.code === 'KeyS') {
+        e.preventDefault();
+        $.inspectorOpen = !$.inspectorOpen;
+      }
     });
 
     // Client clock

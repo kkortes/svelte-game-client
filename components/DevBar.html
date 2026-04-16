@@ -1,22 +1,3 @@
-<script type="module">
-  // Reactive snapshot of $. Excludes DataInspector's internal state keys so
-  // its own writes (dataInspectorLines/Json) don't trigger a snapshot churn
-  // and loop; excludes devbarInspectData itself so the snapshot doesn't
-  // accumulate its own previous value. The JSON-equality guard makes the
-  // refresh idempotent — afterUpdate fires for every state write, but we
-  // only publish a new snapshot when the *relevant* subset actually changes.
-  let lastJson = '';
-  const refresh = () => {
-    const { devbarInspectData, dataInspectorLines, dataInspectorJson, ...rest } = $;
-    const json = JSON.stringify(rest);
-    if (json === lastJson) return;
-    lastJson = json;
-    $.devbarInspectData = JSON.parse(json);
-  };
-  refresh();
-  $.on('afterUpdate', refresh);
-</script>
-
 <hr w-full />
 
 <crow vertical>
@@ -64,7 +45,4 @@
       <button primary onclick="$.accountRewards = 1">Reset rewards</button>
     </crow>
   </crow>
-  <div style="width: 50%;">
-    <component src="/components/DataInspector.html" data="@[devbarInspectData]" />
-  </div>
 </crow>

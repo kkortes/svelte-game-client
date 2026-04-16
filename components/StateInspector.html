@@ -1,0 +1,45 @@
+<script type="module">
+  let lastJson = '';
+  const refresh = () => {
+    const { inspectorData, dataInspectorLines, dataInspectorJson, dataInspectorCount, ...rest } = $;
+    const json = JSON.stringify(rest);
+    if (json === lastJson) return;
+    lastJson = json;
+    $.inspectorData = JSON.parse(json);
+  };
+  refresh();
+  $.on('afterUpdate', refresh);
+</script>
+
+<state-inspector open="@[inspectorOpen]">
+  <state-inspector-panel>
+    <component src="/components/DataInspector.html" data="@[inspectorData]"></component>
+  </state-inspector-panel>
+</state-inspector>
+
+<style>
+  state-inspector {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: calc(var(--unit) * 100);
+    max-width: 90vw;
+    z-index: 50;
+    pointer-events: none;
+    transform: translateX(100%);
+    transition: transform 200ms ease-out;
+  }
+
+  state-inspector[open] {
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+
+  state-inspector-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+  }
+</style>
