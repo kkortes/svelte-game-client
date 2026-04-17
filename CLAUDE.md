@@ -44,16 +44,16 @@ The original SvelteKit project had these components (`src/components/`). Each sh
 **tooltips/**: TooltipAbility, TooltipEquipment
 **ui/**: Bar, Icon, Pill, Spinner, Tooltip
 
-**Ported as Vibe components:** AccountProgression, Armory, CodeOfConduct, Combat, Dialog, GameMenu, Layout, Notifications, ReleaseNotes, Sidebar, Tooltip, Topbar
-**Not yet components (inlined in pages or index.html):** everything else — extract as needed
+**Ported as Vibe components** (in `components/`): AbilityBar, AccountProgression, Armory, Authorization, Coins, Combat, CoreStats, DataInspector, DataInspectorNode, DevBar, ForgotPassword, GameMenu, Keystrokes, Layout, Login, Modal, Notifications, Overlay, Register, Sidebar, StateInspector, TitleBar, Tooltip, Topbar
+**Not yet components (inlined in pages):** everything else — extract as needed
 
 ## Stack
 
 - **Runtime**: Vibe (`@ape-egg/vibe`) — runtime-first reactive framework
 - **CSS**: Stylecheat (hybrid build) — attribute-based CSS framework
-- **Server**: `bunx live-server` — no build step
+- **Dev server**: Vite (`bunx vite`, port 3001) via `vite-plugin-vibe` for HMR. A custom `mpa-routes` middleware in `vite.config.js` maps URLs to `pages/*.html` (including dynamic routes like `/brawlers/:i` → `pages/brawler-detail.html`)
 - **Packages**: async-await-websockets, howler, seedrandom
-- **Vibe source**: Symlinked from `/Users/kortes/Projects/webdev/vibe/nodemodules/@ape-egg/vibe`
+- **Vibe source**: Symlinked from `/Users/kortes/Projects/webdev/vibe/nodemodules/@ape-egg/vibe` (also `vite-plugin-vibe`)
 
 ## Conventions
 
@@ -64,8 +64,8 @@ The original SvelteKit project had these components (`src/components/`). Each sh
 - **Scoped styles**: each page/component has a `<style>` block scoped with `[page-name]` or `[component-name]`
 - **Page structure**: `<script type="module">` at top, `<page-xxx>` wrapper (custom element, not div), `<style>` at bottom
 - **State access**: use `$` (not `window.$`) — it's a global property
-- **Router**: custom pushState SPA router at `/js/router.js` — pages loaded via fetch + innerHTML + script execution
-- **Component scripts**: `<script type="module">` in Vibe components have imports STRIPPED by processComponent — use index.html's script for logic that needs imports
+- **Routing (MPA, not SPA)**: there is no client-side router. Each `pages/*.html` is a full standalone HTML entry that imports `/js/boot.js`. Navigation is a full page reload. Route info (`route`, `routeParams`, `pageName`, `pageSection`) is parsed from `window.location.pathname` in `js/boot.js` and seeded onto `$` before Vibe boots. Vite's `mpa-routes` middleware resolves URLs to the right `pages/*.html` file.
+- **Component scripts**: `<script type="module">` in Vibe components have imports STRIPPED by processComponent — put logic that needs imports in `/js/boot.js` (which each page's entry script imports) and expose it on `window` for components to read
 - **Dynamic values**: for per-element dynamic values (colors, widths, positions), use custom attributes that map to CSS custom properties: `<element color="@[val]">` with CSS `[color] { --color: attr(color); }` or use `data-*` attributes. Where CSS `attr()` is insufficient, a minimal `style="--var: @[val]"` is acceptable as last resort.
 - **Stylecheat boolean attributes**: Non-`data-*`/`aria-*`/`on*` attributes bound with a pure `@[expr]` become proper boolean-like attributes — Vibe sets the attribute (empty value) when truthy and removes it when falsy. So `<modal-root open="@[when]">` with CSS `modal-root[open]` / `modal-root:not([open])` works directly. No `data-` prefix needed.
 - **No string methods with quotes in `@[...]` inside `src` attributes**: `@[x.replace('.png', '-mugshot.png')]` fails because single quotes inside Vibe expressions conflict with HTML attribute parsing. Precompute the value in JS instead.
@@ -75,16 +75,18 @@ The original SvelteKit project had these components (`src/components/`). Each sh
 ## File Structure
 
 ```
-index.html              — SPA entry, overlays, topbar, global script
+pages/                  — standalone HTML entries, one per route (home, brawlers, the-arena, …). Each imports /js/boot.js and mounts <component src="/components/Layout.html">
 css/index.css           — theme variables, fonts, global styles
 css/stylecheat.css      — Stylecheat hybrid build
-js/                     — core modules (router, app state, game logic)
+js/boot.js              — app bootstrap: parses route, seeds $, wires services, registers lifecycle listeners
+js/app.js               — initial global state shape
+js/                     — core modules (app state, game logic, services)
 js/constants/           — game data (abilities, characters, equipment, fights)
 js/lib/                 — ESM wrappers for CJS packages (seedrandom, howler)
-components/             — Vibe HTML components (Layout, Sidebar, Topbar, Armory)
-pages/                  — route pages loaded by router
+components/             — Vibe HTML components (Layout, Authorization, Sidebar, Topbar, …)
 static/                 — images, audio, favicon
 svelte-game-server/     — WebSocket game server (unchanged)
+vite.config.js          — Vite config + mpa-routes middleware (URL → pages/*.html)
 ```
 
 ## Game Server

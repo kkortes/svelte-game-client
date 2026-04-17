@@ -2,7 +2,6 @@
   import config from '/js/config.js';
   import { notify } from '/js/actions.js';
 
-
   component({
     mode: 'login',
     email: config.IS_DEV ? config.AUTO_EMAIL : ($.settings.rememberMe ? $.settings.savedEmail : ''),
@@ -46,7 +45,8 @@
   <auth-scene w-full>
     <card auth-form glass>
       <!-- if this.mode === 'login' -->
-      <component src="/components/Login.html" email="@[this.email]" password="@[this.password]"></component>
+      <component src="/components/Login.html" email="@[this.email]" password="@[this.password]">
+      </component>
       <!-- /if -->
 
       <!-- if this.mode === 'register' -->
