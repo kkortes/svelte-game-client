@@ -5,10 +5,8 @@
 
   component({
     mode: 'login',
-    email: config.IS_DEV ? config.AUTO_EMAIL : '',
-    password: config.IS_DEV ? config.AUTO_PASSWORD : '',
-    rememberMe: config.IS_DEV,
-    codeOfConduct: config.IS_DEV,
+    email: config.IS_DEV ? config.AUTO_EMAIL : ($.settings.rememberMe ? $.settings.savedEmail : ''),
+    password: config.IS_DEV ? config.AUTO_PASSWORD : ($.settings.rememberMe ? $.settings.savedPassword : ''),
   });
 
 
@@ -48,8 +46,7 @@
   <auth-scene w-full>
     <card auth-form glass>
       <!-- if this.mode === 'login' -->
-      <component src="/components/Login.html" email="@[this.email]" password="@[this.password]"
-        rememberMe="@[this.rememberMe]" codeOfConduct="@[this.codeOfConduct]"></component>
+      <component src="/components/Login.html" email="@[this.email]" password="@[this.password]"></component>
       <!-- /if -->
 
       <!-- if this.mode === 'register' -->

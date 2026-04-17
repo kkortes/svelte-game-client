@@ -53,7 +53,11 @@ export default {
     openProperties: {},
     debugOpen: false,
     showDetailedCharacterView: false,
-    darkMode: false
+    darkMode: false,
+    codeOfConduct: false,
+    rememberMe: false,
+    savedEmail: '',
+    savedPassword: ''
   }),
   route: '/',
   routeParams: {},

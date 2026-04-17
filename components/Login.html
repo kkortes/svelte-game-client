@@ -23,19 +23,19 @@
   };
 </script>
 
-<form onsubmit="event.preventDefault(); authLogin($.email, $.password, $.rememberMe, $.codeOfConduct)">
+<form onsubmit="event.preventDefault(); authLogin($.email, $.password, $.settings.rememberMe, $.settings.codeOfConduct)">
   <crow g-2 mb-3>
-    <input type="email" placeholder="Email" value="@[email]" oninput="$.email = this.value"
+    <input type="email" placeholder="Email" value="@[email]" oninput="$.email = this.value; if ($.settings.rememberMe) $.settings = { ...$.settings, savedEmail: this.value }"
       required auth-input />
     <input type="password" placeholder="Password" value="@[password]"
-      oninput="$.password = this.value" required auth-input />
+      oninput="$.password = this.value; if ($.settings.rememberMe) $.settings = { ...$.settings, savedPassword: this.value }" required auth-input />
     <button primary type="submit">
       Log in
     </button>
   </crow>
   <crow g-2 mb-2 left>
-    <input type="checkbox" id="codeOfConduct" checked="@[codeOfConduct]"
-      onchange="$.codeOfConduct = this.checked" />
+    <input type="checkbox" id="codeOfConduct" checked="@[$.settings.codeOfConduct]"
+      onchange="$.settings = { ...$.settings, codeOfConduct: this.checked }" />
     <label for="codeOfConduct" text-sm>I agree to the <a href="#" primary
         onclick="event.preventDefault(); $.overlay = 'codeOfConduct'">
         Code of Conduct
@@ -43,8 +43,8 @@
     </label>
   </crow>
   <crow g-2 mb-2 left>
-    <input type="checkbox" id="rememberMe" checked="@[rememberMe]"
-      onchange="$.rememberMe = this.checked" />
+    <input type="checkbox" id="rememberMe" checked="@[$.settings.rememberMe]"
+      onchange="$.settings = { ...$.settings, rememberMe: this.checked, ...(this.checked ? { savedEmail: $.email, savedPassword: $.password } : { savedEmail: '', savedPassword: '' }) }" />
     <label for="rememberMe" text-sm>Remember me</label>
   </crow>
 </form>
