@@ -25,6 +25,7 @@
       </crow>
       <button primary onclick="$.characters = []">Reset characters</button>
       <button primary onclick="$.accountRewards = 1">Reset rewards</button>
+      <button primary danger onclick="localStorage.clear(); location.reload()">Clear localStorage</button>
     </crow>
     <crow vertical left p-2>
       <span>My Server: @[new Date(serverTimestampSnapshot).toLocaleString()]</span>

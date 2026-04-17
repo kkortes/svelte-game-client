@@ -10,7 +10,7 @@ const loadLocalStorage = (props) =>
   );
 
 const SETTINGS_DEFAULT_VOLUME = {
-  master: 0.5,
+  master: 0,
   ambient: 0.25,
   sfx: 0.5,
   combat: 1
