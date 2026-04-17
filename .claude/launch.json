@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "Vite (frontend)",
+      "runtimeExecutable": "bunx",
+      "runtimeArgs": ["vite"],
+      "port": 3001
+    },
+    {
+      "name": "Game server (WebSocket)",
+      "runtimeExecutable": "bun",
+      "runtimeArgs": ["--cwd", "svelte-game-server", "--watch", "--env-file=.env", "index.js"],
+      "port": 1337
+    }
+  ]
+}

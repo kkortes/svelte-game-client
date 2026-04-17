@@ -1,0 +1,15 @@
+<data-inspector-row
+  expandable="@[node.children.length > 0]"
+  onclick="this.hasAttribute('expandable') && toggleInspectorSection(event)">
+  <data-inspector-key style="padding-left: calc((@[node.depth] + 1) * 1ch)">@[node.key]</data-inspector-key>
+  <data-inspector-value bracket="@[node.isBracket]">@[node.value]</data-inspector-value>
+</data-inspector-row>
+<!-- if node.children.length > 0 -->
+<accordion>
+  <accordion-content>
+    <!-- each node.children as child, k -->
+    <component src="/components/DataInspectorNode.html" node="@[child]"></component>
+    <!-- /each -->
+  </accordion-content>
+</accordion>
+<!-- /if -->

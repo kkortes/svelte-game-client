@@ -102,25 +102,42 @@
 
   const BRACKET_REGEX = /[\[\{].*?[\]\}]/;
 
-  const computeLines = (data) => {
-    try {
-      if (data === null || data === undefined) return [{ raw: true, text: String(data), odd: false }];
-      if (typeof data !== 'object') return [{ raw: true, text: String(data), odd: false }];
-      const formatted = renderValue(data, 0, new WeakSet(), true).trim();
-      return formatted.split('\n').map((line, i) => {
-        const even = i % 2 === 0;
-        const match = line.match(/^(\s*)(.+?)~(.*)$/);
-        // Stable `id` by position so the iteration diff hits UPDATE instead
-        // of REMOVE + ADD when a value changes.
-        if (match) {
-          const [, indent, key, value] = match;
-          return { id: i, raw: false, depth: indent.length, key, value, isBracket: BRACKET_REGEX.test(value), even };
-        }
-        return { id: i, raw: true, text: line, even };
-      });
-    } catch (e) {
-      return [{ id: 0, raw: true, text: `Error: ${e.message || e}`, even: false }];
+  const buildTree = (lines) => {
+    const root = { children: [] };
+    const stack = [{ node: root, depth: -1 }];
+    for (const line of lines) {
+      while (stack.length > 1 && stack[stack.length - 1].depth >= line.depth) stack.pop();
+      const node = { ...line, children: [] };
+      stack[stack.length - 1].node.children.push(node);
+      if (line.isBracket) stack.push({ node, depth: line.depth });
     }
+    return root.children;
+  };
+
+  // Build sections from data. Each top-level key becomes a section.
+  // Primitives: { id, key, value, children: [] }
+  // Objects/Arrays: { id, key, value (bracket count), children: [tree nodes...] }
+  const computeSections = (data) => {
+    if (!data || typeof data !== 'object') return [];
+    const entries = Object.entries(data);
+    sortEntries(entries);
+    lockKeyOrder(entries);
+    return entries.map(([key, val], i) => {
+      if (val === null || val === undefined || typeof val !== 'object') {
+        return { id: key, key, value: String(val), isBracket: false, children: [] };
+      }
+      const count = Array.isArray(val) ? `[${val.length}]` : `{${Object.keys(val).length}}`;
+      const rendered = renderValue(val, 0, new WeakSet(), true).trim();
+      const children = rendered ? buildTree(rendered.split('\n').map((line, j) => {
+        const match = line.match(/^(\s*)(.+?)~(.*)$/);
+        if (match) {
+          const [, indent, k, v] = match;
+          return { id: `${key}_${j}`, depth: indent.length, key: k, value: v, isBracket: BRACKET_REGEX.test(v) };
+        }
+        return { id: `${key}_${j}`, depth: 0, key: line, value: '', isBracket: false };
+      })) : [];
+      return { id: key, key, value: count, isBracket: true, children };
+    });
   };
 
   const countItems = (val) => {
@@ -129,15 +146,15 @@
     return Object.values(val).reduce((n, v) => n + countItems(v), 0);
   };
 
-  if ($.dataInspectorLines === undefined) $.dataInspectorLines = [];
+  if ($.dataInspectorSections === undefined) $.dataInspectorSections = [];
   if ($.dataInspectorJson === undefined) $.dataInspectorJson = '';
   if ($.dataInspectorCount === undefined) $.dataInspectorCount = 0;
+  window.toggleInspectorSection = (e) => {
+    e.currentTarget.nextElementSibling?.toggleAttribute('open');
+  };
 
-  // Binding side-effect: the `data` prop is a reactive binding into caller state;
-  // when it changes, Vibe re-evaluates this expression and we push the formatted
-  // lines + copy-payload into state keys the template iterates/binds below.
   window.syncDataInspector = (data) => {
-    $.dataInspectorLines = computeLines(data);
+    $.dataInspectorSections = computeSections(data);
     $.dataInspectorCount = countItems(data);
     try {
       $.dataInspectorJson = JSON.stringify(sortData(data, true), null, 2);
@@ -145,6 +162,12 @@
       $.dataInspectorJson = '';
     }
     return '';
+  };
+
+  window.toggleAllInspectorSections = () => {
+    const accordions = document.querySelectorAll('data-inspector-lines accordion');
+    const allOpen = [...accordions].every(a => a.hasAttribute('open'));
+    accordions.forEach(a => a.toggleAttribute('open', !allOpen));
   };
 
   window.copyDataInspectorJson = () => {
@@ -157,20 +180,26 @@
   <data-inspector-sync>@[window.syncDataInspector(data)]</data-inspector-sync>
   <data-inspector-header>
     <data-inspector-title>Vibe state (@[dataInspectorCount] items)</data-inspector-title>
-    <button onclick="copyDataInspectorJson()" data-inspector-copy>Copy JSON</button>
+    <data-inspector-actions>
+      <button onclick="toggleAllInspectorSections()" data-inspector-copy>Open all</button>
+      <button onclick="copyDataInspectorJson()" data-inspector-copy>Copy JSON</button>
+    </data-inspector-actions>
   </data-inspector-header>
   <data-inspector-lines>
-    <!-- each dataInspectorLines as line, i -->
-    <!-- if line.raw -->
-    <data-inspector-raw even="@[line.even]">@[line.text]</data-inspector-raw>
-    <!-- /if -->
-    <!-- if !line.raw -->
-    <data-inspector-row even="@[line.even]">
-      <data-inspector-key
-        style="padding-left: calc(@[line.depth] * 1ch)">@[line.key]</data-inspector-key>
-      <data-inspector-value bracket="@[line.isBracket]">@[line.value]</data-inspector-value>
+    <!-- each dataInspectorSections as section, i -->
+    <data-inspector-row even="@[i % 2 === 0]"
+      expandable="@[section.children.length > 0]"
+      onclick="toggleInspectorSection(event)">
+      <data-inspector-key>@[section.key]</data-inspector-key>
+      <data-inspector-value bracket="@[section.isBracket]">@[section.value]</data-inspector-value>
     </data-inspector-row>
-    <!-- /if -->
+    <accordion>
+      <accordion-content>
+        <!-- each section.children as node, j -->
+        <component src="/components/DataInspectorNode.html" node="@[node]"></component>
+        <!-- /each -->
+      </accordion-content>
+    </accordion>
     <!-- /each -->
   </data-inspector-lines>
 </data-inspector>
@@ -213,6 +242,11 @@
     color: #969696;
   }
 
+  data-inspector-actions {
+    display: flex;
+    gap: calc(var(--unit) * 1);
+  }
+
   [data-inspector-copy] {
     height: calc(var(--unit) * 6);
     padding: 0 calc(var(--unit) * 2);
@@ -235,7 +269,7 @@
     display: flex;
     flex-direction: column;
     flex: 1;
-    overflow-y: auto;
+    overflow-y: visible;
     overflow-x: hidden;
     line-height: 1.5;
     scrollbar-color: #424242 transparent;
@@ -297,5 +331,13 @@
 
   data-inspector-value[bracket] {
     color: #569cd6;
+  }
+
+  data-inspector-row[expandable] {
+    cursor: pointer;
+  }
+
+  data-inspector-row[expandable]:hover {
+    background: #2a2d2e;
   }
 </style>

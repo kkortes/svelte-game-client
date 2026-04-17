@@ -1,10 +1,11 @@
 <script type="module">
   if ($.inspectorData === undefined) $.inspectorData = '';
+  if ($.vibeStateInspector === undefined) $.vibeStateInspector = false;
 
   let lastJson = '';
   const refresh = () => {
-    if (!$.inspectorOpen) return;
-    const { inspectorData, dataInspectorLines, dataInspectorJson, dataInspectorCount, ...rest } = $;
+    if (!$.vibeStateInspector) return;
+    const { inspectorData, vibeStateInspector, dataInspectorSections, dataInspectorJson, dataInspectorCount, ...rest } = $;
     const json = JSON.stringify(rest);
     if (json === lastJson) return;
     lastJson = json;
@@ -13,7 +14,7 @@
   $.on('afterUpdate', refresh);
 </script>
 
-<state-inspector open="@[inspectorOpen]">
+<state-inspector open="@[vibeStateInspector]">
   <state-inspector-panel>
     <component src="/components/DataInspector.html" data="@[inspectorData]"></component>
   </state-inspector-panel>

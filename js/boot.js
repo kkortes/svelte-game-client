@@ -154,7 +154,7 @@ export default () => {
       }
       if (window.isDev && e.shiftKey && e.altKey && e.code === 'KeyS') {
         e.preventDefault();
-        $.inspectorOpen = !$.inspectorOpen;
+        $.vibeStateInspector = !$.vibeStateInspector;
       }
     });
 
