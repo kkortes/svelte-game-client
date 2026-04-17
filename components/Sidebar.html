@@ -73,7 +73,7 @@
 <sidebar sm:t="8.5" t="12">
   <input type="checkbox" id="sidebar-toggle" />
   <sidebar-content sm:bg="white">
-    <div>
+    <crow vertical g-3 w-full>
       <combat-status>
         <!-- if elapsedMilliseconds < combat.duration -->
         <a href="#" onclick="event.preventDefault(); $.overlay = 'Combat'" combat-link>
@@ -88,7 +88,7 @@
         <!-- /if -->
       </combat-status>
 
-      <crow justify-between>
+      <crow justify-between w-full>
         <h5 m-0>MY LUDUS</h5>
         <span cinzel flex-none>level @[getLevelByExperience(experience)]</span>
       </crow>
@@ -138,9 +138,9 @@
         </crow>
       </crow>
 
-      <spacer></spacer>
+      <spacer sidebar-gap></spacer>
 
-      <crow justify-between>
+      <crow justify-between w-full>
         <h5 m-0>MY BRAWLERS</h5>
         <span cinzel flex-none>@[sidebarChars.length] / @[allowedNumberOfCharacters()]</span>
       </crow>
@@ -200,7 +200,7 @@
           <!-- /each -->
         </crow>
       </brawler-list>
-    </div>
+    </crow>
   </sidebar-content>
 </sidebar>
 
@@ -247,15 +247,19 @@
   }
 
   [battle-brawlers] [xp-bar] bar-fill {
-    background: var(--bb-yellow, oklch(0.75 0.15 85));
+    background: var(--bb-yellow);
   }
 
   [battle-brawlers] [hp-bar] bar-fill {
-    background: var(--bb-red, oklch(0.6 0.2 25));
+    background: var(--bb-red);
   }
 
   [battle-brawlers] [heal-timer-bar] bar-fill {
-    background: var(--bb-green, oklch(0.65 0.17 145));
+    background: var(--bb-stone);
+  }
+
+  [battle-brawlers] [sidebar-gap] {
+    height: calc(var(--unit) * 4);
   }
 
   [battle-brawlers] brawler-list {
