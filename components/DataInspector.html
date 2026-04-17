@@ -114,29 +114,44 @@
     return root.children;
   };
 
-  // Build sections from data. Each top-level key becomes a section.
-  // Primitives: { id, key, value, children: [] }
-  // Objects/Arrays: { id, key, value (bracket count), children: [tree nodes...] }
+  const flattenNodes = (tree) => {
+    const result = [];
+    const walk = ({ key, value, depth, isBracket, children }) => {
+      result.push({ key, value, depth, isBracket });
+      children.forEach(walk);
+    };
+    tree.forEach(walk);
+    return result;
+  };
+
+  const assignPaths = (nodes, prefix) => {
+    nodes.forEach(node => {
+      node.path = `${prefix}/${node.key}`;
+      if (node.children?.length) assignPaths(node.children, node.path);
+    });
+  };
+
   const computeSections = (data) => {
     if (!data || typeof data !== 'object') return [];
     const entries = Object.entries(data);
     sortEntries(entries);
     lockKeyOrder(entries);
-    return entries.map(([key, val], i) => {
+    return entries.map(([key, val]) => {
       if (val === null || val === undefined || typeof val !== 'object') {
-        return { id: key, key, value: String(val), isBracket: false, children: [] };
+        return { key, path: key, value: String(val), isBracket: false, children: [] };
       }
       const count = Array.isArray(val) ? `[${val.length}]` : `{${Object.keys(val).length}}`;
       const rendered = renderValue(val, 0, new WeakSet(), true).trim();
-      const children = rendered ? buildTree(rendered.split('\n').map((line, j) => {
+      const children = rendered ? buildTree(rendered.split('\n').map((line) => {
         const match = line.match(/^(\s*)(.+?)~(.*)$/);
         if (match) {
           const [, indent, k, v] = match;
-          return { id: `${key}_${j}`, depth: indent.length, key: k, value: v, isBracket: BRACKET_REGEX.test(v) };
+          return { depth: indent.length, key: k, value: v, isBracket: BRACKET_REGEX.test(v) };
         }
-        return { id: `${key}_${j}`, depth: 0, key: line, value: '', isBracket: false };
+        return { depth: 0, key: line, value: '', isBracket: false };
       })) : [];
-      return { id: key, key, value: count, isBracket: true, children };
+      assignPaths(children, key);
+      return { key, path: key, value: count, isBracket: true, children };
     });
   };
 
@@ -146,28 +161,117 @@
     return Object.values(val).reduce((n, v) => n + countItems(v), 0);
   };
 
+  const STORAGE_KEY = 'dataInspectorOpenPaths';
+  const ALL_OPEN_KEY = 'dataInspectorAllOpen';
+
+  let openPathsSet = new Set();
+  try { openPathsSet = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')); } catch {}
+
+  const persistOpenPaths = () => {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify([...openPathsSet])); } catch {}
+  };
+
+  const syncOpenFromDOM = () => {
+    openPathsSet = new Set(
+      [...document.querySelectorAll('data-inspector-lines accordion[open]')]
+        .map(a => a.dataset.path).filter(Boolean)
+    );
+    persistOpenPaths();
+  };
+
   if ($.dataInspectorSections === undefined) $.dataInspectorSections = [];
   if ($.dataInspectorJson === undefined) $.dataInspectorJson = '';
   if ($.dataInspectorCount === undefined) $.dataInspectorCount = 0;
+  if ($.dataInspectorAllOpen === undefined) {
+    $.dataInspectorAllOpen = localStorage.getItem(ALL_OPEN_KEY) === 'true';
+  }
+
+  let interactionUntil = 0;
+  const markInteraction = () => { interactionUntil = performance.now() + 300; };
+
   window.toggleInspectorSection = (e) => {
+    markInteraction();
     e.currentTarget.nextElementSibling?.toggleAttribute('open');
+    syncOpenFromDOM();
+  };
+
+  window.toggleChildRow = (e) => {
+    const row = e.currentTarget;
+    if (!row.hasAttribute('expandable')) return;
+    markInteraction();
+    row.nextElementSibling?.toggleAttribute('open');
+    syncOpenFromDOM();
+  };
+
+  let prevSections = null;
+
+  const sectionSignature = (nodes) => nodes.map(n => {
+    const childSig = n.children?.length ? sectionSignature(n.children) : '';
+    return `${n.key}:${n.isBracket ? 'b' : 'p'}[${childSig}]`;
+  }).join('|');
+
+  const collectValues = (sections) => {
+    const result = {};
+    const walk = (nodes) => nodes.forEach(n => {
+      if (n.path) result[n.path] = n.value;
+      if (n.children?.length) walk(n.children);
+    });
+    walk(sections);
+    return result;
+  };
+
+  const restoreOpenPaths = () => {
+    if (!openPathsSet.size) return;
+    requestAnimationFrame(() => {
+      const allowTransition = performance.now() < interactionUntil;
+      document.querySelectorAll('data-inspector-lines accordion').forEach(a => {
+        if (!a.dataset.path || !openPathsSet.has(a.dataset.path)) return;
+        if (!allowTransition) a.style.transition = 'none';
+        a.setAttribute('open', '');
+        if (!allowTransition) {
+          a.offsetHeight;
+          a.style.transition = '';
+        }
+      });
+    });
   };
 
   window.syncDataInspector = (data) => {
-    $.dataInspectorSections = computeSections(data);
+    const newSections = computeSections(data);
     $.dataInspectorCount = countItems(data);
     try {
       $.dataInspectorJson = JSON.stringify(sortData(data, true), null, 2);
     } catch {
       $.dataInspectorJson = '';
     }
+
+    if (prevSections && sectionSignature(prevSections) === sectionSignature(newSections)) {
+      const prevValues = collectValues(prevSections);
+      const newValues = collectValues(newSections);
+      for (const path in newValues) {
+        if (newValues[path] === prevValues[path]) continue;
+        const row = document.querySelector(`data-inspector-row[data-path="${CSS.escape(path)}"]`);
+        const valueEl = row?.querySelector('data-inspector-value');
+        if (valueEl) valueEl.textContent = newValues[path];
+      }
+      prevSections = newSections;
+      return '';
+    }
+
+    prevSections = newSections;
+    $.dataInspectorSections = newSections;
+    restoreOpenPaths();
     return '';
   };
 
   window.toggleAllInspectorSections = () => {
-    const accordions = document.querySelectorAll('data-inspector-lines accordion');
-    const allOpen = [...accordions].every(a => a.hasAttribute('open'));
-    accordions.forEach(a => a.toggleAttribute('open', !allOpen));
+    markInteraction();
+    const allOpen = !$.dataInspectorAllOpen;
+    $.dataInspectorAllOpen = allOpen;
+    try { localStorage.setItem(ALL_OPEN_KEY, String(allOpen)); } catch {}
+    document.querySelectorAll('data-inspector-lines accordion')
+      .forEach(a => a.toggleAttribute('open', allOpen));
+    syncOpenFromDOM();
   };
 
   window.copyDataInspectorJson = () => {
@@ -181,22 +285,46 @@
   <data-inspector-header>
     <data-inspector-title>Vibe state (@[dataInspectorCount] items)</data-inspector-title>
     <data-inspector-actions>
-      <button onclick="toggleAllInspectorSections()" data-inspector-copy>Open all</button>
+      <button onclick="toggleAllInspectorSections()" data-inspector-copy>@[dataInspectorAllOpen ? 'Close all' : 'Open all']</button>
       <button onclick="copyDataInspectorJson()" data-inspector-copy>Copy JSON</button>
     </data-inspector-actions>
   </data-inspector-header>
   <data-inspector-lines>
     <!-- each dataInspectorSections as section, i -->
     <data-inspector-row even="@[i % 2 === 0]"
+      data-path="@[section.path]"
       expandable="@[section.children.length > 0]"
       onclick="toggleInspectorSection(event)">
       <data-inspector-key>@[section.key]</data-inspector-key>
       <data-inspector-value bracket="@[section.isBracket]">@[section.value]</data-inspector-value>
     </data-inspector-row>
-    <accordion>
+    <accordion data-path="@[section.path]">
       <accordion-content>
         <!-- each section.children as node, j -->
-        <component src="/components/DataInspectorNode.html" node="@[node]"></component>
+        <data-inspector-row even="@[j % 2 === 0]" data-path="@[node.path]" expandable="@[node.isBracket]" onclick="toggleChildRow(event)">
+          <data-inspector-key style="padding-left: calc((@[node.depth] + 1) * 1ch)">@[node.key]</data-inspector-key>
+          <data-inspector-value bracket="@[node.isBracket]">@[node.value]</data-inspector-value>
+        </data-inspector-row>
+        <accordion data-path="@[node.path]">
+          <accordion-content>
+            <!-- each node.children as subnode, k -->
+            <data-inspector-row even="@[k % 2 === 0]" data-path="@[subnode.path]" expandable="@[subnode.isBracket]" onclick="toggleChildRow(event)">
+              <data-inspector-key style="padding-left: calc((@[subnode.depth] + 1) * 1ch)">@[subnode.key]</data-inspector-key>
+              <data-inspector-value bracket="@[subnode.isBracket]">@[subnode.value]</data-inspector-value>
+            </data-inspector-row>
+            <accordion data-path="@[subnode.path]">
+              <accordion-content>
+                <!-- each subnode.children as deepnode, l -->
+                <data-inspector-row even="@[l % 2 === 0]" data-path="@[deepnode.path]" expandable="@[deepnode.isBracket]" onclick="toggleChildRow(event)">
+                  <data-inspector-key style="padding-left: calc((@[deepnode.depth] + 1) * 1ch)">@[deepnode.key]</data-inspector-key>
+                  <data-inspector-value bracket="@[deepnode.isBracket]">@[deepnode.value]</data-inspector-value>
+                </data-inspector-row>
+                <!-- /each -->
+              </accordion-content>
+            </accordion>
+            <!-- /each -->
+          </accordion-content>
+        </accordion>
         <!-- /each -->
       </accordion-content>
     </accordion>
@@ -266,17 +394,19 @@
   }
 
   data-inspector-lines {
+    --scrollbar-width: 16px;
     display: flex;
     flex-direction: column;
     flex: 1;
-    overflow-y: visible;
+    overflow-y: scroll;
     overflow-x: hidden;
+    margin-right: calc(var(--scrollbar-width) * -1);
     line-height: 1.5;
     scrollbar-color: #424242 transparent;
   }
 
   data-inspector-lines::-webkit-scrollbar {
-    width: 8px;
+    width: var(--scrollbar-width);
   }
 
   data-inspector-lines::-webkit-scrollbar-thumb {
@@ -340,4 +470,5 @@
   data-inspector-row[expandable]:hover {
     background: #2a2d2e;
   }
+
 </style>

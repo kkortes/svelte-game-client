@@ -5,7 +5,7 @@
     </logo>
     <crow>
       <button tertiary
-        onclick="$.settings = { ...$.settings, darkMode: !$.settings.darkMode }; document.body.toggleAttribute('dark', $.settings.darkMode)">
+        onclick="$.settings = { ...$.settings, darkMode: !$.settings.darkMode }; document.body.toggleAttribute('dark', $.settings.darkMode); document.body.toggleAttribute('light', !$.settings.darkMode)">
         <!-- if settings.darkMode -->
         <icon light text-yellow></icon>
         <!-- /if -->

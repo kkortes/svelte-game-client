@@ -5,7 +5,7 @@
   let lastJson = '';
   const refresh = () => {
     if (!$.vibeStateInspector) return;
-    const { inspectorData, vibeStateInspector, dataInspectorSections, dataInspectorJson, dataInspectorCount, ...rest } = $;
+    const { inspectorData, vibeStateInspector, dataInspectorSections, dataInspectorJson, dataInspectorCount, dataInspectorAllOpen, ...rest } = $;
     const json = JSON.stringify(rest);
     if (json === lastJson) return;
     lastJson = json;
@@ -23,7 +23,7 @@
 <style>
   state-inspector {
     position: fixed;
-    top: 0;
+    top: calc(var(--unit) * 8.5);
     right: 0;
     bottom: 0;
     width: calc(var(--unit) * 100);

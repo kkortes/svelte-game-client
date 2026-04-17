@@ -56,7 +56,7 @@ export default () => {
       .replace(/\//g, '-') || 'home';
   // Top-level route segment — used by nav tabs so a detail page like
   // `/the-arena/giant-rat` still highlights the "The Arena" tab.
-  const pageSection = (route.split('/').filter(Boolean)[0] || 'home');
+  const pageSection = route.split('/').filter(Boolean)[0] || 'home';
 
   // Window globals for components and services
   window.Howl = Howl;
@@ -140,6 +140,7 @@ export default () => {
 
     // Apply dark mode from saved settings
     document.body.toggleAttribute('dark', !!$.settings?.darkMode);
+    document.body.toggleAttribute('light', !$.settings?.darkMode);
 
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && !$.gameKeyboardDisabled) {
@@ -164,7 +165,6 @@ export default () => {
         $.serverTimestamp = $.serverTimestampSnapshot + (performance.now() - $.syncPerformanceNow);
       }
     }, 250);
-
 
     // Armory equipment tooltips via event delegation
     document.addEventListener(
@@ -225,7 +225,11 @@ export default () => {
       const prevLevel = getLevelByExperience(prev.experience || 0);
       if (level > prevLevel && prev.experience > 0) {
         $.overlay = 'AccountProgression';
-        $.characters.forEach((c) => { try { correctHealth(c); } catch {} });
+        $.characters.forEach((c) => {
+          try {
+            correctHealth(c);
+          } catch {}
+        });
         try {
           new Howl({
             src: [AUDIO['Fire & Shimmer']],
