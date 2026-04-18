@@ -18,12 +18,10 @@
     import CHARACTERS from '/js/constants/CHARACTERS.js';
     import { getExperienceReward, getLevelByExperience } from '/js/level.js';
 
-    // Hydrate once — constant display data, not on $.
-    // Sorted and enriched from the FIGHTS + CHARACTERS registries.
-    const hideTreshold = $.bossHighscore + 5;
-    const ludusLevel = getLevelByExperience($.experience);
-
-    window.arenaFights = [...ALL_FIGHTS].sort((a, b) => {
+    // Static per-fight data (enemies, xp, ordering) computed once;
+    // lock / completion / xp-dimmed state depends on $.bossHighscore +
+    // $.experience and is recomputed on every state change.
+    const staticFights = [...ALL_FIGHTS].sort((a, b) => {
       if (a.minLevel !== b.minLevel) return a.minLevel - b.minLevel;
       if (a.boss !== b.boss) return a.boss ? 1 : -1;
       return a.maxLevel - b.maxLevel;
@@ -32,10 +30,14 @@
         try {
           const hydrated = CHARACTERS({
             ...charRef,
-            overrides: { ...charRef?.overrides, level: fight.minLevel,
-              equipment: { mainHand: { overrides: { level: fight.minLevel } },
+            overrides: {
+              ...charRef?.overrides, level: fight.minLevel,
+              equipment: {
+                mainHand: { overrides: { level: fight.minLevel } },
                 offHand: { overrides: { level: fight.minLevel } },
-                armor: { overrides: { level: fight.minLevel } } } }
+                armor: { overrides: { level: fight.minLevel } }
+              }
+            }
           }, true);
           return { image: hydrated.image, name: hydrated.name };
         } catch { return { image: '', name: '?' }; }
@@ -46,12 +48,26 @@
         levelText: fight.minLevel === fight.maxLevel ? String(fight.minLevel) : `${fight.minLevel} - ${fight.maxLevel}`,
         boss: fight.boss,
         xp: getExperienceReward(fight.characters.length, fight.minLevel, fight.maxLevel, fight.boss),
-        isLocked: hideTreshold < fight.minLevel,
-        bossCompleted: fight.boss && $.bossHighscore >= fight.minLevel,
-        xpDimmed: ludusLevel > fight.maxLevel,
         even: i % 2 === 0,
         enemies,
       };
+    });
+
+    const recomputeArenaFights = () => {
+      const hideTreshold = $.bossHighscore + 5;
+      const ludusLevel = getLevelByExperience($.experience);
+      $.arenaFights = staticFights.map(f => ({
+        ...f,
+        isLocked: hideTreshold < f.minLevel,
+        bossCompleted: f.boss && $.bossHighscore >= f.minLevel,
+        xpDimmed: ludusLevel > f.maxLevel,
+      }));
+    };
+    recomputeArenaFights();
+    $.on('afterUpdate', (current, prev) => {
+      if (current.bossHighscore !== prev.bossHighscore || current.experience !== prev.experience) {
+        recomputeArenaFights();
+      }
     });
 
     window.arenaClick = (e, id, isLocked, bossCompleted) => {
@@ -66,23 +82,21 @@
   <component src="/components/Layout.html">
     <page-content>
 
-      <crow justify-between left>
-        <h3>The arena</h3>
-      </crow>
+      <component src="/components/TitleBar.html" title="The arena"></component>
       <hr />
 
       <crow vertical up left arena-table mx="-6" w="auto" mt-4>
-        <crow up left g-4 arena-header>
+        <crow up left g-4 arena-header py-3 px-6 w-full>
           <arena-col-name>name</arena-col-name>
           <arena-col-level text-center>level</arena-col-level>
           <arena-col-loot>loot</arena-col-loot>
           <crow arena-col-preview right></crow>
         </crow>
 
-        <!-- each window.arenaFights as fight, i -->
+        <!-- each arenaFights as fight, i -->
         <a href="/the-arena/@[fight.id]"
           onclick="arenaClick(event, '@[fight.id]', @[fight.isLocked], @[fight.bossCompleted])"
-          arena-row even="@[fight.even]" boss="@[fight.boss]" locked="@[fight.isLocked]"
+          arena-row flex g-4 py-3 px-6 w-full even="@[fight.even]" boss="@[fight.boss]" locked="@[fight.isLocked]"
           completed="@[fight.bossCompleted]">
           <crow left arena-col-name cinzel g-2>
             <!-- if fight.isLocked -->
@@ -132,11 +146,7 @@
   </component>
   <style>
     page[the-arena] [arena-header] {
-      display: flex;
       align-items: center;
-      gap: calc(var(--unit) * 4);
-      padding: calc(var(--unit) * 3) calc(var(--unit) * 6);
-      width: 100%;
       font-size: 0.72rem;
       letter-spacing: 0.14em;
       text-transform: uppercase;
@@ -177,15 +187,11 @@
     }
 
     page[the-arena] [arena-row] {
-      display: flex;
       align-items: center;
-      gap: calc(var(--unit) * 4);
-      padding: calc(var(--unit) * 3) calc(var(--unit) * 6);
       text-decoration: none;
       color: var(--foreground);
       font-size: 0.875rem;
       transition: background 200ms ease;
-      width: 100%;
     }
 
     page[the-arena] [arena-row] arena-col-level,
@@ -286,6 +292,48 @@
 
     page[the-arena] [arena-enemy-img][completed] {
       filter: grayscale(1);
+    }
+
+    @media (width <= 768px) {
+      page[the-arena] [arena-header],
+      page[the-arena] [arena-row] {
+        gap: calc(var(--unit) * 2);
+        padding: calc(var(--unit) * 3) calc(var(--unit) * 3);
+      }
+
+      page[the-arena] arena-col-level,
+      page[the-arena] arena-col-loot {
+        width: calc(var(--unit) * 10);
+      }
+
+      page[the-arena] [arena-col-preview] {
+        width: calc(var(--unit) * 14);
+      }
+
+      page[the-arena] arena-enemy-wrap {
+        width: calc(var(--unit) * 4);
+      }
+
+      page[the-arena] arena-enemy-wrap[boss] {
+        width: calc(var(--unit) * 8);
+      }
+
+      page[the-arena] [arena-enemy-box] {
+        width: calc(var(--unit) * 6);
+        margin: calc(var(--unit) * -1.5) 0 calc(var(--unit) * -1.5) var(--unit);
+      }
+
+      page[the-arena] arena-enemy-wrap[boss] [arena-enemy-box] {
+        width: calc(var(--unit) * 10);
+        margin-top: calc(var(--unit) * -3);
+        margin-bottom: calc(var(--unit) * -3);
+      }
+
+      page[the-arena] [arena-row][boss] {
+        margin-top: calc(var(--unit) * 6);
+        padding-top: calc(var(--unit) * 4);
+        padding-bottom: calc(var(--unit) * 4);
+      }
     }
   </style>
 </body>

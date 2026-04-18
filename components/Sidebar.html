@@ -71,7 +71,7 @@
             char.combatStats.currentHealth + heal,
             stats.maxHealth
           );
-        } catch {}
+        } catch { }
       });
       $.serverTimestampSnapshot = nowMs;
       $.syncPerformanceNow = performance.now();
@@ -83,19 +83,21 @@
   <input type="checkbox" id="sidebar-toggle" />
   <sidebar-content sm:bg="white">
     <crow vertical g-3 w-full>
-      <combat-status>
+      <!-- if combat.duration !== 0 -->
+      <crow>
         <!-- if elapsedMilliseconds < combat.duration -->
-        <a href="#" onclick="event.preventDefault(); $.overlay = 'Combat'" combat-link>
-          <spinner></spinner>
+        <a class="crow" g-2 href="#" primary onclick="event.preventDefault(); $.overlay = 'Combat'">
+          <spinner sm></spinner>
           <span>Fighting..</span>
         </a>
         <!-- /if -->
         <!-- if elapsedMilliseconds >= combat.duration && combat.duration !== 0 -->
-        <a href="#" onclick="event.preventDefault(); $.overlay = 'Combat'" combat-link>
+        <a class="crow" g-2 href="#" primary onclick="event.preventDefault(); $.overlay = 'Combat'">
           <span>View outcome</span>
         </a>
         <!-- /if -->
-      </combat-status>
+      </crow>
+      <!-- /if -->
 
       <crow justify-between w-full>
         <h5 m-0>MY LUDUS</h5>
@@ -118,8 +120,10 @@
           </crow>
           <!-- if getLevelByExperience(experience) < 25 -->
           <bar-track xp-bar>
-            <bar-fill xp-fill style="width: @[Math.round((getCurrentExperienceAtLevel(experience) / Math.max(1, getExperienceForNextLevel(getLevelByExperience(experience)))) * 100)]%"></bar-fill>
-            <crow bar-text text-sm>@[getCurrentExperienceAtLevel(experience)] / @[getExperienceForNextLevel(getLevelByExperience(experience))]</crow>
+            <bar-fill xp-fill
+              style="width: @[Math.round((getCurrentExperienceAtLevel(experience) / Math.max(1, getExperienceForNextLevel(getLevelByExperience(experience)))) * 100)]%"></bar-fill>
+            <crow bar-text text-sm>@[getCurrentExperienceAtLevel(experience)] /
+              @[getExperienceForNextLevel(getLevelByExperience(experience))]</crow>
           </bar-track>
           <!-- /if -->
         </crow>
@@ -155,7 +159,8 @@
       </crow>
       <hr />
 
-      <brawler-list onmouseenter="$.this.showSequence = true" onmouseleave="$.this.showSequence = false">
+      <brawler-list onmouseenter="$.this.showSequence = true"
+        onmouseleave="$.this.showSequence = false">
         <crow vertical up left>
           <!-- if characters.length === 0 -->
           <crow vertical w-full g-2 text-sm>
@@ -209,21 +214,6 @@
 </sidebar>
 
 <style>
-  [battle-brawlers] combat-status {
-    position: absolute;
-    top: calc(var(--unit) * -6);
-    left: 0;
-  }
-
-  [battle-brawlers] [combat-link] {
-    display: flex;
-    align-items: center;
-    gap: calc(var(--unit) * 2);
-    text-decoration: none;
-    color: var(--foreground);
-    font-size: 0.875rem;
-  }
-
   [battle-brawlers] bar-track {
     display: grid;
     position: relative;
@@ -251,19 +241,36 @@
     text-shadow: 0 1px 1px rgb(0 0 0 / 0.5);
   }
 
-  [battle-brawlers] [bar-text] [hp-numeric] { display: none; }
-  [battle-brawlers] [bar-text][show-numeric] [hp-numeric] { display: inline; }
-  [battle-brawlers] [bar-text][show-numeric] [hp-pct] { display: none; }
+  [battle-brawlers] [bar-text] [hp-numeric] {
+    display: none;
+  }
 
-  [battle-brawlers] [xp-bar] bar-fill { background: var(--bb-yellow); }
-  [battle-brawlers] [hp-bar] bar-fill { background: #991b1b; }
-  [battle-brawlers] [heal-timer-bar] bar-fill { background: var(--bb-stone); }
+  [battle-brawlers] [bar-text][show-numeric] [hp-numeric] {
+    display: inline;
+  }
+
+  [battle-brawlers] [bar-text][show-numeric] [hp-pct] {
+    display: none;
+  }
+
+  [battle-brawlers] [xp-bar] bar-fill {
+    background: var(--bb-yellow);
+  }
+
+  [battle-brawlers] [hp-bar] bar-fill {
+    background: #991b1b;
+  }
+
+  [battle-brawlers] [heal-timer-bar] bar-fill {
+    background: var(--bb-stone);
+  }
 
   [battle-brawlers] [xp-bar],
   [battle-brawlers] [heal-timer-bar] {
     height: 24px;
     border-radius: calc(var(--unit) * 0.5);
   }
+
   [battle-brawlers] [xp-bar] [bar-text],
   [battle-brawlers] [heal-timer-bar] [bar-text] {
     line-height: 24px;

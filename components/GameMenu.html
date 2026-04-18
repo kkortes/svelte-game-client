@@ -1,54 +1,66 @@
-<game-frame relative>
-  <crow left game-frame-title cinzel>options</crow>
-  <crow vertical g-2 p-4>
-    <crow justify-between w-full>
+<card dialog-card p-6 sm:p="2" relative>
+  <button tertiary absolute t="1" r="1" dialog-close onclick="dismissOverlay()">
+    <icon cross></icon>
+  </button>
+
+  <typography>
+    <h3>Options</h3>
+  </typography>
+
+  <crow vertical g-4 mt-4>
+    <crow justify-between w-full align-center g-2>
       <span cinzel>Audio settings</span>
       <button secondary
         onclick="$.settings = { ...$.settings, volume: { master: 0.5, ambient: 0.25, sfx: 0.5, combat: 1 } }">
         Reset to default
       </button>
     </crow>
-    <crow w-full g-4>
-      <menu-label>Master</menu-label>
+
+    <audio-grid>
+      <label>Master</label>
       <input type="range" min="0" max="1" step="0.05" value="@[settings.volume.master]"
-        oninput="$.settings = { ...$.settings, volume: { ...$.settings.volume, master: +this.value } }"
-        w-full />
-    </crow>
-    <crow w-full g-4>
-      <menu-label>Ambient</menu-label>
+        oninput="$.settings = { ...$.settings, volume: { ...$.settings.volume, master: +this.value } }" />
+
+      <label>Ambient</label>
       <input type="range" min="0" max="1" step="0.05" value="@[settings.volume.ambient]"
-        oninput="$.settings = { ...$.settings, volume: { ...$.settings.volume, ambient: +this.value } }"
-        w-full />
-    </crow>
-    <crow w-full g-4>
-      <menu-label>Sound effect</menu-label>
+        oninput="$.settings = { ...$.settings, volume: { ...$.settings.volume, ambient: +this.value } }" />
+
+      <label>Sound effect</label>
       <input type="range" min="0" max="1" step="0.05" value="@[settings.volume.sfx]"
-        oninput="$.settings = { ...$.settings, volume: { ...$.settings.volume, sfx: +this.value } }"
-        w-full />
-    </crow>
-    <crow w-full g-4>
-      <menu-label>Combat</menu-label>
+        oninput="$.settings = { ...$.settings, volume: { ...$.settings.volume, sfx: +this.value } }" />
+
+      <label>Combat</label>
       <input type="range" min="0" max="1" step="0.05" value="@[settings.volume.combat]"
-        oninput="$.settings = { ...$.settings, volume: { ...$.settings.volume, combat: +this.value } }"
-        w-full />
-    </crow>
+        oninput="$.settings = { ...$.settings, volume: { ...$.settings.volume, combat: +this.value } }" />
+    </audio-grid>
 
     <hr menu-divider />
 
-    <crow g-2 vertical>
-      <button secondary onclick="$.overlay = 'releaseNotes'">
+    <crow g-2 vertical w-full>
+      <button secondary w-full onclick="$.overlay = 'releaseNotes'">
         Release notes
       </button>
       <!-- if token -->
-      <button primary
+      <button primary w-full
         onclick="document.cookie = 'token=; Max-Age=0'; window.location.href = '/'">
         Logout
       </button>
       <!-- /if -->
     </crow>
   </crow>
+</card>
 
-  <button absolute text-red tertiary t="-.5" r="-.5" onclick="$.overlay = ''">
-    <icon cross></icon>
-  </button>
-</game-frame>
+<style>
+  [battle-brawlers] audio-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--unit) calc(var(--unit) * 3);
+    align-items: center;
+    width: 100%;
+  }
+
+  [battle-brawlers] audio-grid input[type="range"] {
+    width: 100%;
+    min-width: 0;
+  }
+</style>

@@ -95,7 +95,7 @@
       const count = $.currentFight?.allowedNumberOfCharacters || 1;
       const C = window.CHARACTERS || CHARACTERS;
       const A = window.ABILITIES_FN || ABILITIES;
-      $.fightSlots = Array.from({ length: count }, (_, i) => {
+      $.brawlerSlots = Array.from({ length: count }, (_, i) => {
         const uuid = $.selectedBrawlers[i];
         if (!uuid) return { empty: true, index: i };
         const ref = $.characters.find(c => c.uuid === uuid);
@@ -145,12 +145,10 @@
   </script>
 
   <component src="/components/Layout.html">
-    <page-content g-4>
+    <page-content>
 
       <!-- if currentFight -->
-      <button go-back tertiary onclick="window.location.href='/the-arena'">&#x2039; Back</button>
-
-      <component src="/components/TitleBar.html" title="@[currentFight.name]">
+      <component src="/components/TitleBar.html" title="@[currentFight.name]" back="/the-arena">
         <badge>
           @[currentFight.allowedNumberOfCharacters]&nbsp;vs&nbsp;@[currentFight.enemies.length]
         </badge>
@@ -181,10 +179,11 @@
           </enemy-description>
 
           <h5>Abilities</h5>
-          <component src="/components/AbilityBar.html" idx="@[i]" dndDisabled minimalistic></component>
+          <component src="/components/AbilityBar.html" idx="@[i]" dndDisabled minimalistic>
+          </component>
         </crow>
 
-        <fight-enemy-image>
+        <fight-enemy-image block flex-none relative>
           <img t-0 r-0 b-0 l-0 absolute w-full data-src="/static/images/races/@[enemy.image]"
             alt="" />
         </fight-enemy-image>
@@ -194,34 +193,8 @@
       <hr />
 
       <crow vertical w-full g-2>
-        <!-- each fightSlots as slot -->
-        <!-- if slot.empty -->
-        <crow fight-slot-empty>
-          <!-- if slot.index === 0 -->
-          <h5>select a brawler</h5>
-          <!-- /if -->
-          <!-- if slot.index > 0 -->
-          <h5>slot @[slot.index + 1]</h5>
-          <!-- /if -->
-        </crow>
-        <!-- /if -->
-        <!-- if !slot.empty -->
-        <crow fight-slot-filled left g-2>
-          <fight-slot-avatar glass>
-            <img data-src="/static/images/races/@[slot.mugshot]" alt="" fight-slot-img />
-          </fight-slot-avatar>
-          <crow vertical left fight-slot-info>
-            <span font-medium text-sm>@[slot.name]</span>
-            <fight-slot-abilities>
-              <!-- each slot.abilities as ab -->
-              <fight-slot-ability style="width: calc(12px * @[ab.ticks])">
-                <icon @[ab.icon]></icon>
-              </fight-slot-ability>
-              <!-- /each -->
-            </fight-slot-abilities>
-          </crow>
-        </crow>
-        <!-- /if -->
+        <!-- each brawlerSlots as slot, i -->
+        <component src="/components/BrawlerSlot.html" idx="@[i]"></component>
         <!-- /each -->
       </crow>
 
@@ -246,14 +219,6 @@
     <!-- /if -->
   </component>
   <style>
-    page[the-arena-fightId] [go-back] {
-      position: absolute;
-      top: calc(var(--unit) * -7);
-      left: calc(var(--unit) * -5.5);
-      font-size: 0.75rem;
-      padding: calc(var(--unit) * 0.5) calc(var(--unit) * 2);
-    }
-
     page[the-arena-fightId] [fight-enemy-row] {
       align-items: stretch;
       overflow: hidden;
@@ -269,92 +234,23 @@
     }
 
     page[the-arena-fightId] fight-enemy-image {
-      display: block;
       width: calc(var(--unit) * 40);
-      flex: none;
-      position: relative;
       pointer-events: none;
       transform: scaleX(-1);
     }
 
-    page[the-arena-fightId] [fight-slot-empty] {
-      width: 100%;
-      height: calc(var(--unit) * 19.5);
-      flex: none;
-      border: 1px dashed var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    page[the-arena-fightId] [fight-slot-filled] {
-      width: 100%;
-      height: calc(var(--unit) * 19.5);
-      flex: none;
-      border: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      padding: calc(var(--unit) * 2) calc(var(--unit) * 4);
-      background: rgba(255, 255, 255, 0.3);
-    }
-
-    page[the-arena-fightId] fight-slot-avatar {
-      display: block;
-      width: calc(var(--unit) * 12);
-      height: calc(var(--unit) * 12);
-      flex: none;
-      border-radius: var(--unit);
-      overflow: hidden;
-      border: 1px solid rgba(75, 85, 99, 1);
-    }
-
-    page[the-arena-fightId] [fight-slot-img] {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    page[the-arena-fightId] [fight-slot-info] {
-      flex: 1;
-      min-width: 0;
-      overflow: hidden;
-    }
-
-    page[the-arena-fightId] fight-slot-abilities {
-      display: flex;
-      border: 0.5px solid rgb(120, 113, 108);
-      border-radius: 0 0 var(--unit) var(--unit);
-      background: rgb(214, 211, 209);
-      overflow: hidden;
-      max-width: calc(var(--unit) * 45);
-    }
-
-    page[the-arena-fightId] fight-slot-ability {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: calc(var(--unit) * 5);
-      flex: none;
-      border-right: 0.5px solid rgb(120, 113, 108);
-      color: rgb(120, 113, 108);
-      font-size: 0.75rem;
-    }
-
-    page[the-arena-fightId] fight-slot-ability:last-child {
-      border-right: none;
+    @media (width <= 768px) {
+      page[the-arena-fightId] fight-enemy-image {
+        width: calc(var(--unit) * 24);
+      }
     }
 
     page[the-arena-fightId] stay {
-      justify-content: center;
       background: var(--background);
     }
 
     page[the-arena-fightId] stay button {
       min-width: calc(var(--unit) * 50);
-    }
-
-    page[the-arena-fightId] [fight-empty] {
-      align-items: center;
     }
   </style>
 </body>

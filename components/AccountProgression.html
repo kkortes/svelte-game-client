@@ -20,19 +20,19 @@
   component({ levels: Array.from({ length: 25 }, (_, i) => i + 1) });
 
   window.claimAccountReward = (lvl) => {
-    if (lvl > $.accountRewards && lvl <= $.sidebarLevel) {
-      if (lvl === getLevelByExperience($.experience)) {
-        setTimeout(() => { $.overlay = ''; }, 500);
-      }
-      try {
-        new Howl({
-          src: [AUDIO['Special Lootbox 13']],
-          volume: $.settings.volume.master * $.settings.volume.sfx
-        }).play();
-      } catch { }
-      $.accountRewards += 1;
-      $.coins += 100;
+    const accountLevel = getLevelByExperience($.experience);
+    if (lvl !== $.accountRewards + 1 || lvl > accountLevel) return;
+    if (lvl === accountLevel) {
+      setTimeout(() => { $.overlay = ''; }, 500);
     }
+    try {
+      new Howl({
+        src: [AUDIO['Special Lootbox 13']],
+        volume: $.settings.volume.master * $.settings.volume.sfx
+      }).play();
+    } catch { }
+    $.accountRewards += 1;
+    $.coins += 100;
   };
 </script>
 
@@ -42,9 +42,9 @@
       <slide>
         <slide-center>
           <card progression-card onclick="event.stopPropagation()"
-            claimed="@[lvl <= accountRewards]" reached="@[lvl <= sidebarLevel]">
+            claimed="@[lvl <= accountRewards]" reached="@[lvl <= getLevelByExperience(experience)]">
             <!-- if lvl <= accountRewards -->
-            <icon checkmark progression-check></icon>
+            <icon checkmark progression-check absolute t-2 r-2></icon>
             <!-- /if -->
             <h4 m-0>Level @[lvl]</h4>
             <hr my-2 />
@@ -66,14 +66,13 @@
               </crow>
             </crow>
 
-            <!-- if lvl > accountRewards && lvl <= sidebarLevel -->
-            <button primary onclick="claimAccountReward(@[lvl])">Claim</button>
-            <!-- /if -->
-            <!-- if lvl > sidebarLevel -->
-            <button primary disabled>Locked</button>
+            <!-- if lvl > accountRewards -->
+            <button primary
+              disabled="@[lvl > accountRewards + 1 || lvl > getLevelByExperience(experience)]"
+              onclick="claimAccountReward(@[lvl])">Claim</button>
             <!-- /if -->
 
-            <progression-premium mt-auto>Premium rewards TBA.</progression-premium>
+            <progression-premium mt-auto flex p-4 mx="-4" mb="-4" text-muted>Premium rewards TBA.</progression-premium>
 
 
           </card>
@@ -123,23 +122,15 @@
   }
 
   [progression-check] {
-    position: absolute;
-    top: calc(var(--unit) * 2);
-    right: calc(var(--unit) * 2);
     color: oklch(0.7 0.2 145);
   }
 
   progression-premium {
-    display: flex;
     align-items: center;
     justify-content: center;
     width: calc(100% + var(--unit) * 8);
-    margin-inline: calc(var(--unit) * -4);
-    margin-bottom: calc(var(--unit) * -4);
-    padding: calc(var(--unit) * 4);
     background: oklch(0.85 0.05 85 / 0.2);
     border-radius: 0 0 var(--radius) var(--radius);
     font-size: 0.8rem;
-    color: var(--muted-foreground);
   }
 </style>

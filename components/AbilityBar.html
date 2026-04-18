@@ -1,6 +1,6 @@
-<ability-bar w-full px-1 py-2 small="@[small]">
-  <ability-track relative w-full>
-    <ability-grid>
+<ability-bar block w-full px-1 py-2 small="@[small]">
+  <ability-track block relative w-full small="@[small]">
+    <ability-grid w-full>
       <ability-cell></ability-cell>
       <ability-cell></ability-cell>
       <ability-cell></ability-cell>
@@ -19,13 +19,13 @@
     </ability-grid>
 
     <!-- if !dndDisabled -->
-    <ability-marker-12></ability-marker-12>
+    <ability-marker-12 absolute></ability-marker-12>
     <!-- /if -->
 
     <!-- if !minimalistic -->
-    <ability-marker-sequence
-      style="left: calc((100% / 15) * @[enemyAbilityBars[idx].lastTick]);">
-      <ability-marker-label>
+    <ability-marker-sequence absolute
+      style="left: calc((100% / var(--grid-cells)) * @[enemyAbilityBars[idx].lastTick]);">
+      <ability-marker-label absolute flex down>
         <strong>Ability&nbsp;sequence</strong>
         <span>@[enemyAbilityBars[idx].lastTick]&nbsp;ticks</span>
       </ability-marker-label>
@@ -33,31 +33,30 @@
     <!-- /if -->
 
     <ability-overlay absolute t-0 l-0 r-0 b-0>
-      <crow up left w-full h-full ability-row>
-        <!-- each enemyAbilityBars[idx].abilities as ability -->
-        <ability-segment
-          basic="@[ability.basic]"
-          overflow="@[ability.overflow]"
-          style="width: calc(((100% / 15) * @[ability.ticks]) + 1px);">
-          <ability-icon>
-            <icon @[ability.icon]></icon>
-          </ability-icon>
-        </ability-segment>
-        <!-- /each -->
-      </crow>
+      <!-- each enemyAbilityBars[idx].abilities as ability -->
+      <ability-segment
+        relative flex flex-none
+        dnd-item="@[!dndDisabled]"
+        basic="@[ability.basic]"
+        overflow="@[ability.overflow]"
+        style="width: calc(((100% / var(--grid-cells)) * @[ability.ticks]) + 1px);">
+        <ability-icon w-full h-full>
+          <icon @[ability.icon]></icon>
+        </ability-icon>
+      </ability-segment>
+      <!-- /each -->
     </ability-overlay>
   </ability-track>
 </ability-bar>
 
 <style>
-  [battle-brawlers] ability-bar { display: block; }
-  [battle-brawlers] ability-track { display: block; }
+  [battle-brawlers] ability-track { --grid-cells: 15; }
+  [battle-brawlers] ability-track[small] { --grid-cells: 12; }
 
-  /* 15-cell dashed tick grid — matches main's `-ml-px aspect-[2/3] flex-1 border border-dashed border-gray-300`. */
+  /* Dashed tick grid — 15 cells by default, 12 when small. */
   [battle-brawlers] ability-grid {
     display: grid;
-    grid-template-columns: repeat(15, 1fr);
-    width: 100%;
+    grid-template-columns: repeat(var(--grid-cells), 1fr);
   }
   [battle-brawlers] ability-grid ability-cell {
     display: block;
@@ -65,15 +64,15 @@
     border: 1px dashed #d1d5db;
     margin-left: -1px;
   }
+  [battle-brawlers] ability-track[small] ability-cell:nth-child(n+13) { display: none; }
 
   /* Tick-12 marker — solid vertical line marking the max playable tick
      window; only visible when DnD is enabled. Matches main's
      `absolute -top-2 -bottom-4 w-px -translate-x-px border-r border-solid`. */
   [battle-brawlers] ability-marker-12 {
-    position: absolute;
     top: calc(var(--unit) * -2);
     bottom: calc(var(--unit) * -4);
-    left: calc((100% / 15) * 12);
+    left: calc((100% / var(--grid-cells)) * 12);
     width: 1px;
     border-right: 1px solid #6b7280;
     transform: translateX(-0.5px);
@@ -84,7 +83,6 @@
      sequence; matches main's
      `absolute -top-2 -bottom-2 z-10 w-px border-dashed`. */
   [battle-brawlers] ability-marker-sequence {
-    position: absolute;
     top: calc(var(--unit) * -2);
     bottom: calc(var(--unit) * -2);
     width: 1px;
@@ -94,11 +92,8 @@
     transition: all 200ms;
   }
   [battle-brawlers] ability-marker-label {
-    position: absolute;
     bottom: 100%;
     right: calc(var(--unit) * 1);
-    display: flex;
-    flex-direction: column;
     align-items: flex-end;
     text-align: right;
     font-size: 0.75rem;
@@ -113,21 +108,18 @@
   /* Overlay layer containing the actual ability segments. */
   [battle-brawlers] ability-overlay {
     border-radius: calc(var(--unit) * 2);
-    pointer-events: none;
-  }
-  [battle-brawlers] [ability-row] {
+    display: flex;
+    flex-direction: row;
     align-items: stretch;
+    justify-content: flex-start;
   }
 
   /* Ability segment — sequential flex item; width = (100%/15) * ticks,
      -ml-px to collapse borders with the previous segment. Matches main's
      `relative -ml-px h-full !flex-none rounded border border-gray-500 bg-white`. */
   [battle-brawlers] ability-segment {
-    position: relative;
-    display: flex;
     align-items: center;
     justify-content: center;
-    flex: none;
     height: 100%;
     margin-left: -1px;
     border: 1px solid #6b7280;
@@ -156,8 +148,6 @@
   [battle-brawlers] ability-icon {
     display: grid;
     place-items: center;
-    width: 100%;
-    height: 100%;
   }
   [battle-brawlers] ability-icon icon {
     grid-area: 1 / 1;

@@ -1,0 +1,78 @@
+<victory-or-loss relative w-full outcome="@[combatOutcome]">
+  <!-- if combatOutcome === 'victory' -->
+  <victory-halo absolute></victory-halo>
+  <!-- /if -->
+  <outcome-icon block>
+    <!-- if combatOutcome === 'victory' -->
+    <icon victory></icon>
+    <!-- /if -->
+    <!-- if combatOutcome !== 'victory' -->
+    <icon defeat></icon>
+    <!-- /if -->
+  </outcome-icon>
+  <outcome-label>
+    <!-- if combatOutcome === 'victory' -->VICTORY<!-- /if -->
+    <!-- if combatOutcome === 'defeat' -->DEFEAT<!-- /if -->
+    <!-- if combatOutcome === 'draw' -->DRAW<!-- /if -->
+  </outcome-label>
+</victory-or-loss>
+
+<style>
+  [battle-brawlers] victory-or-loss {
+    display: grid;
+    place-items: center;
+  }
+
+  [battle-brawlers] victory-halo {
+    pointer-events: none;
+    top: 50%;
+    left: 50%;
+    width: 200%;
+    aspect-ratio: 1 / 1;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    opacity: 0.25;
+    animation: halo-spin 10000ms linear infinite;
+    background: repeating-conic-gradient(
+      from 0deg at 50% 50%,
+      transparent 0deg 10deg,
+      #facc15 15deg 25deg,
+      transparent 30deg 45deg
+    );
+    -webkit-mask: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 1) 0%, transparent 50%);
+    mask: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 1) 0%, transparent 50%);
+  }
+
+  @keyframes halo-spin {
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+  }
+
+  [battle-brawlers] outcome-icon {
+    font-size: 5rem;
+  }
+
+  [battle-brawlers] outcome-icon icon {
+    font-size: 6rem;
+    --color: #9ca3af;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  }
+
+  [battle-brawlers] victory-or-loss[outcome="victory"] outcome-icon icon {
+    --color: #fde68a;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  }
+
+  [battle-brawlers] outcome-label {
+    font-family: var(--font-accent, var(--font-heading, sans-serif));
+    font-size: 2.5rem;
+    letter-spacing: 0.05em;
+    color: #e5e7eb;
+    -webkit-text-stroke: 1px #9ca3af;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  [battle-brawlers] victory-or-loss[outcome="victory"] outcome-label {
+    color: #fef3c7;
+    -webkit-text-stroke: 1px #fcd34d;
+  }
+</style>

@@ -1,17 +1,13 @@
 <script type="module">
-  import { Howl } from '/js/lib/howler.js';
-  import AUDIO from '/js/audio.js';
-  import { INITIAL_COMBAT } from '/js/app.js';
-  import { ALL_FIGHTS } from '/js/constants/FIGHTS.js';
-  import { getExperienceReward } from '/js/level.js';
-
   window.claimCombatReward = () => {
     const combat = $.combat;
     if (!combat?.duration || combat._rewarded) return;
 
-    const fight = ALL_FIGHTS.find(f => f.id === combat.fightId);
+    const fight = (window.ALL_FIGHTS || []).find(f => f.id === combat.fightId);
     if (fight) {
-      const xp = getExperienceReward(fight.characters.length, fight.minLevel, fight.maxLevel, fight.boss);
+      const xp = window.getExperienceReward
+        ? window.getExperienceReward(fight.characters.length, fight.minLevel, fight.maxLevel, fight.boss)
+        : ($.combatRewardXp || 0);
       $.experience += xp;
 
       if (fight.boss && combat.winningTeam?.index === 0) {
@@ -20,490 +16,97 @@
     }
 
     try {
-      new Howl({ src: [AUDIO['Victory Stinger 1']], volume: $.settings.volume.sfx * $.settings.volume.master }).play();
+      new window.Howl({
+        src: [window.AUDIO['Victory Stinger 1']],
+        volume: $.settings.volume.sfx * $.settings.volume.master
+      }).play();
     } catch { }
 
     combat._rewarded = true;
     $.overlay = '';
-    $.combat = JSON.parse(JSON.stringify(INITIAL_COMBAT));
+    $.combat = JSON.parse(JSON.stringify(window.INITIAL_COMBAT || { teamsStartState: [], teamsEndState: [], events: [], duration: 0, winningTeam: undefined, fightId: undefined, audio: [] }));
     $.liveTeams = [];
+    $.combatTeam0 = [];
+    $.combatTeam1 = [];
+    $.combatCards = [];
     $.elapsedMilliseconds = 0;
     $.combatRewardXp = 0;
     $.combatRewardBoss = false;
+    $.combatEnded = false;
+    $.combatOutcome = '';
   };
 
   window.closeCombatOverlay = () => {
     try {
-      new Howl({ src: [AUDIO['Stinger - Ominous Timpani']], volume: $.settings.volume.sfx * $.settings.volume.master }).play();
+      new window.Howl({
+        src: [window.AUDIO['Stinger - Ominous Timpani']],
+        volume: $.settings.volume.sfx * $.settings.volume.master
+      }).play();
     } catch { }
     $.overlay = '';
-    $.combat = JSON.parse(JSON.stringify(INITIAL_COMBAT));
+    $.combat = JSON.parse(JSON.stringify(window.INITIAL_COMBAT || { teamsStartState: [], teamsEndState: [], events: [], duration: 0, winningTeam: undefined, fightId: undefined, audio: [] }));
     $.liveTeams = [];
+    $.combatTeam0 = [];
+    $.combatTeam1 = [];
+    $.combatCards = [];
     $.elapsedMilliseconds = 0;
     $.combatRewardXp = 0;
     $.combatRewardBoss = false;
+    $.combatEnded = false;
+    $.combatOutcome = '';
   };
 
-  // Combat reward preview — compute XP/boss reward when combat finishes.
-  // Was in boot.js but only Combat.html renders it.
+  // Compute end-of-combat derived values on each update tick.
   $.on('afterUpdate', (current, prev) => {
-    if (
-      current.elapsedMilliseconds >= current.combat?.duration &&
-      current.combat?.duration > 0 &&
-      !current.combatRewardXp
-    ) {
-      const fight = ALL_FIGHTS.find((f) => f.id === current.combat.fightId);
-      if (fight && current.combat.winningTeam?.index === 0) {
-        $.combatRewardXp = getExperienceReward(fight.characters.length, fight.minLevel, fight.maxLevel, fight.boss);
-        $.combatRewardBoss = fight.boss && fight.minLevel > current.bossHighscore;
+    const ended = current.elapsedMilliseconds >= current.combat?.duration && current.combat?.duration > 0;
+
+    if (ended !== current.combatEnded) $.combatEnded = ended;
+
+    if (ended) {
+      const winIdx = current.combat.winningTeam?.index;
+      const outcome = winIdx === 0 ? 'victory' : winIdx === undefined ? 'draw' : 'defeat';
+      if (outcome !== current.combatOutcome) $.combatOutcome = outcome;
+
+      if (!current.combatRewardXp && window.ALL_FIGHTS) {
+        const fight = window.ALL_FIGHTS.find((f) => f.id === current.combat.fightId);
+        if (fight && outcome === 'victory' && window.getExperienceReward) {
+          $.combatRewardXp = window.getExperienceReward(fight.characters.length, fight.minLevel, fight.maxLevel, fight.boss);
+          $.combatRewardBoss = fight.boss && fight.minLevel > current.bossHighscore;
+        }
       }
+    } else if (current.combatOutcome) {
+      $.combatOutcome = '';
     }
   });
 </script>
 
-<combat-bg>
-  <spacer></spacer>
-  <combat-panel onclick="event.stopPropagation()">
-
-    <!-- if elapsedMilliseconds < combat.duration -->
-    <crow justify-between mb-3>
-      <h3 m-0>Combat</h3>
-      <span text-sm text-muted>@[Math.floor(elapsedMilliseconds / 1000)]s /
-        @[Math.floor(combat.duration / 1000)]s</span>
-    </crow>
-    <progress-track mb-4>
-      <progress-fill
-        style="width: @[Math.min(100, (elapsedMilliseconds / combat.duration) * 100)]%"></progress-fill>
-    </progress-track>
-
-    <!-- if liveTeams.length >= 2 -->
-    <crow justify-between mb-3>
-      <span combat-team-label>Your Team</span>
-      <span text-sm text-muted>vs</span>
-      <span combat-team-label>Enemy</span>
-    </crow>
-
-    <crow combat-teams g-4>
-      <combat-team-col>
-        <!-- each combatTeam0 as c -->
-        <combat-card combat-card="@[c.cardId]">
-          <crow justify-between mb-1>
-            <span text-sm font-medium>@[c.name]</span>
-            <crow combat-badges g-2>
-              <crow combat-badge-dmg g-1>
-                <icon damage></icon>@[c.damage]
-              </crow>
-              <!-- if c.maxArmor > 0 -->
-              <crow combat-badge-armor g-1>
-                <icon maxArmor></icon>@[c.currentArmor]
-              </crow>
-              <!-- /if -->
-            </crow>
-          </crow>
-          <hp-track>
-            <hp-fill
-              style="width: @[Math.max(0, Math.min(100, (c.currentHealth / c.maxHealth) * 100))]%"></hp-fill>
-            <crow bar-text combat-hp-text>@[Math.max(0, c.currentHealth)] / @[c.maxHealth]</crow>
-          </hp-track>
-          <!-- if c.maxArmor > 0 -->
-          <armor-track>
-            <armor-fill
-              style="width: @[Math.max(0, Math.min(100, (c.currentArmor / c.maxArmor) * 100))]%"></armor-fill>
-          </armor-track>
-          <!-- /if -->
-          <!-- if c.knockedOut -->
-          <span combat-ko>KO</span>
-          <!-- /if -->
-          <combat-statuses>
-            <!-- each c.statusEffects as s -->
-            <span combat-status status="@[s.key]">
-              <icon @[s.key]></icon>@[s.ticks]
-            </span>
-            <!-- /each -->
-            <!-- each c.statusStacks as s -->
-            <span combat-status status="@[s.key]">
-              <icon @[s.key]></icon>@[s.value]/@[s.max]
-            </span>
-            <!-- /each -->
-          </combat-statuses>
-        </combat-card>
-        <!-- /each -->
-      </combat-team-col>
-
-      <!-- Team 1 (enemy) -->
-      <combat-team-col>
-        <!-- each combatTeam1 as c -->
-        <combat-card combat-card="@[c.cardId]">
-          <crow justify-between mb-1>
-            <span text-sm font-medium>@[c.name]</span>
-            <crow combat-badges g-2>
-              <crow combat-badge-dmg g-1>
-                <icon damage></icon>@[c.damage]
-              </crow>
-              <!-- if c.maxArmor > 0 -->
-              <crow combat-badge-armor g-1>
-                <icon maxArmor></icon>@[c.currentArmor]
-              </crow>
-              <!-- /if -->
-            </crow>
-          </crow>
-          <hp-track>
-            <hp-fill
-              style="width: @[Math.max(0, Math.min(100, (c.currentHealth / c.maxHealth) * 100))]%"></hp-fill>
-            <crow bar-text combat-hp-text>@[Math.max(0, c.currentHealth)] / @[c.maxHealth]</crow>
-          </hp-track>
-          <!-- if c.maxArmor > 0 -->
-          <armor-track>
-            <armor-fill
-              style="width: @[Math.max(0, Math.min(100, (c.currentArmor / c.maxArmor) * 100))]%"></armor-fill>
-          </armor-track>
-          <!-- /if -->
-          <!-- if c.knockedOut -->
-          <span combat-ko>KO</span>
-          <!-- /if -->
-          <combat-statuses>
-            <!-- each c.statusEffects as s -->
-            <span combat-status status="@[s.key]">
-              <icon @[s.key]></icon>@[s.ticks]
-            </span>
-            <!-- /each -->
-            <!-- each c.statusStacks as s -->
-            <span combat-status status="@[s.key]">
-              <icon @[s.key]></icon>@[s.value]/@[s.max]
-            </span>
-            <!-- /each -->
-          </combat-statuses>
-        </combat-card>
-        <!-- /each -->
-      </combat-team-col>
-    </crow>
-    <!-- /if -->
-    <!-- /if -->
-
-    <!-- if elapsedMilliseconds >= combat.duration && combat.duration > 0 && combat.winningTeam && combat.winningTeam.index === 0 -->
-    <combat-result>
-      <icon victory victory-icon></icon>
-      <h2 victory-text m-0 mb-2>VICTORY</h2>
-      <p mb-3>Your brawlers won the fight.</p>
-      <combat-rewards>
-        <!-- if combatRewardXp -->
-        <span combat-reward-line>+@[combatRewardXp] XP</span>
-        <!-- /if -->
-        <!-- if combatRewardBoss -->
-        <span combat-reward-line combat-reward-boss>Boss defeated!</span>
-        <!-- /if -->
-      </combat-rewards>
-      <button golden-btn mt-4 onclick="claimCombatReward()">claim</button>
-    </combat-result>
-    <!-- /if -->
-
-    <!-- if elapsedMilliseconds >= combat.duration && combat.duration > 0 && combat.winningTeam && combat.winningTeam.index !== 0 -->
-    <combat-result>
-      <icon defeat defeat-icon></icon>
-      <h2 defeat-text m-0 mb-2>DEFEAT</h2>
-      <p mb-3>Your brawlers were knocked out.</p>
-      <button secondary mt-4 onclick="closeCombatOverlay()">Go back</button>
-    </combat-result>
-    <!-- /if -->
-
-  </combat-panel>
-  <spacer></spacer>
-</combat-bg>
+<combat-backdrop onclick="event.stopPropagation()">
+  <combat-stage>
+    <component src="/components/CombatArena.html">
+      <!-- each combatCards as c, i -->
+      <component src="/components/CombatantCard.html" idx="@[i]"></component>
+      <!-- /each -->
+    </component>
+    <component src="/components/ResultAnnouncement.html"></component>
+  </combat-stage>
+</combat-backdrop>
 
 <style>
-  [battle-brawlers] combat-bg {
+  [battle-brawlers] combat-backdrop {
     position: fixed;
     inset: 0;
     z-index: 1;
     display: grid;
-    grid-template-rows: calc(var(--unit) * 20) 1fr calc(var(--unit) * 20);
     place-items: center;
-    overflow-x: hidden;
-    overflow-y: auto;
+    overflow: hidden;
     background: url('/static/images/arena.png') center / cover no-repeat;
     box-shadow: inset 0 0 10vw rgba(0, 0, 0, 1);
   }
 
-  [battle-brawlers] combat-panel {
-    padding: calc(var(--unit) * 6);
-    max-width: calc(var(--unit) * 180);
-    width: 92%;
-    max-height: 90vh;
-    overflow-y: auto;
-    color: white;
-  }
-
-  [battle-brawlers] [combat-teams] {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-  }
-
-  [battle-brawlers] combat-team-col {
-    display: flex;
-    flex-direction: column;
-    gap: calc(var(--unit) * 2);
-  }
-
-  [battle-brawlers] [combat-team-label] {
-    font-weight: 600;
-    font-size: 0.9rem;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-  }
-
-  [battle-brawlers] combat-card {
-    padding: calc(var(--unit) * 2) calc(var(--unit) * 2.5);
-    border-radius: var(--radius);
-    background: rgba(255, 255, 255, 0.5);
-    backdrop-filter: blur(4px);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  [battle-brawlers] combat-stage {
     position: relative;
-    color: var(--foreground);
-    overflow: visible;
-  }
-
-  [battle-brawlers] [combat-badges] {
-    font-size: 0.7rem;
-    flex: none;
-  }
-
-  [battle-brawlers] [combat-badge-dmg],
-  [battle-brawlers] [combat-badge-armor] {
-    font-weight: 600;
-    color: var(--muted-foreground);
-  }
-
-  [battle-brawlers] [combat-badge-dmg] icon,
-  [battle-brawlers] [combat-badge-armor] icon {
-    font-size: 0.75rem;
-  }
-
-  [battle-brawlers] [combat-hp-text] {
-    font-size: 0.6rem;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-    color: white;
-    justify-content: center;
-  }
-
-  [battle-brawlers] hp-track {
-    display: grid;
-    width: 100%;
-    height: calc(var(--unit) * 3.5);
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: var(--unit);
-    overflow: hidden;
-  }
-
-  [battle-brawlers] hp-track>* {
-    grid-area: 1/1;
-  }
-
-  [battle-brawlers] [bar-text] {
-    padding: 0 var(--unit);
-  }
-
-  [battle-brawlers] hp-fill {
-    height: 100%;
-    background: #22c55e;
-    border-radius: var(--unit);
-    transition: width 150ms;
-  }
-
-  [battle-brawlers] armor-track {
-    width: 100%;
-    height: calc(var(--unit) * 1.25);
-    background: var(--destructive-foreground);
-    border-radius: calc(var(--unit) * 0.75);
-    overflow: hidden;
-    margin-top: calc(var(--unit) * 0.75);
-  }
-
-  [battle-brawlers] armor-fill {
-    height: 100%;
-    background: #60a5fa;
-    border-radius: calc(var(--unit) * 0.75);
-    transition: width 150ms;
-  }
-
-  [battle-brawlers] combat-floater {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-weight: 800;
-    font-size: 1.25rem;
-    pointer-events: none;
-    animation: floatUp 800ms ease-out forwards;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
-  }
-
-  [battle-brawlers] combat-floater[type="hurt"] {
-    color: #ef4444;
-  }
-
-  [battle-brawlers] combat-floater[type="armorHurt"] {
-    color: #60a5fa;
-  }
-
-  [battle-brawlers] combat-floater[type="heal"] {
-    color: #22c55e;
-  }
-
-  @keyframes floatUp {
-    0% {
-      opacity: 1;
-      transform: translate(-50%, -50%) scale(1.5);
-    }
-
-    100% {
-      opacity: 0;
-      transform: translate(-50%, -120%) scale(0.8);
-    }
-  }
-
-  [battle-brawlers] [combat-ko] {
-    position: absolute;
-    top: calc(var(--unit) * 1.5);
-    right: calc(var(--unit) * 2);
-    font-size: 0.65rem;
-    font-weight: 700;
-    color: var(--destructive);
-    opacity: 0.8;
-  }
-
-  [battle-brawlers] combat-statuses {
-    display: flex;
-    flex-wrap: wrap;
-    gap: calc(var(--unit) * 0.75);
-    margin-top: var(--unit);
-  }
-
-  [battle-brawlers] [combat-status] {
-    display: inline-flex;
-    align-items: center;
-    gap: calc(var(--unit) * 0.5);
-    font-size: 0.6rem;
-    padding: calc(var(--unit) * 0.25) calc(var(--unit) * 1.25);
-    border-radius: calc(var(--unit) * 0.75);
-  }
-
-  [battle-brawlers] [combat-status] icon {
-    font-size: 0.65rem;
-  }
-
-  [battle-brawlers] [combat-status][status="stunned"] {
-    background: #fbbf24;
-    color: #000;
-  }
-
-  [battle-brawlers] [combat-status][status="bleeding"] {
-    background: #ef4444;
-    color: #fff;
-  }
-
-  [battle-brawlers] [combat-status][status="vulnerable"] {
-    background: #a855f7;
-    color: #fff;
-  }
-
-  [battle-brawlers] [combat-status][status="wounded"] {
-    background: #dc2626;
-    color: #fff;
-    opacity: 0.7;
-  }
-
-  [battle-brawlers] [combat-status][status="concussed"] {
-    background: #d97706;
-    color: #fff;
-    opacity: 0.7;
-  }
-
-  [battle-brawlers] [combat-status][status="exposed"] {
-    background: #7c3aed;
-    color: #fff;
-    opacity: 0.7;
-  }
-
-  [battle-brawlers] combat-result {
-    text-align: center;
-    padding: calc(var(--unit) * 8) calc(var(--unit) * 4);
-    background: rgba(255, 255, 255, 0.5);
-    backdrop-filter: blur(8px);
-    border-radius: var(--radius);
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
-    color: var(--foreground);
-  }
-
-  [battle-brawlers] combat-rewards {
-    padding: calc(var(--unit) * 3);
-    border-radius: var(--radius);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--unit);
-  }
-
-  [battle-brawlers] [combat-reward-line] {
-    font-size: 0.875rem;
-    font-weight: 600;
-  }
-
-  [battle-brawlers] [combat-reward-boss] {
-    color: oklch(0.6 0.2 70);
-  }
-
-  [battle-brawlers] progress-track {
-    width: 100%;
-    height: calc(var(--unit) * 3);
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: calc(var(--unit) * 1.5);
-    overflow: hidden;
-  }
-
-  [battle-brawlers] progress-fill {
-    height: 100%;
-    background: var(--primary);
-    border-radius: calc(var(--unit) * 1.5);
-    transition: width 200ms;
-  }
-
-  [battle-brawlers] [golden-btn] {
-    all: unset;
-    cursor: pointer;
-    font-family: var(--font-heading);
-    font-size: 1.125rem;
-    padding: var(--unit) calc(var(--unit) * 4);
-    border: 1px solid #b8860b;
-    border-radius: var(--radius);
-    color: white;
-    overflow: hidden;
-    background:
-      radial-gradient(ellipse farthest-corner at right bottom, #FEDB37 0%, #FDB931 8%, #9f7928 30%, #8A6E2F 40%, transparent 80%),
-      radial-gradient(ellipse farthest-corner at left top, #FFFFFF 0%, #FFFFAC 8%, #D1B464 25%, #5d4a1f 62.5%, #5d4a1f 100%);
-  }
-
-  [battle-brawlers] [victory-icon] {
-    font-size: 6rem;
-    color: rgb(156, 163, 175);
-    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
-  }
-
-  [battle-brawlers] [defeat-icon] {
-    font-size: 6rem;
-    color: rgb(156, 163, 175);
-    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
-  }
-
-  [battle-brawlers] [victory-text] {
-    font-family: var(--font-accent);
-    color: oklch(0.85 0.08 80);
-    -webkit-text-stroke: 1px oklch(0.7 0.1 80);
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  }
-
-  [battle-brawlers] [defeat-text] {
-    font-family: var(--font-accent);
-    color: rgb(209, 213, 219);
-    -webkit-text-stroke: 1px rgb(156, 163, 175);
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    width: min(90vmin, 700px);
+    height: min(90vmin, 700px);
+    aspect-ratio: 1 / 1;
   }
 </style>

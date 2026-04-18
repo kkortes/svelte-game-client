@@ -1,0 +1,77 @@
+<bar-track relative w-full overflow-hidden center="@[center]" color="@[color]">
+  <bar-fill block
+    style="width: @[Math.max(0, Math.min(100, ((current || 0) / Math.max(1, max || 1)) * 100))]%"></bar-fill>
+  <!-- if loading -->
+  <crow bar-text px-2>
+    <spinner bar-spinner></spinner>
+  </crow>
+  <!-- /if -->
+  <!-- if !loading && timer -->
+  <crow bar-text px-2>
+    <bar-timer>@[String(Math.floor(Math.max(0, (max || 0) - (current || 0)) / 60000)).padStart(2,
+      '0')]:@[String(Math.floor((Math.max(0, (max || 0) - (current || 0)) % 60000) / 1000)).padStart(2, '0')]</bar-timer>
+  </crow>
+  <!-- /if -->
+  <!-- if !loading && !timer -->
+  <crow bar-text px-2>
+    <!-- if text -->
+    <span bar-label>@[text]</span>
+    <!-- /if -->
+    <!-- if percentage -->
+    <span bar-value>@[Math.max(0, Math.min(100, ((current || 0) / Math.max(1, max || 1)) *
+      100)).toFixed(0)]%</span>
+    <!-- /if -->
+    <!-- if !percentage -->
+    <span bar-value>@[current] / @[max]</span>
+    <!-- /if -->
+  </crow>
+  <!-- /if -->
+</bar-track>
+
+<style>
+  [battle-brawlers] bar-track {
+    display: grid;
+    height: 28px;
+    color: #fff;
+    background: rgb(107 114 128 / 0.5);
+    box-shadow: inset 0 1px 1px rgb(0 0 0 / 0.05);
+  }
+
+  [battle-brawlers] bar-track[center] {
+    height: 24px;
+    border-radius: calc(var(--unit) * 0.5);
+  }
+
+  [battle-brawlers] bar-fill {
+    grid-area: 1 / 1;
+    height: 100%;
+    background: #991b1b;
+    transition: width 200ms ease-in-out;
+  }
+
+  [battle-brawlers] bar-track[color="yellow"] bar-fill {
+    background: var(--bb-yellow);
+  }
+
+  [battle-brawlers] bar-track[color="stone"] bar-fill {
+    background: var(--bb-stone);
+  }
+
+  [battle-brawlers] [bar-text] {
+    grid-area: 1 / 1;
+    font-size: 0.875rem;
+    color: #fff;
+    text-shadow: 0 1px 1px rgb(0 0 0 / 0.5);
+    justify-content: space-between;
+  }
+
+  [battle-brawlers] bar-track[center] [bar-text] {
+    justify-content: center;
+  }
+
+  [battle-brawlers] [bar-spinner] {
+    width: calc(var(--unit) * 3.5);
+    height: calc(var(--unit) * 3.5);
+    border-width: 2px;
+  }
+</style>

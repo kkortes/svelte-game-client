@@ -18,6 +18,7 @@
     import { slotsInPrettyName } from '/js/equipment.js';
     import { formatCoins } from '/js/coin.js';
     import { notify } from '/js/actions.js';
+    import { delegateTooltip, equipmentTooltipProps } from '/js/tooltip.js';
 
     const EQUIPMENT_TYPES = ['oneHand', 'offHand', 'twoHand', 'armor', 'accessory', 'trinket'];
 
@@ -70,87 +71,67 @@
       $.overlay = 'confirm';
     };
 
-    // Tooltip via event delegation — works even after filter changes
-    window.vendorTooltipInit = () => {
-      const container = document.querySelector('page-content [vendor-table]');
-      if (!container) return;
-
-      container.addEventListener('mouseenter', (e) => {
-        const row = e.target.closest('[vendor-row]');
-        if (!row) return;
-        const eqLink = row.querySelector('eq-link');
-        if (!eqLink) return;
-
-        // Find which item this row corresponds to
-        const rows = [...container.querySelectorAll('[vendor-row]')];
-        const idx = rows.indexOf(row);
-        const item = $.vendorFiltered[idx];
-        if (!item) return;
-
-        const rect = eqLink.getBoundingClientRect();
-        $.tooltip = {
-          x: rect.left + rect.width / 2,
-          y: rect.top,
-          visible: true,
-          props: {
-            name: item.name,
-            level: item.level,
-            description: item.description,
-            combatStats: item.combatStats,
-            slotsIn: item.slotsIn
-          }
-        };
-      }, true);
-
-      container.addEventListener('mouseleave', (e) => {
-        const row = e.target.closest('[vendor-row]');
-        if (row && $.tooltip) $.tooltip.visible = false;
-      }, true);
-    };
-
-    setTimeout(vendorTooltipInit, 500);
+    setTimeout(() => delegateTooltip(
+      document.querySelector('page-content [vendor-table]'),
+      '[vendor-row]',
+      (_, idx) => equipmentTooltipProps($.vendorFiltered[idx]),
+      (row) => row.querySelector('eq-link') || row
+    ), 500);
   </script>
 
   <component src="/components/Layout.html">
     <page-content>
 
-      <h3 mb-4>Vendor</h3>
-
+      <component src="/components/TitleBar.html" title="Vendor"></component>
       <hr />
 
-      <crow g-1 sm vendor-filters>
-        <button f-1 primary="@[$.vendorFilter === 'all']" tertiary="@[$.vendorFilter !== 'all']"
-          onclick="vendorFilterBy('all')">
-          All (@[$.vendorItems.length])
+      <vendor-filters mx="-6" w="auto">
+        <button vendor-filter active="@[$.vendorFilter === 'all']" onclick="vendorFilterBy('all')">
+          <crow vertical center g-1>
+            <filter-count>@[$.vendorItems.length]</filter-count>
+            <filter-label>All</filter-label>
+          </crow>
         </button>
-        <button f-1 primary="@[$.vendorFilter === 'oneHand']"
-          tertiary="@[$.vendorFilter !== 'oneHand']" onclick="vendorFilterBy('oneHand')">
-          One-Handed (@[vendorCounts.oneHand])
+        <button vendor-filter active="@[$.vendorFilter === 'oneHand']" onclick="vendorFilterBy('oneHand')">
+          <crow vertical center g-1>
+            <filter-count>@[vendorCounts.oneHand]</filter-count>
+            <filter-label>One-Handed</filter-label>
+          </crow>
         </button>
-        <button f-1 primary="@[$.vendorFilter === 'offHand']"
-          tertiary="@[$.vendorFilter !== 'offHand']" onclick="vendorFilterBy('offHand')">
-          Off-Hand (@[vendorCounts.offHand])
+        <button vendor-filter active="@[$.vendorFilter === 'offHand']" onclick="vendorFilterBy('offHand')">
+          <crow vertical center g-1>
+            <filter-count>@[vendorCounts.offHand]</filter-count>
+            <filter-label>Off-Hand</filter-label>
+          </crow>
         </button>
-        <button f-1 primary="@[$.vendorFilter === 'twoHand']"
-          tertiary="@[$.vendorFilter !== 'twoHand']" onclick="vendorFilterBy('twoHand')">
-          Two-Handed (@[vendorCounts.twoHand])
+        <button vendor-filter active="@[$.vendorFilter === 'twoHand']" onclick="vendorFilterBy('twoHand')">
+          <crow vertical center g-1>
+            <filter-count>@[vendorCounts.twoHand]</filter-count>
+            <filter-label>Two-Handed</filter-label>
+          </crow>
         </button>
-        <button f-1 primary="@[$.vendorFilter === 'armor']" tertiary="@[$.vendorFilter !== 'armor']"
-          onclick="vendorFilterBy('armor')">
-          Armor (@[vendorCounts.armor])
+        <button vendor-filter active="@[$.vendorFilter === 'armor']" onclick="vendorFilterBy('armor')">
+          <crow vertical center g-1>
+            <filter-count>@[vendorCounts.armor]</filter-count>
+            <filter-label>Armor</filter-label>
+          </crow>
         </button>
-        <button f-1 primary="@[$.vendorFilter === 'accessory']"
-          tertiary="@[$.vendorFilter !== 'accessory']" onclick="vendorFilterBy('accessory')">
-          Accessory (@[vendorCounts.accessory])
+        <button vendor-filter active="@[$.vendorFilter === 'accessory']" onclick="vendorFilterBy('accessory')">
+          <crow vertical center g-1>
+            <filter-count>@[vendorCounts.accessory]</filter-count>
+            <filter-label>Accessory</filter-label>
+          </crow>
         </button>
-        <button f-1 primary="@[$.vendorFilter === 'trinket']"
-          tertiary="@[$.vendorFilter !== 'trinket']" onclick="vendorFilterBy('trinket')">
-          Trinket (@[vendorCounts.trinket])
+        <button vendor-filter active="@[$.vendorFilter === 'trinket']" onclick="vendorFilterBy('trinket')">
+          <crow vertical center g-1>
+            <filter-count>@[vendorCounts.trinket]</filter-count>
+            <filter-label>Trinket</filter-label>
+          </crow>
         </button>
-      </crow>
+      </vendor-filters>
 
       <crow vertical up left vendor-table mx="-6" w="auto" mt-4>
-        <crow up left vendor-header>
+        <crow up left g-4 sm:g="2" vendor-header py-3 px-6 sm:px="3" w-full>
           <vendor-col-name>Name</vendor-col-name>
           <vendor-col-slot>Slots in</vendor-col-slot>
           <vendor-col-cost>Cost</vendor-col-cost>
@@ -158,15 +139,10 @@
         </crow>
 
         <!-- each vendorFiltered as item, i -->
-        <crow left vendor-row even="@[i % 2 === 0]">
+        <crow left vendor-row g-4 sm:g="2" py-3 px-6 sm:px="3" w-full>
           <crow left vendor-col-name>
-            <eq-link
-              tier="@[item.level >= 25 ? 'red' : item.level >= 20 ? 'orange' : item.level >= 15 ? 'purple' : item.level >= 10 ? 'blue' : item.level >= 5 ? 'green' : 'gray']">
-              <eq-bg-center></eq-bg-center>
-              <eq-bg-left></eq-bg-left>
-              <eq-bg-right></eq-bg-right>
-              <crow eq-name left>@[item.name]</crow>
-            </eq-link>
+            <component src="/components/EquipmentLink.html"
+              level="@[item.level]" name="@[item.name]"></component>
           </crow>
           <vendor-col-slot text-sm text-muted>@[item.slotLabel]</vendor-col-slot>
           <vendor-col-cost>
@@ -182,16 +158,151 @@
     </page-content>
   </component>
   <style>
-    page[vendor] [vendor-filters] {
+    page[vendor] vendor-filters {
+      display: flex;
       flex-wrap: wrap;
+      align-items: stretch;
+      position: relative;
+      isolation: isolate;
+      border-top: 1px solid oklch(from var(--bb-brown) l c h / 0.25);
+      border-bottom: 1px solid oklch(from var(--bb-brown) l c h / 0.25);
+      background: linear-gradient(
+        180deg,
+        oklch(from var(--bb-brown) l c h / 0.02),
+        oklch(from var(--bb-brown) l c h / 0.07)
+      );
+    }
+
+    [dark] page[vendor] vendor-filters {
+      background: linear-gradient(
+        180deg,
+        oklch(from var(--foreground) l c h / 0.02),
+        oklch(from var(--foreground) l c h / 0.06)
+      );
+    }
+
+    page[vendor] [vendor-filter] {
+      appearance: none;
+      margin: 0;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      flex: 1 1 0;
+      min-width: calc(var(--unit) * 22);
+      padding: calc(var(--unit) * 3) calc(var(--unit) * 4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      color: oklch(from var(--foreground) l c h / 0.55);
+      transition: color 200ms ease, background 200ms ease;
+    }
+
+    page[vendor] [vendor-filter] filter-label {
+      font-family: var(--font-heading);
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      line-height: 1;
+      color: inherit;
+    }
+
+    page[vendor] [vendor-filter]:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 30%;
+      bottom: 30%;
+      width: 1px;
+      background: linear-gradient(
+        180deg,
+        transparent,
+        oklch(from var(--bb-brown) l c h / 0.28) 50%,
+        transparent
+      );
+    }
+
+    page[vendor] [vendor-filter]:hover {
+      color: oklch(from var(--foreground) l c h / 0.9);
+      background: oklch(from var(--bb-brown) l c h / 0.05);
+    }
+
+    page[vendor] [vendor-filter] filter-count {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      line-height: 1;
+      letter-spacing: 0.02em;
+      font-variant-numeric: tabular-nums;
+      color: oklch(from var(--bb-brown) l c h / 0.7);
+      text-shadow: 0 1px 0 oklch(from var(--background) l c h / 0.4);
+      transition: color 200ms ease, text-shadow 200ms ease;
+    }
+
+    [dark] page[vendor] [vendor-filter] filter-count {
+      color: oklch(from var(--foreground) l c h / 0.55);
+      text-shadow: none;
+    }
+
+    page[vendor] [vendor-filter][active] {
+      color: var(--foreground);
+      background: oklch(from var(--bb-brown) l c h / 0.12);
+    }
+
+    page[vendor] [vendor-filter][active]::before {
+      content: "";
+      position: absolute;
+      left: calc(var(--unit) * 3);
+      right: calc(var(--unit) * 3);
+      bottom: -1px;
+      height: 2px;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        var(--bb-orange) 22%,
+        var(--bb-yellow) 50%,
+        var(--bb-orange) 78%,
+        transparent 100%
+      );
+      box-shadow: 0 0 calc(var(--unit) * 2.5) oklch(from var(--bb-orange) l c h / 0.45);
+    }
+
+    page[vendor] [vendor-filter][active] filter-count {
+      color: oklch(from var(--bb-orange) 0.55 c h);
+      text-shadow: 0 0 calc(var(--unit) * 3) oklch(from var(--bb-orange) l c h / 0.45);
+    }
+
+    [dark] page[vendor] [vendor-filter] {
+      color: oklch(from var(--foreground) l c h / 0.5);
+    }
+
+    [dark] page[vendor] [vendor-filter][active] {
+      color: var(--foreground);
+      background: oklch(from var(--bb-brown) l c h / 0.2);
+    }
+
+    [dark] page[vendor] [vendor-filter][active] filter-count {
+      color: oklch(from var(--bb-yellow) l c h);
+      text-shadow: 0 0 calc(var(--unit) * 3.5) oklch(from var(--bb-orange) l c h / 0.55);
+    }
+
+    @media (max-width: 768px) {
+      page[vendor] [vendor-filter] {
+        flex: 1 1 33%;
+        padding: calc(var(--unit) * 2.5) calc(var(--unit) * 2);
+      }
+      page[vendor] [vendor-filter] filter-count {
+        font-size: 1.15rem;
+      }
+      page[vendor] [vendor-filter] filter-label {
+        font-size: 0.62rem;
+        letter-spacing: 0.14em;
+      }
     }
 
     page[vendor] [vendor-header] {
-      display: flex;
       align-items: center;
-      gap: calc(var(--unit) * 4);
-      padding: calc(var(--unit) * 3) calc(var(--unit) * 6);
-      width: 100%;
       font-size: 0.72rem;
       letter-spacing: 0.14em;
       text-transform: uppercase;
@@ -200,31 +311,25 @@
     }
 
     page[vendor] [vendor-row] {
-      width: 100%;
-      gap: calc(var(--unit) * 4);
-      padding: calc(var(--unit) * 3) calc(var(--unit) * 6);
       font-size: 0.875rem;
       transition: background 200ms ease;
-    }
-
-    page[vendor] [vendor-row]:hover {
-      background: oklch(from var(--bb-brown) l c h / 0.08);
     }
 
     page[vendor] [vendor-col-cost] {
       font-variant-numeric: tabular-nums;
     }
 
-    page[vendor] [vendor-row][even] {
+    page[vendor] [vendor-row]:nth-child(even) {
       background: oklch(from var(--foreground) l c h / 0.04);
     }
 
-    [dark] page[vendor] [vendor-row][even] {
+    [dark] page[vendor] [vendor-row]:nth-child(even) {
       background: oklch(from var(--foreground) l c h / 0.08);
     }
 
-    page[vendor] [vendor-row]:not([even]) {
-      background: transparent;
+    page[vendor] [vendor-row]:hover,
+    page[vendor] [vendor-row]:nth-child(even):hover {
+      background: oklch(from var(--bb-brown) l c h / 0.08);
     }
 
     page[vendor] vendor-col-name,
@@ -240,6 +345,18 @@
     page[vendor] [vendor-col-action] {
       width: calc(var(--unit) * 20);
       flex: none;
+    }
+
+    @media (width <= 768px) {
+      page[vendor] vendor-col-slot,
+      page[vendor] [vendor-col-slot] {
+        display: none;
+      }
+
+      page[vendor] vendor-col-action,
+      page[vendor] [vendor-col-action] {
+        width: calc(var(--unit) * 16);
+      }
     }
 
     page[vendor] vendor-col-name,

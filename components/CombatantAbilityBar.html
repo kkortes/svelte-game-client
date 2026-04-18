@@ -1,0 +1,72 @@
+<ability-bar block ability-bar="@[combatCards[idx].cardId]" style="--ability-bar-width: @[combatCards[idx].abilityBarWidth]px;">
+  <ability-bar-grid w-full overflow-hidden>
+    <!-- base layer -->
+    <ability-row flex base>
+      <!-- each combatCards[idx].abilityCells as cell -->
+      <ability-cell style="--cell-width: @[cell.width]px;">
+        <icon @[cell.icon]></icon>
+      </ability-cell>
+      <!-- /each -->
+    </ability-row>
+    <!-- progress layer (clip-path wipe) -->
+    <ability-row flex top stunned="@[combatCards[idx].isStunned]"
+      style="--progress: @[Math.min(100, (combatCards[idx].individualProgress * 100))]%;">
+      <!-- each combatCards[idx].abilityCells as cell -->
+      <ability-cell style="--cell-width: @[cell.width]px;">
+        <icon @[cell.icon]></icon>
+      </ability-cell>
+      <!-- /each -->
+    </ability-row>
+  </ability-bar-grid>
+</ability-bar>
+
+<style>
+  [battle-brawlers] ability-bar {
+    width: var(--ability-bar-width, 144px);
+    margin: 0 auto;
+  }
+
+  [battle-brawlers] ability-bar-grid {
+    display: grid;
+    border-radius: 0 0 3px 3px;
+    border: 0.5px solid #78716c;
+  }
+
+  [battle-brawlers] ability-row {
+    grid-area: 1/1;
+    height: 24px;
+    background: #d6d3d1;
+  }
+
+  [battle-brawlers] ability-row[top] {
+    background: #78716c;
+    clip-path: polygon(0 0, var(--progress, 0%) 0, var(--progress, 0%) 100%, 0 100%);
+  }
+
+  [battle-brawlers] ability-row[top][stunned] {
+    background: #6b7280;
+  }
+
+  [battle-brawlers] ability-cell {
+    flex: none;
+    width: var(--cell-width, 12px);
+    height: 100%;
+    display: grid;
+    place-items: center;
+    border-right: 0.5px solid #78716c;
+    position: relative;
+  }
+
+  [battle-brawlers] ability-cell icon {
+    font-size: 0.75rem;
+    --color: #78716c;
+  }
+
+  [battle-brawlers] ability-row[top] ability-cell {
+    border-right-color: #d6d3d1;
+  }
+
+  [battle-brawlers] ability-row[top] ability-cell icon {
+    --color: #d6d3d1;
+  }
+</style>

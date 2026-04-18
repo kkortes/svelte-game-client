@@ -1,0 +1,21 @@
+<char-portrait style="--char-size: @[size || 1]">
+  <img data-src="/static/images/races/@[image]" alt="@[name || '']" portrait-img />
+</char-portrait>
+
+<style>
+  [battle-brawlers] char-portrait {
+    display: flex;
+    align-items: flex-end;
+    aspect-ratio: 11/12;
+    width: calc(var(--unit) * 36);
+    flex: none;
+    overflow: visible;
+  }
+
+  [battle-brawlers] char-portrait [portrait-img] {
+    max-width: none;
+    width: auto;
+    height: calc(100% * var(--char-size, 1));
+    pointer-events: none;
+  }
+</style>

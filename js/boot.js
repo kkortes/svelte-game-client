@@ -9,12 +9,14 @@ import { init as initAmbient } from '/js/ambient.js';
 import CHARACTERS from '/js/constants/CHARACTERS.js';
 import ABILITIES from '/js/constants/ABILITIES.js';
 import EQUIPMENT from '/js/constants/EQUIPMENT.js';
+import { ALL_FIGHTS } from '/js/constants/FIGHTS.js';
 import { calculateCombatStatsByCharacter } from '/js/utils.js';
 import {
   getLevelByExperience,
   getCurrentExperienceAtLevel,
   getExperienceForNextLevel,
-  allowedNumberOfCharacters
+  allowedNumberOfCharacters,
+  getExperienceReward
 } from '/js/level.js';
 import { Howl } from '/js/lib/howler.js';
 import AUDIO from '/js/audio.js';
@@ -90,24 +92,26 @@ export default () => {
   window.CHARACTERS = CHARACTERS;
   window.ABILITIES_FN = ABILITIES;
   window.EQUIPMENT_FN = EQUIPMENT;
+  window.ALL_FIGHTS = ALL_FIGHTS;
+  window.INITIAL_COMBAT = INITIAL_COMBAT;
   window.calculateCombatStatsByCharacter = calculateCombatStatsByCharacter;
   window.getLevelByExperience = getLevelByExperience;
   window.getCurrentExperienceAtLevel = getCurrentExperienceAtLevel;
   window.getExperienceForNextLevel = getExperienceForNextLevel;
+  window.getExperienceReward = getExperienceReward;
   window.allowedNumberOfCharacters = allowedNumberOfCharacters;
   window.isDev = config.IS_DEV;
 
-  window.selectBrawler = (e, uuid, index) => {
-    if ($.maxBrawlers) {
-      e.preventDefault();
-      e.stopPropagation();
-      if ($.selectedBrawlers.includes(uuid)) {
-        $.selectedBrawlers = $.selectedBrawlers.filter((id) => id !== uuid);
-      } else if ($.selectedBrawlers.length < $.maxBrawlers) {
-        $.selectedBrawlers.push(uuid);
-      }
-      if (window.updateFightSlots) updateFightSlots();
+  window.selectBrawler = (e, uuid) => {
+    e?.preventDefault();
+    e?.stopPropagation();
+    if (!$.maxBrawlers || !uuid) return;
+    if ($.selectedBrawlers.includes(uuid)) {
+      $.selectedBrawlers = $.selectedBrawlers.filter((id) => id !== uuid);
+    } else if ($.selectedBrawlers.length < $.maxBrawlers) {
+      $.selectedBrawlers.push(uuid);
     }
+    if (window.updateFightSlots) updateFightSlots();
   };
 
   // Restore token from cookie BEFORE vibe initializes so the first hydration
@@ -234,6 +238,13 @@ export default () => {
       },
       true
     );
+
+    document.addEventListener('mousemove', (e) => {
+      if ($.tooltip?.visible) {
+        $.tooltip.x = e.clientX;
+        $.tooltip.y = e.clientY;
+      }
+    });
   });
 
   $.on('afterUpdate', (current, prev) => {
