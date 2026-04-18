@@ -1,114 +1,218 @@
-export const init = () => {
-  let animationId = null;
-  let lastTimestamp = 0;
-  let audioQueue = [];
-  let audioPlayed = new Set();
-  const shownVfx = new Set();
+import { COMBAT_TICK_TIME, COMBAT_RING_BASE_RADIUS } from '/js/constants/APP.js';
 
-  const spawnFloater = (cardEl, amount, type) => {
-    const el = document.createElement('combat-floater');
-    el.textContent = type === 'heal' ? `+${amount}` : `-${amount}`;
-    el.setAttribute('type', type);
-    cardEl.appendChild(el);
-    el.addEventListener('animationend', () => el.remove());
-  };
+// Ring geometry — main scales down cards when the ring gets crowded.
+const getGeometry = (n, { baseRadius = COMBAT_RING_BASE_RADIUS, itemWidth = 140, gap = 0 } = {}) => {
+  const cBase = 2 * Math.PI * baseRadius;
+  const cItem = Math.max(1, n) * (itemWidth + gap);
+  return { scale: Math.min(1, cBase / cItem) };
+};
 
-  const checkFloaters = () => {
-    const elapsed = $.elapsedMilliseconds;
-    const teams = $.liveTeams;
-    if (!teams?.length) return;
+// Compute enriched per-combatant render props from the raw liveTeams shape.
+const enrichCombatant = (c, ti, ci, elapsed, scale) => {
+  const pos = c.position || { x: 0, y: 0, rot: 0 };
+  const { x, y, rot } = pos;
 
-    teams.forEach((team, ti) => {
-      team.combatants?.forEach((c, ci) => {
-        if (!c.animations) return;
-        c.animations.forEach(anim => {
-          if (shownVfx.has(anim.id)) return;
-          if (anim.start > elapsed || anim.end < elapsed) return;
-          if (!['hurt', 'armorHurt', 'heal'].includes(anim.vfxName)) return;
+  const raw = Math.round(Math.abs(Math.abs(rot - 540) - 180));
+  const z = 10 - Math.floor((raw / 180) * 9);
+  const angleDiff = ((rot - 0 + 540) % 360) - 180;
+  const facingRight = angleDiff < 0;
 
-          shownVfx.add(anim.id);
-          const card = document.querySelector(`[combat-card="${ti}-${ci}"]`);
-          if (card && anim.amount) spawnFloater(card, anim.amount, anim.vfxName);
-        });
-      });
-    });
-  };
+  const abilitiesCopied = c.abilitiesCopied || [];
+  const totalTime = (c.abilities || []).reduce((acc, a) => acc + (a.ticks || 0), 0) * COMBAT_TICK_TIME || 1;
+  const individualProgress = ((c.statuses?.knockedOut ? c.statuses.knockedOut : elapsed) / totalTime) % 1;
 
-  const flattenCombatant = (c, ti, ci) => ({
-    name: c.name, damage: c.damage,
+  const anims = c.animations || [];
+  const activeByName = (name) =>
+    anims.find(a => a.start < elapsed && a.end > elapsed && a.vfxName === name);
+
+  const attackAnim = anims.find(a =>
+    a.start < elapsed && a.end > elapsed &&
+    ['basicAttackFast', 'basicAttackRegular', 'basicAttackSlow', 'whirlwind'].includes(a.vfxName)
+  );
+
+  // Compute attack start/end points (for sprite charge animation)
+  const tx = attackAnim?.targetX ?? x;
+  const ty = attackAnim?.targetY ?? y;
+  const dX = tx - x, dY = ty - y;
+  const distance = Math.hypot(dX, dY) || 1;
+  const ux = dX / distance, uy = dY / distance;
+  let anticipate = 0;
+  if (attackAnim?.vfxName === 'basicAttackSlow') anticipate = 50;
+  if (attackAnim?.vfxName === 'basicAttackRegular') anticipate = 30;
+  if (attackAnim?.vfxName === 'basicAttackFast') anticipate = 10;
+  const attackStartX = x - ux * anticipate;
+  const attackStartY = y - uy * anticipate;
+  const step = Math.min(5, distance);
+  const attackEndX = x + ux * step;
+  const attackEndY = y + uy * step;
+  const attackDuration = (attackAnim?.end || 0) - (attackAnim?.start || 0);
+
+  const isStunned = (c.statuses?.isStunned?.ticks || 0) > 0;
+
+  // Single active attack animation class (gated by not-stunned)
+  const attackClass = !isStunned && attackAnim ? attackAnim.vfxName : '';
+  const hurtActive = !!activeByName('hurt');
+  const blockActive = !!activeByName('block');
+  const attackBlockedActive = !!activeByName('attackBlocked');
+  const whirlwindActive = !!activeByName('whirlwind');
+  const attackDodgedActive = !!activeByName('attackDodged');
+
+  // Health-bar floaters — collect all active hurt/armorHurt/heal animations.
+  const floaters = anims
+    .filter(a => a.start < elapsed && a.end > elapsed && ['hurt', 'armorHurt', 'heal'].includes(a.vfxName))
+    .map(a => ({
+      id: a.id,
+      vfxName: a.vfxName,
+      amount: a.amount || 0,
+      isCritical: !!a.isCritical,
+      random: (parseInt((a.id || '0').slice(0, 8), 16) % 1000) / 1000, // stable pseudo-random from id
+      dir: facingRight ? -1 : 1
+    }));
+
+  const statusEffects = [
+    { key: 'bleeding', ticks: c.statuses?.isBleeding?.ticks || 0 },
+    { key: 'stunned', ticks: c.statuses?.isStunned?.ticks || 0 },
+    { key: 'vulnerable', ticks: c.statuses?.isVulnerable?.ticks || 0 },
+  ].filter(s => s.ticks > 0).sort((a, b) => a.ticks - b.ticks);
+
+  const statusStacks = [
+    { key: 'wounded', value: c.statuses?.isWounded?.value || 0, max: c.statuses?.isWounded?.max || 0 },
+    { key: 'concussed', value: c.statuses?.isConcussed?.value || 0, max: c.statuses?.isConcussed?.max || 0 },
+    { key: 'exposed', value: c.statuses?.isExposed?.value || 0, max: c.statuses?.isExposed?.max || 0 },
+  ].filter(s => s.value > 0 && s.max > 0).sort((a, b) => b.value - a.value);
+
+  // Flatten ability cells (for ability bar). Each cell: width px = 12 * ticks.
+  const abilityCells = abilitiesCopied.map((a, i) => ({
+    idx: i,
+    icon: a.icon || 'claw',
+    ticks: a.ticks || 1,
+    width: 12 * (a.ticks || 1),
+    chainLink: a.chainLink || 0,
+  }));
+  const abilityBarWidth = abilityCells.reduce((acc, a) => acc + a.width, 0) + 2;
+
+  // Knocked-out: filter grayscale
+  const knockedOut = !!c.statuses?.knockedOut;
+
+  // Precompute image URL (main is `/images/races/{image}`, here `/static/images/races/{image}`)
+  const imageUrl = c.image ? `/static/images/races/${c.image}` : '';
+
+  const size = c.size || 1;
+  const spriteHeight = 144 * size;
+
+  return {
+    cardId: `${ti}-${ci}`,
+    id: c.id || `${ti}-${ci}`,
+    name: c.name,
+    damage: c.damage || 0,
     currentHealth: c.combatStats?.currentHealth || 0,
     maxHealth: c.combatStats?.maxHealth || 0,
     currentArmor: c.combatStats?.currentArmor || 0,
     maxArmor: c.combatStats?.maxArmor || 0,
-    knockedOut: !!c.statuses?.knockedOut,
-    bleedTicks: c.statuses?.isBleeding?.ticks || 0,
-    stunTicks: c.statuses?.isStunned?.ticks || 0,
-    vulnTicks: c.statuses?.isVulnerable?.ticks || 0,
-    woundedVal: c.statuses?.isWounded?.value || 0, woundedMax: c.statuses?.isWounded?.max || 0,
-    concussedVal: c.statuses?.isConcussed?.value || 0, concussedMax: c.statuses?.isConcussed?.max || 0,
-    exposedVal: c.statuses?.isExposed?.value || 0, exposedMax: c.statuses?.isExposed?.max || 0,
-    statusEffects: [
-      { key: 'bleeding', ticks: c.statuses?.isBleeding?.ticks || 0 },
-      { key: 'stunned', ticks: c.statuses?.isStunned?.ticks || 0 },
-      { key: 'vulnerable', ticks: c.statuses?.isVulnerable?.ticks || 0 },
-    ].filter(s => s.ticks > 0).sort((a, b) => a.ticks - b.ticks),
-    statusStacks: [
-      { key: 'wounded', value: c.statuses?.isWounded?.value || 0, max: c.statuses?.isWounded?.max || 0 },
-      { key: 'concussed', value: c.statuses?.isConcussed?.value || 0, max: c.statuses?.isConcussed?.max || 0 },
-      { key: 'exposed', value: c.statuses?.isExposed?.value || 0, max: c.statuses?.isExposed?.max || 0 },
-    ].filter(s => s.value > 0).sort((a, b) => b.value - a.value),
-    cardId: `${ti}-${ci}`
-  });
+    knockedOut,
+    isStunned,
+    facingRight,
+    x, y, z, rot, scale,
+    // Sprite offsets / vars for position transform
+    spriteHeight,
+    attackClass,
+    attackStartX, attackStartY, attackEndX, attackEndY,
+    attackDuration,
+    dir: facingRight ? 1 : -1,
+    attackAnimId: attackAnim?.id || '',
+    hurtActive, blockActive, attackBlocked: attackBlockedActive,
+    whirlwindActive, attackDodgedActive,
+    floaters,
+    statusEffects,
+    statusStacks,
+    abilityCells,
+    abilityBarWidth,
+    individualProgress,
+    image: c.image || '',
+    imageUrl,
+    uuid: c.uuid,
+  };
+};
+
+export const init = () => {
+  let animationId = null;
+  let lastTimestamp = 0;
+  let audioQueue = [];
+  const retriggered = new Map(); // cardId -> last animId seen
 
   const updateCombatDisplay = () => {
     const teams = $.liveTeams;
     if (!teams?.length) return;
-    $.combatTeam0 = (teams[0]?.combatants || []).map((c, i) => flattenCombatant(c, 0, i));
-    $.combatTeam1 = (teams[1]?.combatants || []).map((c, i) => flattenCombatant(c, 1, i));
+
+    const totalCombatants = teams.reduce((a, t) => (t.combatants?.length || 0) + a, 0) * teams.length;
+    const { scale } = getGeometry(totalCombatants);
+
+    const elapsed = $.elapsedMilliseconds;
+
+    const t0 = (teams[0]?.combatants || []).map((c, i) => enrichCombatant(c, 0, i, elapsed, scale));
+    const t1 = (teams[1]?.combatants || []).map((c, i) => enrichCombatant(c, 1, i, elapsed, scale));
+
+    $.combatTeam0 = t0;
+    $.combatTeam1 = t1;
+    $.combatScale = scale;
+
+    // Retrigger attack animation by toggling animation-name via a DOM tickle.
+    // Walk through enriched combatants and compare attackAnimId to what we last set.
+    [...t0, ...t1].forEach((c) => {
+      const last = retriggered.get(c.cardId);
+      if (c.attackAnimId && c.attackAnimId !== last) {
+        retriggered.set(c.cardId, c.attackAnimId);
+        window.retriggerCombatantAnim?.(c.cardId);
+      } else if (!c.attackAnimId && last) {
+        retriggered.set(c.cardId, '');
+      }
+    });
+  };
+
+  window.retriggerCombatantAnim = (cardId) => {
+    const el = document.querySelector(`[combatant-wrap="${cardId}"]`);
+    if (!el) return;
+    el.style.animationName = 'none';
+    requestAnimationFrame(() => { el.style.animationName = ''; });
   };
 
   const playSfx = (sfx) => {
-    const variant = sfx.variants[Math.floor(Math.random() * sfx.variants.length)];
+    const variant = sfx.variants?.[Math.floor(Math.random() * sfx.variants.length)];
     const src = window.AUDIO?.[variant];
     if (!src || !window.Howl) return;
-    new window.Howl({
-      src: [src],
-      volume: ($.settings?.volume?.combat ?? 1) * ($.settings?.volume?.master ?? 0.5)
-    }).play();
+    try {
+      new window.Howl({
+        src: [src],
+        volume: ($.settings?.volume?.combat ?? 1) * ($.settings?.volume?.master ?? 0.5)
+      }).play();
+    } catch { }
   };
 
   const loop = (timestamp) => {
     if (!lastTimestamp) lastTimestamp = timestamp;
-
     const deltaTime = timestamp - lastTimestamp;
     $.elapsedMilliseconds += deltaTime;
     lastTimestamp = timestamp;
 
-    // Process next event from front of queue (shifts events off as they're consumed)
     const event = $.combat.events[0];
     if (event && $.elapsedMilliseconds > event.eventTimestamp) {
       $.liveTeams = event.teams;
       $.combat.events = $.combat.events.slice(1);
-      // Flatten combat display for Vibe template binding
-      updateCombatDisplay();
     }
 
-    // Play combat audio SFX as their start times are reached
     while (audioQueue.length && audioQueue[0].start <= $.elapsedMilliseconds) {
       playSfx(audioQueue.shift());
     }
 
-    // Spawn floating damage/heal numbers
-    checkFloaters();
+    // Re-enrich every tick (cheap, keeps anim state fresh)
+    updateCombatDisplay();
 
-    // Combat ended
     if ($.elapsedMilliseconds > $.combat.duration) {
       $.liveTeams = $.combat.teamsEndState;
       updateCombatDisplay();
       cancelAnimationFrame(animationId);
       animationId = null;
 
-      // Sync character health directly (matching original InCombat behavior)
       $.characters.forEach(character => {
         const myCharacter = $.liveTeams[0]?.combatants?.find(c => c.uuid === character.uuid);
         if (myCharacter) {
@@ -121,11 +225,7 @@ export const init = () => {
     animationId = requestAnimationFrame(loop);
   };
 
-  const pauseCombat = () => {
-    cancelAnimationFrame(animationId);
-    animationId = null;
-  };
-
+  const pauseCombat = () => { cancelAnimationFrame(animationId); animationId = null; };
   const resumeCombat = () => {
     if ($.combat.duration > 0 && $.elapsedMilliseconds < $.combat.duration) {
       lastTimestamp = 0;
@@ -140,11 +240,8 @@ export const init = () => {
     if (current.combat?.duration > 0 && !prev.combat?.duration && !animationId) {
       lastTimestamp = 0;
       $.elapsedMilliseconds = 0;
-      // Build sorted audio queue from combat audio data
       audioQueue = [...(current.combat.audio || [])].sort((a, b) => a.start - b.start);
-      audioPlayed = new Set();
-      shownVfx.clear();
-      // Initial display from teamsStartState
+      retriggered.clear();
       $.liveTeams = current.combat.teamsStartState;
       updateCombatDisplay();
       animationId = requestAnimationFrame(loop);
