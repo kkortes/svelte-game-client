@@ -1,5 +1,5 @@
-import vibe from '/nodemodules/@ape-egg/vibe/index.js';
-import { boot as vibeBoot } from '/nodemodules/@ape-egg/vibe/boot.js';
+import vibe from '@ape-egg/vibe';
+import { boot as vibeBoot } from '@ape-egg/vibe/boot';
 import appState, { INITIAL_COMBAT } from '/js/app.js';
 import config from '/js/config.js';
 import { getCookie } from '/js/helpers.js';
@@ -18,7 +18,7 @@ import {
   allowedNumberOfCharacters,
   getExperienceReward
 } from '/js/level.js';
-import { Howl } from '/js/lib/howler.js';
+import { Howl } from 'howler';
 import AUDIO from '/js/audio.js';
 import { correctHealth } from '/js/equipment.js';
 import { notify } from '/js/actions.js';

@@ -83,7 +83,6 @@ js/boot.js              — app bootstrap: parses route, seeds $, wires services
 js/app.js               — initial global state shape
 js/                     — core modules (app state, game logic, services)
 js/constants/           — game data (abilities, characters, equipment, fights)
-js/lib/                 — ESM wrappers for CJS packages (seedrandom, howler)
 components/             — Vibe HTML components (Layout, Authorization, Sidebar, Topbar, …)
 static/                 — images, audio, favicon
 svelte-game-server/     — WebSocket game server (unchanged)

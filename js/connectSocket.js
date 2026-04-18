@@ -1,5 +1,5 @@
 import config from '/js/config.js';
-import AsyncAwaitWebsocket from '/nodemodules/async-await-websockets/client.js';
+import AsyncAwaitWebsocket from 'async-await-websockets';
 import { notify } from '/js/actions.js';
 
 let saveTimeout = null;
