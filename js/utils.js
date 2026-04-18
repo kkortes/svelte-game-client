@@ -1,4 +1,4 @@
-import seedRandom from '/js/lib/seedrandom.js';
+import seedRandom from 'seedrandom';
 import { COMBAT_TICK_TIME, COMBAT_RING_BASE_RADIUS } from '/js/constants/APP.js';
 import EQUIPMENT from '/js/constants/EQUIPMENT.js';
 import ABILITIES from '/js/constants/ABILITIES.js';
