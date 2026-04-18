@@ -70,7 +70,7 @@
         <component src="/components/TitleBar.html" title="Debug"></component>
         <hr />
 
-        <card debug-card>
+        <card debug-card w-full>
           <crow vertical g-4>
             <crow justify-between align-center>
               <span text-sm text-muted>Teams</span>
@@ -97,7 +97,7 @@
           </crow>
         </card>
 
-        <card debug-card>
+        <card debug-card w-full>
           <crow vertical g-4>
             <crow justify-between>
               <span text-sm text-muted>Characters</span>
@@ -130,7 +130,6 @@
     }
 
     page[debug] [debug-card] {
-      width: 100%;
       max-width: calc(var(--unit) * 125);
     }
   </style>

@@ -1,5 +1,5 @@
 <!-- if back -->
-<button title-back tertiary onclick="window.location.href='@[back]'">&#x2039; Back</button>
+<button title-back tertiary absolute py="0.5" px-2 onclick="window.location.href='@[back]'">&#x2039; Back</button>
 <!-- /if -->
 
 <crow justify-between w-full g-4>
@@ -23,10 +23,8 @@
 
 <style>
   [battle-brawlers] [title-back] {
-    position: absolute;
     top: calc(var(--unit) * -7);
     left: calc(var(--unit) * -5.5);
     font-size: 0.75rem;
-    padding: calc(var(--unit) * 0.5) calc(var(--unit) * 2);
   }
 </style>

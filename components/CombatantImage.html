@@ -1,28 +1,28 @@
-<combatant-sprite combatant-wrap="@[c.cardId]"
-  attack-class="@[c.attackClass]"
-  hurt="@[c.hurtActive]"
-  block="@[c.blockActive]"
-  attack-blocked="@[c.attackBlocked]"
-  whirlwind="@[c.whirlwindActive]"
-  attack-dodged="@[c.attackDodgedActive]"
-  knocked-out="@[c.knockedOut]"
+<combatant-sprite absolute combatant-wrap="@[combatCards[idx].cardId]"
+  attack-class="@[combatCards[idx].attackClass]"
+  hurt="@[combatCards[idx].hurtActive]"
+  block="@[combatCards[idx].blockActive]"
+  attack-blocked="@[combatCards[idx].attackBlocked]"
+  whirlwind="@[combatCards[idx].whirlwindActive]"
+  attack-dodged="@[combatCards[idx].attackDodgedActive]"
+  knocked-out="@[combatCards[idx].knockedOut]"
   style="
-    --position-x: @[c.x]px;
-    --position-y: @[c.y]px;
-    --attack-start-x: @[c.attackStartX]px;
-    --attack-start-y: @[c.attackStartY]px;
-    --attack-end-x: @[c.attackEndX]px;
-    --attack-end-y: @[c.attackEndY]px;
-    --attack-duration: @[c.attackDuration]ms;
-    --dir: @[c.dir];
-    --sprite-height: @[c.spriteHeight]px;
+    --position-x: @[combatCards[idx].x]px;
+    --position-y: @[combatCards[idx].y]px;
+    --attack-start-x: @[combatCards[idx].attackStartX]px;
+    --attack-start-y: @[combatCards[idx].attackStartY]px;
+    --attack-end-x: @[combatCards[idx].attackEndX]px;
+    --attack-end-y: @[combatCards[idx].attackEndY]px;
+    --attack-duration: @[combatCards[idx].attackDuration]ms;
+    --dir: @[combatCards[idx].dir];
+    --sprite-height: @[combatCards[idx].spriteHeight]px;
   ">
-  <sprite-inner>
-    <img class="combatant-avatar" src="@[c.imageUrl]"
-      alt="@[c.name]"
+  <sprite-inner flex down>
+    <img class="combatant-avatar" src="@[combatCards[idx].imageUrl]"
+      alt="@[combatCards[idx].name]"
       onerror="if(!this.src.includes('@['))this.style.display='none'" />
-    <sprite-hurt-mask style="--img: url('@[c.imageUrl]');"></sprite-hurt-mask>
-    <sprite-block>
+    <sprite-hurt-mask absolute style="--img: url('@[combatCards[idx].imageUrl]');"></sprite-hurt-mask>
+    <sprite-block absolute>
       <img src="/static/images/shield.png" alt="" />
     </sprite-block>
   </sprite-inner>
@@ -30,7 +30,6 @@
 
 <style>
   [battle-brawlers] combatant-sprite {
-    position: absolute;
     top: 50%;
     left: 50%;
     width: 0;
@@ -43,8 +42,6 @@
   }
 
   [battle-brawlers] sprite-inner {
-    display: flex;
-    flex-direction: column;
     align-items: center;
     width: 144px;
     height: var(--sprite-height, 144px);
@@ -66,7 +63,6 @@
   }
 
   [battle-brawlers] sprite-hurt-mask {
-    position: absolute;
     inset: 0;
     background-color: transparent;
     mix-blend-mode: multiply;
@@ -86,7 +82,6 @@
   }
 
   [battle-brawlers] sprite-block {
-    position: absolute;
     inset: 0;
     display: grid;
     place-items: center;

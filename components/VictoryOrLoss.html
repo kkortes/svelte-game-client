@@ -1,8 +1,8 @@
-<victory-or-loss outcome="@[combatOutcome]">
+<victory-or-loss relative w-full outcome="@[combatOutcome]">
   <!-- if combatOutcome === 'victory' -->
-  <victory-halo></victory-halo>
+  <victory-halo absolute></victory-halo>
   <!-- /if -->
-  <outcome-icon>
+  <outcome-icon block>
     <!-- if combatOutcome === 'victory' -->
     <icon victory></icon>
     <!-- /if -->
@@ -19,15 +19,12 @@
 
 <style>
   [battle-brawlers] victory-or-loss {
-    position: relative;
     display: grid;
     place-items: center;
-    width: 100%;
   }
 
   [battle-brawlers] victory-halo {
     pointer-events: none;
-    position: absolute;
     top: 50%;
     left: 50%;
     width: 200%;
@@ -51,7 +48,6 @@
   }
 
   [battle-brawlers] outcome-icon {
-    display: block;
     font-size: 5rem;
   }
 

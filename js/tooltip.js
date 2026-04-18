@@ -49,3 +49,49 @@ const tooltip = (node, item) => {
 };
 
 export { tooltip };
+
+export const equipmentTooltipProps = (item) => ({
+  name: item.name,
+  level: item.level,
+  combatStats: item.combatStats,
+  slotsIn: item.slotsIn,
+  description: item.description
+});
+
+export const abilityTooltipProps = (ability) => ({
+  name: ability.name,
+  ticks: ability.ticks,
+  basic: ability.basic,
+  description: ability.description
+});
+
+export const delegateTooltip = (container, selector, mapper, anchor) => {
+  if (!container) return;
+
+  const onEnter = (e) => {
+    if (!e.target?.closest) return;
+    const row = e.target.closest(selector);
+    if (!row || !container.contains(row)) return;
+
+    const rows = [...container.querySelectorAll(selector)];
+    const idx = rows.indexOf(row);
+    const props = mapper(row, idx);
+    if (!props) return;
+
+    const anchorEl = anchor ? anchor(row) : row;
+    const rect = anchorEl.getBoundingClientRect();
+    $.tooltip = {
+      x: rect.left + rect.width / 2,
+      y: rect.top,
+      visible: true,
+      props
+    };
+  };
+
+  const onLeave = (e) => {
+    if (e.target?.closest?.(selector) && $.tooltip) $.tooltip.visible = false;
+  };
+
+  container.addEventListener('mouseenter', onEnter, true);
+  container.addEventListener('mouseleave', onLeave, true);
+};

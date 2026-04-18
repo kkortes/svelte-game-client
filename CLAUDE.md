@@ -53,7 +53,7 @@ The original SvelteKit project had these components (`src/components/`). Each sh
 - **CSS**: Stylecheat (hybrid build) — attribute-based CSS framework
 - **Dev server**: Vite (`bunx vite`, port 3001) via `vite-plugin-vibe` for HMR. A custom `mpa-routes` middleware in `vite.config.js` maps URLs to `pages/*.html` (including dynamic routes like `/brawlers/:i` → `pages/brawler-detail.html`)
 - **Packages**: async-await-websockets, howler, seedrandom
-- **Vibe source**: Symlinked from `/Users/kortes/Projects/webdev/vibe/nodemodules/@ape-egg/vibe` (also `vite-plugin-vibe`)
+- **Vibe source**: Symlinked from `/Users/kortes/Projects/webdev/vibe/node_modules/@ape-egg/vibe` (also `vite-plugin-vibe`)
 
 ## Conventions
 
@@ -71,6 +71,7 @@ The original SvelteKit project had these components (`src/components/`). Each sh
 - **No string methods with quotes in `@[...]` inside `src` attributes**: `@[x.replace('.png', '-mugshot.png')]` fails because single quotes inside Vibe expressions conflict with HTML attribute parsing. Precompute the value in JS instead.
 - **Flatten deeply nested data for `<!-- each -->` loops**: Vibe's each-loop variable binding works best with flat top-level arrays on `$`. Deeply nested paths like `liveTeams[0].combatants` may not resolve properties in `@[c.name]`. Precompute flat arrays (e.g., `$.combatTeam0`) with simple property names.
 - **`onerror` on images with `@[...]` src**: Vibe briefly sets `src` to the literal `@[expr]` string before resolving, causing a 404. Guard onerror handlers: `onerror="if(!this.src.includes('@['))this.style.display='none'"`
+- **Responsive**: the entire game must work on smartphone (down to ~360px). Use Stylecheat responsive modifiers (`sm:` ≤768px, `md:` 768–1024px, `lg:` >1024px) — e.g. `sm:vertical`, `sm:hide`, `sm:block`, `sm:g-2`. Prefer attribute-based responsive variants over `@media` queries; fall back to `@media (width <= 768px)` only when Stylecheat doesn't cover the case (custom sizing, layout rewrites).
 
 ## File Structure
 
@@ -107,23 +108,23 @@ Run from `svelte-game-server/`: `bun run index.js` (port 1337). Config in `js/co
 
 **Combat (Combat.html):**
 
-- [ ] Card-based grid instead of circular arena with character sprites
-- [ ] No combatant sprites rendered
+- [x] Card-based grid instead of circular arena with character sprites
+- [x] No combatant sprites rendered
 - [x] Floating damage numbers: selectors verified matching
-- [ ] No ability bars in combat display
+- [x] No ability bars in combat display
 - [x] Status effects sorted (precomputed in combat-loop, rendered via each loops)
 
 **Pages:**
 
-- [ ] Brawler detail: DnD causes `window.location.reload()` — original updates in-place reactively
-- [ ] Brawlers page: `brawlerCharCapped` computed once, not reactive
-- [ ] Arena: `hideTreshold` (fight locking) computed once, not reactive
+- [x] Brawler detail: DnD causes `window.location.reload()` — original updates in-place reactively
+- [x] Brawlers page: `brawlerCharCapped` computed once, not reactive
+- [x] Arena: `hideTreshold` (fight locking) computed once, not reactive
 - [x] Fight detail: mugshot image `.replace()` inside `@[...]` breaks Vibe attribute parsing
 
 **Components:**
 
 - [x] Notifications: auto-dismiss via setTimeout in actions.js (hover pause is polish)
-- [ ] Dialog: only supports confirm type — original accepts any component
+- [x] Dialog: only supports confirm type — original accepts any component
 - [x] AccountProgression: claim sound effect + auto-close on current level
 - [x] AccountProgression: auto-scroll to current level on open
 - [x] Layout: armory sidebar transition (opacity + translate via visible attr)

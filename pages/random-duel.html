@@ -25,7 +25,7 @@
     window.updateFightSlots = () => {
       const C = window.CHARACTERS || CHARACTERS;
       const A = window.ABILITIES_FN;
-      $.pvpSlots = Array.from({ length: count }, (_, i) => {
+      $.brawlerSlots = Array.from({ length: count }, (_, i) => {
         const uuid = $.selectedBrawlers[i];
         if (!uuid) return { empty: true, index: i };
         const ref = $.characters.find(c => c.uuid === uuid);
@@ -86,41 +86,15 @@
       </component>
       <hr />
 
-      <crow pvp-opponent>
-        <crow pvp-mystery>
+      <crow py-4>
+        <crow pvp-mystery flex-none>
           ?
         </crow>
       </crow>
 
       <crow vertical w-full g-2 mt-4>
-        <!-- each pvpSlots as slot -->
-        <!-- if slot.empty -->
-        <crow pvp-slot-empty>
-          <!-- if slot.index === 0 -->
-          <h5>select a brawler</h5>
-          <!-- /if -->
-          <!-- if slot.index > 0 -->
-          <h5>slot @[slot.index + 1]</h5>
-          <!-- /if -->
-        </crow>
-        <!-- /if -->
-        <!-- if !slot.empty -->
-        <crow pvp-slot-filled left g-2>
-          <pvp-slot-avatar glass>
-            <img data-src="/static/images/races/@[slot.mugshot]" alt="" pvp-slot-img />
-          </pvp-slot-avatar>
-          <crow vertical left pvp-slot-info>
-            <span font-medium text-sm>@[slot.name]</span>
-            <pvp-slot-abilities>
-              <!-- each slot.abilities as ab -->
-              <pvp-slot-ability style="width: calc(12px * @[ab.ticks])">
-                <icon @[ab.icon]></icon>
-              </pvp-slot-ability>
-              <!-- /each -->
-            </pvp-slot-abilities>
-          </crow>
-        </crow>
-        <!-- /if -->
+        <!-- each brawlerSlots as slot, i -->
+        <component src="/components/BrawlerSlot.html" idx="@[i]"></component>
         <!-- /each -->
       </crow>
     </page-content>
@@ -133,94 +107,16 @@
     </stay>
   </component>
   <style>
-    page[random-duel] [pvp-opponent] {
-      justify-content: center;
-      padding: calc(var(--unit) * 4) 0;
-    }
-
     page[random-duel] [pvp-mystery] {
       width: calc(var(--unit) * 40);
       height: calc(var(--unit) * 40);
       border-radius: 50%;
       background: rgba(0, 0, 0, 0.25);
-      display: flex;
-      align-items: center;
-      justify-content: center;
       font-size: 6rem;
       color: white;
-      flex: none;
-    }
-
-    page[random-duel] [pvp-slot-empty] {
-      width: 100%;
-      height: calc(var(--unit) * 19.5);
-      flex: none;
-      border: 1px dashed var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-    }
-
-    page[random-duel] [pvp-slot-filled] {
-      width: 100%;
-      height: calc(var(--unit) * 19.5);
-      flex: none;
-      border: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      padding: calc(var(--unit) * 2) calc(var(--unit) * 4);
-      background: rgba(255, 255, 255, 0.3);
-    }
-
-    page[random-duel] pvp-slot-avatar {
-      display: block;
-      width: calc(var(--unit) * 12);
-      height: calc(var(--unit) * 12);
-      flex: none;
-      border-radius: var(--unit);
-      overflow: hidden;
-      border: 1px solid rgba(75, 85, 99, 1);
-    }
-
-    page[random-duel] [pvp-slot-img] {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    page[random-duel] [pvp-slot-info] {
-      flex: 1;
-      min-width: 0;
-      overflow: hidden;
-    }
-
-    page[random-duel] pvp-slot-abilities {
-      display: flex;
-      border: 0.5px solid rgb(120, 113, 108);
-      border-radius: 0 0 var(--unit) var(--unit);
-      background: rgb(214, 211, 209);
-      overflow: hidden;
-      max-width: calc(var(--unit) * 45);
-    }
-
-    page[random-duel] pvp-slot-ability {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: calc(var(--unit) * 5);
-      flex: none;
-      border-right: 0.5px solid rgb(120, 113, 108);
-      color: rgb(120, 113, 108);
-      font-size: 0.75rem;
-    }
-
-    page[random-duel] pvp-slot-ability:last-child {
-      border-right: none;
     }
 
     page[random-duel] stay {
-      justify-content: center;
       background: var(--background);
     }
 

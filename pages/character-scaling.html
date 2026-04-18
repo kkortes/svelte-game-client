@@ -17,6 +17,7 @@
     import CHARACTERS, { ALL_CHARACTERS } from '/js/constants/CHARACTERS.js';
     import EQUIPMENT from '/js/constants/EQUIPMENT.js';
     import { calculateCombatStatsByCharacter } from '/js/utils.js';
+    import { slotsInPrettyName } from '/js/equipment.js';
 
     $.charChoices = Object.keys(ALL_CHARACTERS);
     $.chosenChar = 'elfMale';
@@ -41,9 +42,41 @@
         return {
           level,
           name: hydrated.name,
+          charLevel: hydrated.level || 0,
           maxHealth: stats.maxHealth || 0,
           maxArmor: stats.maxArmor || 0,
           damage: stats.damage || 0
+        };
+      });
+
+      // Bottom equipment section — built from the max-level (25) character.
+      const topRef = CHARACTERS($.chosenChar, false, {
+        overrides: {
+          level: $.charScaling ? 25 : 1,
+          equipment: {
+            mainHand: { overrides: { level: $.equipScaling ? 25 : 0 } },
+            offHand: { overrides: { level: $.equipScaling ? 25 : 0 } },
+            armor: { overrides: { level: $.equipScaling ? 25 : 0 } }
+          }
+        }
+      });
+      const top = CHARACTERS(topRef, true);
+      const mainHandHydrated = top.equipment.mainHand
+        ? EQUIPMENT(top.equipment.mainHand, true)
+        : null;
+
+      $.charEquipmentSlots = Object.entries(top.equipment).map(([slot, eq]) => {
+        const h = eq ? EQUIPMENT(eq, true) : null;
+        const isTwoHandOff = slot === 'offHand' && mainHandHydrated?.slotsIn === 'twoHand';
+        return {
+          slot,
+          slotLabel: slotsInPrettyName(slot),
+          emptyFist: (slot === 'mainHand' || slot === 'offHand') && !h && !isTwoHandOff,
+          twoHandName: isTwoHandOff ? mainHandHydrated.name : '',
+          hasEquipment: !!h && !isTwoHandOff,
+          name: h?.name || '',
+          level: h?.level || 0,
+          empty: !h && !isTwoHandOff && slot !== 'mainHand' && slot !== 'offHand'
         };
       });
     };
@@ -62,16 +95,16 @@
         <hr />
 
         <crow left g-4>
-          <crow g-2>
+          <label crow left g-2 for="charScaling" text-sm>
             <input type="checkbox" id="charScaling" checked
               onchange="toggleCharScaling(this.checked)" />
-            <label for="charScaling" text-sm>Character scaling</label>
-          </crow>
-          <crow g-2>
+            Character scaling
+          </label>
+          <label crow left g-2 for="equipScaling" text-sm>
             <input type="checkbox" id="equipScaling" checked
               onchange="toggleEquipScaling(this.checked)" />
-            <label for="equipScaling" text-sm>Equipment scaling</label>
-          </crow>
+            Equipment scaling
+          </label>
         </crow>
 
         <select onchange="changeChar(this.value)">
@@ -82,29 +115,36 @@
 
         <crow vertical left g-2 w-full>
           <!-- each charPool as ch -->
-          <crow left justify-between g-4 w-full scaling-row>
+          <crow left justify-between g-2 w-full>
             <crow left g-2>
-              <span scaling-label>level @[ch.level]</span>
-              <eq-link
-                tier="@[ch.level >= 25 ? 'red' : ch.level >= 20 ? 'orange' : ch.level >= 15 ? 'purple' : ch.level >= 10 ? 'blue' : ch.level >= 5 ? 'green' : 'gray']">
-                <eq-bg-center></eq-bg-center>
-                <eq-bg-left></eq-bg-left>
-                <eq-bg-right></eq-bg-right>
-                <crow eq-name left>@[ch.name]</crow>
-              </eq-link>
+              <span>level @[ch.level]</span>
+              <component src="/components/EquipmentLink.html" level="@[ch.charLevel]" name="@[ch.name]"></component>
             </crow>
-            <crow g-2 text-sm text-muted>
-              <crow g-1>
-                <icon maxHealth></icon> @[ch.maxHealth]
-              </crow>
-              <span>/</span>
-              <crow g-1>
-                <icon maxArmor></icon> @[ch.maxArmor]
-              </crow>
-              <span>/</span>
-              <crow g-1>
-                <icon damage></icon> @[ch.damage]
-              </crow>
+            <component src="/components/CoreStats.html"
+              hp="@[ch.maxHealth]" armor="@[ch.maxArmor]" damage="@[ch.damage]"></component>
+          </crow>
+          <!-- /each -->
+        </crow>
+
+        <crow vertical left g-2 w-full p-4 char-equipment-block>
+          <h5>Equipment</h5>
+          <hr />
+          <!-- each charEquipmentSlots as s -->
+          <crow left justify-between g-2 w-full>
+            <crow left g-2>
+              <span flex-none slot-label w="20">@[s.slotLabel]</span>
+              <!-- if s.hasEquipment -->
+              <component src="/components/EquipmentLink.html" level="@[s.level]" name="@[s.name]"></component>
+              <!-- /if -->
+              <!-- if s.emptyFist -->
+              <span text-muted>Fist</span>
+              <!-- /if -->
+              <!-- if s.twoHandName -->
+              <span text-muted>@[s.twoHandName]</span>
+              <!-- /if -->
+              <!-- if s.empty -->
+              <span text-muted>-</span>
+              <!-- /if -->
             </crow>
           </crow>
           <!-- /each -->
@@ -113,21 +153,11 @@
     </page-content>
   </component>
   <style>
-    page[character-scaling] select {
-      padding: var(--unit) calc(var(--unit) * 2);
-      border: 1px solid var(--border);
+    page[character-scaling] [char-equipment-block] {
+      background: #f3f4f6;
       border-radius: var(--radius);
     }
 
-    page[character-scaling] [scaling-row] {
-      align-items: center;
-    }
-
-    page[character-scaling] [scaling-label] {
-      width: calc(var(--unit) * 15);
-      flex: none;
-      font-size: 0.875rem;
-    }
   </style>
 </body>
 

@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Fira+Sans+Condensed:wght@300;400;500;600;700&family=Cinzel:wght@400;500;600;700&family=Alfa+Slab+One&family=Bree+Serif&display=swap');
-@import url('/nodemodules/@ape-egg/vibe/vibe.css');
+@import url('/node_modules/@ape-egg/vibe/vibe.css');
 @import url('/css/stylecheat.css');
 @import url('/css/Iconice.css');
 
@@ -287,6 +287,13 @@ page-content {
   flex: 1;
   padding: calc(var(--unit) * 6);
   gap: calc(var(--unit) * 4);
+}
+
+@media (width <= 768px) {
+  page-content {
+    padding: calc(var(--unit) * 3);
+    gap: calc(var(--unit) * 3);
+  }
 }
 
 spinner {

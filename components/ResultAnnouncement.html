@@ -1,13 +1,13 @@
 <!-- if combatEnded -->
 <result-announcement onclick="event.stopPropagation()">
-  <result-panel>
+  <result-panel flex down g-3 p-4>
     <component src="/components/VictoryOrLoss.html"></component>
 
     <!-- if combatOutcome === 'victory' -->
-    <rewards-panel>
+    <rewards-panel flex down g-2 p-3 w-full>
       <rewards-title>rewards</rewards-title>
       <hr />
-      <rewards-list>
+      <rewards-list flex down g-1>
         <!-- if combatRewardXp -->
         <reward-row>+@[combatRewardXp] XP</reward-row>
         <!-- /if -->
@@ -16,14 +16,14 @@
         <!-- /if -->
       </rewards-list>
       <hr />
-      <result-actions>
+      <result-actions flex mt-1>
         <button golden-btn onclick="claimCombatReward()">claim</button>
       </result-actions>
     </rewards-panel>
     <!-- /if -->
 
     <!-- if combatOutcome !== 'victory' -->
-    <result-actions>
+    <result-actions flex>
       <button tertiary onclick="closeCombatOverlay()">Go back</button>
     </result-actions>
     <!-- /if -->
@@ -47,25 +47,16 @@
   }
 
   [battle-brawlers] result-panel {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: calc(var(--unit) * 3);
-    padding: calc(var(--unit) * 4);
     min-width: calc(var(--unit) * 70);
     text-align: center;
   }
 
   [battle-brawlers] rewards-panel {
-    display: flex;
-    flex-direction: column;
-    gap: calc(var(--unit) * 2);
-    padding: calc(var(--unit) * 3);
     background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(8px);
     border-radius: var(--radius);
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
-    width: 100%;
+    align-items: stretch;
   }
 
   [battle-brawlers] rewards-title {
@@ -76,9 +67,6 @@
   }
 
   [battle-brawlers] rewards-list {
-    display: flex;
-    flex-direction: column;
-    gap: calc(var(--unit));
     align-items: center;
     color: white;
   }
@@ -92,9 +80,7 @@
   }
 
   [battle-brawlers] result-actions {
-    display: flex;
     justify-content: center;
-    margin-top: calc(var(--unit));
   }
 
   [battle-brawlers] [golden-btn] {

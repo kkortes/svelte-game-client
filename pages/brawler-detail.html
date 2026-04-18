@@ -21,6 +21,7 @@
     import { slotsInPrettyName, unequip } from '/js/equipment.js';
     import { getLevelByExperience } from '/js/level.js';
     import { generateCombat, healFull, prepareTeams } from '/js/combat.js';
+    import { delegateTooltip, equipmentTooltipProps, abilityTooltipProps } from '/js/tooltip.js';
 
     // Wrap the whole character-setup in a function so we can re-run it when
     // $.characters arrives from the server (on fresh page load, the socket
@@ -203,6 +204,14 @@
     import('/js/dnd.js').then(({ default: dnd }) => {
       dnd.init();
 
+      // Track whether a basic ability is being dragged — basic abilities
+      // can only reorder within the bar (dropFromOthersDisabled on the
+      // inventory) and are locked to the horizontal axis.
+      const dndFlags = { draggingBasic: false };
+
+      const characterRef = () => $.characters[Number($.routeParams.characterIndex)];
+      const zoneType = () => characterRef()?.uuid || 'abilities';
+
       // Wait for Vibe to hydrate the ability bar elements
       setTimeout(() => {
         const abilityOverlay = document.querySelector('ability-overlay');
@@ -211,22 +220,28 @@
         if (abilityOverlay) {
           dnd.zone(abilityOverlay, {
             items: () => $.currentAbilities,
-            group: 'abilities',
+            type: zoneType(),
             direction: 'horizontal',
-            onReorder: (newItems) => {
-              const characterRef = $.characters[Number($.routeParams.characterIndex)];
-              if (characterRef) {
-                characterRef.overrides.abilities = newItems.map(a => ({ id: a.id, uuid: a.uuid, overrides: a.overrides }));
-                window.location.reload();
-              }
+            constrainAxisY: () => dndFlags.draggingBasic,
+            transformDraggedElement: (ghost, data) => {
+              dndFlags.draggingBasic = !!data?.basic;
+              $.tooltip = undefined;
             },
-            onReceive: (item, fromZone, insertIndex) => {
-              const characterRef = $.characters[Number($.routeParams.characterIndex)];
-              if (!characterRef) return;
-              const current = characterRef.overrides.abilities.slice();
+            onReorder: (newItems) => {
+              const ref = characterRef();
+              if (!ref) return;
+              ref.overrides.abilities = newItems.map(a => ({ id: a.id, uuid: a.uuid, overrides: a.overrides }));
+              setupCharacter();
+              $.characters = [...$.characters];
+            },
+            onReceive: (item, _fromZone, insertIndex) => {
+              const ref = characterRef();
+              if (!ref) return;
+              const current = ref.overrides.abilities.slice();
               current.splice(insertIndex, 0, { id: item.id, uuid: item.uuid, overrides: item.overrides });
-              characterRef.overrides.abilities = current;
-              window.location.reload();
+              ref.overrides.abilities = current;
+              setupCharacter();
+              $.characters = [...$.characters];
             }
           });
         }
@@ -234,113 +249,47 @@
         if (availableGrid) {
           dnd.zone(availableGrid, {
             items: () => $.currentAvailableAbilities,
-            group: 'abilities',
-            direction: 'horizontal',
-            onReceive: (item, fromZone, insertIndex) => {
-              const characterRef = $.characters[Number($.routeParams.characterIndex)];
-              if (characterRef) {
-                // Remove from active, it'll re-appear in available on refresh
-                characterRef.overrides.abilities = characterRef.overrides.abilities.filter(a => a.uuid !== item.uuid);
-                window.location.reload();
-              }
+            type: zoneType(),
+            direction: 'grid',
+            dropFromOthersDisabled: () => dndFlags.draggingBasic,
+            transformDraggedElement: (ghost) => {
+              const ticks = ghost.querySelector('ability-tick-count');
+              if (ticks) ticks.remove();
+              $.tooltip = undefined;
+            },
+            onReceive: (item) => {
+              const ref = characterRef();
+              if (!ref) return;
+              ref.overrides.abilities = ref.overrides.abilities.filter(a => a.uuid !== item.uuid);
+              setupCharacter();
+              $.characters = [...$.characters];
             }
           });
         }
-        // Ability tooltips
-        const abilityBar = document.querySelector('page-content ability-bar');
-        if (abilityBar) {
-          abilityBar.addEventListener('mouseenter', (e) => {
-            const cell = e.target.closest('ability-segment');
-            if (!cell) return;
-            const cells = [...abilityBar.querySelectorAll('ability-segment')];
-            const idx = cells.indexOf(cell);
-            const ability = $.currentAbilities[idx];
-            if (!ability) return;
+        delegateTooltip(
+          document.querySelector('page-content ability-bar'),
+          'ability-segment',
+          (_, idx) => abilityTooltipProps($.currentAbilities[idx])
+        );
 
-            const rect = cell.getBoundingClientRect();
-            $.tooltip = {
-              x: rect.left + rect.width / 2,
-              y: rect.top,
-              visible: true,
-              props: {
-                name: ability.name,
-                ticks: ability.ticks,
-                description: ability.description || '',
-                basic: ability.basic
-              }
-            };
-          }, true);
+        delegateTooltip(
+          document.querySelector('page-content [available-grid]'),
+          'available-ability',
+          (_, idx) => abilityTooltipProps($.currentAvailableAbilities[idx])
+        );
 
-          abilityBar.addEventListener('mouseleave', (e) => {
-            if (e.target.closest('ability-segment') && $.tooltip) $.tooltip.visible = false;
-          }, true);
-        }
-
-        // Available ability tooltips
-        const availGrid = document.querySelector('page-content [available-grid]');
-        if (availGrid) {
-          availGrid.addEventListener('mouseenter', (e) => {
-            const cell = e.target.closest('available-ability');
-            if (!cell) return;
-            const cells = [...availGrid.querySelectorAll('available-ability')];
-            const idx = cells.indexOf(cell);
-            const ability = $.currentAvailableAbilities[idx];
-            if (!ability) return;
-
-            const rect = cell.getBoundingClientRect();
-            $.tooltip = {
-              x: rect.left + rect.width / 2,
-              y: rect.top,
-              visible: true,
-              props: {
-                name: ability.name,
-                ticks: ability.ticks,
-                description: ability.description || '',
-                basic: ability.basic
-              }
-            };
-          }, true);
-
-          availGrid.addEventListener('mouseleave', (e) => {
-            if (e.target.closest('available-ability') && $.tooltip) $.tooltip.visible = false;
-          }, true);
-        }
-        // Equipment slot tooltips
-        const eqSection = document.querySelector('page-content [eq-section]');
-        if (eqSection) {
-          eqSection.addEventListener('mouseenter', (e) => {
-            const row = e.target.closest('[eq-row]');
-            if (!row) return;
-            const eqLink = row.querySelector('eq-link');
-            if (!eqLink) return;
-
-            const rows = [...eqSection.querySelectorAll('[eq-row]')];
-            const idx = rows.indexOf(row);
-            const slotData = $.currentSlots[idx];
-            if (!slotData?.hasItem || slotData.disabled) return;
-
-            const charRef = $.characters[Number($.routeParams.characterIndex)];
-            const eqRef = charRef?.overrides?.equipment?.[slotData.slot];
-            if (!eqRef) return;
-
-            try {
-              const item = EQUIPMENT(eqRef, true);
-              const rect = eqLink.getBoundingClientRect();
-              $.tooltip = {
-                x: rect.left + rect.width / 2, y: rect.top, visible: true,
-                props: {
-                  name: item.name, level: item.level,
-                  combatStats: item.combatStats, slotsIn: item.slotsIn,
-                  description: item.description
-                }
-              };
-            } catch { }
-          }, true);
-
-          eqSection.addEventListener('mouseleave', (e) => {
-            if (e.target.closest('[eq-row]') && $.tooltip) $.tooltip.visible = false;
-          }, true);
-        }
+        delegateTooltip(
+          document.querySelector('page-content [eq-section]'),
+          '[eq-row]',
+          (_, idx) => {
+            const slot = $.currentSlots[idx];
+            if (!slot?.hasItem || slot.disabled) return null;
+            const ref = $.characters[Number($.routeParams.characterIndex)]?.overrides?.equipment?.[slot.slot];
+            if (!ref) return null;
+            try { return equipmentTooltipProps(EQUIPMENT(ref, true)); } catch { return null; }
+          },
+          (row) => row.querySelector('eq-link') || row
+        );
       }, 500);
     });
   </script>
@@ -376,18 +325,16 @@
         <hr />
 
         <crow left up g-4 w-full main-content>
-          <crow vertical avatar-col>
-            <crow avatar-frame>
-              <img data-src="/static/images/races/@[currentCharacter.image]"
-                alt="@[currentCharacter.name]" portrait-img />
-            </crow>
+          <crow vertical w="20" left flex-none avatar-col>
+            <component src="/components/CharacterAvatar.html" image="@[currentCharacter.image]"
+              size="@[currentCharacter.size]" name="@[currentCharacter.name]"></component>
           </crow>
 
-          <crow vertical detail-col>
+          <crow vertical left f-2 detail-col>
             <stats-accordion open="@[settings.showDetailedCharacterView]">
               <stats-accordion-content>
-                <crow up left g-8 stats-panel>
-                  <crow vertical stats-col>
+                <crow up left g-8 flex-none stats-panel>
+                  <crow vertical left stats-col>
                     <h5>Base Stats</h5>
                     <crow stat-list vertical left g-1>
                       <crow justify-between w-full>
@@ -407,7 +354,7 @@
                       </crow>
                     </crow>
 
-                    <spacer-lg></spacer-lg>
+                    <spacer-lg block h-4></spacer-lg>
 
                     <h5>Lucky Stats</h5>
                     <crow stat-list vertical left g-1 text-green>
@@ -439,7 +386,7 @@
                     </crow>
                   </crow>
 
-                  <crow vertical stats-col>
+                  <crow vertical left stats-col>
                     <h5>Modifiers</h5>
                     <crow stat-list vertical left g-1>
                       <crow justify-between w-full>
@@ -456,7 +403,7 @@
                       </crow>
                     </crow>
 
-                    <spacer-sm></spacer-sm>
+                    <spacer-sm block h-2></spacer-sm>
 
                     <h5>Resistances</h5>
                     <crow stat-list vertical left g-1>
@@ -482,26 +429,25 @@
               </stats-accordion-content>
             </stats-accordion>
 
-            <spacer-sm></spacer-sm>
-            <h5>Equipment</h5>
+            <equipment-heading open="@[settings.showDetailedCharacterView]">
+              <equipment-heading-content>
+                <spacer-sm block h-2></spacer-sm>
+                <h5>Equipment</h5>
+              </equipment-heading-content>
+            </equipment-heading>
 
             <crow vertical left w-full g-2 eq-section>
               <!-- each currentSlots as eq -->
               <crow left justify-between w-full g-2 eq-row>
                 <crow left g-2>
-                  <span eq-slot-label>@[eq.prettyName]</span>
+                  <span flex-none eq-slot-label>@[eq.prettyName]</span>
                   <!-- if eq.disabled -->
                   <span text-muted>@[eq.itemName]</span>
                   <!-- /if -->
                   <!-- if !eq.disabled -->
                   <!-- if eq.hasItem -->
-                  <eq-link
-                    tier="@[eq.level >= 25 ? 'red' : eq.level >= 20 ? 'orange' : eq.level >= 15 ? 'purple' : eq.level >= 10 ? 'blue' : eq.level >= 5 ? 'green' : 'gray']">
-                    <eq-bg-center></eq-bg-center>
-                    <eq-bg-left></eq-bg-left>
-                    <eq-bg-right></eq-bg-right>
-                    <crow eq-name left>@[eq.itemName]</crow>
-                  </eq-link>
+                  <component src="/components/EquipmentLink.html" level="@[eq.level]"
+                    name="@[eq.itemName]"></component>
                   <!-- /if -->
                   <!-- if !eq.hasItem -->
                   <span text-muted>@[eq.itemName]</span>
@@ -510,7 +456,7 @@
                 </crow>
                 <!-- if eq.hasItem -->
                 <!-- if !eq.disabled -->
-                <button tertiary text-xs unequip-btn
+                <button tertiary text-xs unequip-btn py="0.5" px="1.5"
                   onclick="unequipSlot('@[eq.slot]')">Unequip</button>
                 <!-- /if -->
                 <!-- /if -->
@@ -520,7 +466,7 @@
           </crow>
         </crow>
 
-        <spacer-lg></spacer-lg>
+        <spacer-lg block h-4></spacer-lg>
 
         <crow vertical left w-full g-3 ability-section>
           <component small src="/components/TitleBar.html" title="Active Abilities">
@@ -533,11 +479,11 @@
 
           <component small src="/components/TitleBar.html" title="Available Abilities"></component>
 
-          <crow available-grid>
+          <crow available-grid w-full g-2 p-2>
             <!-- each currentAvailableAbilities as ability -->
-            <available-ability dnd-item basic="@[ability.basic]">
+            <available-ability dnd-item flex down flex-none relative basic="@[ability.basic]">
               <icon @[ability.icon]></icon>
-              <ability-tick-count>@[ability.ticks]</ability-tick-count>
+              <ability-tick-count absolute flex b="-2.5">@[ability.ticks]</ability-tick-count>
             </available-ability>
             <!-- /each -->
             <!-- if currentAvailableAbilities.length === 0 -->
@@ -576,28 +522,13 @@
       color: var(--border);
     }
 
-    page[brawlers-characterIndex] [avatar-col] {
-      flex: 1;
-      align-items: flex-start;
-      max-width: calc(var(--unit) * 70);
-    }
-
-    page[brawlers-characterIndex] [avatar-frame] {
+    page[brawlers-characterIndex] char-portrait {
       aspect-ratio: 11/12;
-      width: 100%;
-      border-radius: var(--radius);
-    }
-
-    page[brawlers-characterIndex] [portrait-img] {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+      width: calc(var(--unit) * 36);
     }
 
     page[brawlers-characterIndex] [detail-col] {
-      flex: 2;
       min-width: 0;
-      align-items: flex-start;
     }
 
     page[brawlers-characterIndex] stats-accordion {
@@ -616,53 +547,39 @@
       min-height: 0;
     }
 
-    page[brawlers-characterIndex] [stats-panel] {
-      flex: none;
+    page[brawlers-characterIndex] equipment-heading {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 200ms ease-out;
+      width: 100%;
     }
 
-    page[brawlers-characterIndex] [stats-col] {
-      align-items: flex-start;
+    page[brawlers-characterIndex] equipment-heading[open] {
+      grid-template-rows: 1fr;
+    }
+
+    page[brawlers-characterIndex] equipment-heading-content {
+      overflow: hidden;
+      min-height: 0;
     }
 
     page[brawlers-characterIndex] [stat-list] {
       min-width: calc(var(--unit) * 45);
     }
 
-    page[brawlers-characterIndex] spacer-lg {
-      display: block;
-      height: calc(var(--unit) * 4);
-    }
-
-    page[brawlers-characterIndex] spacer-sm {
-      display: block;
-      height: calc(var(--unit) * 2);
-    }
-
     page[brawlers-characterIndex] [eq-slot-label] {
       width: calc(var(--unit) * 20);
-      flex: none;
     }
 
     page[brawlers-characterIndex] [eq-row] {
       min-height: calc(var(--unit) * 7);
     }
 
-    page[brawlers-characterIndex] [unequip-btn] {
-      padding: calc(var(--unit) * 0.5) calc(var(--unit) * 1.5);
-    }
-
-    page[brawlers-characterIndex] [detail-empty] {
-      align-items: center;
-    }
-
     page[brawlers-characterIndex] [available-grid] {
-      width: 100%;
       flex-wrap: wrap;
       justify-content: flex-start;
-      gap: calc(var(--unit) * 2);
       align-items: flex-start;
       min-height: calc(98px * 3);
-      padding: calc(var(--unit) * 2);
       border: 1px solid var(--border);
       border-radius: calc(var(--unit) * 2);
       background: rgb(249, 250, 251);
@@ -675,12 +592,8 @@
       border: 0.5px solid rgb(156, 163, 175);
       border-radius: var(--unit);
       background: white;
-      display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      position: relative;
-      flex: none;
     }
 
     page[brawlers-characterIndex] available-ability[basic] {
@@ -697,13 +610,10 @@
     }
 
     page[brawlers-characterIndex] available-ability ability-tick-count {
-      position: absolute;
-      bottom: calc(var(--unit) * -2.5);
       left: 50%;
       translate: -50% 0;
       width: calc(var(--unit) * 6);
       height: calc(var(--unit) * 4);
-      display: flex;
       align-items: center;
       justify-content: center;
       font-size: 0.6875rem;
@@ -720,8 +630,8 @@
       }
 
       page[brawlers-characterIndex] [avatar-col] {
-        max-width: 100%;
         width: 100%;
+        align-items: center;
       }
 
       page[brawlers-characterIndex] [stats-panel] {

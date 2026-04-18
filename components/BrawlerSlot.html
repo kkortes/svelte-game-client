@@ -1,0 +1,76 @@
+<!-- if brawlerSlots[idx].empty -->
+<crow brawler-slot-empty text-center w-full flex-none>
+  <!-- if brawlerSlots[idx].index === 0 -->
+  <h5>select a brawler</h5>
+  <!-- /if -->
+  <!-- if brawlerSlots[idx].index > 0 -->
+  <h5>slot @[brawlerSlots[idx].index + 1]</h5>
+  <!-- /if -->
+</crow>
+<!-- /if -->
+<!-- if !brawlerSlots[idx].empty -->
+<crow brawler-slot-filled left g-2 w-full flex-none py-2 px-4>
+  <brawler-slot-avatar glass block w="12" h="12" flex-none overflow-hidden>
+    <img data-src="/static/images/races/@[brawlerSlots[idx].mugshot]" alt="" brawler-slot-img w-full h-full />
+  </brawler-slot-avatar>
+  <crow vertical left brawler-slot-info>
+    <span font-medium text-sm>@[brawlerSlots[idx].name]</span>
+    <brawler-slot-abilities flex>
+      <!-- each brawlerSlots[idx].abilities as ab -->
+      <brawler-slot-ability flex flex-none style="width: calc(12px * @[ab.ticks])">
+        <icon @[ab.icon]></icon>
+      </brawler-slot-ability>
+      <!-- /each -->
+    </brawler-slot-abilities>
+  </crow>
+</crow>
+<!-- /if -->
+
+<style>
+  [battle-brawlers] [brawler-slot-empty] {
+    height: calc(var(--unit) * 19.5);
+    border: 1px dashed var(--border);
+  }
+
+  [battle-brawlers] [brawler-slot-filled] {
+    height: calc(var(--unit) * 19.5);
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  [battle-brawlers] brawler-slot-avatar {
+    border-radius: var(--unit);
+    border: 1px solid rgba(75, 85, 99, 1);
+  }
+
+  [battle-brawlers] [brawler-slot-img] {
+    object-fit: cover;
+  }
+
+  [battle-brawlers] [brawler-slot-info] {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  [battle-brawlers] brawler-slot-abilities {
+    border: 0.5px solid rgb(120, 113, 108);
+    border-radius: 0 0 var(--unit) var(--unit);
+    background: rgb(214, 211, 209);
+    overflow: hidden;
+    max-width: calc(var(--unit) * 45);
+  }
+
+  [battle-brawlers] brawler-slot-ability {
+    align-items: center;
+    justify-content: center;
+    height: calc(var(--unit) * 5);
+    border-right: 0.5px solid rgb(120, 113, 108);
+    color: rgb(120, 113, 108);
+    font-size: 0.75rem;
+  }
+
+  [battle-brawlers] brawler-slot-ability:last-child {
+    border-right: none;
+  }
+</style>

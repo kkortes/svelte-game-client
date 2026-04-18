@@ -1,17 +1,17 @@
-<ability-bar ability-bar="@[c.cardId]" style="--ability-bar-width: @[c.abilityBarWidth]px;">
-  <ability-bar-grid>
+<ability-bar block ability-bar="@[combatCards[idx].cardId]" style="--ability-bar-width: @[combatCards[idx].abilityBarWidth]px;">
+  <ability-bar-grid w-full overflow-hidden>
     <!-- base layer -->
-    <ability-row base>
-      <!-- each c.abilityCells as cell -->
+    <ability-row flex base>
+      <!-- each combatCards[idx].abilityCells as cell -->
       <ability-cell style="--cell-width: @[cell.width]px;">
         <icon @[cell.icon]></icon>
       </ability-cell>
       <!-- /each -->
     </ability-row>
     <!-- progress layer (clip-path wipe) -->
-    <ability-row top stunned="@[c.isStunned]"
-      style="--progress: @[Math.min(100, (c.individualProgress * 100))]%;">
-      <!-- each c.abilityCells as cell -->
+    <ability-row flex top stunned="@[combatCards[idx].isStunned]"
+      style="--progress: @[Math.min(100, (combatCards[idx].individualProgress * 100))]%;">
+      <!-- each combatCards[idx].abilityCells as cell -->
       <ability-cell style="--cell-width: @[cell.width]px;">
         <icon @[cell.icon]></icon>
       </ability-cell>
@@ -22,22 +22,18 @@
 
 <style>
   [battle-brawlers] ability-bar {
-    display: block;
     width: var(--ability-bar-width, 144px);
     margin: 0 auto;
   }
 
   [battle-brawlers] ability-bar-grid {
     display: grid;
-    width: 100%;
     border-radius: 0 0 3px 3px;
-    overflow: hidden;
     border: 0.5px solid #78716c;
   }
 
   [battle-brawlers] ability-row {
     grid-area: 1/1;
-    display: flex;
     height: 24px;
     background: #d6d3d1;
   }

@@ -19,28 +19,30 @@
     $.abilityChoices = Object.keys(ALL_ABILITIES);
     $.chosenAbility = 'punch';
 
-    const computeAbilities = () => {
-      $.abilityPool = Array.from({ length: 12 }, (_, i) => {
+    const computeAbilityBars = () => {
+      $.enemyAbilityBars = Array.from({ length: 12 }, (_, i) => {
         const ticks = i + 1;
         const ref = ABILITIES($.chosenAbility, false, { overrides: { ticks } });
-        const hydrated = ABILITIES(ref, true);
-        const damage = hydrated.calc?.damage();
-        const healing = hydrated.calc?.healing();
+        const h = ABILITIES(ref, true);
         return {
-          ticks,
-          name: hydrated.name,
-          icon: hydrated.icon,
-          damageResult: damage?.result ? (damage.result * 100).toFixed(0) + '%' : '-',
-          healingResult: healing?.result ? (healing.result * 100).toFixed(0) + '%' : '-'
+          abilities: [{
+            name: h.name,
+            icon: h.icon,
+            ticks: h.ticks,
+            basic: !!h.basic,
+            tickStart: 0,
+            overflow: false
+          }],
+          lastTick: h.ticks
         };
       });
     };
 
-    computeAbilities();
+    computeAbilityBars();
 
     window.changeAbility = (value) => {
       $.chosenAbility = value;
-      computeAbilities();
+      computeAbilityBars();
     };
   </script>
 
@@ -56,58 +58,14 @@
           <!-- /each -->
         </select>
 
-        <crow vertical left g-2 w-full>
-          <!-- each abilityPool as ab -->
-          <crow left g-4 scaling-row>
-            <span scaling-ticks>@[ab.ticks] tick@[ab.ticks === 1 ? '' : 's']</span>
-            <scaling-bar>
-              <ability-preview-cell style="width: calc(12px * @[ab.ticks])">
-                <icon @[ab.icon]></icon>
-              </ability-preview-cell>
-            </scaling-bar>
-            <span text-sm>Dmg: @[ab.damageResult]</span>
-            <span text-sm>Heal: @[ab.healingResult]</span>
-          </crow>
+        <crow vertical left g-4 w-full>
+          <!-- each enemyAbilityBars as bar, i -->
+          <component src="/components/AbilityBar.html" idx="@[i]" small minimalistic dndDisabled></component>
           <!-- /each -->
         </crow>
       </crow>
     </page-content>
   </component>
-  <style>
-    page[ability-scaling] select {
-      padding: var(--unit) calc(var(--unit) * 2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-    }
-
-    page[ability-scaling] [scaling-row] {
-      align-items: center;
-    }
-
-    page[ability-scaling] [scaling-ticks] {
-      width: calc(var(--unit) * 15);
-      flex: none;
-      font-size: 0.875rem;
-    }
-
-    page[ability-scaling] scaling-bar {
-      display: block;
-      flex: none;
-    }
-
-    page[ability-scaling] ability-preview-cell {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: calc(var(--unit) * 6);
-      flex: none;
-      border: 0.5px solid rgb(120, 113, 108);
-      border-radius: 0 0 var(--unit) var(--unit);
-      background: rgb(214, 211, 209);
-      color: rgb(120, 113, 108);
-      font-size: 0.875rem;
-    }
-  </style>
 </body>
 
 </html>

@@ -1,15 +1,15 @@
-<health-bar left="@[c.facingRight]">
+<health-bar relative block w-full left="@[combatCards[idx].facingRight]">
   <hp-track>
-    <hp-fill style="--hp-pct: @[Math.max(0, Math.min(100, (c.currentHealth / c.maxHealth) * 100))]%"></hp-fill>
-    <hp-text>@[Math.max(0, c.currentHealth)] / @[c.maxHealth]</hp-text>
+    <hp-fill style="--hp-pct: @[Math.max(0, Math.min(100, (combatCards[idx].currentHealth / combatCards[idx].maxHealth) * 100))]%"></hp-fill>
+    <hp-text>@[Math.max(0, combatCards[idx].currentHealth)] / @[combatCards[idx].maxHealth]</hp-text>
   </hp-track>
-  <!-- if c.maxArmor > 0 -->
+  <!-- if combatCards[idx].maxArmor > 0 -->
   <armor-track>
-    <armor-fill style="--ap-pct: @[Math.max(0, Math.min(100, (c.currentArmor / c.maxArmor) * 100))]%"></armor-fill>
+    <armor-fill style="--ap-pct: @[Math.max(0, Math.min(100, (combatCards[idx].currentArmor / combatCards[idx].maxArmor) * 100))]%"></armor-fill>
   </armor-track>
   <!-- /if -->
 
-  <!-- each c.floaters as f -->
+  <!-- each combatCards[idx].floaters as f -->
   <hp-floater type="@[f.vfxName]" crit="@[f.isCritical]"
     style="--rnd: @[f.random]; --dir: @[f.dir]; --y-offset: @[f.vfxName === 'armorHurt' ? '160px' : '0px']; --scale: @[f.isCritical ? 2 : 1];">
     <hp-floater-x>
@@ -23,12 +23,6 @@
 </health-bar>
 
 <style>
-  [battle-brawlers] health-bar {
-    position: relative;
-    display: block;
-    width: 100%;
-  }
-
   [battle-brawlers] health-bar hp-track {
     display: grid;
     width: 100%;
