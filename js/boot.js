@@ -19,6 +19,32 @@ import {
 import { Howl } from '/js/lib/howler.js';
 import AUDIO from '/js/audio.js';
 import { correctHealth } from '/js/equipment.js';
+import { notify } from '/js/actions.js';
+
+const loadGameState = async (token) => {
+  try {
+    const { gameState, serverTimestampSnapshot } = await $.socket.sendAsync('user/authenticate', {
+      token,
+      clientVersion: '0.1.0',
+      isDev: config.IS_DEV
+    });
+    if (gameState) {
+      console.log(gameState);
+      if (gameState.characters) $.characters = gameState.characters;
+      if (gameState.inventory) $.inventory = gameState.inventory;
+      if (gameState.experience) $.experience = gameState.experience;
+      if (gameState.coins !== undefined) $.coins = gameState.coins;
+      if (gameState.accountRewards) $.accountRewards = gameState.accountRewards;
+    }
+    if (serverTimestampSnapshot) {
+      $.serverTimestampSnapshot = serverTimestampSnapshot;
+      $.syncPerformanceNow = performance.now();
+    }
+  } catch (e) {
+    notify(e);
+    $.token = undefined;
+  }
+};
 
 // Parse route + params from URL (replaces client-side router)
 const parseRoute = () => {
@@ -216,7 +242,7 @@ export default () => {
     const justConnected = current.socket && !prev.socket && current.token;
     const justGotToken = current.token && !prev.token && current.socket;
     if (justConnected || justGotToken) {
-      window.loadGameState?.(current.token);
+      loadGameState(current.token);
     }
 
     // Level-up detection (stays global — triggers overlay + heals all characters)

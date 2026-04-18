@@ -1,35 +1,11 @@
 <script type="module">
   import config from '/js/config.js';
-  import { notify } from '/js/actions.js';
 
   component({
     mode: 'login',
     email: config.IS_DEV ? config.AUTO_EMAIL : ($.settings.rememberMe ? $.settings.savedEmail : ''),
     password: config.IS_DEV ? config.AUTO_PASSWORD : ($.settings.rememberMe ? $.settings.savedPassword : ''),
   });
-
-
-  window.loadGameState = async (token) => {
-    try {
-      const { gameState, serverTimestampSnapshot } = await $.socket.sendAsync('user/authenticate', {
-        token, clientVersion: '0.1.0', isDev: config.IS_DEV
-      });
-      if (gameState) {
-        if (gameState.characters) $.characters = gameState.characters;
-        if (gameState.inventory) $.inventory = gameState.inventory;
-        if (gameState.experience) $.experience = gameState.experience;
-        if (gameState.coins !== undefined) $.coins = gameState.coins;
-        if (gameState.accountRewards) $.accountRewards = gameState.accountRewards;
-      }
-      if (serverTimestampSnapshot) {
-        $.serverTimestampSnapshot = serverTimestampSnapshot;
-        $.syncPerformanceNow = performance.now();
-      }
-    } catch (e) {
-      notify(e);
-      $.token = undefined;
-    }
-  };
 </script>
 
 
