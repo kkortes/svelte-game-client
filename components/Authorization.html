@@ -32,15 +32,7 @@
   };
 </script>
 
-<component src="/components/Modal.html" when="@[!socket]" dismiss="">
-  <card auth-form glass>
-    <crow g-2 text-muted>
-      <spinner></spinner> Connecting to server
-    </crow>
-  </card>
-</component>
 
-<!-- if socket && !token -->
 <center-full auth-padding>
   <auth-scene w-full>
     <card auth-form glass>
@@ -79,8 +71,3 @@
     </card>
   </auth-scene>
 </center-full>
-<!-- /if -->
-
-<!-- if token -->
-<slot></slot>
-<!-- /if -->
