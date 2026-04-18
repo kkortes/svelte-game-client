@@ -179,9 +179,11 @@
               <crow vertical left brawler-info>
                 <bar-track hp-bar>
                   <bar-fill hp-fill style="width: @[schar.healthPct]%"></bar-fill>
-                  <crow bar-text justify-between>
+                  <crow bar-text justify-between
+                    show-numeric="@[this.showSequence || !!maxBrawlers || Number(routeParams.characterIndex) === i || selectedBrawlers.includes(characters[i]?.uuid)]">
                     <span>@[schar.name]</span>
-                    <span>@[(this.showSequence || !!maxBrawlers || Number(routeParams.characterIndex) === i || selectedBrawlers.includes(characters[i]?.uuid)) ? (schar.currentHealth + ' / ' + schar.maxHealth) : (schar.healthPct + '%')]</span>
+                    <span hp-numeric>@[schar.currentHealth] / @[schar.maxHealth]</span>
+                    <span hp-pct>@[schar.healthPct]%</span>
                   </crow>
                 </bar-track>
                 <ability-accordion
@@ -248,6 +250,10 @@
     color: #fff;
     text-shadow: 0 1px 1px rgb(0 0 0 / 0.5);
   }
+
+  [battle-brawlers] [bar-text] [hp-numeric] { display: none; }
+  [battle-brawlers] [bar-text][show-numeric] [hp-numeric] { display: inline; }
+  [battle-brawlers] [bar-text][show-numeric] [hp-pct] { display: none; }
 
   [battle-brawlers] [xp-bar] bar-fill { background: var(--bb-yellow); }
   [battle-brawlers] [hp-bar] bar-fill { background: #991b1b; }
