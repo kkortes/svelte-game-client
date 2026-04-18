@@ -1,13 +1,32 @@
+<!-- if back -->
+<button title-back tertiary onclick="window.location.href='@[back]'">&#x2039; Back</button>
+<!-- /if -->
+
 <crow justify-between w-full g-4>
   <crow left g-4>
     <crow vertical left w-full g-1>
-      <h3 m-0>@[title]</h3>
-      <!-- if description -->
-      <span>@[description]</span>
-      <!-- /if -->
+      <!-- if small-->
+      <h5 m-0>@[title]</h4>
+        <!-- /if -->
+        <!-- if !small -->
+        <h3 m-0>@[title]</h3>
+        <!-- /if -->
+        <!-- if description -->
+        <span>@[description]</span>
+        <!-- /if -->
     </crow>
   </crow>
   <crow left g-2>
     <slot></slot>
   </crow>
 </crow>
+
+<style>
+  [battle-brawlers] [title-back] {
+    position: absolute;
+    top: calc(var(--unit) * -7);
+    left: calc(var(--unit) * -5.5);
+    font-size: 0.75rem;
+    padding: calc(var(--unit) * 0.5) calc(var(--unit) * 2);
+  }
+</style>

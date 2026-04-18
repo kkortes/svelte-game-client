@@ -286,6 +286,7 @@ page-content {
   flex-direction: column;
   flex: 1;
   padding: calc(var(--unit) * 6);
+  gap: calc(var(--unit) * 4);
 }
 
 spinner {

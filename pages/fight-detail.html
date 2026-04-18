@@ -145,12 +145,10 @@
   </script>
 
   <component src="/components/Layout.html">
-    <page-content g-4>
+    <page-content>
 
       <!-- if currentFight -->
-      <button go-back tertiary onclick="window.location.href='/the-arena'">&#x2039; Back</button>
-
-      <component src="/components/TitleBar.html" title="@[currentFight.name]">
+      <component src="/components/TitleBar.html" title="@[currentFight.name]" back="/the-arena">
         <badge>
           @[currentFight.allowedNumberOfCharacters]&nbsp;vs&nbsp;@[currentFight.enemies.length]
         </badge>
@@ -181,7 +179,8 @@
           </enemy-description>
 
           <h5>Abilities</h5>
-          <component src="/components/AbilityBar.html" idx="@[i]" dndDisabled minimalistic></component>
+          <component src="/components/AbilityBar.html" idx="@[i]" dndDisabled minimalistic>
+          </component>
         </crow>
 
         <fight-enemy-image>
@@ -246,14 +245,6 @@
     <!-- /if -->
   </component>
   <style>
-    page[the-arena-fightId] [go-back] {
-      position: absolute;
-      top: calc(var(--unit) * -7);
-      left: calc(var(--unit) * -5.5);
-      font-size: 0.75rem;
-      padding: calc(var(--unit) * 0.5) calc(var(--unit) * 2);
-    }
-
     page[the-arena-fightId] [fight-enemy-row] {
       align-items: stretch;
       overflow: hidden;

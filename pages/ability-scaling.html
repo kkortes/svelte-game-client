@@ -47,9 +47,7 @@
   <component src="/components/Layout.html">
     <page-content>
       <crow vertical g-4 left>
-        <crow justify-between left>
-          <h3>Ability Scaling</h3>
-        </crow>
+        <component src="/components/TitleBar.html" title="Ability Scaling"></component>
         <hr />
 
         <select onchange="changeAbility(this.value)">

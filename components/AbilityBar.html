@@ -36,6 +36,7 @@
       <crow up left w-full h-full ability-row>
         <!-- each enemyAbilityBars[idx].abilities as ability -->
         <ability-segment
+          dnd-item="@[!dndDisabled]"
           basic="@[ability.basic]"
           overflow="@[ability.overflow]"
           style="width: calc(((100% / 15) * @[ability.ticks]) + 1px);">

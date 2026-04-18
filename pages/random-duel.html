@@ -80,13 +80,10 @@
   <component src="/components/Layout.html">
     <page-content>
 
-      <crow justify-between left>
-        <h3>Random duel</h3>
-        <crow left g-2>
-          <badge>@[selectedBrawlers.length || maxBrawlers]&nbsp;vs&nbsp;@[selectedBrawlers.length ||
-            maxBrawlers]</badge>
-        </crow>
-      </crow>
+      <component src="/components/TitleBar.html" title="Random duel">
+        <badge>@[selectedBrawlers.length || maxBrawlers]&nbsp;vs&nbsp;@[selectedBrawlers.length ||
+          maxBrawlers]</badge>
+      </component>
       <hr />
 
       <crow pvp-opponent>

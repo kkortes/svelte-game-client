@@ -32,10 +32,14 @@
         try {
           const hydrated = CHARACTERS({
             ...charRef,
-            overrides: { ...charRef?.overrides, level: fight.minLevel,
-              equipment: { mainHand: { overrides: { level: fight.minLevel } },
+            overrides: {
+              ...charRef?.overrides, level: fight.minLevel,
+              equipment: {
+                mainHand: { overrides: { level: fight.minLevel } },
                 offHand: { overrides: { level: fight.minLevel } },
-                armor: { overrides: { level: fight.minLevel } } } }
+                armor: { overrides: { level: fight.minLevel } }
+              }
+            }
           }, true);
           return { image: hydrated.image, name: hydrated.name };
         } catch { return { image: '', name: '?' }; }
@@ -66,9 +70,7 @@
   <component src="/components/Layout.html">
     <page-content>
 
-      <crow justify-between left>
-        <h3>The arena</h3>
-      </crow>
+      <component src="/components/TitleBar.html" title="The arena"></component>
       <hr />
 
       <crow vertical up left arena-table mx="-6" w="auto" mt-4>
@@ -286,6 +288,48 @@
 
     page[the-arena] [arena-enemy-img][completed] {
       filter: grayscale(1);
+    }
+
+    @media (width <= 768px) {
+      page[the-arena] [arena-header],
+      page[the-arena] [arena-row] {
+        gap: calc(var(--unit) * 2);
+        padding: calc(var(--unit) * 3) calc(var(--unit) * 3);
+      }
+
+      page[the-arena] arena-col-level,
+      page[the-arena] arena-col-loot {
+        width: calc(var(--unit) * 10);
+      }
+
+      page[the-arena] [arena-col-preview] {
+        width: calc(var(--unit) * 14);
+      }
+
+      page[the-arena] arena-enemy-wrap {
+        width: calc(var(--unit) * 4);
+      }
+
+      page[the-arena] arena-enemy-wrap[boss] {
+        width: calc(var(--unit) * 8);
+      }
+
+      page[the-arena] [arena-enemy-box] {
+        width: calc(var(--unit) * 6);
+        margin: calc(var(--unit) * -1.5) 0 calc(var(--unit) * -1.5) var(--unit);
+      }
+
+      page[the-arena] arena-enemy-wrap[boss] [arena-enemy-box] {
+        width: calc(var(--unit) * 10);
+        margin-top: calc(var(--unit) * -3);
+        margin-bottom: calc(var(--unit) * -3);
+      }
+
+      page[the-arena] [arena-row][boss] {
+        margin-top: calc(var(--unit) * 6);
+        padding-top: calc(var(--unit) * 4);
+        padding-bottom: calc(var(--unit) * 4);
+      }
     }
   </style>
 </body>
