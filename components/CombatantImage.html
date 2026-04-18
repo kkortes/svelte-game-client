@@ -1,0 +1,149 @@
+<combatant-sprite combatant-wrap="@[c.cardId]"
+  attack-class="@[c.attackClass]"
+  hurt="@[c.hurtActive]"
+  block="@[c.blockActive]"
+  attack-blocked="@[c.attackBlocked]"
+  whirlwind="@[c.whirlwindActive]"
+  attack-dodged="@[c.attackDodgedActive]"
+  knocked-out="@[c.knockedOut]"
+  style="
+    --position-x: @[c.x]px;
+    --position-y: @[c.y]px;
+    --attack-start-x: @[c.attackStartX]px;
+    --attack-start-y: @[c.attackStartY]px;
+    --attack-end-x: @[c.attackEndX]px;
+    --attack-end-y: @[c.attackEndY]px;
+    --attack-duration: @[c.attackDuration]ms;
+    --dir: @[c.dir];
+    --sprite-height: @[c.spriteHeight]px;
+  ">
+  <sprite-inner>
+    <img class="combatant-avatar" src="@[c.imageUrl]"
+      alt="@[c.name]"
+      onerror="if(!this.src.includes('@['))this.style.display='none'" />
+    <sprite-hurt-mask style="--img: url('@[c.imageUrl]');"></sprite-hurt-mask>
+    <sprite-block>
+      <img src="/static/images/shield.png" alt="" />
+    </sprite-block>
+  </sprite-inner>
+</combatant-sprite>
+
+<style>
+  [battle-brawlers] combatant-sprite {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    transform: translate(var(--position-x), var(--position-y));
+  }
+
+  [battle-brawlers] combatant-sprite[knocked-out] sprite-inner {
+    filter: grayscale(100%);
+  }
+
+  [battle-brawlers] sprite-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 144px;
+    height: var(--sprite-height, 144px);
+    transform: translate(-50%, calc(70px - 100%));
+  }
+
+  [battle-brawlers] sprite-inner img.combatant-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: bottom center;
+    transform: scaleX(var(--dir));
+    transition: all 250ms cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+
+  [battle-brawlers] combatant-sprite[attack-dodged] sprite-inner img.combatant-avatar {
+    opacity: 0.2;
+    transform: scaleX(var(--dir)) translate(calc(var(--dir) * -10px), 0);
+  }
+
+  [battle-brawlers] sprite-hurt-mask {
+    position: absolute;
+    inset: 0;
+    background-color: transparent;
+    mix-blend-mode: multiply;
+    opacity: 0;
+    -webkit-mask: var(--img) no-repeat bottom / auto 100%;
+    mask: var(--img) no-repeat bottom / auto 100%;
+  }
+
+  [battle-brawlers] combatant-sprite[hurt] sprite-hurt-mask {
+    animation: sprite-hurt 340ms ease;
+  }
+
+  @keyframes sprite-hurt {
+    0% { background-color: transparent; opacity: 0; }
+    25% { background-color: rgba(255, 0, 0, 0.4); opacity: 1; }
+    100% { background-color: transparent; opacity: 0; }
+  }
+
+  [battle-brawlers] sprite-block {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    opacity: 0;
+    pointer-events: none;
+    filter: grayscale(100%);
+  }
+
+  [battle-brawlers] sprite-block img {
+    width: 50%;
+  }
+
+  [battle-brawlers] combatant-sprite[block] sprite-block,
+  [battle-brawlers] combatant-sprite[attack-blocked] sprite-block {
+    opacity: 1;
+  }
+
+  [battle-brawlers] combatant-sprite[attack-class="basicAttackFast"] {
+    animation: bb-basicAttackFast var(--attack-duration) cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+  [battle-brawlers] combatant-sprite[attack-class="basicAttackRegular"] {
+    animation: bb-basicAttackRegular var(--attack-duration) cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+  [battle-brawlers] combatant-sprite[attack-class="basicAttackSlow"] {
+    animation: bb-basicAttackSlow var(--attack-duration) cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+  [battle-brawlers] combatant-sprite[attack-class="whirlwind"] {
+    animation: bb-whirlwind 500ms cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+
+  @keyframes bb-basicAttackFast {
+    0% { transform: translate(var(--position-x), var(--position-y)); }
+    90% {
+      transform: translate(var(--attack-start-x), var(--attack-start-y));
+      animation-timing-function: cubic-bezier(0.2, 0.8, 0.5, 1.33);
+    }
+    100% { transform: translate(var(--attack-end-x), var(--attack-end-y)); }
+  }
+  @keyframes bb-basicAttackRegular {
+    0% { transform: translate(var(--position-x), var(--position-y)); }
+    90% {
+      transform: translate(var(--attack-start-x), var(--attack-start-y));
+      animation-timing-function: cubic-bezier(0.2, 0.8, 0.5, 1.33);
+    }
+    100% { transform: translate(var(--attack-end-x), var(--attack-end-y)); }
+  }
+  @keyframes bb-basicAttackSlow {
+    0% { transform: translate(var(--position-x), var(--position-y)); }
+    90% {
+      transform: translate(var(--attack-start-x), var(--attack-start-y));
+      animation-timing-function: cubic-bezier(0.2, 0.8, 0.5, 1.33);
+    }
+    100% { transform: translate(var(--attack-end-x), var(--attack-end-y)); }
+  }
+  @keyframes bb-whirlwind {
+    0% { transform: translate(var(--position-x), var(--position-y)) scaleX(1); }
+    50% { transform: translate(var(--position-x), var(--position-y)) scaleX(-1); }
+    100% { transform: translate(var(--position-x), var(--position-y)) scaleX(1); }
+  }
+</style>
