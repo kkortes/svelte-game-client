@@ -29,7 +29,6 @@ const loadGameState = async (token) => {
       isDev: config.IS_DEV
     });
     if (gameState) {
-      console.log(gameState);
       if (gameState.characters) $.characters = gameState.characters;
       if (gameState.inventory) $.inventory = gameState.inventory;
       if (gameState.experience) $.experience = gameState.experience;
@@ -43,6 +42,7 @@ const loadGameState = async (token) => {
   } catch (e) {
     notify(e);
     $.token = undefined;
+    document.cookie = 'token=; Max-Age=0';
   }
 };
 
