@@ -19,13 +19,13 @@
 
     <combatant-statuses flex down facing-right="@[combatCards[idx].facingRight]">
       <!-- each combatCards[idx].statusEffects as s -->
-      <status-chip status="@[s.key]">
+      <status-chip data-status="@[s.key]">
         <icon @[s.key]></icon>
         <status-ticks>@[s.ticks]</status-ticks>
       </status-chip>
       <!-- /each -->
       <!-- each combatCards[idx].statusStacks as s -->
-      <status-chip status="@[s.key]" stack>
+      <status-chip data-status="@[s.key]" stack>
         <icon @[s.key]></icon>
         <status-ticks>@[s.value]/@[s.max]</status-ticks>
       </status-chip>
@@ -126,12 +126,12 @@
     font-size: 0.75rem;
   }
 
-  [battle-brawlers] status-chip[status="stunned"] { background: #fbbf24; color: #000; }
-  [battle-brawlers] status-chip[status="bleeding"] { background: #ef4444; color: #fff; }
-  [battle-brawlers] status-chip[status="vulnerable"] { background: #a855f7; color: #fff; }
-  [battle-brawlers] status-chip[status="wounded"] { background: #dc2626; color: #fff; opacity: 0.75; }
-  [battle-brawlers] status-chip[status="concussed"] { background: #d97706; color: #fff; opacity: 0.75; }
-  [battle-brawlers] status-chip[status="exposed"] { background: #7c3aed; color: #fff; opacity: 0.75; }
+  [battle-brawlers] status-chip[data-status="stunned"] { background: #fbbf24; color: #000; }
+  [battle-brawlers] status-chip[data-status="bleeding"] { background: #ef4444; color: #fff; }
+  [battle-brawlers] status-chip[data-status="vulnerable"] { background: #a855f7; color: #fff; }
+  [battle-brawlers] status-chip[data-status="wounded"] { background: #dc2626; color: #fff; opacity: 0.75; }
+  [battle-brawlers] status-chip[data-status="concussed"] { background: #d97706; color: #fff; opacity: 0.75; }
+  [battle-brawlers] status-chip[data-status="exposed"] { background: #7c3aed; color: #fff; opacity: 0.75; }
 
   [battle-brawlers] combatant-badge {
     position: absolute;

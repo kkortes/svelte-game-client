@@ -31,6 +31,8 @@ export default {
   liveTeams: [],
   combatTeam0: [],
   combatTeam1: [],
+  combatCards: [],
+  cardIndexes: [],
   combatScale: 1,
   combatEnded: false,
   combatOutcome: '',
@@ -56,8 +58,6 @@ export default {
   overlay: '',
   settings: loadLocalStorage({
     volume: SETTINGS_DEFAULT_VOLUME,
-    loginPageMode: 0,
-    openProperties: {},
     debugOpen: false,
     showDetailedCharacterView: false,
     darkMode: false,

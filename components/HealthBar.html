@@ -1,16 +1,15 @@
 <health-bar relative block w-full left="@[combatCards[idx].facingRight]">
-  <hp-track>
-    <hp-fill style="--hp-pct: @[Math.max(0, Math.min(100, (combatCards[idx].currentHealth / combatCards[idx].maxHealth) * 100))]%"></hp-fill>
-    <hp-text>@[Math.max(0, combatCards[idx].currentHealth)] / @[combatCards[idx].maxHealth]</hp-text>
-  </hp-track>
+  <component src="/components/Bar.html" center color="green"
+    current="@[Math.max(0, combatCards[idx].currentHealth)]"
+    max="@[combatCards[idx].maxHealth]"></component>
   <!-- if combatCards[idx].maxArmor > 0 -->
-  <armor-track>
-    <armor-fill style="--ap-pct: @[Math.max(0, Math.min(100, (combatCards[idx].currentArmor / combatCards[idx].maxArmor) * 100))]%"></armor-fill>
-  </armor-track>
+  <component src="/components/Bar.html" center color="blue"
+    current="@[Math.max(0, combatCards[idx].currentArmor)]"
+    max="@[combatCards[idx].maxArmor]"></component>
   <!-- /if -->
 
   <!-- each combatCards[idx].floaters as f -->
-  <hp-floater type="@[f.vfxName]" crit="@[f.isCritical]"
+  <hp-floater data-type="@[f.vfxName]" crit="@[f.isCritical]"
     style="--rnd: @[f.random]; --dir: @[f.dir]; --y-offset: @[f.vfxName === 'armorHurt' ? '160px' : '0px']; --scale: @[f.isCritical ? 2 : 1];">
     <hp-floater-x>
       <hp-floater-y>
@@ -23,52 +22,6 @@
 </health-bar>
 
 <style>
-  [battle-brawlers] health-bar hp-track {
-    display: grid;
-    width: 100%;
-    height: 14px;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 4px;
-    overflow: hidden;
-  }
-
-  [battle-brawlers] health-bar hp-track>* {
-    grid-area: 1/1;
-  }
-
-  [battle-brawlers] hp-fill {
-    height: 100%;
-    width: var(--hp-pct, 100%);
-    background: #22c55e;
-    border-radius: 4px;
-    transition: width 150ms;
-  }
-
-  [battle-brawlers] hp-text {
-    font-size: 0.6rem;
-    text-align: center;
-    color: white;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-    line-height: 14px;
-  }
-
-  [battle-brawlers] armor-track {
-    width: 100%;
-    height: 5px;
-    background: rgba(0, 0, 0, 0.15);
-    border-radius: 3px;
-    overflow: hidden;
-    margin-top: 2px;
-  }
-
-  [battle-brawlers] armor-fill {
-    height: 100%;
-    width: var(--ap-pct, 100%);
-    background: #60a5fa;
-    border-radius: 3px;
-    transition: width 150ms;
-  }
-
   [battle-brawlers] hp-floater {
     position: absolute;
     top: 4px;
@@ -87,11 +40,11 @@
     right: 100%;
   }
 
-  [battle-brawlers] hp-floater[type="armorHurt"] {
+  [battle-brawlers] hp-floater[data-type="armorHurt"] {
     color: white;
   }
 
-  [battle-brawlers] hp-floater[type="heal"] {
+  [battle-brawlers] hp-floater[data-type="heal"] {
     color: #bbf7d0;
     animation: hp-floater-heal-fade 800ms ease-out forwards;
   }
@@ -106,7 +59,7 @@
     animation: hp-floater-y 1000ms linear forwards;
   }
 
-  [battle-brawlers] hp-floater[type="heal"] hp-floater-y {
+  [battle-brawlers] hp-floater[data-type="heal"] hp-floater-y {
     animation: hp-floater-heal-y 800ms cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
   }
 

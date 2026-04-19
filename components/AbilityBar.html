@@ -34,10 +34,7 @@
 
     <ability-overlay absolute t-0 l-0 r-0 b-0>
       <!-- each enemyAbilityBars[idx].abilities as ability -->
-      <ability-segment
-        relative flex flex-none
-        dnd-item="@[!dndDisabled]"
-        basic="@[ability.basic]"
+      <ability-segment relative flex flex-none dnd-item="@[!dndDisabled]" basic="@[ability.basic]"
         overflow="@[ability.overflow]"
         style="width: calc(((100% / var(--grid-cells)) * @[ability.ticks]) + 1px);">
         <ability-icon w-full h-full>
@@ -50,21 +47,30 @@
 </ability-bar>
 
 <style>
-  [battle-brawlers] ability-track { --grid-cells: 15; }
-  [battle-brawlers] ability-track[small] { --grid-cells: 12; }
+  [battle-brawlers] ability-track {
+    --grid-cells: 15;
+  }
+
+  [battle-brawlers] ability-track[small] {
+    --grid-cells: 12;
+  }
 
   /* Dashed tick grid — 15 cells by default, 12 when small. */
   [battle-brawlers] ability-grid {
     display: grid;
     grid-template-columns: repeat(var(--grid-cells), 1fr);
   }
+
   [battle-brawlers] ability-grid ability-cell {
     display: block;
     aspect-ratio: 2 / 3;
     border: 1px dashed #d1d5db;
     margin-left: -1px;
   }
-  [battle-brawlers] ability-track[small] ability-cell:nth-child(n+13) { display: none; }
+
+  [battle-brawlers] ability-track[small] ability-cell:nth-child(n+13) {
+    display: none;
+  }
 
   /* Tick-12 marker — solid vertical line marking the max playable tick
      window; only visible when DnD is enabled. Matches main's
@@ -88,9 +94,9 @@
     width: 1px;
     border-right: 1px dashed #6b7280;
     transform: translateX(-0.5px);
-    z-index: 10;
     transition: all 200ms;
   }
+
   [battle-brawlers] ability-marker-label {
     bottom: 100%;
     right: calc(var(--unit) * 1);
@@ -100,6 +106,7 @@
     line-height: 0.9;
     white-space: nowrap;
   }
+
   [battle-brawlers] ability-marker-label strong {
     color: #000;
     line-height: 0.75rem;
@@ -127,6 +134,7 @@
     border-radius: calc(var(--unit) * 1);
     z-index: 10;
   }
+
   /* Basic ability — muted chrome, drops behind non-basic on overlap
      (main: `border-gray-300 bg-gray-100` + omits z-10). */
   [battle-brawlers] ability-segment[basic] {
@@ -134,6 +142,7 @@
     background: #f3f4f6;
     z-index: auto;
   }
+
   /* Overflow (tickStart > 11 && !dndDisabled) — pink-red tint.
      Main: `border-red-300 bg-red-100`. */
   [battle-brawlers] ability-segment[overflow] {
@@ -149,13 +158,16 @@
     display: grid;
     place-items: center;
   }
+
   [battle-brawlers] ability-icon icon {
     grid-area: 1 / 1;
     font-size: clamp(0.875rem, 3vw, 1.875rem);
   }
+
   [battle-brawlers] ability-segment[basic] ability-icon icon {
     color: #9ca3af;
   }
+
   [battle-brawlers] ability-segment[overflow] ability-icon icon {
     color: #fca5a5;
   }

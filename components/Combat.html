@@ -29,6 +29,7 @@
     $.combatTeam0 = [];
     $.combatTeam1 = [];
     $.combatCards = [];
+    $.cardIndexes = [];
     $.elapsedMilliseconds = 0;
     $.combatRewardXp = 0;
     $.combatRewardBoss = false;
@@ -49,6 +50,7 @@
     $.combatTeam0 = [];
     $.combatTeam1 = [];
     $.combatCards = [];
+    $.cardIndexes = [];
     $.elapsedMilliseconds = 0;
     $.combatRewardXp = 0;
     $.combatRewardBoss = false;
@@ -83,8 +85,8 @@
 <combat-backdrop onclick="event.stopPropagation()">
   <combat-stage>
     <component src="/components/CombatArena.html">
-      <!-- each combatCards as c, i -->
-      <component src="/components/CombatantCard.html" idx="@[i]"></component>
+      <!-- each cardIndexes as idx -->
+      <component src="/components/CombatantCard.html" idx="@[idx]"></component>
       <!-- /each -->
     </component>
     <component src="/components/ResultAnnouncement.html"></component>

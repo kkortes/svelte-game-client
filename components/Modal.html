@@ -1,9 +1,9 @@
 <modal-root open="@[when]" bare="@[bare]" onclick="@[dismiss]">
-  <spacer modal-spacer></spacer>
+  <div h="20"></div>
   <modal-panel onclick="event.stopPropagation()">
     <slot></slot>
   </modal-panel>
-  <spacer modal-spacer></spacer>
+  <div h="20"></div>
 </modal-root>
 
 <style>
@@ -47,10 +47,5 @@
     background: transparent;
     box-shadow: none;
     backdrop-filter: none;
-  }
-
-  [battle-brawlers] modal-root[bare] [modal-spacer],
-  [battle-brawlers] modal-root[bare] modal-panel {
-    display: contents;
   }
 </style>

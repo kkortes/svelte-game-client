@@ -312,21 +312,6 @@ spinner {
   }
 }
 
-/* Health bar — game custom */
-health-bar {
-  display: block;
-  height: calc(var(--unit) * 1.5);
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: calc(var(--unit) * 0.75);
-  overflow: hidden;
-}
-
-health-bar > div {
-  height: 100%;
-  background: oklch(0.65 0.2 145);
-  transition: width 200ms ease;
-}
-
 /* Progress bar */
 progress-bar {
   display: block;
@@ -376,13 +361,13 @@ progress-bar > div {
   min-height: calc(var(--unit) * 10);
 }
 
-[dnd-item] {
+[dnd-item]:not([dnd-item="false"]) {
   cursor: grab;
   user-select: none;
   touch-action: none;
 }
 
-[dnd-item]:active {
+[dnd-item]:not([dnd-item="false"]):active {
   cursor: grabbing;
 }
 

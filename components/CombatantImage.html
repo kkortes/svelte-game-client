@@ -1,5 +1,5 @@
-<combatant-sprite absolute combatant-wrap="@[combatCards[idx].cardId]"
-  attack-class="@[combatCards[idx].attackClass]"
+<combatant-sprite absolute data-combatant-wrap="@[combatCards[idx].cardId]"
+  data-attack-class="@[combatCards[idx].attackClass]"
   hurt="@[combatCards[idx].hurtActive]"
   block="@[combatCards[idx].blockActive]"
   attack-blocked="@[combatCards[idx].attackBlocked]"
@@ -99,16 +99,16 @@
     opacity: 1;
   }
 
-  [battle-brawlers] combatant-sprite[attack-class="basicAttackFast"] {
+  [battle-brawlers] combatant-sprite[data-attack-class="basicAttackFast"] {
     animation: bb-basicAttackFast var(--attack-duration) cubic-bezier(0.25, 0.1, 0.25, 1);
   }
-  [battle-brawlers] combatant-sprite[attack-class="basicAttackRegular"] {
+  [battle-brawlers] combatant-sprite[data-attack-class="basicAttackRegular"] {
     animation: bb-basicAttackRegular var(--attack-duration) cubic-bezier(0.25, 0.1, 0.25, 1);
   }
-  [battle-brawlers] combatant-sprite[attack-class="basicAttackSlow"] {
+  [battle-brawlers] combatant-sprite[data-attack-class="basicAttackSlow"] {
     animation: bb-basicAttackSlow var(--attack-duration) cubic-bezier(0.25, 0.1, 0.25, 1);
   }
-  [battle-brawlers] combatant-sprite[attack-class="whirlwind"] {
+  [battle-brawlers] combatant-sprite[data-attack-class="whirlwind"] {
     animation: bb-whirlwind 500ms cubic-bezier(0.25, 0.1, 0.25, 1);
   }
 

@@ -1,8 +1,4 @@
 <script type="module">
-  import { Howl } from 'howler';
-  import AUDIO from '/js/audio.js';
-  import { getLevelByExperience } from '/js/level.js';
-
   $.on('afterUpdate', (current, prev) => {
     if (current.overlay === 'AccountProgression' && prev.overlay !== 'AccountProgression') {
       const el = document.querySelector('[progression-scroll] slides');
@@ -10,7 +6,7 @@
       const target = el.children[current.accountRewards - 1];
       if (target) target.scrollIntoView({ behavior: 'instant', block: 'nearest', inline: 'center' });
       setTimeout(() => {
-        const level = getLevelByExperience(current.experience);
+        const level = window.getLevelByExperience(current.experience);
         const lvlTarget = el.children[level - 1];
         if (lvlTarget) lvlTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
       }, 50);
@@ -20,14 +16,14 @@
   component({ levels: Array.from({ length: 25 }, (_, i) => i + 1) });
 
   window.claimAccountReward = (lvl) => {
-    const accountLevel = getLevelByExperience($.experience);
+    const accountLevel = window.getLevelByExperience($.experience);
     if (lvl !== $.accountRewards + 1 || lvl > accountLevel) return;
     if (lvl === accountLevel) {
       setTimeout(() => { $.overlay = ''; }, 500);
     }
     try {
-      new Howl({
-        src: [AUDIO['Special Lootbox 13']],
+      new window.Howl({
+        src: [window.AUDIO['Special Lootbox 13']],
         volume: $.settings.volume.master * $.settings.volume.sfx
       }).play();
     } catch { }

@@ -58,8 +58,8 @@
     nextMark.setMinutes(nextMarkMinute, 0, 0);
 
     const timeToRefill = nextMark.getTime() - nowMs;
-    $.healTimer = Math.max(0, Math.ceil(timeToRefill / 1000));
-    $.healTimerPct = Math.round(((FULL_TIME - timeToRefill) / FULL_TIME) * 100);
+    $.healTimerElapsed = Math.max(0, FULL_TIME - timeToRefill);
+    $.healTimerTotal = FULL_TIME;
 
     if (timeToRefill < 0) {
       $.characters.forEach((ref) => {
@@ -81,8 +81,8 @@
 
 <sidebar sm:t="8.5" t="12">
   <input type="checkbox" id="sidebar-toggle" />
-  <sidebar-content sm:bg="white">
-    <crow vertical g-3 w-full>
+  <sidebar-content sm:bg="white" h="300">
+    <crow vertical g-2 w-full>
       <!-- if combat.duration !== 0 -->
       <crow>
         <!-- if elapsedMilliseconds < combat.duration -->
@@ -99,11 +99,9 @@
       </crow>
       <!-- /if -->
 
-      <crow justify-between w-full>
-        <h5 m-0>MY LUDUS</h5>
+      <component src="/components/TitleBar.html" small title="My Ludus">
         <span cinzel flex-none>level @[getLevelByExperience(experience)]</span>
-      </crow>
-      <hr />
+      </component>
 
       <crow vertical left w-full g-2>
         <crow justify-between w-full>
@@ -119,12 +117,9 @@
             </button>
           </crow>
           <!-- if getLevelByExperience(experience) < 25 -->
-          <bar-track xp-bar>
-            <bar-fill xp-fill
-              style="width: @[Math.round((getCurrentExperienceAtLevel(experience) / Math.max(1, getExperienceForNextLevel(getLevelByExperience(experience)))) * 100)]%"></bar-fill>
-            <crow bar-text text-sm>@[getCurrentExperienceAtLevel(experience)] /
-              @[getExperienceForNextLevel(getLevelByExperience(experience))]</crow>
-          </bar-track>
+          <component src="/components/Bar.html" center color="yellow"
+            current="@[getCurrentExperienceAtLevel(experience)]"
+            max="@[getExperienceForNextLevel(getLevelByExperience(experience))]"></component>
           <!-- /if -->
         </crow>
 
@@ -143,21 +138,16 @@
           $.healTimer = 120;
         ">Heal now</button>
           </crow>
-          <bar-track heal-timer-bar>
-            <bar-fill heal-timer-fill style="width: @[healTimerPct]%"></bar-fill>
-            <crow bar-text text-sm>@[String(Math.floor(healTimer / 60)).padStart(2,
-              '0')]:@[String(healTimer % 60).padStart(2, '0')]</crow>
-          </bar-track>
+          <component src="/components/Bar.html" center timer color="stone"
+            current="@[healTimerElapsed]" max="@[healTimerTotal]"></component>
         </crow>
       </crow>
 
-      <spacer sidebar-gap></spacer>
+      <div h="4"></div>
 
-      <crow justify-between w-full>
-        <h5 m-0>MY BRAWLERS</h5>
+      <component src="/components/TitleBar.html" small title="My Brawlers">
         <span cinzel flex-none>@[sidebarChars.length] / @[allowedNumberOfCharacters()]</span>
-      </crow>
-      <hr />
+      </component>
 
       <brawler-list onmouseenter="$.this.showSequence = true"
         onmouseleave="$.this.showSequence = false">
@@ -182,15 +172,10 @@
                 </brawler-avatar-inner>
               </brawler-avatar-outer>
               <crow vertical left brawler-info>
-                <bar-track hp-bar>
-                  <bar-fill hp-fill style="width: @[schar.healthPct]%"></bar-fill>
-                  <crow bar-text justify-between
-                    show-numeric="@[this.showSequence || !!maxBrawlers || Number(routeParams.characterIndex) === i || selectedBrawlers.includes(characters[i]?.uuid)]">
-                    <span>@[schar.name]</span>
-                    <span hp-numeric>@[schar.currentHealth] / @[schar.maxHealth]</span>
-                    <span hp-pct>@[schar.healthPct]%</span>
-                  </crow>
-                </bar-track>
+                <component src="/components/Bar.html" text="@[schar.name]"
+                  current="@[schar.currentHealth]" max="@[schar.maxHealth]"
+                  percentage="@[!(this.showSequence || !!maxBrawlers || Number(routeParams.characterIndex) === i || selectedBrawlers.includes(characters[i]?.uuid))]">
+                </component>
                 <ability-accordion
                   open="@[this.showSequence || !!maxBrawlers || Number(routeParams.characterIndex) === i || selectedBrawlers.includes(characters[i]?.uuid)]">
                   <ability-accordion-content>
@@ -214,75 +199,13 @@
 </sidebar>
 
 <style>
-  [battle-brawlers] bar-track {
-    display: grid;
-    position: relative;
-    width: 100%;
-    height: 28px;
-    overflow: hidden;
-    color: #fff;
-    background: rgb(107 114 128 / 0.5);
-    box-shadow: inset 0 1px 1px rgb(0 0 0 / 0.05);
-  }
-
-  [battle-brawlers] bar-fill {
-    display: block;
-    grid-area: 1 / 1;
-    height: 100%;
-    transition: width 200ms ease-in-out;
-  }
-
-  [battle-brawlers] [bar-text] {
-    grid-area: 1 / 1;
-    padding: 0 calc(var(--unit) * 2);
-    font-size: 0.875rem;
-    line-height: 28px;
-    color: #fff;
-    text-shadow: 0 1px 1px rgb(0 0 0 / 0.5);
-  }
-
-  [battle-brawlers] [bar-text] [hp-numeric] {
-    display: none;
-  }
-
-  [battle-brawlers] [bar-text][show-numeric] [hp-numeric] {
-    display: inline;
-  }
-
-  [battle-brawlers] [bar-text][show-numeric] [hp-pct] {
-    display: none;
-  }
-
-  [battle-brawlers] [xp-bar] bar-fill {
-    background: var(--bb-yellow);
-  }
-
-  [battle-brawlers] [hp-bar] bar-fill {
-    background: #991b1b;
-  }
-
-  [battle-brawlers] [heal-timer-bar] bar-fill {
-    background: var(--bb-stone);
-  }
-
-  [battle-brawlers] [xp-bar],
-  [battle-brawlers] [heal-timer-bar] {
-    height: 24px;
-    border-radius: calc(var(--unit) * 0.5);
-  }
-
-  [battle-brawlers] [xp-bar] [bar-text],
-  [battle-brawlers] [heal-timer-bar] [bar-text] {
-    line-height: 24px;
-  }
-
   [battle-brawlers] [sidebar-gap] {
     height: calc(var(--unit) * 4);
   }
 
   [battle-brawlers] brawler-list {
     display: block;
-    margin: calc(var(--unit) * 2) calc(var(--unit) * -4);
+    margin-inline: calc(var(--unit) * -4);
   }
 
   [battle-brawlers] [brawler-link] {

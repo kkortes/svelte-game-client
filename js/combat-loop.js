@@ -155,6 +155,7 @@ export const init = () => {
     $.combatTeam0 = t0;
     $.combatTeam1 = t1;
     $.combatScale = scale;
+    $.combatCards = [...t0, ...t1];
 
     // Retrigger attack animation by toggling animation-name via a DOM tickle.
     // Walk through enriched combatants and compare attackAnimId to what we last set.
@@ -170,10 +171,15 @@ export const init = () => {
   };
 
   window.retriggerCombatantAnim = (cardId) => {
-    const el = document.querySelector(`[combatant-wrap="${cardId}"]`);
+    const el = document.querySelector(`[data-combatant-wrap="${cardId}"]`);
     if (!el) return;
+    // Vibe's hydrate does setAttribute('style', ...) every flush, wiping any inline
+    // animation-name we set. Force a reflow so the browser commits the 'none' state
+    // synchronously — then clearing it makes the CSS animation restart fresh before
+    // Vibe's next microtask-flush replaces the style attribute.
     el.style.animationName = 'none';
-    requestAnimationFrame(() => { el.style.animationName = ''; });
+    void el.offsetWidth;
+    el.style.animationName = '';
   };
 
   const playSfx = (sfx) => {
@@ -243,6 +249,12 @@ export const init = () => {
       audioQueue = [...(current.combat.audio || [])].sort((a, b) => a.start - b.start);
       retriggered.clear();
       $.liveTeams = current.combat.teamsStartState;
+      // Stable iteration array — set once per combat, never mutated during the
+      // rAF loop. The iteration over cardIndexes never rebuilds, so each
+      // CombatantCard component fetches/mounts exactly once. Per-card bindings
+      // read combatCards[idx].X and update reactively when combatCards changes.
+      const total = (current.combat.teamsStartState || []).reduce((a, t) => a + (t.combatants?.length || 0), 0);
+      $.cardIndexes = Array.from({ length: total }, (_, i) => i);
       updateCombatDisplay();
       animationId = requestAnimationFrame(loop);
     }
