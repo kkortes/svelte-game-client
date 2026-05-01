@@ -29,6 +29,7 @@ export default defineConfig({
       closeBundle() {
         cpSync('components', 'dist/components', { recursive: true });
         cpSync('static', 'dist/static', { recursive: true });
+        cpSync('js', 'dist/js', { recursive: true });
       }
     },
     {
