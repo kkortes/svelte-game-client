@@ -7,7 +7,7 @@
     "dev": "bunx vite"
   },
   "dependencies": {
-    "@ape-egg/vibe": "latest",
+    "@ape-egg/vibe": "^1.9.1",
     "async-await-websockets": "^3.0.5",
     "howler": "^2.2.4",
     "seedrandom": "^3.0.5"
