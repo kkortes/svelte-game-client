@@ -1,6 +1,4 @@
 <script type="module">
-  import config from '/js/config.js';
-
   component({
     mode: 'login',
     email: config.IS_DEV ? config.AUTO_EMAIL : ($.settings.rememberMe ? $.settings.savedEmail : ''),

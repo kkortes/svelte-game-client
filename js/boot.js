@@ -87,6 +87,7 @@ export default () => {
       .replace(/\//g, '-') || 'home';
 
   // Window globals for components and services
+  window.config = config;
   window.Howl = Howl;
   window.AUDIO = AUDIO;
   window.CHARACTERS = CHARACTERS;
