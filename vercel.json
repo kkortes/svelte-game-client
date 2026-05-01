@@ -1,5 +1,10 @@
 {
+  "cleanUrls": true,
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/", "destination": "/pages/home.html" },
+    { "source": "/brawlers/:i", "destination": "/pages/brawler-detail.html" },
+    { "source": "/the-arena/:fightId", "destination": "/pages/fight-detail.html" },
+    { "source": "/reset-password/:secret", "destination": "/pages/reset-password.html" },
+    { "source": "/:page", "destination": "/pages/:page.html" }
   ]
 }

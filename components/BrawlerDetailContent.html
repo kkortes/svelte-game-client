@@ -207,7 +207,7 @@
     const characterRef = () => $.characters[Number($.page.params.characterIndex)];
     const zoneType = () => characterRef()?.uuid || 'abilities';
 
-    setTimeout(() => {
+    $.on('ready', () => {
       const abilityOverlay = document.querySelector('ability-overlay');
       const availableGrid = document.querySelector('[available-grid]');
 
@@ -226,7 +226,6 @@
             if (!ref) return;
             ref.overrides.abilities = newItems.map(a => ({ id: a.id, uuid: a.uuid, overrides: a.overrides }));
             setupCharacter(s);
-            $.characters = [...$.characters];
           },
           onReceive: (item, _fromZone, insertIndex) => {
             const ref = characterRef();
@@ -235,7 +234,6 @@
             current.splice(insertIndex, 0, { id: item.id, uuid: item.uuid, overrides: item.overrides });
             ref.overrides.abilities = current;
             setupCharacter(s);
-            $.characters = [...$.characters];
           }
         });
       }
@@ -256,11 +254,10 @@
             if (!ref) return;
             ref.overrides.abilities = ref.overrides.abilities.filter(a => a.uuid !== item.uuid);
             setupCharacter(s);
-            $.characters = [...$.characters];
           }
         });
       }
-    }, 500);
+    });
   });
 </script>
 
@@ -300,8 +297,8 @@
       </crow>
 
       <crow vertical left f-2 detail-col>
-        <stats-accordion open="@[settings.showDetailedCharacterView]">
-          <stats-accordion-content>
+        <accordion open="@[settings.showDetailedCharacterView]">
+          <accordion-content>
             <crow up left g-8 flex-none stats-panel>
               <crow vertical left stats-col>
                 <h5>Base Stats</h5>
@@ -309,21 +306,27 @@
                 <crow stat-list vertical left g-1 w-full>
                   <crow justify-between w-full g-2>
                     <crow left g-2>
-                      <icon-cell flex-none><icon maxHealth></icon></icon-cell>
+                      <icon-cell flex-none>
+                        <icon maxHealth></icon>
+                      </icon-cell>
                       <span>Health</span>
                     </crow>
                     <span>@[this.currentCombatStats.maxHealthFmt]</span>
                   </crow>
                   <crow justify-between w-full g-2>
                     <crow left g-2>
-                      <icon-cell flex-none><icon maxArmor></icon></icon-cell>
+                      <icon-cell flex-none>
+                        <icon maxArmor></icon>
+                      </icon-cell>
                       <span>Armor</span>
                     </crow>
                     <span>@[this.currentCombatStats.maxArmorFmt]</span>
                   </crow>
                   <crow justify-between w-full g-2>
                     <crow left g-2>
-                      <icon-cell flex-none><icon damage></icon></icon-cell>
+                      <icon-cell flex-none>
+                        <icon damage></icon>
+                      </icon-cell>
                       <span>Damage</span>
                     </crow>
                     <span>@[this.currentCombatStats.damageFmt]</span>
@@ -337,35 +340,45 @@
                 <crow stat-list vertical left g-1 w-full text-green>
                   <crow justify-between w-full g-2>
                     <crow left g-2>
-                      <icon-cell flex-none><icon criticalChance></icon></icon-cell>
+                      <icon-cell flex-none>
+                        <icon criticalChance></icon>
+                      </icon-cell>
                       <span>Critical chance</span>
                     </crow>
                     <span>@[this.currentCombatStats.criticalChance]</span>
                   </crow>
                   <crow justify-between w-full g-2>
                     <crow left g-2>
-                      <icon-cell flex-none><icon criticalDamage></icon></icon-cell>
+                      <icon-cell flex-none>
+                        <icon criticalDamage></icon>
+                      </icon-cell>
                       <span>Critical damage</span>
                     </crow>
                     <span>@[this.currentCombatStats.criticalDamage]</span>
                   </crow>
                   <crow justify-between w-full g-2>
                     <crow left g-2>
-                      <icon-cell flex-none><icon blockChance></icon></icon-cell>
+                      <icon-cell flex-none>
+                        <icon blockChance></icon>
+                      </icon-cell>
                       <span>Block chance</span>
                     </crow>
                     <span>@[this.currentCombatStats.blockChance]</span>
                   </crow>
                   <crow justify-between w-full g-2>
                     <crow left g-2>
-                      <icon-cell flex-none><icon dodgeChance></icon></icon-cell>
+                      <icon-cell flex-none>
+                        <icon dodgeChance></icon>
+                      </icon-cell>
                       <span>Dodge chance</span>
                     </crow>
                     <span>@[this.currentCombatStats.dodgeChance]</span>
                   </crow>
                   <crow justify-between w-full g-2>
                     <crow left g-2>
-                      <icon-cell flex-none><icon magicChance></icon></icon-cell>
+                      <icon-cell flex-none>
+                        <icon magicChance></icon>
+                      </icon-cell>
                       <span>Magic chance</span>
                     </crow>
                     <span>@[this.currentCombatStats.magicChance]</span>
@@ -379,28 +392,36 @@
                 <crow stat-list vertical left g-1 w-full>
                   <crow justify-between w-full g-2>
                     <crow left g-2>
-                      <icon-cell flex-none><icon maxHealth></icon></icon-cell>
+                      <icon-cell flex-none>
+                        <icon maxHealth></icon>
+                      </icon-cell>
                       <span>Health</span>
                     </crow>
                     <span>@[this.currentCombatStats.modifiers.maxHealth]</span>
                   </crow>
                   <crow justify-between w-full g-2>
                     <crow left g-2>
-                      <icon-cell flex-none><icon maxArmor></icon></icon-cell>
+                      <icon-cell flex-none>
+                        <icon maxArmor></icon>
+                      </icon-cell>
                       <span>Armor</span>
                     </crow>
                     <span>@[this.currentCombatStats.modifiers.maxArmor]</span>
                   </crow>
                   <crow justify-between w-full g-2>
                     <crow left g-2>
-                      <icon-cell flex-none><icon damage></icon></icon-cell>
+                      <icon-cell flex-none>
+                        <icon damage></icon>
+                      </icon-cell>
                       <span>Damage</span>
                     </crow>
                     <span>@[this.currentCombatStats.modifiers.damage]</span>
                   </crow>
                   <crow justify-between w-full g-2>
                     <crow left g-2>
-                      <icon-cell flex-none><icon resistance></icon></icon-cell>
+                      <icon-cell flex-none>
+                        <icon resistance></icon>
+                      </icon-cell>
                       <span>All resistances</span>
                     </crow>
                     <span>@[this.currentCombatStats.modifiers.resistance]</span>
@@ -414,21 +435,27 @@
                 <crow stat-list vertical left g-1 w-full>
                   <crow justify-between w-full g-2>
                     <crow left g-2>
-                      <icon-cell flex-none><icon bleeding></icon></icon-cell>
+                      <icon-cell flex-none>
+                        <icon bleeding></icon>
+                      </icon-cell>
                       <span>Bleeding</span>
                     </crow>
                     <span>@[this.currentCombatStats.limits.wounded]</span>
                   </crow>
                   <crow justify-between w-full g-2>
                     <crow left g-2>
-                      <icon-cell flex-none><icon stunned></icon></icon-cell>
+                      <icon-cell flex-none>
+                        <icon stunned></icon>
+                      </icon-cell>
                       <span>Stunned</span>
                     </crow>
                     <span>@[this.currentCombatStats.limits.concussed]</span>
                   </crow>
                   <crow justify-between w-full g-2>
                     <crow left g-2>
-                      <icon-cell flex-none><icon vulnerable></icon></icon-cell>
+                      <icon-cell flex-none>
+                        <icon vulnerable></icon>
+                      </icon-cell>
                       <span>Vulnerable</span>
                     </crow>
                     <span>@[this.currentCombatStats.limits.exposed]</span>
@@ -437,8 +464,8 @@
               </crow>
             </crow>
 
-          </stats-accordion-content>
-        </stats-accordion>
+          </accordion-content>
+        </accordion>
 
         <equipment-heading open="@[settings.showDetailedCharacterView]">
           <equipment-heading-content>
@@ -448,7 +475,7 @@
           </equipment-heading-content>
         </equipment-heading>
 
-        <crow vertical left w-full g-2 eq-section>
+        <crow vertical left w-full>
           <!-- each this.currentSlots as eq -->
           <crow left justify-between w-full g-2 eq-row>
             <crow left g-2>
@@ -470,8 +497,7 @@
             </crow>
             <!-- if eq.hasItem -->
             <!-- if !eq.disabled -->
-            <button tertiary text-xs unequip-btn py="0.5" px="1.5"
-              onclick="unequipSlot('@[eq.slot]')">Unequip</button>
+            <button secondary sm onclick="unequipSlot('@[eq.slot]')">Unequip</button>
             <!-- /if -->
             <!-- /if -->
           </crow>
