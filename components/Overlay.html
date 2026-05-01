@@ -1,42 +1,42 @@
 <script type="module">
   // Dismiss handler — clear overlay on backdrop click or Escape.
   // Bare modes (Combat, AccountProgression) handle their own dismiss.
-  window.dismissOverlay = () => { $.overlay = ''; $.dialogProps = ''; };
+  window.dismissOverlay = () => { $.overlay = {}; };
 </script>
 
-<modal-root open="@[overlay]" bare="@[overlay === 'Combat' || overlay === 'AccountProgression']"
+<modal-root open="@[Object.keys(overlay).length]" bare="@[overlay.name === 'Combat' || overlay.name === 'AccountProgression']"
   onclick="dismissOverlay()">
 
   <!-- Lightweight modes: always in DOM, hidden when inactive.
        Content stays during fade-out animation — no flicker. -->
 
-  <div h="20" hidden="@[overlay === 'Combat' || overlay === 'AccountProgression']"></div>
+  <div h="20" hidden="@[overlay.name === 'Combat' || overlay.name === 'AccountProgression']"></div>
 
   <modal-panel onclick="event.stopPropagation()"
-    hidden="@[overlay === 'Combat' || overlay === 'AccountProgression']">
+    hidden="@[overlay.name === 'Combat' || overlay.name === 'AccountProgression']">
 
-    <game-menu-mode hidden="@[overlay !== 'GameMenu']">
+    <game-menu-mode hidden="@[overlay.name !== 'GameMenu']">
       <component src="/components/GameMenu.html"></component>
     </game-menu-mode>
 
-    <dialog-mode hidden="@[!['confirm','codeOfConduct','releaseNotes'].includes(overlay)]">
+    <dialog-mode hidden="@[!['confirm','codeOfConduct','releaseNotes'].includes(overlay.name)]">
       <card dialog-card p-6 sm:p="2" relative>
         <button tertiary absolute t="1" r="1" dialog-close onclick="dismissOverlay()">
           <icon cross></icon>
         </button>
 
-        <confirm-content hidden="@[overlay !== 'confirm']">
+        <confirm-content hidden="@[overlay.name !== 'confirm']">
           <typography>
-            <p>@[dialogProps?.text || 'Are you sure?']</p>
+            <p>@[overlay.text || 'Are you sure?']</p>
           </typography>
           <crow g-2 right mt-4>
             <button tertiary onclick="dismissOverlay()">Cancel</button>
             <button primary
-              onclick="if($.dialogProps?.confirm) $.dialogProps.confirm(); dismissOverlay();">Confirm</button>
+              onclick="if($.overlay.confirm) $.overlay.confirm(); dismissOverlay();">Confirm</button>
           </crow>
         </confirm-content>
 
-        <coc-content hidden="@[overlay !== 'codeOfConduct']">
+        <coc-content hidden="@[overlay.name !== 'codeOfConduct']">
           <typography>
             <h3>Code of Conduct</h3>
             <p>By playing the game you agree to the following rules and regulations.</p>
@@ -65,7 +65,7 @@
           </typography>
         </coc-content>
 
-        <release-content hidden="@[overlay !== 'releaseNotes']">
+        <release-content hidden="@[overlay.name !== 'releaseNotes']">
           <typography>
             <h3>Release Notes</h3>
             <h5 cinzel>v0.1.0</h5>
@@ -77,13 +77,13 @@
 
   </modal-panel>
 
-  <div h="20" hidden="@[overlay === 'Combat' || overlay === 'AccountProgression']"></div>
+  <div h="20" hidden="@[overlay.name === 'Combat' || overlay.name === 'AccountProgression']"></div>
 
-  <!-- if overlay === 'Combat' -->
+  <!-- if overlay.name === 'Combat' -->
   <component src="/components/Combat.html"></component>
   <!-- /if -->
 
-  <!-- if overlay === 'AccountProgression' -->
+  <!-- if overlay.name === 'AccountProgression' -->
   <component src="/components/AccountProgression.html"></component>
   <!-- /if -->
 

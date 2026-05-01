@@ -1,0 +1,364 @@
+<script type="module">
+  import component from '/node_modules/@ape-egg/vibe/component.js';
+
+  const STORAGE_KEY = 'dataInspectorOpenPaths';
+  let initialOpen = {};
+  try {
+    const raw = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    if (raw && typeof raw === 'object' && !Array.isArray(raw)) initialOpen = raw;
+    else if (Array.isArray(raw)) initialOpen = raw.reduce((acc, p) => (acc[p] = true, acc), {});
+  } catch { }
+
+  const localState = { openPaths: initialOpen };
+  component(localState);
+  const componentId = Object.keys(window.__vibeComponents).find(
+    (k) => window.__vibeComponents[k] === localState,
+  );
+  const s = $[componentId];
+
+  const persistOpenPaths = () => {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s.openPaths)); } catch { }
+  };
+
+  const isOpen = (path) => !!s.openPaths[path];
+
+  const setOpenPaths = (next) => {
+    s.openPaths = next;
+    persistOpenPaths();
+  };
+
+  const objectIds = new WeakMap();
+  let nextObjectId = 0;
+  const stableObjectId = (obj) => {
+    let id = objectIds.get(obj);
+    if (!id) { id = `o${++nextObjectId}`; objectIds.set(obj, id); }
+    return id;
+  };
+
+  const isHiddenKey = (key) => {
+    if (key === 'vibeStateInspector' || key === 'vibeStateInspectorEverOpened') return true;
+    const root = document.querySelector('state-inspector');
+    if (root && root.querySelector(`[data-vibe-component-id="${key}"]`)) return true;
+    return false;
+  };
+
+  const isObject = (v) => v !== null && typeof v === 'object';
+
+  const summarize = (v) => {
+    if (v === null) return 'null';
+    if (v === undefined) return 'undefined';
+    if (typeof v === 'function') return '[Function]';
+    if (typeof v !== 'object') return String(v);
+    if (Array.isArray(v)) return `[${v.length}]`;
+    return `{${Object.keys(v).length}}`;
+  };
+
+  // Sort: primitives first, objects/arrays next, underscore-prefixed last.
+  // Within each rank, alphabetical by key.
+  const getSortRank = (key, val) => {
+    if (key.startsWith('_')) return 2;
+    if (!isObject(val)) return 0;
+    return 1;
+  };
+
+  const sortedEntries = (obj) =>
+    Object.entries(obj).sort(([aK, aV], [bK, bV]) => {
+      const aR = getSortRank(aK, aV);
+      const bR = getSortRank(bK, bV);
+      if (aR !== bR) return aR - bR;
+      return aK.localeCompare(bK, undefined, { numeric: true });
+    });
+
+  const childPath = (parentPath, item, indexOrKey, isArrayChild) => {
+    if (isArrayChild) {
+      return isObject(item)
+        ? `${parentPath}/${stableObjectId(item)}`
+        : `${parentPath}/${indexOrKey}_${item}`;
+    }
+    return parentPath ? `${parentPath}/${indexOrKey}` : indexOrKey;
+  };
+
+  // `ancestors` is the chain of objects on the current path — prevents cycles
+  // while still allowing the same object to be visited through different
+  // sibling paths (e.g. `characters[0]` and `currentCharacter` referring to
+  // the same character object). Object-identity dedup would silently swallow
+  // one of those paths.
+  // `opens` is passed explicitly so Vibe can compute old vs new row sets
+  // against the right snapshot — Vibe re-evaluates the iteration's array
+  // expression for both `previousState` and `currentState` and diffs them;
+  // reading via closure would always see the live value and produce
+  // identical arrays for both evaluations, hiding the ADD/REMOVE ops.
+  const walk = (value, depth, path, key, rows, ancestors, opens) => {
+    const expandable = isObject(value);
+    const open = expandable && !!opens[path];
+    rows.push({ path, key, depth, expandable, open, summary: summarize(value) });
+    if (!expandable || !open || ancestors.has(value)) return;
+    ancestors.add(value);
+    if (Array.isArray(value)) {
+      value.forEach((item, i) => {
+        walk(item, depth + 1, childPath(path, item, i, true), `#${i + 1}`, rows, ancestors, opens);
+      });
+    } else {
+      sortedEntries(value).forEach(([k, v]) => {
+        walk(v, depth + 1, childPath(path, v, k, false), k, rows, ancestors, opens);
+      });
+    }
+    ancestors.delete(value);
+  };
+
+  let latestData = null;
+
+  // Walks every reachable expandable path regardless of current open state.
+  // Used by alt-click recursive toggle and the all-open button.
+  const collectExpandablePaths = (data) => {
+    const paths = [];
+    const ancestors = new Set();
+    const visit = (value, path) => {
+      if (!isObject(value) || ancestors.has(value)) return;
+      if (path) paths.push(path);
+      ancestors.add(value);
+      if (Array.isArray(value)) {
+        value.forEach((item, i) => visit(item, childPath(path, item, i, true)));
+      } else {
+        Object.entries(value).forEach(([k, v]) => visit(v, childPath(path, v, k, false)));
+      }
+      ancestors.delete(value);
+    };
+    Object.keys(data || {}).forEach((k) => {
+      if (isHiddenKey(k)) return;
+      visit(data[k], k);
+    });
+    return paths;
+  };
+
+  const countItems = (val) => {
+    if (!isObject(val)) return 1;
+    if (Array.isArray(val)) return val.reduce((n, v) => n + countItems(v), 0);
+    return Object.values(val).reduce((n, v) => n + countItems(v), 0);
+  };
+
+  window.dataInspectorRows = (data, opens) => {
+    if (!data || typeof data !== 'object') return [];
+    latestData = data;
+    const rows = [];
+    const ancestors = new Set();
+    const safeOpens = opens && typeof opens === 'object' ? opens : {};
+    sortedEntries(data).forEach(([k, v]) => {
+      if (isHiddenKey(k)) return;
+      walk(v, 0, k, k, rows, ancestors, safeOpens);
+    });
+    return rows;
+  };
+
+  window.dataInspectorShallowCount = (data) =>
+    data && typeof data === 'object'
+      ? Object.keys(data).filter((k) => !isHiddenKey(k)).length
+      : 0;
+
+  window.dataInspectorTotalCount = (data) => {
+    if (!data || typeof data !== 'object') return 0;
+    return Object.keys(data)
+      .filter((k) => !isHiddenKey(k))
+      .reduce((n, k) => n + countItems(data[k]), 0);
+  };
+
+  const allExpandableOpen = (data) => {
+    const all = collectExpandablePaths(data);
+    return all.length > 0 && all.every(isOpen);
+  };
+
+  window.dataInspectorAllOpenLabel = (data) =>
+    allExpandableOpen(data) ? 'Close all' : 'Open all';
+
+  window.toggleInspectorPath = (e) => {
+    const row = e.currentTarget;
+    if (!row?.hasAttribute('expandable')) return;
+    const path = row.dataset.path;
+    if (!path) return;
+    const nextOpen = !isOpen(path);
+    const next = { ...s.openPaths };
+    if (nextOpen) next[path] = true;
+    else delete next[path];
+
+    if (e.altKey) {
+      // Toggle every descendant expandable path to the same target state.
+      collectExpandablePaths(latestData || window.$).forEach((p) => {
+        if (!p.startsWith(`${path}/`)) return;
+        if (nextOpen) next[p] = true;
+        else delete next[p];
+      });
+    }
+
+    setOpenPaths(next);
+  };
+
+  window.toggleInspectorAll = () => {
+    const data = latestData || window.$;
+    if (allExpandableOpen(data)) {
+      setOpenPaths({});
+    } else {
+      const next = { ...s.openPaths };
+      collectExpandablePaths(data).forEach((p) => { next[p] = true; });
+      setOpenPaths(next);
+    }
+  };
+
+  window.copyDataInspectorJson = () => {
+    try { navigator.clipboard?.writeText(JSON.stringify(window.$, null, 2)); } catch { }
+  };
+</script>
+
+<data-inspector>
+  <data-inspector-header>
+    <data-inspector-title>Vibe state (@[window.dataInspectorShallowCount(data)] |
+      @[window.dataInspectorTotalCount(data)] items)</data-inspector-title>
+    <data-inspector-actions>
+      <button onclick="toggleInspectorAll()"
+        data-inspector-copy>@[window.dataInspectorAllOpenLabel(data)]</button>
+      <button onclick="copyDataInspectorJson()" data-inspector-copy>Copy JSON</button>
+    </data-inspector-actions>
+  </data-inspector-header>
+  <data-inspector-lines>
+    <!-- each window.dataInspectorRows(data, this.openPaths) as row (row.path) -->
+    <data-inspector-row data-path="@[row.path]" expandable="@[row.expandable]" open="@[row.open]"
+      onclick="toggleInspectorPath(event)">
+      <data-inspector-key
+        style="padding-left: calc((@[row.depth]) * 1ch)">@[row.key]</data-inspector-key>
+      <data-inspector-value bracket="@[row.expandable]">@[row.summary]</data-inspector-value>
+    </data-inspector-row>
+    <!-- /each -->
+  </data-inspector-lines>
+</data-inspector>
+
+<style>
+  data-inspector {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    font-size: 0.6875rem;
+    background: #1e1e1e;
+    color: #d4d4d4;
+    font-family: 'Geist Mono', 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
+  }
+
+  data-inspector-header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: calc(var(--unit) * 4);
+    padding: calc(var(--unit) * 2.5) calc(var(--unit) * 3);
+    background: #252526;
+    border-bottom: 1px solid #3c3c3c;
+  }
+
+  data-inspector-title {
+    font-weight: 500;
+    font-size: 0.6875rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #969696;
+  }
+
+  data-inspector-actions {
+    display: flex;
+    gap: calc(var(--unit) * 1);
+  }
+
+  [data-inspector-copy] {
+    height: calc(var(--unit) * 6);
+    padding: 0 calc(var(--unit) * 2);
+    font-family: inherit;
+    font-size: 0.6875rem;
+    color: #969696;
+    background: transparent;
+    border: 1px solid #3c3c3c;
+    border-radius: calc(var(--unit) * 1);
+    cursor: pointer;
+  }
+
+  [data-inspector-copy]:hover {
+    color: #d4d4d4;
+    background: #2a2d2e;
+    border-color: #505050;
+  }
+
+  data-inspector-lines {
+    --scrollbar-width: 16px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    margin-right: calc(var(--scrollbar-width) * -1);
+    line-height: 1.5;
+    scrollbar-color: #424242 transparent;
+  }
+
+  data-inspector-lines::-webkit-scrollbar {
+    width: var(--scrollbar-width);
+  }
+
+  data-inspector-lines::-webkit-scrollbar-thumb {
+    background: #424242;
+    border-radius: 4px;
+  }
+
+  data-inspector-lines::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  data-inspector-row {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 100%;
+    gap: calc(var(--unit) * 2);
+    padding: calc(var(--unit) * 0.5) calc(var(--unit) * 3);
+    box-sizing: border-box;
+    animation: row-in 140ms ease;
+  }
+
+  @keyframes row-in {
+    from {
+      opacity: 0;
+      transform: translateY(-2px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  data-inspector-row:hover {
+    background: #2a2d2e;
+  }
+
+  data-inspector-row[expandable] {
+    cursor: pointer;
+  }
+
+  data-inspector-key {
+    display: inline-block;
+    flex-shrink: 0;
+    color: #9cdcfe;
+  }
+
+  data-inspector-value {
+    flex: 1;
+    min-width: 0;
+    text-align: right;
+    word-break: break-word;
+    white-space: normal;
+    color: #ce9178;
+  }
+
+  data-inspector-value[bracket] {
+    color: #569cd6;
+  }
+</style>

@@ -1,4 +1,3 @@
 export const confirmWithDialog = (text, confirm) => {
-  $.dialogProps = { text, confirm };
-  $.overlay = 'confirm';
+  $.overlay = { name: 'confirm', text, confirm };
 };

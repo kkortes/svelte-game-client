@@ -1,0 +1,13 @@
+<card text-sm tooltip-card>
+  <!-- if tooltip.props && tooltip.props.name -->
+  <strong tooltip-name>@[tooltip.props.name]</strong>
+  <!-- /if -->
+
+  <!-- if tooltip.props && tooltip.props.description -->
+  <p m-0 mt-2 text-xs tooltip-desc>@[tooltip.props.description]</p>
+  <!-- /if -->
+
+  <!-- if !tooltip.props || (!tooltip.props.name && !tooltip.props.description) -->
+  <span tooltip-fallback>Tooltip</span>
+  <!-- /if -->
+</card>

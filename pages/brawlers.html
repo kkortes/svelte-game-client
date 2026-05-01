@@ -19,7 +19,6 @@
     import { ALL_ELEMENTS } from '/js/constants/ELEMENTS.js';
     import { correctHealth } from '/js/equipment.js';
     import { saveNow } from '/js/connectSocket.js';
-    import { notify } from '/js/actions.js';
     import { calculateCombatStatsByCharacter } from '/js/utils.js';
 
     const formatBonuses = (current, defaults, labels) =>
@@ -67,7 +66,8 @@
         return;
       }
 
-      $.dialogProps = {
+      $.overlay = {
+        name: 'confirm',
         text: `Recruiting ${card.name} to your Ludus.`,
         confirm: async () => {
           $.characters.push(correctHealth(card.ref));
@@ -76,7 +76,6 @@
           // window.location.href = `/brawlers/${targetIndex}`;
         }
       };
-      $.overlay = 'confirm';
     };
   </script>
 
@@ -105,8 +104,8 @@
           <span cinzel brawler-name text-center w-full>@[card.name]</span>
           <hr />
           <crow left up brawler-row>
-            <component src="/components/CharacterAvatar.html"
-              image="@[card.image]" size="@[card.size]" name="@[card.name]"></component>
+            <component src="/components/CharacterAvatar.html" image="@[card.image]"
+              size="@[card.size]" name="@[card.name]"></component>
             <crow vertical left brawler-info>
               <component src="/components/CoreStats.html" hp="@[card.hp]" armor="@[card.armor]"
                 damage="@[card.damage]" vertical></component>

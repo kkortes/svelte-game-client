@@ -13,55 +13,11 @@
   <script type="module">
     import boot from '/js/boot.js';
     boot();
-
-    import EQUIPMENT, { ALL_EQUIPMENT } from '/js/constants/EQUIPMENT.js';
-
-    $.equipChoices = Object.keys(ALL_EQUIPMENT);
-    $.chosenEquip = 'sword';
-
-    const computeEquip = () => {
-      $.equipPool = Array.from({ length: 13 }, (_, i) => {
-        const ref = i === 0
-          ? EQUIPMENT($.chosenEquip)
-          : EQUIPMENT($.chosenEquip, false, { overrides: { level: i } });
-        const hydrated = EQUIPMENT(ref, true);
-        return {
-          label: i === 0 ? 'base' : `level ${i}`,
-          name: hydrated.name,
-          level: hydrated.level || 0
-        };
-      });
-    };
-
-    computeEquip();
-
-    window.changeEquip = (value) => {
-      $.chosenEquip = value;
-      computeEquip();
-    };
   </script>
 
   <component src="/components/Layout.html">
     <page-content>
-      <crow vertical g-4 left>
-        <component src="/components/TitleBar.html" title="Equipment Scaling"></component>
-        <hr />
-
-        <select onchange="changeEquip(this.value)">
-          <!-- each equipChoices as choice -->
-          <option value="@[choice]">@[choice]</option>
-          <!-- /each -->
-        </select>
-
-        <crow vertical left g-2 w-full>
-          <!-- each equipPool as eq -->
-          <crow left g-2>
-            <span>@[eq.label]</span>
-            <component src="/components/EquipmentLink.html" level="@[eq.level]" name="@[eq.name]"></component>
-          </crow>
-          <!-- /each -->
-        </crow>
-      </crow>
+      <component src="/components/EquipmentScalingContent.html"></component>
     </page-content>
   </component>
 </body>

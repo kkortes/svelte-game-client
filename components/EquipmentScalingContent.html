@@ -1,0 +1,52 @@
+<script type="module">
+  import EQUIPMENT, { ALL_EQUIPMENT } from '/js/constants/EQUIPMENT.js';
+
+  const state = {
+    equipChoices: Object.keys(ALL_EQUIPMENT),
+    chosenEquip: 'sword',
+    equipPool: []
+  };
+
+  const compute = (s) => {
+    s.equipPool = Array.from({ length: 13 }, (_, i) => {
+      const ref = i === 0
+        ? EQUIPMENT(s.chosenEquip)
+        : EQUIPMENT(s.chosenEquip, false, { overrides: { level: i } });
+      const hydrated = EQUIPMENT(ref, true);
+      return {
+        label: i === 0 ? 'base' : `level ${i}`,
+        name: hydrated.name,
+        level: hydrated.level || 0
+      };
+    });
+  };
+
+  compute(state);
+  component(state);
+
+  const id = Object.keys(window.__vibeComponents).find(k => window.__vibeComponents[k] === state);
+  const s = $[id];
+
+  window.changeEquip = (value) => { s.chosenEquip = value; compute(s); };
+</script>
+
+<crow vertical g-4 left>
+  <component src="/components/TitleBar.html" title="Equipment Scaling"></component>
+  <hr />
+
+  <select onchange="changeEquip(this.value)">
+    <!-- each this.equipChoices as choice -->
+    <option value="@[choice]">@[choice]</option>
+    <!-- /each -->
+  </select>
+
+  <crow vertical left g-2 w-full>
+    <!-- each this.equipPool as eq -->
+    <crow left g-2>
+      <span>@[eq.label]</span>
+      <component src="/components/EquipmentLink.html" level="@[eq.level]" name="@[eq.name]">
+      </component>
+    </crow>
+    <!-- /each -->
+  </crow>
+</crow>

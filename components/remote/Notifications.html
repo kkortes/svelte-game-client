@@ -1,0 +1,221 @@
+<script type="module">
+  import component from '/node_modules/@ape-egg/vibe/component.js';
+  component({});
+
+  const TTL = 3000;
+  const LEAVE_FALLBACK = 500;
+  let nextId = 0;
+  const leaving = new Set();
+  const timers = new Map();
+  let paused = false;
+
+  const removeFromState = (id) => {
+    if (!Array.isArray($.notifications)) return;
+    $.notifications = $.notifications.filter((n) => n._nid !== id);
+  };
+
+  const scheduleLeave = (id, ms) => {
+    const startedAt = Date.now();
+    const handle = setTimeout(() => {
+      timers.delete(id);
+      beginLeave(id);
+    }, ms);
+    timers.set(id, { handle, remaining: ms, startedAt });
+  };
+
+  const beginLeave = (id) => {
+    if (leaving.has(id)) return;
+    const t = timers.get(id);
+    if (t) {
+      clearTimeout(t.handle);
+      timers.delete(id);
+    }
+    leaving.add(id);
+    const card = document.querySelector(`notification-card[data-nid="${id}"]`);
+    if (!card) {
+      leaving.delete(id);
+      removeFromState(id);
+      return;
+    }
+    let done = false;
+    const finalize = () => {
+      if (done) return;
+      done = true;
+      leaving.delete(id);
+      removeFromState(id);
+    };
+    card.addEventListener('animationend', finalize, { once: true });
+    setTimeout(finalize, LEAVE_FALLBACK);
+    card.setAttribute('leaving', '');
+  };
+
+  window.notify = (payload) => {
+    if (!payload) return;
+    const { error, warning, success, info } = payload;
+    const message = error || warning || success || info;
+    if (!message) return;
+
+    if (!Array.isArray($.notifications)) $.notifications = [];
+    if ($.notifications.find((n) => n.message === message)) return;
+
+    const type = error ? 'error' : warning ? 'warning' : success ? 'success' : 'info';
+    const id = ++nextId;
+    $.notifications = [...$.notifications, { type, message, _nid: id }];
+    if (paused) {
+      timers.set(id, { handle: null, remaining: TTL, startedAt: Date.now() });
+    } else {
+      scheduleLeave(id, TTL);
+    }
+    return id;
+  };
+
+  window.dismissNotification = beginLeave;
+
+  window.dismissAllNotifications = () => {
+    for (const n of $.notifications || []) beginLeave(n._nid);
+  };
+
+  window.pauseNotifTimers = () => {
+    if (paused) return;
+    paused = true;
+    for (const [id, t] of timers) {
+      if (!t.handle) continue;
+      clearTimeout(t.handle);
+      const elapsed = Date.now() - t.startedAt;
+      t.remaining = Math.max(0, t.remaining - elapsed);
+      t.handle = null;
+    }
+  };
+
+  window.resumeNotifTimers = () => {
+    if (!paused) return;
+    paused = false;
+    for (const [id, t] of timers) {
+      if (t.handle) continue;
+      scheduleLeave(id, t.remaining);
+    }
+  };
+</script>
+
+<notification-stack onmouseenter="pauseNotifTimers()" onmouseleave="resumeNotifTimers()">
+  <!-- each notifications as notification (notification._nid) -->
+  <notification-card type="@[notification.type]" data-nid="@[notification._nid]">
+    <notification-row>
+      <notification-icon type="@[notification.type]"></notification-icon>
+      <notification-body>
+        <!-- if notification.type === 'error' -->
+        <strong notification-title>Ops, something went wrong!</strong>
+        <!-- /if -->
+        <!-- if notification.type === 'info' -->
+        <strong notification-title>Did you know?</strong>
+        <!-- /if -->
+        <!-- if notification.type === 'success' -->
+        <strong notification-title>Good news</strong>
+        <!-- /if -->
+        <!-- if notification.type === 'warning' -->
+        <strong notification-title>Heads up</strong>
+        <!-- /if -->
+        <notification-message>@[notification.message]</notification-message>
+      </notification-body>
+    </notification-row>
+  </notification-card>
+  <!-- /each -->
+</notification-stack>
+
+<style>
+  notification-stack {
+    position: fixed;
+    bottom: calc(var(--unit, 4px) * 4);
+    right: calc(var(--unit, 4px) * 4);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: calc(var(--unit, 4px) * 2);
+    z-index: 100;
+    pointer-events: none;
+  }
+
+  notification-stack > * {
+    pointer-events: auto;
+    animation: notif-slide-in 200ms ease;
+  }
+
+  notification-stack > [leaving] {
+    animation: notif-slide-out 200ms ease forwards;
+    pointer-events: none;
+  }
+
+  notification-stack:hover > *,
+  notification-stack:hover > [leaving] {
+    animation-play-state: paused;
+  }
+
+  @keyframes notif-slide-in {
+    from { transform: translateX(100%); opacity: 0; }
+    to   { transform: translateX(0);    opacity: 1; }
+  }
+
+  @keyframes notif-slide-out {
+    from { transform: translateX(0);    opacity: 1; }
+    to   { transform: translateX(110%); opacity: 0; }
+  }
+
+  notification-card {
+    display: block;
+    padding: calc(var(--unit, 4px) * 3) calc(var(--unit, 4px) * 5) calc(var(--unit, 4px) * 3) calc(var(--unit, 4px) * 3);
+    border: 1px solid var(--border, rgba(0, 0, 0, 0.1));
+    border-radius: var(--radius, 0.5rem);
+    background: var(--card, rgba(255, 255, 255, 0.85));
+    color: var(--card-foreground, inherit);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.12);
+    backdrop-filter: blur(4px);
+  }
+
+  notification-card[type="error"]   { border-color: var(--destructive, oklch(0.637 0.237 27.33)); }
+  notification-card[type="warning"] { border-color: oklch(0.681 0.176 50); }
+  notification-card[type="success"] { border-color: oklch(0.722 0.194 142); }
+  notification-card[type="info"]    { border-color: oklch(0.625 0.198 250); }
+
+  notification-row {
+    display: flex;
+    gap: calc(var(--unit, 4px) * 2);
+    align-items: flex-start;
+  }
+
+  notification-icon {
+    width: calc(var(--unit, 4px) * 8);
+    height: calc(var(--unit, 4px) * 8);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    color: var(--destructive-foreground, #fff);
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  notification-icon[type="error"]   { background: var(--destructive, oklch(0.637 0.237 27.33)); }
+  notification-icon[type="warning"] { background: oklch(0.681 0.176 50); }
+  notification-icon[type="success"] { background: oklch(0.722 0.194 142); }
+  notification-icon[type="info"]    { background: oklch(0.625 0.198 250); }
+
+  notification-icon[type="error"]::before   { content: '\00d7'; font-size: 1.4rem; }
+  notification-icon[type="warning"]::before { content: '!'; }
+  notification-icon[type="success"]::before { content: '\2713'; }
+  notification-icon[type="info"]::before    { content: 'i'; font-style: italic; font-family: serif; }
+
+  notification-title {
+    display: block;
+    font-size: 1rem;
+    color: var(--foreground, inherit);
+  }
+
+  notification-message {
+    display: block;
+    max-width: calc(var(--unit, 4px) * 60);
+    color: var(--muted-foreground, rgba(0, 0, 0, 0.65));
+    font-size: 0.875rem;
+  }
+</style>

@@ -149,17 +149,16 @@ export const init = () => {
 
     const elapsed = $.elapsedMilliseconds;
 
-    const t0 = (teams[0]?.combatants || []).map((c, i) => enrichCombatant(c, 0, i, elapsed, scale));
-    const t1 = (teams[1]?.combatants || []).map((c, i) => enrichCombatant(c, 1, i, elapsed, scale));
+    const cards = [
+      ...(teams[0]?.combatants || []).map((c, i) => enrichCombatant(c, 0, i, elapsed, scale)),
+      ...(teams[1]?.combatants || []).map((c, i) => enrichCombatant(c, 1, i, elapsed, scale)),
+    ];
 
-    $.combatTeam0 = t0;
-    $.combatTeam1 = t1;
-    $.combatScale = scale;
-    $.combatCards = [...t0, ...t1];
+    $.combatCards = cards;
 
     // Retrigger attack animation by toggling animation-name via a DOM tickle.
     // Walk through enriched combatants and compare attackAnimId to what we last set.
-    [...t0, ...t1].forEach((c) => {
+    cards.forEach((c) => {
       const last = retriggered.get(c.cardId);
       if (c.attackAnimId && c.attackAnimId !== last) {
         retriggered.set(c.cardId, c.attackAnimId);
@@ -249,12 +248,6 @@ export const init = () => {
       audioQueue = [...(current.combat.audio || [])].sort((a, b) => a.start - b.start);
       retriggered.clear();
       $.liveTeams = current.combat.teamsStartState;
-      // Stable iteration array — set once per combat, never mutated during the
-      // rAF loop. The iteration over cardIndexes never rebuilds, so each
-      // CombatantCard component fetches/mounts exactly once. Per-card bindings
-      // read combatCards[idx].X and update reactively when combatCards changes.
-      const total = (current.combat.teamsStartState || []).reduce((a, t) => a + (t.combatants?.length || 0), 0);
-      $.cardIndexes = Array.from({ length: total }, (_, i) => i);
       updateCombatDisplay();
       animationId = requestAnimationFrame(loop);
     }

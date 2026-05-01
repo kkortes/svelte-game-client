@@ -2,54 +2,42 @@
   import CHARACTERS from '/js/constants/CHARACTERS.js';
   import { calculateCombatStatsByCharacter, calculateTickStart } from '/js/utils.js';
 
-  component({ showSequence: false });
-
-  // sidebarChars stays on $ — it's a reactive derived array that the
-  // template iterates. Iteration needs a state path for proper diffing.
-  // All other sidebar values (level, xp, maxChars) are computed inline
-  // in the template via window globals.
-  const refresh = () => {
-    const AB = window.ABILITIES_FN;
-    $.sidebarChars = ($.characters || []).map((ref) => {
-      try {
-        const char = CHARACTERS(ref, true);
-        const stats = calculateCombatStatsByCharacter(char);
-        const currentHealth = char.combatStats?.currentHealth ?? stats.maxHealth ?? 0;
-        const maxHealth = stats.maxHealth ?? 0;
-        const hydrated = AB
-          ? char.abilities.map((a) => { try { return AB(a, true); } catch { return null; } }).filter(Boolean)
-          : [];
-        const abilities = hydrated
-          .filter((_, i) => calculateTickStart(hydrated, i) < char.maxTicks)
-          .map((h) => ({ icon: h.icon, ticks: h.ticks }));
-        const totalTicks = abilities.reduce((acc, a) => acc + (a.ticks || 0), 0);
-        return {
-          name: char.name,
-          mugshot: char.image.replace('.png', '-mugshot.png'),
-          currentHealth,
-          maxHealth,
-          healthPct: maxHealth > 0
-            ? Math.max(0, Math.round((currentHealth / maxHealth) * 100))
-            : 0,
-          abilities,
-          totalTicks
-        };
-      } catch { return null; }
-    }).filter(Boolean);
-  };
-
-  refresh();
-  $.on('afterUpdate', (current, prev) => {
-    if (current.characters !== prev.characters) refresh();
-  });
-
-  // Heal timer — owned by Sidebar (only runs while logged in / Sidebar mounted).
   const MINUTES_TO_REFILL = 2;
   const FULL_TIME = MINUTES_TO_REFILL * 60 * 1000;
 
+  const localState = { healTimerElapsed: 0, healTimerTotal: FULL_TIME };
+  component(localState);
+  const componentId = Object.keys(window.__vibeComponents).find(k => window.__vibeComponents[k] === localState);
+  const s = $[componentId];
+
+  window.hydrateBrawler = (ref) => {
+    try {
+      const char = CHARACTERS(ref, true);
+      const stats = calculateCombatStatsByCharacter(char);
+      const AB = window.ABILITIES_FN;
+      const hydrated = AB
+        ? char.abilities.map((a) => { try { return AB(a, true); } catch { return null; } }).filter(Boolean)
+        : [];
+      const abilities = hydrated
+        .filter((_, i) => calculateTickStart(hydrated, i) < char.maxTicks)
+        .map((h) => ({ icon: h.icon, ticks: h.ticks }));
+      return {
+        uuid: ref.uuid,
+        name: char.name,
+        mugshot: char.image.replace('.png', '-mugshot.png'),
+        currentHealth: char.combatStats?.currentHealth ?? stats.maxHealth ?? 0,
+        maxHealth: stats.maxHealth ?? 0,
+        abilities,
+        totalTicks: abilities.reduce((acc, a) => acc + (a.ticks || 0), 0)
+      };
+    } catch {
+      return { uuid: ref?.uuid, name: '', mugshot: '', currentHealth: 0, maxHealth: 0, abilities: [], totalTicks: 0 };
+    }
+  };
+
   setInterval(() => {
-    const anchor = $.serverTimestampSnapshot || Date.now();
-    const nowMs = $.serverTimestamp || Date.now();
+    const anchor = $.clock.server || Date.now();
+    const nowMs = $.clock.now || Date.now();
 
     const now = new Date(anchor);
     const minutes = now.getMinutes();
@@ -58,8 +46,7 @@
     nextMark.setMinutes(nextMarkMinute, 0, 0);
 
     const timeToRefill = nextMark.getTime() - nowMs;
-    $.healTimerElapsed = Math.max(0, FULL_TIME - timeToRefill);
-    $.healTimerTotal = FULL_TIME;
+    s.healTimerElapsed = Math.max(0, FULL_TIME - timeToRefill);
 
     if (timeToRefill < 0) {
       $.characters.forEach((ref) => {
@@ -73,8 +60,7 @@
           );
         } catch { }
       });
-      $.serverTimestampSnapshot = nowMs;
-      $.syncPerformanceNow = performance.now();
+      $.clock = { ...$.clock, server: nowMs, client: performance.now() };
     }
   }, 1000);
 </script>
@@ -86,13 +72,15 @@
       <!-- if combat.duration !== 0 -->
       <crow>
         <!-- if elapsedMilliseconds < combat.duration -->
-        <a class="crow" g-2 href="#" primary onclick="event.preventDefault(); $.overlay = 'Combat'">
+        <a class="crow" g-2 href="#" primary
+          onclick="event.preventDefault(); $.overlay = { name: 'Combat' }">
           <spinner sm></spinner>
           <span>Fighting..</span>
         </a>
         <!-- /if -->
         <!-- if elapsedMilliseconds >= combat.duration && combat.duration !== 0 -->
-        <a class="crow" g-2 href="#" primary onclick="event.preventDefault(); $.overlay = 'Combat'">
+        <a class="crow" g-2 href="#" primary
+          onclick="event.preventDefault(); $.overlay = { name: 'Combat' }">
           <span>View outcome</span>
         </a>
         <!-- /if -->
@@ -112,7 +100,7 @@
         <crow vertical left w-full>
           <crow justify-between w-full>
             <span text-sm>Experience</span>
-            <button primary sm onclick="$.overlay = 'AccountProgression'">
+            <button primary sm onclick="$.overlay = { name: 'AccountProgression' }">
               See progress
             </button>
           </crow>
@@ -135,22 +123,20 @@
               c.overrides.combatStats.currentHealth = Math.min(ch.combatStats.currentHealth + heal, stats.maxHealth);
             } catch {}
           });
-          $.healTimer = 120;
         ">Heal now</button>
           </crow>
           <component src="/components/Bar.html" center timer color="stone"
-            current="@[healTimerElapsed]" max="@[healTimerTotal]"></component>
+            current="@[this.healTimerElapsed]" max="@[this.healTimerTotal]"></component>
         </crow>
       </crow>
 
       <div h="4"></div>
 
       <component src="/components/TitleBar.html" small title="My Brawlers">
-        <span cinzel flex-none>@[sidebarChars.length] / @[allowedNumberOfCharacters()]</span>
+        <span cinzel flex-none>@[characters.length] / @[allowedNumberOfCharacters()]</span>
       </component>
 
-      <brawler-list onmouseenter="$.this.showSequence = true"
-        onmouseleave="$.this.showSequence = false">
+      <brawler-list max-brawlers="@[!!maxBrawlers]">
         <crow vertical up left>
           <!-- if characters.length === 0 -->
           <crow vertical w-full g-2 text-sm>
@@ -160,27 +146,24 @@
             </a>
           </crow>
           <!-- /if -->
-
-          <!-- each sidebarChars as schar, i -->
-          <a href="/brawlers/@[i]" onclick="selectBrawler(event, characters[@[i]]?.uuid, @[i])"
-            brawler-link>
+          <!-- each characters.map(hydrateBrawler) as brawler (brawler.uuid), i -->
+          <a href="/brawlers/@[i]" onclick="selectBrawler(event, brawler.uuid, @[i])" brawler-link>
             <crow left brawler-row
-              active="@[Number(routeParams.characterIndex) === i || selectedBrawlers.includes(characters[i]?.uuid)]">
+              active="@[Number(page.params.characterIndex) === i || selectedBrawlers.includes(brawler.uuid)]">
               <brawler-avatar-outer>
                 <brawler-avatar-inner glass>
-                  <img data-src="/static/images/races/@[schar.mugshot]" alt="" brawler-img />
+                  <img data-src="/static/images/races/@[brawler.mugshot]" alt="" brawler-img />
                 </brawler-avatar-inner>
               </brawler-avatar-outer>
               <crow vertical left brawler-info>
-                <component src="/components/Bar.html" text="@[schar.name]"
-                  current="@[schar.currentHealth]" max="@[schar.maxHealth]"
-                  percentage="@[!(this.showSequence || !!maxBrawlers || Number(routeParams.characterIndex) === i || selectedBrawlers.includes(characters[i]?.uuid))]">
+                <component src="/components/Bar.html" text="@[brawler.name]"
+                  current="@[brawler.currentHealth]" max="@[brawler.maxHealth]"
+                  percentage="1">
                 </component>
-                <ability-accordion
-                  open="@[this.showSequence || !!maxBrawlers || Number(routeParams.characterIndex) === i || selectedBrawlers.includes(characters[i]?.uuid)]">
+                <ability-accordion>
                   <ability-accordion-content>
-                    <ability-preview style="width: calc((12px * @[schar.totalTicks]) + 2px)">
-                      <!-- each schar.abilities as ab -->
+                    <ability-preview style="width: calc((12px * @[brawler.totalTicks]) + 2px)">
+                      <!-- each brawler.abilities as ab -->
                       <ability-preview-cell style="width: calc(12px * @[ab.ticks])">
                         <icon @[ab.icon]></icon>
                       </ability-preview-cell>
@@ -214,9 +197,6 @@
     color: inherit;
   }
 
-  /* Outer row: flex with gap, positioned with negative margins so the
-     active-state glass pill can extend slightly outside its content box
-     (matches main's `-mx-1.5 -my-1 px-1.5 py-1` pill). */
   [battle-brawlers] [brawler-row] {
     padding: calc(var(--unit) * 1) calc(var(--unit) * 1.5);
     margin: 0 calc(var(--unit) * -1.5);
@@ -231,8 +211,6 @@
     backdrop-filter: blur(4px);
   }
 
-  /* Avatar frame: 64×64 outer with 4px padding, 56×56 inner rounded-sm
-     with thin border. Mirrors main's `h-16 w-16 p-1` + inner glass frame. */
   [battle-brawlers] brawler-avatar-outer {
     display: block;
     flex: none;
@@ -271,7 +249,9 @@
     width: 100%;
   }
 
-  [battle-brawlers] ability-accordion[open] {
+  [battle-brawlers] brawler-list:hover ability-accordion,
+  [battle-brawlers] brawler-list[max-brawlers] ability-accordion,
+  [battle-brawlers] brawler-list [brawler-row][active] ability-accordion {
     grid-template-rows: 1fr;
   }
 
@@ -280,8 +260,18 @@
     padding-right: 1px;
   }
 
-  /* Ability preview: 12px per tick, 24px tall, stone-300 background with
-     stone-500 dividers. Mirrors main's CombatantAbilityBar preview mode. */
+  [battle-brawlers] brawler-list:hover bar-track[percentage] [bar-value-pct],
+  [battle-brawlers] brawler-list[max-brawlers] bar-track[percentage] [bar-value-pct],
+  [battle-brawlers] brawler-list [brawler-row][active] bar-track[percentage] [bar-value-pct] {
+    display: none;
+  }
+
+  [battle-brawlers] brawler-list:hover bar-track[percentage] [bar-value-actual],
+  [battle-brawlers] brawler-list[max-brawlers] bar-track[percentage] [bar-value-actual],
+  [battle-brawlers] brawler-list [brawler-row][active] bar-track[percentage] [bar-value-actual] {
+    display: inline;
+  }
+
   [battle-brawlers] ability-preview {
     display: flex;
     height: 24px;

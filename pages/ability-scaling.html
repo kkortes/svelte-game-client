@@ -13,57 +13,11 @@
   <script type="module">
     import boot from '/js/boot.js';
     boot();
-
-    import ABILITIES, { ALL_ABILITIES } from '/js/constants/ABILITIES.js';
-
-    $.abilityChoices = Object.keys(ALL_ABILITIES);
-    $.chosenAbility = 'punch';
-
-    const computeAbilityBars = () => {
-      $.enemyAbilityBars = Array.from({ length: 12 }, (_, i) => {
-        const ticks = i + 1;
-        const ref = ABILITIES($.chosenAbility, false, { overrides: { ticks } });
-        const h = ABILITIES(ref, true);
-        return {
-          abilities: [{
-            name: h.name,
-            icon: h.icon,
-            ticks: h.ticks,
-            basic: !!h.basic,
-            tickStart: 0,
-            overflow: false
-          }],
-          lastTick: h.ticks
-        };
-      });
-    };
-
-    computeAbilityBars();
-
-    window.changeAbility = (value) => {
-      $.chosenAbility = value;
-      computeAbilityBars();
-    };
   </script>
 
   <component src="/components/Layout.html">
     <page-content>
-      <crow vertical g-4 left>
-        <component src="/components/TitleBar.html" title="Ability Scaling"></component>
-        <hr />
-
-        <select onchange="changeAbility(this.value)">
-          <!-- each abilityChoices as choice -->
-          <option value="@[choice]">@[choice]</option>
-          <!-- /each -->
-        </select>
-
-        <crow vertical left g-4 w-full>
-          <!-- each enemyAbilityBars as bar, i -->
-          <component src="/components/AbilityBar.html" idx="@[i]" small minimalistic dndDisabled></component>
-          <!-- /each -->
-        </crow>
-      </crow>
+      <component src="/components/AbilityScalingContent.html"></component>
     </page-content>
   </component>
 </body>

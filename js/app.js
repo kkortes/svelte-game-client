@@ -29,19 +29,13 @@ const INITIAL_COMBAT = {
 export default {
   combat: INITIAL_COMBAT,
   liveTeams: [],
-  combatTeam0: [],
-  combatTeam1: [],
   combatCards: [],
-  cardIndexes: [],
-  combatScale: 1,
-  combatEnded: false,
-  combatOutcome: '',
-  combatRewardXp: 0,
-  combatRewardBoss: false,
   elapsedMilliseconds: 0,
-  serverTimestampSnapshot: 0,
-  syncPerformanceNow: 0,
-  serverTimestamp: 0,
+  clock: {
+    server: 0, // server-trusted wall-clock anchor in ms. Set by the server on auth (and re-anchored on heal).
+    client: 0, // client `performance.now()` reading at the same instant as `server`. Together they form the sync pair.
+    now: 0, // derived current server time, recomputed every 250ms as `server + (performance.now() - client)`. Read this for "what time is it on the server right now".
+  },
   experience: 0,
   coins: 400,
   accountRewards: 1,
@@ -53,9 +47,8 @@ export default {
   selectedBrawlers: [],
   maxBrawlers: 0,
   tooltip: { visible: false, x: 0, y: 0, props: {} },
-  dialogProps: '',
   notifications: [],
-  overlay: '',
+  overlay: {},
   settings: loadLocalStorage({
     volume: SETTINGS_DEFAULT_VOLUME,
     debugOpen: false,
@@ -66,8 +59,7 @@ export default {
     savedEmail: '',
     savedPassword: ''
   }),
-  route: '/',
-  routeParams: {},
+  page: { name: 'home', params: {} },
 };
 
 export { SETTINGS_DEFAULT_VOLUME, INITIAL_COMBAT };

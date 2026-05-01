@@ -1,22 +1,22 @@
-<!-- if brawlerSlots[idx].empty -->
+<!-- if slot.empty -->
 <crow brawler-slot-empty text-center w-full flex-none>
-  <!-- if brawlerSlots[idx].index === 0 -->
+  <!-- if slot.index === 0 -->
   <h5>select a brawler</h5>
   <!-- /if -->
-  <!-- if brawlerSlots[idx].index > 0 -->
-  <h5>slot @[brawlerSlots[idx].index + 1]</h5>
+  <!-- if slot.index > 0 -->
+  <h5>slot @[slot.index + 1]</h5>
   <!-- /if -->
 </crow>
 <!-- /if -->
-<!-- if !brawlerSlots[idx].empty -->
+<!-- if !slot.empty -->
 <crow brawler-slot-filled left g-2 w-full flex-none py-2 px-4>
   <brawler-slot-avatar glass block w="12" h="12" flex-none overflow-hidden>
-    <img data-src="/static/images/races/@[brawlerSlots[idx].mugshot]" alt="" brawler-slot-img w-full h-full />
+    <img data-src="/static/images/races/@[slot.mugshot]" alt="" brawler-slot-img w-full h-full />
   </brawler-slot-avatar>
   <crow vertical left brawler-slot-info>
-    <span font-medium text-sm>@[brawlerSlots[idx].name]</span>
+    <span font-medium text-sm>@[slot.name]</span>
     <brawler-slot-abilities flex>
-      <!-- each brawlerSlots[idx].abilities as ab -->
+      <!-- each slot.abilities as ab -->
       <brawler-slot-ability flex flex-none style="width: calc(12px * @[ab.ticks])">
         <icon @[ab.icon]></icon>
       </brawler-slot-ability>
