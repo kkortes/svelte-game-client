@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "predev": "npx vercel env pull .env.local",
-    "dev": "bunx vite"
+    "dev": "bunx vite",
+    "build": "bunx vite build"
   },
   "dependencies": {
     "@ape-egg/vibe": "^1.9.1",

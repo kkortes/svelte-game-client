@@ -25,3 +25,6 @@ vite.config.ts.timestamp-*
 _potential
 _unused
 .claude
+
+# Dist
+dist

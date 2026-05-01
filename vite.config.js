@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite';
-import { existsSync, readdirSync } from 'fs';
+import { existsSync, readdirSync, cpSync } from 'fs';
 import { resolve } from 'path';
 import vibe from '@ape-egg/vite-plugin-vibe';
 
@@ -12,16 +12,25 @@ const dynamicRoutes = [
 const pageInputs = Object.fromEntries(
   readdirSync('pages')
     .filter((f) => f.endsWith('.html'))
-    .map((f) => [f.replace(/\.html$/, ''), resolve('pages', f)])
+    .map((f) => [`pages/${f.replace(/\.html$/, '')}`, resolve('pages', f)])
 );
 
 export default defineConfig({
   server: { port: 3001 },
-  build: { rollupOptions: { input: pageInputs } },
+  build: {
+    rollupOptions: { input: pageInputs }
+  },
   plugins: [
     vibe({
       debug: true
     }),
+    {
+      name: 'copy-runtime-fetched',
+      closeBundle() {
+        cpSync('components', 'dist/components', { recursive: true });
+        cpSync('static', 'dist/static', { recursive: true });
+      }
+    },
     {
       name: 'mpa-routes',
       configureServer(server) {
