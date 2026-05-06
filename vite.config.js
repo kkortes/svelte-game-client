@@ -16,7 +16,7 @@ const pageInputs = Object.fromEntries(
 );
 
 export default defineConfig({
-  server: { port: 3001 },
+  server: { port: 3001, allowedHosts: ['.test'] },
   build: {
     rollupOptions: { input: pageInputs }
   },

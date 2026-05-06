@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "predev": "npx vercel env pull .env.local",
-    "dev": "bunx vite",
+    "dev": "../dev.sh 'bunx vite --port $PORT'",
     "build": "bunx vite build"
   },
   "dependencies": {
