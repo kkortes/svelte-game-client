@@ -27,14 +27,6 @@
     persistOpenPaths();
   };
 
-  const objectIds = new WeakMap();
-  let nextObjectId = 0;
-  const stableObjectId = (obj) => {
-    let id = objectIds.get(obj);
-    if (!id) { id = `o${++nextObjectId}`; objectIds.set(obj, id); }
-    return id;
-  };
-
   const isHiddenKey = (key) => {
     if (key === 'vibeStateInspector' || key === 'vibeStateInspectorEverOpened') return true;
     const root = document.querySelector('state-inspector');
@@ -69,38 +61,23 @@
       return aK.localeCompare(bK, undefined, { numeric: true });
     });
 
-  const childPath = (parentPath, item, indexOrKey, isArrayChild) => {
-    if (isArrayChild) {
-      return isObject(item)
-        ? `${parentPath}/${stableObjectId(item)}`
-        : `${parentPath}/${indexOrKey}_${item}`;
-    }
-    return parentPath ? `${parentPath}/${indexOrKey}` : indexOrKey;
-  };
+  const childPath = (parentPath, indexOrKey) =>
+    parentPath ? `${parentPath}/${indexOrKey}` : `${indexOrKey}`;
 
-  // `ancestors` is the chain of objects on the current path — prevents cycles
-  // while still allowing the same object to be visited through different
-  // sibling paths (e.g. `characters[0]` and `currentCharacter` referring to
-  // the same character object). Object-identity dedup would silently swallow
-  // one of those paths.
-  // `opens` is passed explicitly so Vibe can compute old vs new row sets
-  // against the right snapshot — Vibe re-evaluates the iteration's array
-  // expression for both `previousState` and `currentState` and diffs them;
-  // reading via closure would always see the live value and produce
-  // identical arrays for both evaluations, hiding the ADD/REMOVE ops.
-  const walk = (value, depth, path, key, rows, ancestors, opens) => {
+  const walk = (value, depth, path, key, rows, ancestors, opens, visible) => {
     const expandable = isObject(value);
     const open = expandable && !!opens[path];
-    rows.push({ path, key, depth, expandable, open, summary: summarize(value) });
-    if (!expandable || !open || ancestors.has(value)) return;
+    rows.push({ path, key, depth, expandable, open, visible, summary: summarize(value) });
+    if (!expandable || ancestors.has(value)) return;
     ancestors.add(value);
+    const childVisible = visible && open;
     if (Array.isArray(value)) {
       value.forEach((item, i) => {
-        walk(item, depth + 1, childPath(path, item, i, true), `#${i + 1}`, rows, ancestors, opens);
+        walk(item, depth + 1, childPath(path, i), `#${i + 1}`, rows, ancestors, opens, childVisible);
       });
     } else {
       sortedEntries(value).forEach(([k, v]) => {
-        walk(v, depth + 1, childPath(path, v, k, false), k, rows, ancestors, opens);
+        walk(v, depth + 1, childPath(path, k), k, rows, ancestors, opens, childVisible);
       });
     }
     ancestors.delete(value);
@@ -118,9 +95,9 @@
       if (path) paths.push(path);
       ancestors.add(value);
       if (Array.isArray(value)) {
-        value.forEach((item, i) => visit(item, childPath(path, item, i, true)));
+        value.forEach((item, i) => visit(item, childPath(path, i)));
       } else {
-        Object.entries(value).forEach(([k, v]) => visit(v, childPath(path, v, k, false)));
+        Object.entries(value).forEach(([k, v]) => visit(v, childPath(path, k)));
       }
       ancestors.delete(value);
     };
@@ -143,10 +120,9 @@
     const rows = [];
     const ancestors = new Set();
     const safeOpens = opens && typeof opens === 'object' ? opens : {};
-    sortedEntries(data).forEach(([k, v]) => {
-      if (isHiddenKey(k)) return;
-      walk(v, 0, k, k, rows, ancestors, safeOpens);
-    });
+    sortedEntries(data)
+      .filter(([k]) => !isHiddenKey(k))
+      .forEach(([k, v]) => walk(v, 0, k, k, rows, ancestors, safeOpens, true));
     return rows;
   };
 
@@ -220,12 +196,16 @@
   </data-inspector-header>
   <data-inspector-lines>
     <!-- each window.dataInspectorRows(data, this.openPaths) as row (row.path) -->
-    <data-inspector-row data-path="@[row.path]" expandable="@[row.expandable]" open="@[row.open]"
-      onclick="toggleInspectorPath(event)">
-      <data-inspector-key
-        style="padding-left: calc((@[row.depth]) * 1ch)">@[row.key]</data-inspector-key>
-      <data-inspector-value bracket="@[row.expandable]">@[row.summary]</data-inspector-value>
-    </data-inspector-row>
+    <accordion open="@[row.visible]">
+      <accordion-content>
+        <data-inspector-row data-path="@[row.path]" expandable="@[row.expandable]" open="@[row.open]"
+          onclick="toggleInspectorPath(event)">
+          <data-inspector-key
+            style="padding-left: calc(@[row.depth] * 1ch)">@[row.key]</data-inspector-key>
+          <data-inspector-value bracket="@[row.expandable]">@[row.summary]</data-inspector-value>
+        </data-inspector-row>
+      </accordion-content>
+    </accordion>
     <!-- /each -->
   </data-inspector-lines>
 </data-inspector>
@@ -320,19 +300,6 @@
     gap: calc(var(--unit) * 2);
     padding: calc(var(--unit) * 0.5) calc(var(--unit) * 3);
     box-sizing: border-box;
-    animation: row-in 140ms ease;
-  }
-
-  @keyframes row-in {
-    from {
-      opacity: 0;
-      transform: translateY(-2px);
-    }
-
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
   }
 
   data-inspector-row:hover {
