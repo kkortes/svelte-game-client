@@ -24,21 +24,20 @@
 
     <!-- if !minimalistic -->
     <ability-marker-sequence absolute
-      style="left: calc((100% / var(--grid-cells)) * @[enemyAbilityBars[idx].lastTick]);">
-      <ability-marker-label absolute flex down>
+      style="left: calc((100% / var(--grid-cells)) * @[lasttick]);">
+      <ability-marker-label absolute vertical right g-1>
         <strong>Ability&nbsp;sequence</strong>
-        <span>@[enemyAbilityBars[idx].lastTick]&nbsp;ticks</span>
+        <span>@[lasttick]&nbsp;ticks</span>
       </ability-marker-label>
     </ability-marker-sequence>
     <!-- /if -->
 
     <ability-overlay absolute t-0 l-0 r-0 b-0>
-      <!-- each enemyAbilityBars[idx].abilities as ability -->
-      <ability-segment
-        relative flex flex-none
-        dnd-item="@[!dndDisabled]"
-        basic="@[ability.basic]"
+      <!-- each abilities as ability -->
+      <ability-segment relative flex flex-none dnd-item="@[!dndDisabled]" basic="@[ability.basic]"
         overflow="@[ability.overflow]"
+        data-ability="@[JSON.stringify(ability)]"
+        onmouseenter="showTooltip(abilityTooltipProps(JSON.parse(this.dataset.ability)), this, { direction: 'up', lock: true })"
         style="width: calc(((100% / var(--grid-cells)) * @[ability.ticks]) + 1px);">
         <ability-icon w-full h-full>
           <icon @[ability.icon]></icon>
@@ -50,25 +49,30 @@
 </ability-bar>
 
 <style>
-  [battle-brawlers] ability-track { --grid-cells: 15; }
-  [battle-brawlers] ability-track[small] { --grid-cells: 12; }
+  [battle-brawlers] ability-track {
+    --grid-cells: 15;
+  }
 
-  /* Dashed tick grid — 15 cells by default, 12 when small. */
+  [battle-brawlers] ability-track[small] {
+    --grid-cells: 12;
+  }
+
   [battle-brawlers] ability-grid {
     display: grid;
     grid-template-columns: repeat(var(--grid-cells), 1fr);
   }
+
   [battle-brawlers] ability-grid ability-cell {
     display: block;
     aspect-ratio: 2 / 3;
     border: 1px dashed #d1d5db;
     margin-left: -1px;
   }
-  [battle-brawlers] ability-track[small] ability-cell:nth-child(n+13) { display: none; }
 
-  /* Tick-12 marker — solid vertical line marking the max playable tick
-     window; only visible when DnD is enabled. Matches main's
-     `absolute -top-2 -bottom-4 w-px -translate-x-px border-r border-solid`. */
+  [battle-brawlers] ability-track[small] ability-cell:nth-child(n+13) {
+    display: none;
+  }
+
   [battle-brawlers] ability-marker-12 {
     top: calc(var(--unit) * -2);
     bottom: calc(var(--unit) * -4);
@@ -79,18 +83,15 @@
     transition: all 200ms;
   }
 
-  /* Sequence marker — dashed line at the end of the current ability
-     sequence; matches main's
-     `absolute -top-2 -bottom-2 z-10 w-px border-dashed`. */
   [battle-brawlers] ability-marker-sequence {
     top: calc(var(--unit) * -2);
     bottom: calc(var(--unit) * -2);
     width: 1px;
     border-right: 1px dashed #6b7280;
     transform: translateX(-0.5px);
-    z-index: 10;
     transition: all 200ms;
   }
+
   [battle-brawlers] ability-marker-label {
     bottom: 100%;
     right: calc(var(--unit) * 1);
@@ -100,12 +101,12 @@
     line-height: 0.9;
     white-space: nowrap;
   }
+
   [battle-brawlers] ability-marker-label strong {
     color: #000;
     line-height: 0.75rem;
   }
 
-  /* Overlay layer containing the actual ability segments. */
   [battle-brawlers] ability-overlay {
     border-radius: calc(var(--unit) * 2);
     display: flex;
@@ -114,9 +115,6 @@
     justify-content: flex-start;
   }
 
-  /* Ability segment — sequential flex item; width = (100%/15) * ticks,
-     -ml-px to collapse borders with the previous segment. Matches main's
-     `relative -ml-px h-full !flex-none rounded border border-gray-500 bg-white`. */
   [battle-brawlers] ability-segment {
     align-items: center;
     justify-content: center;
@@ -127,35 +125,32 @@
     border-radius: calc(var(--unit) * 1);
     z-index: 10;
   }
-  /* Basic ability — muted chrome, drops behind non-basic on overlap
-     (main: `border-gray-300 bg-gray-100` + omits z-10). */
+
   [battle-brawlers] ability-segment[basic] {
     border-color: #d1d5db;
     background: #f3f4f6;
     z-index: auto;
   }
-  /* Overflow (tickStart > 11 && !dndDisabled) — pink-red tint.
-     Main: `border-red-300 bg-red-100`. */
+
   [battle-brawlers] ability-segment[overflow] {
     border-color: #fca5a5;
     background: #fee2e2;
   }
 
-  /* AbilityIcon layout — icon filling segment; basic abilities get a
-     gray icon, overflow gets a red-300 icon. Status-effect slot sits at
-     bottom-left if present (not rendered here — add as a nested element
-     when a use-case needs it). */
   [battle-brawlers] ability-icon {
     display: grid;
     place-items: center;
   }
+
   [battle-brawlers] ability-icon icon {
     grid-area: 1 / 1;
     font-size: clamp(0.875rem, 3vw, 1.875rem);
   }
+
   [battle-brawlers] ability-segment[basic] ability-icon icon {
     color: #9ca3af;
   }
+
   [battle-brawlers] ability-segment[overflow] ability-icon icon {
     color: #fca5a5;
   }

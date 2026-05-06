@@ -1,5 +1,4 @@
 <script type="module">
-  import { notify } from '/js/actions.js';
 
   window.authLogin = async (email, password, rememberMe, codeOfConduct) => {
     if (!codeOfConduct) {
@@ -37,7 +36,7 @@
     <input type="checkbox" id="codeOfConduct" checked="@[$.settings.codeOfConduct]"
       onchange="$.settings = { ...$.settings, codeOfConduct: this.checked }" />
     <label for="codeOfConduct" text-sm>I agree to the <a href="#" primary
-        onclick="event.preventDefault(); $.overlay = 'codeOfConduct'">
+        onclick="event.preventDefault(); $.overlay = { name: 'codeOfConduct' }">
         Code of Conduct
       </a>
     </label>

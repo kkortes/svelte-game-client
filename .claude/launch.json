@@ -2,13 +2,14 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "Vite (frontend)",
-      "runtimeExecutable": "bunx",
-      "runtimeArgs": ["vite"],
-      "port": 3001
+      "name": "Battle Brawlers (Frontend)",
+      "runtimeExecutable": "bun",
+      "runtimeArgs": ["run", "dev"],
+      "port": 5000,
+      "autoPort": true
     },
     {
-      "name": "Game server (WebSocket)",
+      "name": "Battle Brawlers (Backend)",
       "runtimeExecutable": "bun",
       "runtimeArgs": ["--cwd", "svelte-game-server", "--watch", "--env-file=.env", "index.js"],
       "port": 1337

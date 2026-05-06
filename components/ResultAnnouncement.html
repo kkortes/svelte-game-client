@@ -1,17 +1,17 @@
-<!-- if combatEnded -->
+<!-- if combatEnded(combat, elapsedMilliseconds) -->
 <result-announcement onclick="event.stopPropagation()">
   <result-panel flex down g-3 p-4>
-    <component src="/components/VictoryOrLoss.html"></component>
+    <component src="/components/VictoryOrLoss.html" outcome="@[combatOutcome(combat)]"></component>
 
-    <!-- if combatOutcome === 'victory' -->
+    <!-- if combatOutcome(combat) === 'victory' -->
     <rewards-panel flex down g-2 p-3 w-full>
       <rewards-title>rewards</rewards-title>
       <hr />
       <rewards-list flex down g-1>
-        <!-- if combatRewardXp -->
-        <reward-row>+@[combatRewardXp] XP</reward-row>
+        <!-- if combatRewardXp(combat) -->
+        <reward-row>+@[combatRewardXp(combat)] XP</reward-row>
         <!-- /if -->
-        <!-- if combatRewardBoss -->
+        <!-- if combatRewardBoss(combat, bossHighscore) -->
         <reward-row boss>Boss defeated!</reward-row>
         <!-- /if -->
       </rewards-list>
@@ -22,7 +22,7 @@
     </rewards-panel>
     <!-- /if -->
 
-    <!-- if combatOutcome !== 'victory' -->
+    <!-- if combatOutcome(combat) !== 'victory' -->
     <result-actions flex>
       <button tertiary onclick="closeCombatOverlay()">Go back</button>
     </result-actions>
@@ -41,17 +41,17 @@
     animation: result-in 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 500ms both;
   }
 
-  @keyframes result-in {
-    from { transform: scale(0); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-  }
-
   [battle-brawlers] result-panel {
+    flex-direction: column;
+    height: auto;
+    align-items: center;
     min-width: calc(var(--unit) * 70);
     text-align: center;
   }
 
   [battle-brawlers] rewards-panel {
+    flex-direction: column;
+    height: auto;
     background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(8px);
     border-radius: var(--radius);

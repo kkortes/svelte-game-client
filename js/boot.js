@@ -21,7 +21,7 @@ import {
 import { Howl } from 'howler';
 import AUDIO from '/js/audio.js';
 import { correctHealth } from '/js/equipment.js';
-import { notify } from '/js/actions.js';
+import { equipmentTooltipProps, abilityTooltipProps } from '/js/tooltip.js';
 
 const loadGameState = async (token) => {
   try {
@@ -38,11 +38,14 @@ const loadGameState = async (token) => {
       if (gameState.accountRewards) $.accountRewards = gameState.accountRewards;
     }
     if (serverTimestampSnapshot) {
-      $.serverTimestampSnapshot = serverTimestampSnapshot;
-      $.syncPerformanceNow = performance.now();
+      $.clock = {
+        ...$.clock,
+        server: serverTimestampSnapshot,
+        client: performance.now(),
+      };
     }
   } catch (e) {
-    notify(e);
+    window.notify?.(e);
     $.token = undefined;
     document.cookie = 'token=; Max-Age=0';
   }
@@ -82,16 +85,17 @@ export default () => {
       .replace(/^\/|\/$/g, '')
       .replace(/:(\w+)/g, '$1')
       .replace(/\//g, '-') || 'home';
-  // Top-level route segment — used by nav tabs so a detail page like
-  // `/the-arena/giant-rat` still highlights the "The Arena" tab.
-  const pageSection = route.split('/').filter(Boolean)[0] || 'home';
 
   // Window globals for components and services
+  window.config = config;
   window.Howl = Howl;
   window.AUDIO = AUDIO;
   window.CHARACTERS = CHARACTERS;
   window.ABILITIES_FN = ABILITIES;
   window.EQUIPMENT_FN = EQUIPMENT;
+  window.EQUIPMENT = EQUIPMENT;
+  window.equipmentTooltipProps = equipmentTooltipProps;
+  window.abilityTooltipProps = abilityTooltipProps;
   window.ALL_FIGHTS = ALL_FIGHTS;
   window.INITIAL_COMBAT = INITIAL_COMBAT;
   window.calculateCombatStatsByCharacter = calculateCombatStatsByCharacter;
@@ -123,10 +127,7 @@ export default () => {
     {
       ...appState,
       token: cookie?.token,
-      route,
-      routeParams,
-      pageName,
-      pageSection
+      page: { name: pageName, params: routeParams },
     },
     { debug: false }
   );
@@ -174,7 +175,7 @@ export default () => {
 
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && !$.gameKeyboardDisabled) {
-        $.overlay = $.overlay ? '' : 'GameMenu';
+        $.overlay = Object.keys($.overlay).length ? {} : { name: 'GameMenu' };
       }
 
       // Shift + Option/Alt + D toggles the DevBar. Match on e.code so we don't
@@ -191,60 +192,11 @@ export default () => {
 
     // Client clock
     setInterval(() => {
-      if ($.serverTimestampSnapshot) {
-        $.serverTimestamp = $.serverTimestampSnapshot + (performance.now() - $.syncPerformanceNow);
+      if ($.clock.server) {
+        $.clock.now = $.clock.server + (performance.now() - $.clock.client);
       }
     }, 250);
 
-    // Armory equipment tooltips via event delegation
-    document.addEventListener(
-      'mouseenter',
-      (e) => {
-        if (!e.target?.closest) return;
-        const row = e.target.closest('[armory-row]');
-        if (!row) return;
-        const eqLink = row.querySelector('eq-link');
-        if (!eqLink) return;
-
-        const rows = [...row.parentElement.querySelectorAll('[armory-row]')];
-        const idx = rows.indexOf(row);
-        const itemRef = $.inventory[idx];
-        if (!itemRef) return;
-
-        try {
-          const item = EQUIPMENT(itemRef, true);
-          const rect = eqLink.getBoundingClientRect();
-          $.tooltip = {
-            x: rect.left + rect.width / 2,
-            y: rect.top,
-            visible: true,
-            props: {
-              name: item.name,
-              level: item.level,
-              combatStats: item.combatStats,
-              slotsIn: item.slotsIn,
-              description: item.description
-            }
-          };
-        } catch {}
-      },
-      true
-    );
-
-    document.addEventListener(
-      'mouseleave',
-      (e) => {
-        if (e.target?.closest?.('[armory-row]') && $.tooltip) $.tooltip.visible = false;
-      },
-      true
-    );
-
-    document.addEventListener('mousemove', (e) => {
-      if ($.tooltip?.visible) {
-        $.tooltip.x = e.clientX;
-        $.tooltip.y = e.clientY;
-      }
-    });
   });
 
   $.on('afterUpdate', (current, prev) => {
@@ -261,7 +213,7 @@ export default () => {
       const level = getLevelByExperience(current.experience || 0);
       const prevLevel = getLevelByExperience(prev.experience || 0);
       if (level > prevLevel && prev.experience > 0) {
-        $.overlay = 'AccountProgression';
+        $.overlay = { name: 'AccountProgression' };
         $.characters.forEach((c) => {
           try {
             correctHealth(c);

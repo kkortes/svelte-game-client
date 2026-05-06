@@ -1,22 +1,23 @@
 <script type="module">
-  if ($.inspectorData === undefined) $.inspectorData = '';
   if ($.vibeStateInspector === undefined) $.vibeStateInspector = false;
+  if ($.vibeStateInspectorEverOpened === undefined) $.vibeStateInspectorEverOpened = false;
 
-  let lastJson = '';
-  const refresh = () => {
-    if (!$.vibeStateInspector) return;
-    const { inspectorData, vibeStateInspector, dataInspectorSections, dataInspectorJson, dataInspectorCount, dataInspectorAllOpen, ...rest } = $;
-    const json = JSON.stringify(rest);
-    if (json === lastJson) return;
-    lastJson = json;
-    $.inspectorData = JSON.parse(json);
-  };
-  $.on('afterUpdate', refresh);
+  // Latch: once the inspector has been opened, keep the DataInspector
+  // mounted forever so the close animation runs (the conditional that
+  // gates mounting can't unmount mid-CSS-transition). First open pays the
+  // mount cost; subsequent toggles are pure CSS transform on <state-inspector>.
+  const unsub = $.on('afterUpdate', () => {
+    if ($.vibeStateInspector && !$.vibeStateInspectorEverOpened) {
+      $.vibeStateInspectorEverOpened = true;
+    }
+  });
 </script>
 
 <state-inspector open="@[vibeStateInspector]">
   <state-inspector-panel>
-    <component src="/components/DataInspector.html" data="@[inspectorData]"></component>
+    <!-- if vibeStateInspectorEverOpened -->
+    <component src="/components/remote/DataInspector.html" data="@[$]"></component>
+    <!-- /if -->
   </state-inspector-panel>
 </state-inspector>
 

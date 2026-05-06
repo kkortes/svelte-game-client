@@ -1,0 +1,188 @@
+<script type="module">
+  import component from '/node_modules/@ape-egg/vibe/component.js';
+  component({});
+
+  const OFFSET = 8;
+  let currentAnchor = null;
+  let currentLeave = null;
+
+  const detach = () => {
+    if (currentAnchor && currentLeave) {
+      currentAnchor.removeEventListener('mouseleave', currentLeave);
+    }
+    currentAnchor = null;
+    currentLeave = null;
+  };
+
+  const anchorPoint = (anchor, direction) => {
+    if (anchor instanceof Element) {
+      const r = anchor.getBoundingClientRect();
+      if (direction === 'down')  return { x: r.left + r.width / 2, y: r.bottom };
+      if (direction === 'left')  return { x: r.left, y: r.top + r.height / 2 };
+      if (direction === 'right') return { x: r.right, y: r.top + r.height / 2 };
+      if (direction === 'up')    return { x: r.left + r.width / 2, y: r.top };
+      return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+    }
+    if (anchor && typeof anchor.x === 'number') {
+      return { x: anchor.x, y: anchor.y };
+    }
+    return { x: 0, y: 0 };
+  };
+
+  const looksLikeOptions = (v) =>
+    v && typeof v === 'object' && !(v instanceof Element) && typeof v.x !== 'number';
+
+  window.showTooltip = (props, arg2, arg3) => {
+    detach();
+
+    let options;
+    let anchor;
+    if (looksLikeOptions(arg2)) {
+      options = arg2;
+      anchor = arg3;
+    } else {
+      anchor = arg2;
+      options = arg3;
+    }
+    if (!anchor && typeof window.event === 'object' && window.event !== null) {
+      anchor = window.event.currentTarget;
+    }
+
+    const opts = options || {};
+    const direction = opts.direction || null;
+    const lock = !!opts.lock;
+    const persist = !!opts.persist;
+    const target = anchorPoint(anchor, direction);
+
+    let x = target.x;
+    let y = target.y;
+    if (!lock && anchor && typeof anchor.clientX === 'number') {
+      x = anchor.clientX;
+      y = anchor.clientY;
+    }
+
+    $.tooltip = {
+      x, y,
+      targetX: target.x,
+      targetY: target.y,
+      visible: true,
+      props: props || {},
+      direction,
+      lock,
+      persist
+    };
+
+    if (anchor instanceof Element && !persist) {
+      currentAnchor = anchor;
+      currentLeave = () => window.hideTooltip();
+      anchor.addEventListener('mouseleave', currentLeave);
+    }
+  };
+
+  window.hideTooltip = () => {
+    detach();
+    if ($.tooltip) $.tooltip.visible = false;
+  };
+
+  document.addEventListener('mousemove', (e) => {
+    if ($.tooltip?.visible && !$.tooltip.lock) {
+      $.tooltip.x = e.clientX;
+      $.tooltip.y = e.clientY;
+    }
+  });
+
+  const clamp = (v, lo, hi) => Math.min(Math.max(v, lo), hi);
+
+  const positionTooltip = () => {
+    if (!$.tooltip?.visible) return;
+    const body = document.querySelector('tooltip-body');
+    if (!body) return;
+
+    const r = body.getBoundingClientRect();
+    const w = r.width;
+    const h = r.height;
+    if (w === 0 || h === 0) return;
+
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const fx = $.tooltip.x;
+    const fy = $.tooltip.y;
+    const dir = $.tooltip.direction;
+
+    let vpLeft;
+    let vpTop;
+    if (dir === 'up') {
+      vpLeft = fx - w / 2;
+      vpTop = fy - h - OFFSET;
+    } else if (dir === 'down') {
+      vpLeft = fx - w / 2;
+      vpTop = fy + OFFSET;
+    } else if (dir === 'left') {
+      vpLeft = fx - w - OFFSET;
+      vpTop = fy - h / 2;
+    } else if (dir === 'right') {
+      vpLeft = fx + OFFSET;
+      vpTop = fy - h / 2;
+    } else {
+      vpLeft = fx - w / 2;
+      vpTop = fy - h / 2;
+    }
+
+    vpLeft = clamp(vpLeft, 0, Math.max(0, vw - w));
+    vpTop = clamp(vpTop, 0, Math.max(0, vh - h));
+
+    body.style.left = `${vpLeft - fx}px`;
+    body.style.top = `${vpTop - fy}px`;
+    body.setAttribute('positioned', '');
+  };
+
+  let bodyRO = null;
+  let observedBody = null;
+
+  const syncObserver = () => {
+    const body = document.querySelector('tooltip-body');
+    if (body === observedBody) return;
+    if (bodyRO) bodyRO.disconnect();
+    observedBody = body;
+    if (body) {
+      bodyRO = new ResizeObserver(positionTooltip);
+      bodyRO.observe(body);
+    }
+  };
+
+  $.on('afterUpdate', () => {
+    syncObserver();
+    positionTooltip();
+  });
+</script>
+
+<!-- if tooltip && tooltip.visible -->
+<tooltip-layer style="left: @[tooltip.x]px; top: @[tooltip.y]px;">
+  <tooltip-body data-direction="@[tooltip.direction || 'none']">
+    <slot></slot>
+  </tooltip-body>
+</tooltip-layer>
+<!-- /if -->
+
+<style>
+  tooltip-layer {
+    position: fixed;
+    width: 0;
+    height: 0;
+    z-index: var(--z-tooltip, 100);
+    pointer-events: none;
+  }
+
+  tooltip-body {
+    display: block;
+    position: absolute;
+    width: max-content;
+    left: 0;
+    top: 0;
+    visibility: hidden;
+  }
+
+  tooltip-body[positioned] {
+    visibility: visible;
+  }
+</style>

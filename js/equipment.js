@@ -45,7 +45,7 @@ export const dismantle = (itemRef) => {
 };
 
 export const equip = (equipmentRef) => {
-  const characterIndex = Number($.routeParams.characterIndex) || 0;
+  const characterIndex = Number($.page.params.characterIndex) || 0;
   if (characterIndex === undefined) return;
 
   const equipment = EQUIPMENT(equipmentRef, true);
@@ -91,7 +91,7 @@ export const equip = (equipmentRef) => {
 };
 
 export const unequip = (equipmentRef, slot) => {
-  const characterIndex = Number($.routeParams.characterIndex);
+  const characterIndex = Number($.page.params.characterIndex);
   if (characterIndex === undefined) return;
 
   const characterRef = $.characters[characterIndex];

@@ -17,28 +17,14 @@
     import EQUIPMENT, { ALL_EQUIPMENT } from '/js/constants/EQUIPMENT.js';
     import { slotsInPrettyName } from '/js/equipment.js';
     import { formatCoins } from '/js/coin.js';
-    import { notify } from '/js/actions.js';
-    import { delegateTooltip, equipmentTooltipProps } from '/js/tooltip.js';
 
-    const EQUIPMENT_TYPES = ['oneHand', 'offHand', 'twoHand', 'armor', 'accessory', 'trinket'];
-
-    $.vendorItems = Object.keys(ALL_EQUIPMENT).map(key => {
+    window.vendorItems = Object.keys(ALL_EQUIPMENT).map(key => {
       const item = EQUIPMENT(key, true);
       return { ...item, id: key, slotLabel: slotsInPrettyName(item.slotsIn) };
     });
-    $.vendorFilter = 'all';
-    $.vendorFiltered = $.vendorItems;
 
-    window.vendorFilterBy = (type) => {
-      if (type === $.vendorFilter) type = 'all';
-      $.vendorFilter = type;
-      $.vendorFiltered = type === 'all'
-        ? $.vendorItems
-        : $.vendorItems.filter(item => item.slotsIn.includes(type));
-    };
-
-    const countByType = (type) => $.vendorItems.filter(item => item.slotsIn.includes(type)).length;
-    $.vendorCounts = {
+    const countByType = (type) => window.vendorItems.filter(item => item.slotsIn.includes(type)).length;
+    window.vendorCounts = {
       oneHand: countByType('oneHand'),
       offHand: countByType('offHand'),
       twoHand: countByType('twoHand'),
@@ -60,7 +46,8 @@
       const { silver, copper } = formatCoins(cost);
       const coinText = (silver ? silver + 's ' : '') + copper + 'c';
 
-      $.dialogProps = {
+      $.overlay = {
+        name: 'confirm',
         text: `Are you sure you want to acquire this equipment for ${coinText}?`,
         confirm: () => {
           $.coins -= cost;
@@ -68,93 +55,16 @@
           notify({ success: 'Equipment acquired!' });
         }
       };
-      $.overlay = 'confirm';
     };
 
-    setTimeout(() => delegateTooltip(
-      document.querySelector('page-content [vendor-table]'),
-      '[vendor-row]',
-      (_, idx) => equipmentTooltipProps($.vendorFiltered[idx]),
-      (row) => row.querySelector('eq-link') || row
-    ), 500);
   </script>
 
   <component src="/components/Layout.html">
     <page-content>
 
       <component src="/components/TitleBar.html" title="Vendor"></component>
-      <hr />
 
-      <vendor-filters mx="-6" w="auto">
-        <button vendor-filter active="@[$.vendorFilter === 'all']" onclick="vendorFilterBy('all')">
-          <crow vertical center g-1>
-            <filter-count>@[$.vendorItems.length]</filter-count>
-            <filter-label>All</filter-label>
-          </crow>
-        </button>
-        <button vendor-filter active="@[$.vendorFilter === 'oneHand']" onclick="vendorFilterBy('oneHand')">
-          <crow vertical center g-1>
-            <filter-count>@[vendorCounts.oneHand]</filter-count>
-            <filter-label>One-Handed</filter-label>
-          </crow>
-        </button>
-        <button vendor-filter active="@[$.vendorFilter === 'offHand']" onclick="vendorFilterBy('offHand')">
-          <crow vertical center g-1>
-            <filter-count>@[vendorCounts.offHand]</filter-count>
-            <filter-label>Off-Hand</filter-label>
-          </crow>
-        </button>
-        <button vendor-filter active="@[$.vendorFilter === 'twoHand']" onclick="vendorFilterBy('twoHand')">
-          <crow vertical center g-1>
-            <filter-count>@[vendorCounts.twoHand]</filter-count>
-            <filter-label>Two-Handed</filter-label>
-          </crow>
-        </button>
-        <button vendor-filter active="@[$.vendorFilter === 'armor']" onclick="vendorFilterBy('armor')">
-          <crow vertical center g-1>
-            <filter-count>@[vendorCounts.armor]</filter-count>
-            <filter-label>Armor</filter-label>
-          </crow>
-        </button>
-        <button vendor-filter active="@[$.vendorFilter === 'accessory']" onclick="vendorFilterBy('accessory')">
-          <crow vertical center g-1>
-            <filter-count>@[vendorCounts.accessory]</filter-count>
-            <filter-label>Accessory</filter-label>
-          </crow>
-        </button>
-        <button vendor-filter active="@[$.vendorFilter === 'trinket']" onclick="vendorFilterBy('trinket')">
-          <crow vertical center g-1>
-            <filter-count>@[vendorCounts.trinket]</filter-count>
-            <filter-label>Trinket</filter-label>
-          </crow>
-        </button>
-      </vendor-filters>
-
-      <crow vertical up left vendor-table mx="-6" w="auto" mt-4>
-        <crow up left g-4 sm:g="2" vendor-header py-3 px-6 sm:px="3" w-full>
-          <vendor-col-name>Name</vendor-col-name>
-          <vendor-col-slot>Slots in</vendor-col-slot>
-          <vendor-col-cost>Cost</vendor-col-cost>
-          <vendor-col-action></vendor-col-action>
-        </crow>
-
-        <!-- each vendorFiltered as item, i -->
-        <crow left vendor-row g-4 sm:g="2" py-3 px-6 sm:px="3" w-full>
-          <crow left vendor-col-name>
-            <component src="/components/EquipmentLink.html"
-              level="@[item.level]" name="@[item.name]"></component>
-          </crow>
-          <vendor-col-slot text-sm text-muted>@[item.slotLabel]</vendor-col-slot>
-          <vendor-col-cost>
-            <component src="/components/Coins.html" amount="@[item.cost]"></component>
-          </vendor-col-cost>
-          <crow vendor-col-action right>
-            <button secondary sm onclick="vendorAcquire('@[item.id]')"
-              disabled="@[$.coins < item.cost]">Acquire</button>
-          </crow>
-        </crow>
-        <!-- /each -->
-      </crow>
+      <component src="/components/VendorContent.html"></component>
     </page-content>
   </component>
   <style>
@@ -166,19 +76,15 @@
       isolation: isolate;
       border-top: 1px solid oklch(from var(--bb-brown) l c h / 0.25);
       border-bottom: 1px solid oklch(from var(--bb-brown) l c h / 0.25);
-      background: linear-gradient(
-        180deg,
-        oklch(from var(--bb-brown) l c h / 0.02),
-        oklch(from var(--bb-brown) l c h / 0.07)
-      );
+      background: linear-gradient(180deg,
+          oklch(from var(--bb-brown) l c h / 0.02),
+          oklch(from var(--bb-brown) l c h / 0.07));
     }
 
     [dark] page[vendor] vendor-filters {
-      background: linear-gradient(
-        180deg,
-        oklch(from var(--foreground) l c h / 0.02),
-        oklch(from var(--foreground) l c h / 0.06)
-      );
+      background: linear-gradient(180deg,
+          oklch(from var(--foreground) l c h / 0.02),
+          oklch(from var(--foreground) l c h / 0.06));
     }
 
     page[vendor] [vendor-filter] {
@@ -215,12 +121,10 @@
       top: 30%;
       bottom: 30%;
       width: 1px;
-      background: linear-gradient(
-        180deg,
-        transparent,
-        oklch(from var(--bb-brown) l c h / 0.28) 50%,
-        transparent
-      );
+      background: linear-gradient(180deg,
+          transparent,
+          oklch(from var(--bb-brown) l c h / 0.28) 50%,
+          transparent);
     }
 
     page[vendor] [vendor-filter]:hover {
@@ -257,14 +161,12 @@
       right: calc(var(--unit) * 3);
       bottom: -1px;
       height: 2px;
-      background: linear-gradient(
-        90deg,
-        transparent 0%,
-        var(--bb-orange) 22%,
-        var(--bb-yellow) 50%,
-        var(--bb-orange) 78%,
-        transparent 100%
-      );
+      background: linear-gradient(90deg,
+          transparent 0%,
+          var(--bb-orange) 22%,
+          var(--bb-yellow) 50%,
+          var(--bb-orange) 78%,
+          transparent 100%);
       box-shadow: 0 0 calc(var(--unit) * 2.5) oklch(from var(--bb-orange) l c h / 0.45);
     }
 
@@ -292,9 +194,11 @@
         flex: 1 1 33%;
         padding: calc(var(--unit) * 2.5) calc(var(--unit) * 2);
       }
+
       page[vendor] [vendor-filter] filter-count {
         font-size: 1.15rem;
       }
+
       page[vendor] [vendor-filter] filter-label {
         font-size: 0.62rem;
         letter-spacing: 0.14em;
@@ -347,7 +251,8 @@
       flex: none;
     }
 
-    @media (width <= 768px) {
+    @media (width <=768px) {
+
       page[vendor] vendor-col-slot,
       page[vendor] [vendor-col-slot] {
         display: none;

@@ -1,27 +1,27 @@
-<combatant-sprite absolute combatant-wrap="@[combatCards[idx].cardId]"
-  attack-class="@[combatCards[idx].attackClass]"
-  hurt="@[combatCards[idx].hurtActive]"
-  block="@[combatCards[idx].blockActive]"
-  attack-blocked="@[combatCards[idx].attackBlocked]"
-  whirlwind="@[combatCards[idx].whirlwindActive]"
-  attack-dodged="@[combatCards[idx].attackDodgedActive]"
-  knocked-out="@[combatCards[idx].knockedOut]"
+<combatant-sprite absolute data-combatant-wrap="@[card.cardId]"
+  data-attack-class="@[card.attackClass]"
+  hurt="@[card.hurtActive]"
+  block="@[card.blockActive]"
+  attack-blocked="@[card.attackBlocked]"
+  whirlwind="@[card.whirlwindActive]"
+  attack-dodged="@[card.attackDodgedActive]"
+  knocked-out="@[card.knockedOut]"
   style="
-    --position-x: @[combatCards[idx].x]px;
-    --position-y: @[combatCards[idx].y]px;
-    --attack-start-x: @[combatCards[idx].attackStartX]px;
-    --attack-start-y: @[combatCards[idx].attackStartY]px;
-    --attack-end-x: @[combatCards[idx].attackEndX]px;
-    --attack-end-y: @[combatCards[idx].attackEndY]px;
-    --attack-duration: @[combatCards[idx].attackDuration]ms;
-    --dir: @[combatCards[idx].dir];
-    --sprite-height: @[combatCards[idx].spriteHeight]px;
+    --position-x: @[card.x]px;
+    --position-y: @[card.y]px;
+    --attack-start-x: @[card.attackStartX]px;
+    --attack-start-y: @[card.attackStartY]px;
+    --attack-end-x: @[card.attackEndX]px;
+    --attack-end-y: @[card.attackEndY]px;
+    --attack-duration: @[card.attackDuration]ms;
+    --dir: @[card.dir];
+    --sprite-height: @[card.spriteHeight]px;
   ">
   <sprite-inner flex down>
-    <img class="combatant-avatar" src="@[combatCards[idx].imageUrl]"
-      alt="@[combatCards[idx].name]"
+    <img class="combatant-avatar" src="@[card.imageUrl]"
+      alt="@[card.name]"
       onerror="if(!this.src.includes('@['))this.style.display='none'" />
-    <sprite-hurt-mask absolute style="--img: url('@[combatCards[idx].imageUrl]');"></sprite-hurt-mask>
+    <sprite-hurt-mask absolute style="--img: url('@[card.imageUrl]');"></sprite-hurt-mask>
     <sprite-block absolute>
       <img src="/static/images/shield.png" alt="" />
     </sprite-block>
@@ -75,12 +75,6 @@
     animation: sprite-hurt 340ms ease;
   }
 
-  @keyframes sprite-hurt {
-    0% { background-color: transparent; opacity: 0; }
-    25% { background-color: rgba(255, 0, 0, 0.4); opacity: 1; }
-    100% { background-color: transparent; opacity: 0; }
-  }
-
   [battle-brawlers] sprite-block {
     inset: 0;
     display: grid;
@@ -99,46 +93,16 @@
     opacity: 1;
   }
 
-  [battle-brawlers] combatant-sprite[attack-class="basicAttackFast"] {
+  [battle-brawlers] combatant-sprite[data-attack-class="basicAttackFast"] {
     animation: bb-basicAttackFast var(--attack-duration) cubic-bezier(0.25, 0.1, 0.25, 1);
   }
-  [battle-brawlers] combatant-sprite[attack-class="basicAttackRegular"] {
+  [battle-brawlers] combatant-sprite[data-attack-class="basicAttackRegular"] {
     animation: bb-basicAttackRegular var(--attack-duration) cubic-bezier(0.25, 0.1, 0.25, 1);
   }
-  [battle-brawlers] combatant-sprite[attack-class="basicAttackSlow"] {
+  [battle-brawlers] combatant-sprite[data-attack-class="basicAttackSlow"] {
     animation: bb-basicAttackSlow var(--attack-duration) cubic-bezier(0.25, 0.1, 0.25, 1);
   }
-  [battle-brawlers] combatant-sprite[attack-class="whirlwind"] {
+  [battle-brawlers] combatant-sprite[data-attack-class="whirlwind"] {
     animation: bb-whirlwind 500ms cubic-bezier(0.25, 0.1, 0.25, 1);
-  }
-
-  @keyframes bb-basicAttackFast {
-    0% { transform: translate(var(--position-x), var(--position-y)); }
-    90% {
-      transform: translate(var(--attack-start-x), var(--attack-start-y));
-      animation-timing-function: cubic-bezier(0.2, 0.8, 0.5, 1.33);
-    }
-    100% { transform: translate(var(--attack-end-x), var(--attack-end-y)); }
-  }
-  @keyframes bb-basicAttackRegular {
-    0% { transform: translate(var(--position-x), var(--position-y)); }
-    90% {
-      transform: translate(var(--attack-start-x), var(--attack-start-y));
-      animation-timing-function: cubic-bezier(0.2, 0.8, 0.5, 1.33);
-    }
-    100% { transform: translate(var(--attack-end-x), var(--attack-end-y)); }
-  }
-  @keyframes bb-basicAttackSlow {
-    0% { transform: translate(var(--position-x), var(--position-y)); }
-    90% {
-      transform: translate(var(--attack-start-x), var(--attack-start-y));
-      animation-timing-function: cubic-bezier(0.2, 0.8, 0.5, 1.33);
-    }
-    100% { transform: translate(var(--attack-end-x), var(--attack-end-y)); }
-  }
-  @keyframes bb-whirlwind {
-    0% { transform: translate(var(--position-x), var(--position-y)) scaleX(1); }
-    50% { transform: translate(var(--position-x), var(--position-y)) scaleX(-1); }
-    100% { transform: translate(var(--position-x), var(--position-y)) scaleX(1); }
   }
 </style>

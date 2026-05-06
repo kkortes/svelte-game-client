@@ -1,31 +1,31 @@
-<combatant-slot combatant-slot="@[combatCards[idx].cardId]"
-  facing-right="@[combatCards[idx].facingRight]"
+<combatant-slot combatant-slot="@[card.cardId]"
+  facing-right="@[card.facingRight]"
   style="
-    --c-x: @[combatCards[idx].x]px;
-    --c-y: @[combatCards[idx].y]px;
-    --c-z: @[combatCards[idx].z];
-    --c-scale: @[combatCards[idx].scale];
+    --c-x: @[card.x]px;
+    --c-y: @[card.y]px;
+    --c-z: @[card.z];
+    --c-scale: @[card.scale];
   ">
-  <combatant-card combat-card="@[combatCards[idx].cardId]" flex down>
+  <combatant-card combat-card="@[card.cardId]" flex down>
     <combatant-header flex>
-      <combatant-name>@[combatCards[idx].name]</combatant-name>
+      <combatant-name>@[card.name]</combatant-name>
     </combatant-header>
 
-    <component src="/components/HealthBar.html" idx="@[idx]"></component>
+    <component src="/components/HealthBar.html" card="@[card]"></component>
 
     <combatant-sprite-area block></combatant-sprite-area>
 
-    <component src="/components/CombatantAbilityBar.html" idx="@[idx]"></component>
+    <component src="/components/CombatantAbilityBar.html" card="@[card]"></component>
 
-    <combatant-statuses flex down facing-right="@[combatCards[idx].facingRight]">
-      <!-- each combatCards[idx].statusEffects as s -->
-      <status-chip status="@[s.key]">
+    <combatant-statuses flex down facing-right="@[card.facingRight]">
+      <!-- each card.statusEffects as s -->
+      <status-chip data-status="@[s.key]">
         <icon @[s.key]></icon>
         <status-ticks>@[s.ticks]</status-ticks>
       </status-chip>
       <!-- /each -->
-      <!-- each combatCards[idx].statusStacks as s -->
-      <status-chip status="@[s.key]" stack>
+      <!-- each card.statusStacks as s -->
+      <status-chip data-status="@[s.key]" stack>
         <icon @[s.key]></icon>
         <status-ticks>@[s.value]/@[s.max]</status-ticks>
       </status-chip>
@@ -34,20 +34,20 @@
 
     <combatant-badge damage-badge>
       <icon 1h1h></icon>
-      <!-- if combatCards[idx].damage > 0 -->
-      <badge-value>@[combatCards[idx].damage]</badge-value>
+      <!-- if card.damage > 0 -->
+      <badge-value>@[card.damage]</badge-value>
       <!-- /if -->
     </combatant-badge>
 
     <combatant-badge armor-badge>
       <icon maxArmor></icon>
-      <!-- if combatCards[idx].currentArmor > 0 -->
-      <badge-value>@[combatCards[idx].currentArmor]</badge-value>
+      <!-- if card.currentArmor > 0 -->
+      <badge-value>@[card.currentArmor]</badge-value>
       <!-- /if -->
     </combatant-badge>
   </combatant-card>
 
-  <component src="/components/CombatantImage.html" idx="@[idx]"></component>
+  <component src="/components/CombatantImage.html" card="@[card]"></component>
 </combatant-slot>
 
 <style>
@@ -126,12 +126,12 @@
     font-size: 0.75rem;
   }
 
-  [battle-brawlers] status-chip[status="stunned"] { background: #fbbf24; color: #000; }
-  [battle-brawlers] status-chip[status="bleeding"] { background: #ef4444; color: #fff; }
-  [battle-brawlers] status-chip[status="vulnerable"] { background: #a855f7; color: #fff; }
-  [battle-brawlers] status-chip[status="wounded"] { background: #dc2626; color: #fff; opacity: 0.75; }
-  [battle-brawlers] status-chip[status="concussed"] { background: #d97706; color: #fff; opacity: 0.75; }
-  [battle-brawlers] status-chip[status="exposed"] { background: #7c3aed; color: #fff; opacity: 0.75; }
+  [battle-brawlers] status-chip[data-status="stunned"] { background: #fbbf24; color: #000; }
+  [battle-brawlers] status-chip[data-status="bleeding"] { background: #ef4444; color: #fff; }
+  [battle-brawlers] status-chip[data-status="vulnerable"] { background: #a855f7; color: #fff; }
+  [battle-brawlers] status-chip[data-status="wounded"] { background: #dc2626; color: #fff; opacity: 0.75; }
+  [battle-brawlers] status-chip[data-status="concussed"] { background: #d97706; color: #fff; opacity: 0.75; }
+  [battle-brawlers] status-chip[data-status="exposed"] { background: #7c3aed; color: #fff; opacity: 0.75; }
 
   [battle-brawlers] combatant-badge {
     position: absolute;

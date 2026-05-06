@@ -1,16 +1,12 @@
 <script type="module">
-  import { Howl } from 'howler';
-  import AUDIO from '/js/audio.js';
-  import { getLevelByExperience } from '/js/level.js';
-
   $.on('afterUpdate', (current, prev) => {
-    if (current.overlay === 'AccountProgression' && prev.overlay !== 'AccountProgression') {
+    if (current.overlay.name === 'AccountProgression' && prev.overlay.name !== 'AccountProgression') {
       const el = document.querySelector('[progression-scroll] slides');
       if (!el) return;
       const target = el.children[current.accountRewards - 1];
       if (target) target.scrollIntoView({ behavior: 'instant', block: 'nearest', inline: 'center' });
       setTimeout(() => {
-        const level = getLevelByExperience(current.experience);
+        const level = window.getLevelByExperience(current.experience);
         const lvlTarget = el.children[level - 1];
         if (lvlTarget) lvlTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
       }, 50);
@@ -20,14 +16,14 @@
   component({ levels: Array.from({ length: 25 }, (_, i) => i + 1) });
 
   window.claimAccountReward = (lvl) => {
-    const accountLevel = getLevelByExperience($.experience);
+    const accountLevel = window.getLevelByExperience($.experience);
     if (lvl !== $.accountRewards + 1 || lvl > accountLevel) return;
     if (lvl === accountLevel) {
-      setTimeout(() => { $.overlay = ''; }, 500);
+      setTimeout(() => { $.overlay = {}; }, 500);
     }
     try {
-      new Howl({
-        src: [AUDIO['Special Lootbox 13']],
+      new window.Howl({
+        src: [window.AUDIO['Special Lootbox 13']],
         volume: $.settings.volume.master * $.settings.volume.sfx
       }).play();
     } catch { }
@@ -36,50 +32,51 @@
   };
 </script>
 
-<carousel progression-scroll onclick="$.overlay = ''">
-    <slides x scrollbar>
-      <!-- each this.levels as lvl -->
-      <slide>
-        <slide-center>
-          <card progression-card onclick="event.stopPropagation()"
-            claimed="@[lvl <= accountRewards]" reached="@[lvl <= getLevelByExperience(experience)]">
-            <!-- if lvl <= accountRewards -->
-            <icon checkmark progression-check absolute t-2 r-2></icon>
-            <!-- /if -->
-            <h4 m-0>Level @[lvl]</h4>
-            <hr my-2 />
-            <crow g-8 up>
-              <crow vertical up left>
-                <strong sm>Account</strong>
-                <crow g-1>+1 <icon coin coin-platinum></icon>
-                </crow>
-                <!-- if lvl % 5 === 0 || lvl === 1 -->
-                <span sm>+1 brawler</span>
-                <!-- /if -->
+<carousel progression-scroll onclick="$.overlay = {}">
+  <slides x scrollbar>
+    <!-- each this.levels as lvl -->
+    <slide>
+      <slide-center>
+        <card progression-card onclick="event.stopPropagation()" claimed="@[lvl <= accountRewards]"
+          reached="@[lvl <= getLevelByExperience(experience)]">
+          <!-- if lvl <= accountRewards -->
+          <icon checkmark progression-check absolute t-2 r-2></icon>
+          <!-- /if -->
+          <h4 m-0>Level @[lvl]</h4>
+          <hr my-2 />
+          <crow g-8 up>
+            <crow vertical up left>
+              <strong sm>Account</strong>
+              <crow g-1>+1 <icon coin coin-platinum></icon>
               </crow>
-              <crow vertical up left>
-                <strong sm>Brawlers</strong>
-                <crow g-1>+4 <icon maxHealth></icon>
-                </crow>
-                <crow g-1>+2 <icon damage></icon>
-                </crow>
+              <!-- if lvl % 5 === 0 || lvl === 1 -->
+              <span sm>+1 brawler</span>
+              <!-- /if -->
+            </crow>
+            <crow vertical up left>
+              <strong sm>Brawlers</strong>
+              <crow g-1>+4 <icon maxHealth></icon>
+              </crow>
+              <crow g-1>+2 <icon damage></icon>
               </crow>
             </crow>
+          </crow>
 
-            <!-- if lvl > accountRewards -->
-            <button primary
-              disabled="@[lvl > accountRewards + 1 || lvl > getLevelByExperience(experience)]"
-              onclick="claimAccountReward(@[lvl])">Claim</button>
-            <!-- /if -->
+          <!-- if lvl > accountRewards -->
+          <button primary
+            disabled="@[lvl > accountRewards + 1 || lvl > getLevelByExperience(experience)]"
+            onclick="claimAccountReward(@[lvl])">Claim</button>
+          <!-- /if -->
 
-            <progression-premium mt-auto flex p-4 mx="-4" mb="-4" text-muted>Premium rewards TBA.</progression-premium>
+          <progression-premium mt-auto flex p-4 mx="-4" mb="-4" text-muted>Premium rewards
+            TBA.</progression-premium>
 
 
-          </card>
-        </slide-center>
-      </slide>
-      <!-- /each -->
-    </slides>
+        </card>
+      </slide-center>
+    </slide>
+    <!-- /each -->
+  </slides>
 </carousel>
 
 <style>

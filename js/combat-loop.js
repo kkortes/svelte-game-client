@@ -149,16 +149,16 @@ export const init = () => {
 
     const elapsed = $.elapsedMilliseconds;
 
-    const t0 = (teams[0]?.combatants || []).map((c, i) => enrichCombatant(c, 0, i, elapsed, scale));
-    const t1 = (teams[1]?.combatants || []).map((c, i) => enrichCombatant(c, 1, i, elapsed, scale));
+    const cards = [
+      ...(teams[0]?.combatants || []).map((c, i) => enrichCombatant(c, 0, i, elapsed, scale)),
+      ...(teams[1]?.combatants || []).map((c, i) => enrichCombatant(c, 1, i, elapsed, scale)),
+    ];
 
-    $.combatTeam0 = t0;
-    $.combatTeam1 = t1;
-    $.combatScale = scale;
+    $.combatCards = cards;
 
     // Retrigger attack animation by toggling animation-name via a DOM tickle.
     // Walk through enriched combatants and compare attackAnimId to what we last set.
-    [...t0, ...t1].forEach((c) => {
+    cards.forEach((c) => {
       const last = retriggered.get(c.cardId);
       if (c.attackAnimId && c.attackAnimId !== last) {
         retriggered.set(c.cardId, c.attackAnimId);
@@ -170,10 +170,15 @@ export const init = () => {
   };
 
   window.retriggerCombatantAnim = (cardId) => {
-    const el = document.querySelector(`[combatant-wrap="${cardId}"]`);
+    const el = document.querySelector(`[data-combatant-wrap="${cardId}"]`);
     if (!el) return;
+    // Vibe's hydrate does setAttribute('style', ...) every flush, wiping any inline
+    // animation-name we set. Force a reflow so the browser commits the 'none' state
+    // synchronously — then clearing it makes the CSS animation restart fresh before
+    // Vibe's next microtask-flush replaces the style attribute.
     el.style.animationName = 'none';
-    requestAnimationFrame(() => { el.style.animationName = ''; });
+    void el.offsetWidth;
+    el.style.animationName = '';
   };
 
   const playSfx = (sfx) => {

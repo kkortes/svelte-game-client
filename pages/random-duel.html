@@ -17,7 +17,6 @@
     import { getLevelByExperience, getExperienceRangeForLevel } from '/js/level.js';
     import { generateCombat, healFull, prepareTeams } from '/js/combat.js';
     import CHARACTERS from '/js/constants/CHARACTERS.js';
-    import { notify } from '/js/actions.js';
 
     const count = Math.floor(getLevelByExperience($.experience) / 5) + 1;
     $.maxBrawlers = count;
@@ -70,7 +69,7 @@
         const myCharacters = JSON.parse(JSON.stringify(selected));
         $.selectedBrawlers = [];
         $.combat = generateCombat(prepareTeams(myCharacters, healFull(opponents.slice(0, myCharacters.length))));
-        $.overlay = 'Combat';
+        $.overlay = { name: 'Combat' };
       } catch (e) {
         notify({ error: 'Failed to find opponent' });
       }
@@ -94,7 +93,7 @@
 
       <crow vertical w-full g-2 mt-4>
         <!-- each brawlerSlots as slot, i -->
-        <component src="/components/BrawlerSlot.html" idx="@[i]"></component>
+        <component src="/components/BrawlerSlot.html" slot="@[slot]"></component>
         <!-- /each -->
       </crow>
     </page-content>

@@ -1,0 +1,53 @@
+<!-- if tooltip.props && (tooltip.props.combatStats || tooltip.props.slotsIn) -->
+<component src="/components/tooltip/Equipment.html"></component>
+<!-- /if -->
+
+<!-- if tooltip.props && !tooltip.props.combatStats && !tooltip.props.slotsIn && (tooltip.props.ticks || tooltip.props.basic !== undefined) -->
+<component src="/components/tooltip/Ability.html"></component>
+<!-- /if -->
+
+<!-- if !tooltip.props || (!tooltip.props.combatStats && !tooltip.props.slotsIn && !tooltip.props.ticks && tooltip.props.basic === undefined) -->
+<component src="/components/tooltip/Text.html"></component>
+<!-- /if -->
+
+<style>
+  [battle-brawlers] [tooltip-card] {
+    max-width: calc(var(--unit) * 60);
+  }
+
+  [battle-brawlers] [tooltip-name] {
+    display: block;
+    font-size: 0.85rem;
+  }
+
+  [battle-brawlers] [tooltip-desc] {
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+  }
+
+  [battle-brawlers] [tooltip-stat] {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--muted-foreground);
+    margin-top: calc(var(--unit) * 0.5);
+  }
+
+  [battle-brawlers] [tooltip-tag] {
+    display: inline-block;
+    font-size: 0.6rem;
+    padding: calc(var(--unit) * 0.25) calc(var(--unit) * 1.5);
+    border-radius: calc(var(--unit) * 0.75);
+    margin-top: var(--unit);
+    background: var(--accent);
+    color: var(--muted-foreground);
+  }
+
+  [battle-brawlers] [tooltip-tag]:not([basic]) {
+    background: oklch(0.85 0.1 280);
+    color: oklch(0.4 0.15 280);
+  }
+
+  [battle-brawlers] [tooltip-fallback] {
+    display: block;
+  }
+</style>

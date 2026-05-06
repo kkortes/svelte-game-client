@@ -3,31 +3,34 @@
     <crow game-shell>
       <crow vertical game-main>
         <card content-area p-0>
-          <page @[pageName]>
+          <page @[page.name]>
             <slot></slot>
           </page>
 
           <stay w-full sm:reverse tab-bar t="8.5">
             <crow up sm:g="0" g-1 tab-row w-full py-3 sm:h="8" overflow-hidden sm:p="0">
-              <a href="/" sm:px="6" class="button" tertiary="@[pageSection !== 'home']"
-                primary="@[pageSection === 'home']">
+              <a href="/" sm:px="6" class="button" tertiary="@[!page.name.startsWith('home')]"
+                primary="@[page.name.startsWith('home')]">
                 <icon info hide sm:block></icon><span sm:hide>Game Guide</span>
               </a>
               <a href="/the-arena" sm:px="6" data-tab="the-arena" class="button"
-                tertiary="@[pageSection !== 'the-arena']" primary="@[pageSection === 'the-arena']">
+                tertiary="@[!page.name.startsWith('the-arena')]"
+                primary="@[page.name.startsWith('the-arena')]">
                 <icon damage hide sm:block></icon><span sm:hide>The Arena</span>
               </a>
               <a href="/random-duel" sm:px="6" data-tab="random-duel" class="button"
-                tertiary="@[pageSection !== 'random-duel']"
-                primary="@[pageSection === 'random-duel']">
+                tertiary="@[!page.name.startsWith('random-duel')]"
+                primary="@[page.name.startsWith('random-duel')]">
                 <icon dice hide sm:block></icon><span sm:hide>Random duel</span>
               </a>
               <a href="/vendor" sm:px="6" data-tab="vendor" class="button"
-                tertiary="@[pageSection !== 'vendor']" primary="@[pageSection === 'vendor']">
+                tertiary="@[!page.name.startsWith('vendor')]"
+                primary="@[page.name.startsWith('vendor')]">
                 <icon coin hide sm:block></icon><span sm:hide>Vendor</span>
               </a>
               <a href="/brawlers" sm:px="6" data-tab="brawlers" class="button"
-                tertiary="@[pageSection !== 'brawlers']" primary="@[pageSection === 'brawlers']">
+                tertiary="@[!page.name.startsWith('brawlers')]"
+                primary="@[page.name.startsWith('brawlers')]">
                 <icon maxHealth hide sm:block></icon><span sm:hide>Brawlers</span>
               </a>
             </crow>
@@ -45,8 +48,10 @@
   </component>
 
   <component src="/components/Overlay.html"></component>
-  <component src="/components/Tooltip.html"></component>
-  <component src="/components/Notifications.html"></component>
+  <component src="/components/remote/Tooltip.html">
+    <component src="/components/tooltip/Display.html"></component>
+  </component>
+  <component src="/components/remote/Notifications.html"></component>
   <component src="/components/Topbar.html"></component>
   <component src="/components/Keystrokes.html"></component>
 
@@ -112,6 +117,7 @@
         background-color: rgba(255, 255, 255, 0.3);
         border-radius: var(--radius);
         color: var(--muted-foreground);
+        min-height: calc(100vh - var(--unit) * 15);
       }
 
       [dark] sidebar-content {
@@ -175,13 +181,6 @@
       animation: overlayIn 150ms ease-out both;
     }
 
-    @keyframes overlayIn {
-      from {
-        opacity: 0;
-        transform: scale(1);
-      }
-    }
-
     combat-panel,
     combat-arena,
     combatant-slot,
@@ -191,10 +190,6 @@
     combat-result,
     combat-rewards,
     combat-floater,
-    hp-track,
-    hp-fill,
-    armor-track,
-    armor-fill,
     progress-track,
     progress-fill,
     game-frame,
@@ -205,7 +200,6 @@
     progression-rewards,
     tooltip-layer,
     tooltip-stats,
-    spacer,
     combat-status {
       display: block;
     }

@@ -25,13 +25,15 @@
       </crow>
       <button primary onclick="$.characters = []">Reset characters</button>
       <button primary onclick="$.accountRewards = 1">Reset rewards</button>
-      <button primary danger onclick="localStorage.clear(); location.reload()">Clear localStorage</button>
+      <button primary danger onclick="localStorage.clear(); location.reload()">Clear
+        localStorage</button>
     </crow>
     <crow vertical left p-2>
-      <span>My Server: @[new Date(serverTimestampSnapshot).toLocaleString()]</span>
+      <span>My Server: @[new Date(clock.server).toLocaleString()]</span>
       <crow vertical up left mt-2>
         <a href="/debug" primary>Debug</a>
         <a href="/styleguide" primary>Styleguide</a>
+        <a href="/global-components" primary>Global Components</a>
         <a href="/ability-scaling" primary>Ability Scaling</a>
         <a href="/equipment-scaling" primary>Equipment Scaling</a>
         <a href="/character-scaling" primary>Character Scaling</a>

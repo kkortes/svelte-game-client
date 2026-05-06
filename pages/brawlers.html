@@ -19,13 +19,8 @@
     import { ALL_ELEMENTS } from '/js/constants/ELEMENTS.js';
     import { correctHealth } from '/js/equipment.js';
     import { saveNow } from '/js/connectSocket.js';
-    import { allowedNumberOfCharacters } from '/js/level.js';
-    import { notify } from '/js/actions.js';
     import { calculateCombatStatsByCharacter } from '/js/utils.js';
 
-    // Hydrate once into a window variable — display data is constant,
-    // doesn't belong on reactive state. Templates access via
-    // window.brawlerCards[idx] in @[...] bindings.
     const formatBonuses = (current, defaults, labels) =>
       Object.entries(labels)
         .filter(([k]) => current[k] !== defaults[k])
@@ -59,18 +54,8 @@
     });
 
 
-    const recomputeCapped = () => {
-      $.brawlerCharCapped = $.characters.length >= allowedNumberOfCharacters();
-    };
-    recomputeCapped();
-    $.on('afterUpdate', (current, prev) => {
-      if (current.characters !== prev.characters || current.accountRewards !== prev.accountRewards) {
-        recomputeCapped();
-      }
-    });
-
     window.pickCharacter = (index) => {
-      if ($.brawlerCharCapped) {
+      if ($.characters.length >= allowedNumberOfCharacters()) {
         notify({ warning: 'You cannot recruit more brawlers. Level up your ludus first.' });
         return;
       }
@@ -81,7 +66,8 @@
         return;
       }
 
-      $.dialogProps = {
+      $.overlay = {
+        name: 'confirm',
         text: `Recruiting ${card.name} to your Ludus.`,
         confirm: async () => {
           $.characters.push(correctHealth(card.ref));
@@ -90,7 +76,6 @@
           // window.location.href = `/brawlers/${targetIndex}`;
         }
       };
-      $.overlay = 'confirm';
     };
   </script>
 
@@ -103,24 +88,24 @@
         <!-- if characters.length === 0 -->
         <span>Select your first brawler</span>
         <!-- /if -->
-        <!-- if characters.length > 0 && brawlerCharCapped -->
+        <!-- if characters.length > 0 && characters.length >= allowedNumberOfCharacters() -->
         <span>Level up your ludus in order<br />to recruit new brawlers</span>
         <!-- /if -->
-        <!-- if characters.length > 0 && !brawlerCharCapped -->
+        <!-- if characters.length > 0 && characters.length < allowedNumberOfCharacters() -->
         <span>Select a brawler</span>
         <!-- /if -->
       </crow>
 
       <crow brawlers-grid g-4 sm:g="3">
-        <!-- each window.brawlerCards as card, idx -->
+        <!-- each brawlerCards as card, idx -->
         <brawler-card flex down flex-none p-2 overflow-hidden onclick="pickCharacter(@[idx])"
           style="--card-primary: @[card.primary]; --card-secondary: @[card.secondary]"
           recruited="@[characters.some(c => c.id === card.id)]">
           <span cinzel brawler-name text-center w-full>@[card.name]</span>
           <hr />
           <crow left up brawler-row>
-            <component src="/components/CharacterAvatar.html"
-              image="@[card.image]" size="@[card.size]" name="@[card.name]"></component>
+            <component src="/components/CharacterAvatar.html" image="@[card.image]"
+              size="@[card.size]" name="@[card.name]"></component>
             <crow vertical left brawler-info>
               <component src="/components/CoreStats.html" hp="@[card.hp]" armor="@[card.armor]"
                 damage="@[card.damage]" vertical></component>

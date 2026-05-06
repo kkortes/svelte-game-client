@@ -1,0 +1,142 @@
+<script type="module">
+  import CHARACTERS, { ALL_CHARACTERS } from '/js/constants/CHARACTERS.js';
+  import EQUIPMENT from '/js/constants/EQUIPMENT.js';
+  import { calculateCombatStatsByCharacter } from '/js/utils.js';
+  import { slotsInPrettyName } from '/js/equipment.js';
+
+  const state = {
+    charChoices: Object.keys(ALL_CHARACTERS),
+    chosenChar: 'elfMale',
+    charScaling: true,
+    equipScaling: true,
+    charPool: [],
+    charEquipmentSlots: []
+  };
+
+  const compute = (s) => {
+    s.charPool = Array.from({ length: 25 }, (_, i) => {
+      const level = i + 1;
+      const ref = CHARACTERS(s.chosenChar, false, {
+        overrides: {
+          level: s.charScaling ? level : 1,
+          equipment: {
+            mainHand: { overrides: { level: s.equipScaling ? level : 0 } },
+            offHand: { overrides: { level: s.equipScaling ? level : 0 } },
+            armor: { overrides: { level: s.equipScaling ? level : 0 } }
+          }
+        }
+      });
+      const hydrated = CHARACTERS(ref, true);
+      const stats = calculateCombatStatsByCharacter(hydrated);
+      return {
+        level,
+        name: hydrated.name,
+        charLevel: hydrated.level || 0,
+        maxHealth: stats.maxHealth || 0,
+        maxArmor: stats.maxArmor || 0,
+        damage: stats.damage || 0
+      };
+    });
+
+    const topRef = CHARACTERS(s.chosenChar, false, {
+      overrides: {
+        level: s.charScaling ? 25 : 1,
+        equipment: {
+          mainHand: { overrides: { level: s.equipScaling ? 25 : 0 } },
+          offHand: { overrides: { level: s.equipScaling ? 25 : 0 } },
+          armor: { overrides: { level: s.equipScaling ? 25 : 0 } }
+        }
+      }
+    });
+    const top = CHARACTERS(topRef, true);
+    const mainHandHydrated = top.equipment.mainHand
+      ? EQUIPMENT(top.equipment.mainHand, true)
+      : null;
+
+    s.charEquipmentSlots = Object.entries(top.equipment).map(([slot, eq]) => {
+      const h = eq ? EQUIPMENT(eq, true) : null;
+      const isTwoHandOff = slot === 'offHand' && mainHandHydrated?.slotsIn === 'twoHand';
+      return {
+        slot,
+        slotLabel: slotsInPrettyName(slot),
+        emptyFist: (slot === 'mainHand' || slot === 'offHand') && !h && !isTwoHandOff,
+        twoHandName: isTwoHandOff ? mainHandHydrated.name : '',
+        hasEquipment: !!h && !isTwoHandOff,
+        name: h?.name || '',
+        level: h?.level || 0,
+        empty: !h && !isTwoHandOff && slot !== 'mainHand' && slot !== 'offHand'
+      };
+    });
+  };
+
+  compute(state);
+  component(state);
+
+  const id = Object.keys(window.__vibeComponents).find(k => window.__vibeComponents[k] === state);
+  const s = $[id];
+
+  window.changeChar = (value) => { s.chosenChar = value; compute(s); };
+  window.toggleCharScaling = (checked) => { s.charScaling = checked; compute(s); };
+  window.toggleEquipScaling = (checked) => { s.equipScaling = checked; compute(s); };
+</script>
+
+<crow vertical g-4 left>
+  <component src="/components/TitleBar.html" title="Character Scaling"></component>
+  <hr />
+
+  <crow left g-4>
+    <label crow left g-2 for="charScaling" text-sm>
+      <input type="checkbox" id="charScaling" checked onchange="toggleCharScaling(this.checked)" />
+      Character scaling
+    </label>
+    <label crow left g-2 for="equipScaling" text-sm>
+      <input type="checkbox" id="equipScaling" checked onchange="toggleEquipScaling(this.checked)" />
+      Equipment scaling
+    </label>
+  </crow>
+
+  <select onchange="changeChar(this.value)">
+    <!-- each this.charChoices as choice -->
+    <option value="@[choice]">@[choice]</option>
+    <!-- /each -->
+  </select>
+
+  <crow vertical left g-2 w-full>
+    <!-- each this.charPool as ch -->
+    <crow left justify-between g-2 w-full>
+      <crow left g-2>
+        <span>level @[ch.level]</span>
+        <component src="/components/EquipmentLink.html" level="@[ch.charLevel]" name="@[ch.name]">
+        </component>
+      </crow>
+      <component src="/components/CoreStats.html" hp="@[ch.maxHealth]" armor="@[ch.maxArmor]"
+        damage="@[ch.damage]"></component>
+    </crow>
+    <!-- /each -->
+  </crow>
+
+  <crow vertical left g-2 w-full p-4 char-equipment-block>
+    <h5>Equipment</h5>
+    <hr />
+    <!-- each this.charEquipmentSlots as s -->
+    <crow left justify-between g-2 w-full>
+      <crow left g-2>
+        <span flex-none slot-label w="20">@[s.slotLabel]</span>
+        <!-- if s.hasEquipment -->
+        <component src="/components/EquipmentLink.html" level="@[s.level]" name="@[s.name]">
+        </component>
+        <!-- /if -->
+        <!-- if s.emptyFist -->
+        <span text-muted>Fist</span>
+        <!-- /if -->
+        <!-- if s.twoHandName -->
+        <span text-muted>@[s.twoHandName]</span>
+        <!-- /if -->
+        <!-- if s.empty -->
+        <span text-muted>-</span>
+        <!-- /if -->
+      </crow>
+    </crow>
+    <!-- /each -->
+  </crow>
+</crow>

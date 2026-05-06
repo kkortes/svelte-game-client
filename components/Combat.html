@@ -1,17 +1,40 @@
 <script type="module">
+  const resetCombat = () => {
+    $.overlay = {};
+    $.combat = JSON.parse(JSON.stringify(window.INITIAL_COMBAT));
+    $.liveTeams = [];
+    $.combatCards = [];
+    $.elapsedMilliseconds = 0;
+  };
+
+  window.combatEnded = (combat, elapsedMilliseconds) =>
+    combat.duration > 0 && elapsedMilliseconds >= combat.duration;
+
+  window.combatOutcome = (combat) => {
+    const idx = combat.winningTeam?.index;
+    return idx === 0 ? 'victory' : idx === undefined ? 'draw' : 'defeat';
+  };
+
+  window.combatRewardXp = (combat) => {
+    const fight = (window.ALL_FIGHTS || []).find(f => f.id === combat.fightId);
+    if (!fight || combat.winningTeam?.index !== 0) return 0;
+    return window.getExperienceReward(fight.characters.length, fight.minLevel, fight.maxLevel, fight.boss);
+  };
+
+  window.combatRewardBoss = (combat, bossHighscore) => {
+    const fight = (window.ALL_FIGHTS || []).find(f => f.id === combat.fightId);
+    return !!(fight && fight.boss && combat.winningTeam?.index === 0 && fight.minLevel > bossHighscore);
+  };
+
   window.claimCombatReward = () => {
     const combat = $.combat;
     if (!combat?.duration || combat._rewarded) return;
 
     const fight = (window.ALL_FIGHTS || []).find(f => f.id === combat.fightId);
     if (fight) {
-      const xp = window.getExperienceReward
-        ? window.getExperienceReward(fight.characters.length, fight.minLevel, fight.maxLevel, fight.boss)
-        : ($.combatRewardXp || 0);
-      $.experience += xp;
-
-      if (fight.boss && combat.winningTeam?.index === 0) {
-        if (fight.minLevel > $.bossHighscore) $.bossHighscore = fight.minLevel;
+      $.experience += window.combatRewardXp(combat);
+      if (fight.boss && combat.winningTeam?.index === 0 && fight.minLevel > $.bossHighscore) {
+        $.bossHighscore = fight.minLevel;
       }
     }
 
@@ -23,17 +46,7 @@
     } catch { }
 
     combat._rewarded = true;
-    $.overlay = '';
-    $.combat = JSON.parse(JSON.stringify(window.INITIAL_COMBAT || { teamsStartState: [], teamsEndState: [], events: [], duration: 0, winningTeam: undefined, fightId: undefined, audio: [] }));
-    $.liveTeams = [];
-    $.combatTeam0 = [];
-    $.combatTeam1 = [];
-    $.combatCards = [];
-    $.elapsedMilliseconds = 0;
-    $.combatRewardXp = 0;
-    $.combatRewardBoss = false;
-    $.combatEnded = false;
-    $.combatOutcome = '';
+    resetCombat();
   };
 
   window.closeCombatOverlay = () => {
@@ -43,48 +56,15 @@
         volume: $.settings.volume.sfx * $.settings.volume.master
       }).play();
     } catch { }
-    $.overlay = '';
-    $.combat = JSON.parse(JSON.stringify(window.INITIAL_COMBAT || { teamsStartState: [], teamsEndState: [], events: [], duration: 0, winningTeam: undefined, fightId: undefined, audio: [] }));
-    $.liveTeams = [];
-    $.combatTeam0 = [];
-    $.combatTeam1 = [];
-    $.combatCards = [];
-    $.elapsedMilliseconds = 0;
-    $.combatRewardXp = 0;
-    $.combatRewardBoss = false;
-    $.combatEnded = false;
-    $.combatOutcome = '';
+    resetCombat();
   };
-
-  // Compute end-of-combat derived values on each update tick.
-  $.on('afterUpdate', (current, prev) => {
-    const ended = current.elapsedMilliseconds >= current.combat?.duration && current.combat?.duration > 0;
-
-    if (ended !== current.combatEnded) $.combatEnded = ended;
-
-    if (ended) {
-      const winIdx = current.combat.winningTeam?.index;
-      const outcome = winIdx === 0 ? 'victory' : winIdx === undefined ? 'draw' : 'defeat';
-      if (outcome !== current.combatOutcome) $.combatOutcome = outcome;
-
-      if (!current.combatRewardXp && window.ALL_FIGHTS) {
-        const fight = window.ALL_FIGHTS.find((f) => f.id === current.combat.fightId);
-        if (fight && outcome === 'victory' && window.getExperienceReward) {
-          $.combatRewardXp = window.getExperienceReward(fight.characters.length, fight.minLevel, fight.maxLevel, fight.boss);
-          $.combatRewardBoss = fight.boss && fight.minLevel > current.bossHighscore;
-        }
-      }
-    } else if (current.combatOutcome) {
-      $.combatOutcome = '';
-    }
-  });
 </script>
 
 <combat-backdrop onclick="event.stopPropagation()">
   <combat-stage>
     <component src="/components/CombatArena.html">
-      <!-- each combatCards as c, i -->
-      <component src="/components/CombatantCard.html" idx="@[i]"></component>
+      <!-- each combatCards as card -->
+      <component src="/components/CombatantCard.html" card="@[card]"></component>
       <!-- /each -->
     </component>
     <component src="/components/ResultAnnouncement.html"></component>

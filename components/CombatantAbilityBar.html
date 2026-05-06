@@ -1,17 +1,17 @@
-<ability-bar block ability-bar="@[combatCards[idx].cardId]" style="--ability-bar-width: @[combatCards[idx].abilityBarWidth]px;">
+<ability-bar block ability-bar="@[card.cardId]" style="--ability-bar-width: @[card.abilityBarWidth]px;">
   <ability-bar-grid w-full overflow-hidden>
     <!-- base layer -->
     <ability-row flex base>
-      <!-- each combatCards[idx].abilityCells as cell -->
+      <!-- each card.abilityCells as cell -->
       <ability-cell style="--cell-width: @[cell.width]px;">
         <icon @[cell.icon]></icon>
       </ability-cell>
       <!-- /each -->
     </ability-row>
     <!-- progress layer (clip-path wipe) -->
-    <ability-row flex top stunned="@[combatCards[idx].isStunned]"
-      style="--progress: @[Math.min(100, (combatCards[idx].individualProgress * 100))]%;">
-      <!-- each combatCards[idx].abilityCells as cell -->
+    <ability-row flex top stunned="@[card.isStunned]"
+      style="--progress: @[Math.min(100, (card.individualProgress * 100))]%;">
+      <!-- each card.abilityCells as cell -->
       <ability-cell style="--cell-width: @[cell.width]px;">
         <icon @[cell.icon]></icon>
       </ability-cell>

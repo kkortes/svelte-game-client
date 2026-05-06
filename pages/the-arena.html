@@ -16,16 +16,13 @@
 
     import { ALL_FIGHTS } from '/js/constants/FIGHTS.js';
     import CHARACTERS from '/js/constants/CHARACTERS.js';
-    import { getExperienceReward, getLevelByExperience } from '/js/level.js';
+    import { getExperienceReward } from '/js/level.js';
 
-    // Static per-fight data (enemies, xp, ordering) computed once;
-    // lock / completion / xp-dimmed state depends on $.bossHighscore +
-    // $.experience and is recomputed on every state change.
-    const staticFights = [...ALL_FIGHTS].sort((a, b) => {
+    window.arenaFights = [...ALL_FIGHTS].sort((a, b) => {
       if (a.minLevel !== b.minLevel) return a.minLevel - b.minLevel;
       if (a.boss !== b.boss) return a.boss ? 1 : -1;
       return a.maxLevel - b.maxLevel;
-    }).map((fight, i) => {
+    }).map(fight => {
       const enemies = fight.characters.map(charRef => {
         try {
           const hydrated = CHARACTERS({
@@ -48,33 +45,14 @@
         levelText: fight.minLevel === fight.maxLevel ? String(fight.minLevel) : `${fight.minLevel} - ${fight.maxLevel}`,
         boss: fight.boss,
         xp: getExperienceReward(fight.characters.length, fight.minLevel, fight.maxLevel, fight.boss),
-        even: i % 2 === 0,
         enemies,
       };
     });
 
-    const recomputeArenaFights = () => {
-      const hideTreshold = $.bossHighscore + 5;
-      const ludusLevel = getLevelByExperience($.experience);
-      $.arenaFights = staticFights.map(f => ({
-        ...f,
-        isLocked: hideTreshold < f.minLevel,
-        bossCompleted: f.boss && $.bossHighscore >= f.minLevel,
-        xpDimmed: ludusLevel > f.maxLevel,
-      }));
-    };
-    recomputeArenaFights();
-    $.on('afterUpdate', (current, prev) => {
-      if (current.bossHighscore !== prev.bossHighscore || current.experience !== prev.experience) {
-        recomputeArenaFights();
-      }
-    });
-
-    window.arenaClick = (e, id, isLocked, bossCompleted) => {
+    window.arenaClick = (e, isLocked, bossCompleted) => {
       if (isLocked || bossCompleted) {
         e.preventDefault();
         e.stopPropagation();
-        return;
       }
     };
   </script>
@@ -95,14 +73,15 @@
 
         <!-- each arenaFights as fight, i -->
         <a href="/the-arena/@[fight.id]"
-          onclick="arenaClick(event, '@[fight.id]', @[fight.isLocked], @[fight.bossCompleted])"
-          arena-row flex g-4 py-3 px-6 w-full even="@[fight.even]" boss="@[fight.boss]" locked="@[fight.isLocked]"
-          completed="@[fight.bossCompleted]">
+          onclick="arenaClick(event, @[$.bossHighscore + 5 < fight.minLevel], @[fight.boss && $.bossHighscore >= fight.minLevel])"
+          arena-row flex g-4 py-3 px-6 w-full even="@[i % 2 === 0]" boss="@[fight.boss]"
+          locked="@[$.bossHighscore + 5 < fight.minLevel]"
+          completed="@[fight.boss && $.bossHighscore >= fight.minLevel]">
           <crow left arena-col-name cinzel g-2>
-            <!-- if fight.isLocked -->
+            <!-- if $.bossHighscore + 5 < fight.minLevel -->
             <span>?</span>
             <!-- /if -->
-            <!-- if !fight.isLocked -->
+            <!-- if $.bossHighscore + 5 >= fight.minLevel -->
             <span fight-name>@[fight.name]</span>
             <!-- /if -->
             <!-- if fight.boss -->
@@ -115,10 +94,10 @@
           </arena-col-level>
 
           <arena-col-loot text-sm>
-            <!-- if fight.xpDimmed -->
+            <!-- if getLevelByExperience($.experience) > fight.maxLevel -->
             <span arena-xp-dimmed>@[fight.xp] XP</span>
             <!-- /if -->
-            <!-- if !fight.xpDimmed -->
+            <!-- if getLevelByExperience($.experience) <= fight.maxLevel -->
             <span>@[fight.xp] XP</span>
             <!-- /if -->
           </arena-col-loot>
@@ -126,13 +105,13 @@
           <crow arena-col-preview right>
             <!-- each fight.enemies as enemy -->
             <arena-enemy-wrap boss="@[fight.boss]">
-              <crow arena-enemy-box glass locked="@[fight.isLocked]">
-                <!-- if fight.isLocked -->
+              <crow arena-enemy-box glass locked="@[$.bossHighscore + 5 < fight.minLevel]">
+                <!-- if $.bossHighscore + 5 < fight.minLevel -->
                 <crow arena-enemy-locked>?</crow>
                 <!-- /if -->
-                <!-- if !fight.isLocked -->
+                <!-- if $.bossHighscore + 5 >= fight.minLevel -->
                 <img data-src="/static/images/races/@[enemy.image]" alt="" arena-enemy-img
-                  completed="@[fight.bossCompleted]" />
+                  completed="@[fight.boss && $.bossHighscore >= fight.minLevel]" />
                 <!-- /if -->
               </crow>
             </arena-enemy-wrap>

@@ -236,7 +236,7 @@ const endDrag = () => {
 };
 
 const handlePointerDown = (e) => {
-  const itemEl = e.target.closest('[dnd-item]');
+  const itemEl = e.target.closest('[dnd-item]:not([dnd-item="false"])');
   if (!itemEl) return;
   const zoneEl = itemEl.closest('[dnd-zone]');
   if (!zoneEl || !zones.has(zoneEl)) return;

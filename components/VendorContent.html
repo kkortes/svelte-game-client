@@ -1,0 +1,84 @@
+<script type="module">
+  component({ filter: 'all' });
+</script>
+
+<vendor-filters mx="-6" w="auto">
+  <button vendor-filter active="@[this.filter === 'all']" onclick="$.this.filter = 'all'">
+    <crow vertical center g-1>
+      <filter-count>@[vendorItems.length]</filter-count>
+      <filter-label>All</filter-label>
+    </crow>
+  </button>
+  <button vendor-filter active="@[this.filter === 'oneHand']"
+    onclick="$.this.filter = $.this.filter === 'oneHand' ? 'all' : 'oneHand'">
+    <crow vertical center g-1>
+      <filter-count>@[vendorCounts.oneHand]</filter-count>
+      <filter-label>One-Handed</filter-label>
+    </crow>
+  </button>
+  <button vendor-filter active="@[this.filter === 'offHand']"
+    onclick="$.this.filter = $.this.filter === 'offHand' ? 'all' : 'offHand'">
+    <crow vertical center g-1>
+      <filter-count>@[vendorCounts.offHand]</filter-count>
+      <filter-label>Off-Hand</filter-label>
+    </crow>
+  </button>
+  <button vendor-filter active="@[this.filter === 'twoHand']"
+    onclick="$.this.filter = $.this.filter === 'twoHand' ? 'all' : 'twoHand'">
+    <crow vertical center g-1>
+      <filter-count>@[vendorCounts.twoHand]</filter-count>
+      <filter-label>Two-Handed</filter-label>
+    </crow>
+  </button>
+  <button vendor-filter active="@[this.filter === 'armor']"
+    onclick="$.this.filter = $.this.filter === 'armor' ? 'all' : 'armor'">
+    <crow vertical center g-1>
+      <filter-count>@[vendorCounts.armor]</filter-count>
+      <filter-label>Armor</filter-label>
+    </crow>
+  </button>
+  <button vendor-filter active="@[this.filter === 'accessory']"
+    onclick="$.this.filter = $.this.filter === 'accessory' ? 'all' : 'accessory'">
+    <crow vertical center g-1>
+      <filter-count>@[vendorCounts.accessory]</filter-count>
+      <filter-label>Accessory</filter-label>
+    </crow>
+  </button>
+  <button vendor-filter active="@[this.filter === 'trinket']"
+    onclick="$.this.filter = $.this.filter === 'trinket' ? 'all' : 'trinket'">
+    <crow vertical center g-1>
+      <filter-count>@[vendorCounts.trinket]</filter-count>
+      <filter-label>Trinket</filter-label>
+    </crow>
+  </button>
+</vendor-filters>
+
+<crow vertical up left vendor-table mx="-6" w="auto" mt-4>
+  <crow up left g-4 sm:g="2" vendor-header py-3 px-6 sm:px="3" w-full>
+    <vendor-col-name>Name</vendor-col-name>
+    <vendor-col-slot>Slots in</vendor-col-slot>
+    <vendor-col-cost>Cost</vendor-col-cost>
+    <vendor-col-action></vendor-col-action>
+  </crow>
+
+  <!-- each vendorItems.filter(i => this.filter === 'all' || i.slotsIn.includes(this.filter)) as item, i -->
+  <crow left vendor-row g-4 sm:g="2" py-3 px-6 sm:px="3" w-full>
+    <crow left vendor-col-name>
+      <eq-name-target
+        onmouseenter="showTooltip(equipmentTooltipProps(vendorItems.find(it => it.id === '@[item.id]')), this.querySelector('eq-link') || this, { direction: 'up' })"
+        onmouseleave="hideTooltip()">
+        <component src="/components/EquipmentLink.html" level="@[item.level]" name="@[item.name]">
+        </component>
+      </eq-name-target>
+    </crow>
+    <vendor-col-slot text-sm text-muted>@[item.slotLabel]</vendor-col-slot>
+    <vendor-col-cost>
+      <component src="/components/Coins.html" amount="@[item.cost]"></component>
+    </vendor-col-cost>
+    <crow vendor-col-action right>
+      <button secondary sm onclick="vendorAcquire('@[item.id]')"
+        disabled="@[$.coins < item.cost]">Acquire</button>
+    </crow>
+  </crow>
+  <!-- /each -->
+</crow>

@@ -13,14 +13,4 @@
   <crow coin-line="@[Math.floor(amount / 100)]" g-1 flex-none>
     @[Math.floor(amount / 100)]×<icon coin coin-platinum></icon>
   </crow>
-  <span coin-empty="@[amount]">-</span>
 </crow>
-
-<style>
-  [coins] [coin-line="0"] {
-    display: none;
-  }
-  [coins] [coin-empty]:not([coin-empty="0"]) {
-    display: none;
-  }
-</style>

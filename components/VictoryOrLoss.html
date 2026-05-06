@@ -1,19 +1,19 @@
-<victory-or-loss relative w-full outcome="@[combatOutcome]">
-  <!-- if combatOutcome === 'victory' -->
+<victory-or-loss relative w-full outcome="@[outcome]">
+  <!-- if outcome === 'victory' -->
   <victory-halo absolute></victory-halo>
   <!-- /if -->
   <outcome-icon block>
-    <!-- if combatOutcome === 'victory' -->
+    <!-- if outcome === 'victory' -->
     <icon victory></icon>
     <!-- /if -->
-    <!-- if combatOutcome !== 'victory' -->
+    <!-- if outcome !== 'victory' -->
     <icon defeat></icon>
     <!-- /if -->
   </outcome-icon>
   <outcome-label>
-    <!-- if combatOutcome === 'victory' -->VICTORY<!-- /if -->
-    <!-- if combatOutcome === 'defeat' -->DEFEAT<!-- /if -->
-    <!-- if combatOutcome === 'draw' -->DRAW<!-- /if -->
+    <!-- if outcome === 'victory' -->VICTORY<!-- /if -->
+    <!-- if outcome === 'defeat' -->DEFEAT<!-- /if -->
+    <!-- if outcome === 'draw' -->DRAW<!-- /if -->
   </outcome-label>
 </victory-or-loss>
 
@@ -41,10 +41,6 @@
     );
     -webkit-mask: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 1) 0%, transparent 50%);
     mask: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 1) 0%, transparent 50%);
-  }
-
-  @keyframes halo-spin {
-    to { transform: translate(-50%, -50%) rotate(360deg); }
   }
 
   [battle-brawlers] outcome-icon {
