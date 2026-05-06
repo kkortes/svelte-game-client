@@ -36,17 +36,10 @@ export default async ({ email, url }, { mongo }) => {
   try {
     const token = Hashids.encode(pwr);
     await new Resend(RESEND_API_KEY).emails.send({
-<<<<<<< HEAD
       from: 'noreply@worldseed.eu',
       to: email,
       subject: 'Generic game password reset request',
       html: `<p>Hello ${user.email}!</p><p>Here is your link to reset your password:<br>${url}/reset-password/${token}<br>The link expires in 10 minutes.</p><p>You can't reply to this email.</p>`
-=======
-      from: '"Battle Brawlers" <noreply@worldseed.eu>',
-      to: email,
-      subject: 'Battle-brawlers password reset request',
-      html: `<p>Hello ${user.email}!</p><p>Here is your link to reset your password:<br><a href="${url}/reset-password/${token}">${url}/reset-password/${token}</a><br>The link expires in 10 minutes.</p><p>You can't reply to this email.</p>`
->>>>>>> game/battle-brawlers
     });
   } catch (e) {
     console.error(e);
