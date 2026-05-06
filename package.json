@@ -3,7 +3,7 @@
   "version": "0.0.3",
   "scripts": {
     "dev": "vite dev",
-    "predev": "vercel env pull",
+    "predev": "bunx vercel env pull",
     "build": "vite build",
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",

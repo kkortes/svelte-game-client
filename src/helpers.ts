@@ -16,10 +16,6 @@ const formatProps = (props: any) =>
 
 const deepMerge = (target: DynamicObject, source: DynamicObject) => {
   for (const key in source) {
-    if (target[key] === null) {
-      continue;
-    }
-
     if (
       Array.isArray(source[key]) // check if it's an array
     ) {
