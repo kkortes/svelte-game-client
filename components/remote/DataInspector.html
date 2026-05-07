@@ -157,7 +157,7 @@
   window.toggleInspectorPath = (e) => {
     const row = e.currentTarget;
     if (!row?.hasAttribute('expandable')) return;
-    const path = row.getAttribute('path');
+    const path = row.dataset.path;
     if (!path) return;
     const nextOpen = !isOpen(path);
     const next = { ...s.openPaths };
@@ -200,7 +200,7 @@
   <data-inspector-header>
     <data-inspector-title
       >Vibe state (@[window.dataInspectorShallowCount(data)] |
-      @[window.dataInspectorTotalCount(data)] items)</data-inspector-title
+      @[window.dataInspectorTotalCount(data)])</data-inspector-title
     >
     <data-inspector-actions>
       <button onclick="toggleInspectorAll()">@[window.dataInspectorAllOpenLabel(data)]</button>
@@ -212,7 +212,7 @@
     <accordion open="@[row.visible]">
       <accordion-content>
         <data-inspector-row
-          path="@[row.path]"
+          data-path="@[row.path]"
           expandable="@[row.expandable]"
           open="@[row.open]"
           onclick="toggleInspectorPath(event)"
@@ -277,6 +277,7 @@
     background: transparent;
     border: 1px solid var(--inspector-border);
     border-radius: calc(var(--unit) * 1);
+    white-space: nowrap;
     cursor: pointer;
   }
 

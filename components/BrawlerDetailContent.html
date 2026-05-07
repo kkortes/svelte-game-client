@@ -23,35 +23,50 @@
     } catch {}
   };
 
-  const state = {
-    currentCharacter: null,
-    currentCombatStats: null,
-    currentSlots: [],
-    currentAbilities: [],
-    currentAvailableAbilities: [],
-    currentLastTickEnd: 0,
+  const fmt = (v) => (v === 0 ? '-' : v > 1 ? v : `${(v * 100).toFixed(0)}%`);
+
+  const buildStatGroups = (combatStats) => {
+    const mods = combatStats.modifiers || {};
+    const limits = combatStats.limits || {};
+    return {
+      base: [
+        { icon: 'maxHealth', label: 'Health', value: fmt(combatStats.maxHealth || 0) },
+        { icon: 'maxArmor', label: 'Armor', value: fmt(combatStats.maxArmor || 0) },
+        { icon: 'damage', label: 'Damage', value: fmt(combatStats.damage || 0) },
+      ],
+      lucky: [
+        {
+          icon: 'criticalChance',
+          label: 'Critical chance',
+          value: fmt(combatStats.criticalChance || 0),
+        },
+        {
+          icon: 'criticalDamage',
+          label: 'Critical damage',
+          value: fmt(combatStats.criticalDamage || 0),
+        },
+        { icon: 'blockChance', label: 'Block chance', value: fmt(combatStats.blockChance || 0) },
+        { icon: 'dodgeChance', label: 'Dodge chance', value: fmt(combatStats.dodgeChance || 0) },
+        { icon: 'magicChance', label: 'Magic chance', value: fmt(combatStats.magicChance || 0) },
+      ],
+      modifiers: [
+        { icon: 'maxHealth', label: 'Health', value: fmt(mods.maxHealth || 0) },
+        { icon: 'maxArmor', label: 'Armor', value: fmt(mods.maxArmor || 0) },
+        { icon: 'damage', label: 'Damage', value: fmt(mods.damage || 0) },
+        { icon: 'resistance', label: 'All resistances', value: fmt(mods.resistance || 0) },
+      ],
+      resistances: [
+        { icon: 'bleeding', label: 'Bleeding', value: limits.wounded ?? '-' },
+        { icon: 'stunned', label: 'Stunned', value: limits.concussed ?? '-' },
+        { icon: 'vulnerable', label: 'Vulnerable', value: limits.exposed ?? '-' },
+      ],
+    };
   };
 
-  // Wrap the whole character-setup in a function so we can re-run it when
-  // $.characters arrives from the server (on fresh page load, the socket
-  // hasn't auth'd yet — characters is empty — and the script would pick up
-  // `undefined` and render "No brawler found" even though the character
-  // does exist on the server). See the afterUpdate hook below.
-  const setupCharacter = (target) => {
-    const index = Number($.page.params.characterIndex) || 0;
-    const characterRef = $.characters[index];
-
-    if (!characterRef) {
-      target.currentCharacter = null;
-      return;
-    }
-
-    const char = CHARACTERS(characterRef, true);
-    const combatStats = calculateCombatStatsByCharacter(char);
+  const buildEquipmentSlots = (char) => {
     const isTwoHanded =
       char.equipment.mainHand && EQUIPMENT(char.equipment.mainHand, true).slotsIn === 'twoHand';
-
-    const slots = ['mainHand', 'offHand', 'armor', 'accessory', 'trinket'].map((slot) => {
+    return ['mainHand', 'offHand', 'armor', 'accessory', 'trinket'].map((slot) => {
       const eq = char.equipment[slot];
       const item = eq ? EQUIPMENT(eq, true) : null;
       const isTwoHandOffHand = slot === 'offHand' && isTwoHanded;
@@ -70,6 +85,30 @@
         level: item ? item.level || 1 : 0,
       };
     });
+  };
+
+  const state = {
+    currentCharacter: null,
+    currentCoreStats: null,
+    currentStatGroups: null,
+    currentSlots: [],
+    currentAbilities: [],
+    currentAvailableAbilities: [],
+    currentLastTickEnd: 0,
+  };
+
+  const setupCharacter = (target) => {
+    const index = Number($.page.params.characterIndex) || 0;
+    const characterRef = $.characters[index];
+
+    if (!characterRef) {
+      target.currentCharacter = null;
+      return;
+    }
+
+    const char = CHARACTERS(characterRef, true);
+    const combatStats = calculateCombatStatsByCharacter(char);
+    const slots = buildEquipmentSlots(char);
 
     const eq = char.equipment;
     const isShield = !!(eq.offHand && EQUIPMENT(eq.offHand, true).slotsIn === 'offHand');
@@ -167,29 +206,14 @@
     const lastTickEnd = lastTick ? lastTick.tickStart + lastTick.ticks : 0;
 
     const canRetire = getLevelByExperience($.experience) <= 4;
-    const fmt = (v) => (v === 0 ? '-' : v > 1 ? v : `${(v * 100).toFixed(0)}%`);
 
     target.currentCharacter = { ...char, slots, _canRetire: canRetire };
-    target.currentCombatStats = {
-      maxHealth: combatStats.maxHealth || 0,
-      maxArmor: combatStats.maxArmor || 0,
+    target.currentCoreStats = {
+      hp: combatStats.maxHealth || 0,
+      armor: combatStats.maxArmor || 0,
       damage: combatStats.damage || 0,
-      maxHealthFmt: fmt(combatStats.maxHealth || 0),
-      maxArmorFmt: fmt(combatStats.maxArmor || 0),
-      damageFmt: fmt(combatStats.damage || 0),
-      criticalChance: fmt(combatStats.criticalChance || 0),
-      criticalDamage: fmt(combatStats.criticalDamage || 0),
-      blockChance: fmt(combatStats.blockChance || 0),
-      dodgeChance: fmt(combatStats.dodgeChance || 0),
-      magicChance: fmt(combatStats.magicChance || 0),
-      modifiers: {
-        maxHealth: fmt((combatStats.modifiers || {}).maxHealth || 0),
-        maxArmor: fmt((combatStats.modifiers || {}).maxArmor || 0),
-        damage: fmt((combatStats.modifiers || {}).damage || 0),
-        resistance: fmt((combatStats.modifiers || {}).resistance || 0),
-      },
-      limits: combatStats.limits || {},
     };
+    target.currentStatGroups = buildStatGroups(combatStats);
     target.currentSlots = slots;
     target.currentAbilities = abilityBarItems;
     target.currentAvailableAbilities = availableNonBasic;
@@ -325,11 +349,10 @@
         <accordion-content>
           <component
             src="/components/CoreStats.html"
-            hp="@[this.currentCombatStats.maxHealth]"
-            armor="@[this.currentCombatStats.maxArmor]"
-            damage="@[this.currentCombatStats.damage]"
-          >
-          </component>
+            hp="@[this.currentCoreStats.hp]"
+            armor="@[this.currentCoreStats.armor]"
+            damage="@[this.currentCoreStats.damage]"
+          ></component>
         </accordion-content>
       </accordion>
 
@@ -363,167 +386,33 @@
         <accordion open="@[settings.showDetailedCharacterView]">
           <accordion-content>
             <crow up left g="8" f="none" stats-panel>
-              <crow vertical left stats-col>
-                <h5>Base Stats</h5>
-                <hr />
-                <crow stat-list vertical left g="1" w="full">
-                  <crow justify-between w="full" g="2">
-                    <crow left g="2">
-                      <icon-cell f="none">
-                        <icon maxHealth></icon>
-                      </icon-cell>
-                      <span>Health</span>
-                    </crow>
-                    <span>@[this.currentCombatStats.maxHealthFmt]</span>
-                  </crow>
-                  <crow justify-between w="full" g="2">
-                    <crow left g="2">
-                      <icon-cell f="none">
-                        <icon maxArmor></icon>
-                      </icon-cell>
-                      <span>Armor</span>
-                    </crow>
-                    <span>@[this.currentCombatStats.maxArmorFmt]</span>
-                  </crow>
-                  <crow justify-between w="full" g="2">
-                    <crow left g="2">
-                      <icon-cell f="none">
-                        <icon damage></icon>
-                      </icon-cell>
-                      <span>Damage</span>
-                    </crow>
-                    <span>@[this.currentCombatStats.damageFmt]</span>
-                  </crow>
-                </crow>
-
-                <spacer h="10"></spacer>
-
-                <h5>Lucky Stats</h5>
-                <hr />
-                <crow stat-list vertical left g="1" w="full" text-green>
-                  <crow justify-between w="full" g="2">
-                    <crow left g="2">
-                      <icon-cell f="none">
-                        <icon criticalChance></icon>
-                      </icon-cell>
-                      <span>Critical chance</span>
-                    </crow>
-                    <span>@[this.currentCombatStats.criticalChance]</span>
-                  </crow>
-                  <crow justify-between w="full" g="2">
-                    <crow left g="2">
-                      <icon-cell f="none">
-                        <icon criticalDamage></icon>
-                      </icon-cell>
-                      <span>Critical damage</span>
-                    </crow>
-                    <span>@[this.currentCombatStats.criticalDamage]</span>
-                  </crow>
-                  <crow justify-between w="full" g="2">
-                    <crow left g="2">
-                      <icon-cell f="none">
-                        <icon blockChance></icon>
-                      </icon-cell>
-                      <span>Block chance</span>
-                    </crow>
-                    <span>@[this.currentCombatStats.blockChance]</span>
-                  </crow>
-                  <crow justify-between w="full" g="2">
-                    <crow left g="2">
-                      <icon-cell f="none">
-                        <icon dodgeChance></icon>
-                      </icon-cell>
-                      <span>Dodge chance</span>
-                    </crow>
-                    <span>@[this.currentCombatStats.dodgeChance]</span>
-                  </crow>
-                  <crow justify-between w="full" g="2">
-                    <crow left g="2">
-                      <icon-cell f="none">
-                        <icon magicChance></icon>
-                      </icon-cell>
-                      <span>Magic chance</span>
-                    </crow>
-                    <span>@[this.currentCombatStats.magicChance]</span>
-                  </crow>
-                </crow>
+              <crow vertical left>
+                <component
+                  src="/components/StatGroup.html"
+                  title="Base Stats"
+                  rows="@[this.currentStatGroups.base]"
+                ></component>
+                <kingstone h="10"></kingstone>
+                <component
+                  src="/components/StatGroup.html"
+                  title="Lucky Stats"
+                  lucky="@[true]"
+                  rows="@[this.currentStatGroups.lucky]"
+                ></component>
               </crow>
 
-              <crow vertical left stats-col>
-                <h5>Modifiers</h5>
-                <hr />
-                <crow stat-list vertical left g="1" w="full">
-                  <crow justify-between w="full" g="2">
-                    <crow left g="2">
-                      <icon-cell f="none">
-                        <icon maxHealth></icon>
-                      </icon-cell>
-                      <span>Health</span>
-                    </crow>
-                    <span>@[this.currentCombatStats.modifiers.maxHealth]</span>
-                  </crow>
-                  <crow justify-between w="full" g="2">
-                    <crow left g="2">
-                      <icon-cell f="none">
-                        <icon maxArmor></icon>
-                      </icon-cell>
-                      <span>Armor</span>
-                    </crow>
-                    <span>@[this.currentCombatStats.modifiers.maxArmor]</span>
-                  </crow>
-                  <crow justify-between w="full" g="2">
-                    <crow left g="2">
-                      <icon-cell f="none">
-                        <icon damage></icon>
-                      </icon-cell>
-                      <span>Damage</span>
-                    </crow>
-                    <span>@[this.currentCombatStats.modifiers.damage]</span>
-                  </crow>
-                  <crow justify-between w="full" g="2">
-                    <crow left g="2">
-                      <icon-cell f="none">
-                        <icon resistance></icon>
-                      </icon-cell>
-                      <span>All resistances</span>
-                    </crow>
-                    <span>@[this.currentCombatStats.modifiers.resistance]</span>
-                  </crow>
-                </crow>
-
-                <spacer h="4"></spacer>
-
-                <h5>Resistances</h5>
-                <hr />
-                <crow stat-list vertical left g="1" w="full">
-                  <crow justify-between w="full" g="2">
-                    <crow left g="2">
-                      <icon-cell f="none">
-                        <icon bleeding></icon>
-                      </icon-cell>
-                      <span>Bleeding</span>
-                    </crow>
-                    <span>@[this.currentCombatStats.limits.wounded]</span>
-                  </crow>
-                  <crow justify-between w="full" g="2">
-                    <crow left g="2">
-                      <icon-cell f="none">
-                        <icon stunned></icon>
-                      </icon-cell>
-                      <span>Stunned</span>
-                    </crow>
-                    <span>@[this.currentCombatStats.limits.concussed]</span>
-                  </crow>
-                  <crow justify-between w="full" g="2">
-                    <crow left g="2">
-                      <icon-cell f="none">
-                        <icon vulnerable></icon>
-                      </icon-cell>
-                      <span>Vulnerable</span>
-                    </crow>
-                    <span>@[this.currentCombatStats.limits.exposed]</span>
-                  </crow>
-                </crow>
+              <crow vertical left>
+                <component
+                  src="/components/StatGroup.html"
+                  title="Modifiers"
+                  rows="@[this.currentStatGroups.modifiers]"
+                ></component>
+                <kingstone h="4"></kingstone>
+                <component
+                  src="/components/StatGroup.html"
+                  title="Resistances"
+                  rows="@[this.currentStatGroups.resistances]"
+                ></component>
               </crow>
             </crow>
           </accordion-content>
@@ -531,88 +420,27 @@
 
         <equipment-heading open="@[settings.showDetailedCharacterView]">
           <equipment-heading-content>
-            <spacer h="4"></spacer>
+            <kingstone h="4"></kingstone>
             <h5>Equipment</h5>
             <hr />
           </equipment-heading-content>
         </equipment-heading>
 
-        <crow vertical left w="full">
-          <!-- each this.currentSlots as eq -->
-          <crow left justify-between w="full" g="2" eq-row>
-            <crow left g="2">
-              <span f="none" eq-slot-label>@[eq.prettyName]</span>
-              <!-- if eq.disabled -->
-              <span text-muted>@[eq.itemName]</span>
-              <!-- /if -->
-              <!-- if !eq.disabled -->
-              <!-- if eq.hasItem -->
-              <eq-name-target onmouseenter="eqRowTooltip('@[eq.slot]', this)">
-                <component
-                  src="/components/EquipmentLink.html"
-                  level="@[eq.level]"
-                  name="@[eq.itemName]"
-                ></component>
-              </eq-name-target>
-              <!-- /if -->
-              <!-- if !eq.hasItem -->
-              <span text-muted>@[eq.itemName]</span>
-              <!-- /if -->
-              <!-- /if -->
-            </crow>
-            <!-- if eq.hasItem -->
-            <!-- if !eq.disabled -->
-            <button secondary sm onclick="unequipSlot('@[eq.slot]')">Unequip</button>
-            <!-- /if -->
-            <!-- /if -->
-          </crow>
-          <!-- /each -->
-        </crow>
+        <component
+          src="/components/CharacterEquipmentList.html"
+          slots="@[this.currentSlots]"
+        ></component>
       </crow>
     </crow>
 
-    <spacer h="20"></spacer>
+    <kingstone h="20"></kingstone>
 
-    <crow vertical left w="full" g="3" ability-section>
-      <component small src="/components/TitleBar.html" title="Active Abilities">
-        <button sm secondary onclick="tryOutBuild()">Try out build</button>
-      </component>
-
-      <component
-        src="/components/AbilityBar.html"
-        abilities="@[this.currentAbilities]"
-        lasttick="@[this.currentLastTickEnd]"
-      ></component>
-
-      <spacer h="10"></spacer>
-
-      <component small src="/components/TitleBar.html" title="Available Abilities"></component>
-
-      <crow available-grid w="full" g="2" p="2">
-        <!-- each this.currentAvailableAbilities as ability -->
-        <available-ability
-          dnd-item
-          flex
-          down
-          f="none"
-          relative
-          basic="@[ability.basic]"
-          ability-name="@[ability.name]"
-          ability-ticks="@[ability.ticks]"
-          ability-description="@[ability.description]"
-          onmouseenter="showAbilityTooltipFromEl(this)"
-        >
-          <icon @[ability.icon]></icon>
-          <ability-tick-count absolute flex b="-2.5">@[ability.ticks]</ability-tick-count>
-        </available-ability>
-        <!-- /each -->
-        <!-- if this.currentAvailableAbilities.length === 0 -->
-        <span text-muted text-sm
-          >No additional abilities available. Equip items to unlock more.</span
-        >
-        <!-- /if -->
-      </crow>
-    </crow>
+    <component
+      src="/components/CharacterAbilitiesSection.html"
+      abilities="@[this.currentAbilities]"
+      available="@[this.currentAvailableAbilities]"
+      lasttick="@[this.currentLastTickEnd]"
+    ></component>
   </crow>
   <!-- /if -->
 
@@ -623,3 +451,36 @@
   </crow>
   <!-- /if -->
 </page-content>
+
+<style>
+  equipment-heading h5 {
+    margin: 0;
+  }
+
+  equipment-heading hr {
+    width: 100%;
+    margin: calc(var(--unit) * 1) 0 calc(var(--unit) * 2) 0;
+  }
+
+  equipment-heading-content {
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  @media (width <= 768px) {
+    [main-content] {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    [avatar-col] {
+      width: 100%;
+      align-items: center;
+    }
+
+    [stats-panel] {
+      flex-direction: column;
+      gap: calc(var(--unit) * 4);
+    }
+  }
+</style>

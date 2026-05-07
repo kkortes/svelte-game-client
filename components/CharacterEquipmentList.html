@@ -1,0 +1,41 @@
+<crow vertical left w="full">
+  <!-- each slots as eq -->
+  <crow left justify-between w="full" g="2" eq-row>
+    <crow left g="2">
+      <span f="none" eq-slot-label>@[eq.prettyName]</span>
+      <!-- if eq.disabled -->
+      <span text-muted>@[eq.itemName]</span>
+      <!-- /if -->
+      <!-- if !eq.disabled -->
+      <!-- if eq.hasItem -->
+      <eq-name-target onmouseenter="eqRowTooltip('@[eq.slot]', this)">
+        <component
+          src="/components/EquipmentLink.html"
+          level="@[eq.level]"
+          name="@[eq.itemName]"
+        ></component>
+      </eq-name-target>
+      <!-- /if -->
+      <!-- if !eq.hasItem -->
+      <span text-muted>@[eq.itemName]</span>
+      <!-- /if -->
+      <!-- /if -->
+    </crow>
+    <!-- if eq.hasItem -->
+    <!-- if !eq.disabled -->
+    <button secondary sm onclick="unequipSlot('@[eq.slot]')">Unequip</button>
+    <!-- /if -->
+    <!-- /if -->
+  </crow>
+  <!-- /each -->
+</crow>
+
+<style>
+  [eq-slot-label] {
+    width: calc(var(--unit) * 20);
+  }
+
+  [eq-row] {
+    min-height: calc(var(--unit) * 7);
+  }
+</style>

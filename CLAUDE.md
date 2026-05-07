@@ -29,18 +29,18 @@ The **`game/battle-brawlers`** branch is the per-game working branch and the sou
 ## Conventions
 
 - **HTML comments are not allowed.** The only HTML "comments" in this project are Vibe directives (`<!-- if -->`, `<!-- else -->`, `<!-- /if -->`, `<!-- each -->`, `<!-- /each -->`) — those are reactive control flow, not comments. JS-side `// TODO: ...` is the official marker for "do later" (git tracks who/when).
-- **No `class=""` attributes** — use individual HTML attributes instead.
+- **No `class=""` attributes**, with one Stylecheat-specific exception: combining a tag's semantics with a different visual treatment — e.g. `<a class="button">` to make a link render like a button (Stylecheat keys some component looks off `class` for exactly this case). Otherwise use individual HTML attributes.
 - **No `style=""` attributes** — use custom attributes with CSS custom properties via `<element attr="@[value]">` instead of `style="--var: @[value]"`. Only acceptable for truly unavoidable cases like tooltip absolute positioning.
 - **No `<div>` elements** — use semantic or custom element names: `<page-home>`, `<fight-row>`, `<ability-cell>`, `<xp-bar>`, `<coin-stack>`, etc.
 - **Component naming convention**: reuse the wrapper element's name for inner pieces — `<tooltip>` / `<tooltip-content>` / `<tooltip-title>`, `<combatant-card>` / `<combatant-header>` / `<combatant-name>`. Predictable, self-documenting.
 - **Attribute-based styling**: prefer Stylecheat attributes (`g="4"`, `p="2"`, `vertical`, `primary`, `absolute`, `flex`, `down`, etc.). Use ChromeOnly forms — `g="4"` not `g-4`.
+- **`attr()` is for Stylecheat only.** Stylecheat's ChromeOnlyModifiers.css uses `attr(name type(<number>))` to read numeric attribute values into `calc()`. We don't use this pattern in this project's own CSS — for attribute-driven custom values, set CSS custom properties via Vibe bindings (`<element style="--x: @[value]">` is allowed when no other shape fits, but prefer a dedicated attribute + a one-line rule that maps it to `--x`).
 - **Stylecheat over custom CSS**: when Stylecheat offers a modifier (e.g. `<element absolute>` for `position: absolute`), use it instead of writing the rule yourself.
 - **Local component styles**: each component's own `<style>` block lives at the bottom of the same file, scoped with `[component-name]` (or no scope when the inner element name is already unique). If the styles fit a more global theme concept, lift them into `css/index.css`.
 - **Scoped styles**: if a page/component needs custom styles Stylecheat can't offer, scope with `[page-name]` or `[component-name]` in a `<style>` block at the bottom of the file. Keep things isolated to where they belong.
 - **Page structure**: `<script type="module">` at top, `<page-xxx>` wrapper (custom element, not div), `<style>` at bottom.
 - **State access**: use `$` (not `window.$`) — it's a global property.
 - **Function calls on elements**: `onclick="fn()"` — never `onclick="window.fn()"`. Same applies to functions exposed on `window`: call them by bare name from the markup.
-- **Component scripts**: `<script type="module">` in Vibe components have imports STRIPPED by processComponent — put logic that needs imports in `/js/boot.js` (which each page's entry script imports) and expose it on `window` for components to read.
 - **`data-*` prefix should be avoided at all cost**. Use plain attributes instead: in CSS use `status-chip[stunned]`, in HTML use `<element @[status]>` (Vibe sets a boolean-like attribute named after the resolved value). The exception is genuine HTML data semantics like `data-src` on lazy-loaded images.
 - **Stylecheat boolean attributes**: Non-`data-*`/`aria-*`/`on*` attributes bound with a pure `@[expr]` become proper boolean-like attributes — Vibe sets the attribute (empty value) when truthy and removes it when falsy. So `<modal-root open="@[when]">` with CSS `modal-root[open]` / `modal-root:not([open])` works directly.
 

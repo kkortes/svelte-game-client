@@ -1,0 +1,49 @@
+<stat-group vertical left>
+  <h5>@[title]</h5>
+  <hr />
+  <crow stat-list vertical left g="1" w="full" text-green="@[lucky]">
+    <!-- each rows as row -->
+    <crow justify-between w="full" g="2">
+      <crow left g="2">
+        <icon-cell f="none">
+          <icon @[row.icon]></icon>
+        </icon-cell>
+        <span>@[row.label]</span>
+      </crow>
+      <span>@[row.value]</span>
+    </crow>
+    <!-- /each -->
+  </crow>
+</stat-group>
+
+<style>
+  stat-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  stat-group h5 {
+    margin: 0;
+  }
+
+  stat-group hr {
+    width: 100%;
+    margin: calc(var(--unit) * 1) 0 calc(var(--unit) * 2) 0;
+  }
+
+  stat-group [icon-cell] {
+    width: calc(var(--unit) * 5);
+    justify-content: center;
+  }
+
+  stat-group [stat-list] {
+    min-width: calc(var(--unit) * 45);
+  }
+
+  @media (width <=768px) {
+    stat-group [stat-list] {
+      min-width: 0;
+      width: 100%;
+    }
+  }
+</style>

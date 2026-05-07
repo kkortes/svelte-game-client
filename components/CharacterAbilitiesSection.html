@@ -1,0 +1,95 @@
+<crow vertical left w="full" g="3" ability-section>
+  <component small src="/components/TitleBar.html" title="Active Abilities">
+    <button sm secondary onclick="tryOutBuild()">Try out build</button>
+  </component>
+
+  <component
+    src="/components/AbilityBar.html"
+    abilities="@[abilities]"
+    lasttick="@[lasttick]"
+  ></component>
+
+  <kingstone h="10"></kingstone>
+
+  <component small src="/components/TitleBar.html" title="Available Abilities"></component>
+
+  <crow available-grid w="full" g="2" p="2">
+    <!-- each available as ability -->
+    <available-ability
+      dnd-item
+      flex
+      down
+      f="none"
+      relative
+      basic="@[ability.basic]"
+      ability-name="@[ability.name]"
+      ability-ticks="@[ability.ticks]"
+      ability-description="@[ability.description]"
+      onmouseenter="showAbilityTooltipFromEl(this)"
+    >
+      <icon @[ability.icon]></icon>
+      <ability-tick-count absolute flex b="-2.5">@[ability.ticks]</ability-tick-count>
+    </available-ability>
+    <!-- /each -->
+    <!-- if available.length === 0 -->
+    <span text-muted text-sm>No additional abilities available. Equip items to unlock more.</span>
+    <!-- /if -->
+  </crow>
+</crow>
+
+<style>
+  [available-grid] {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    min-height: calc(var(--unit) * 73.5);
+    border: 1px solid var(--border);
+    border-radius: calc(var(--unit) * 2);
+    background: rgb(249, 250, 251);
+    box-shadow: inset 0 1px calc(var(--unit) * 0.5) rgba(0, 0, 0, 0.05);
+  }
+
+  available-ability {
+    width: calc(var(--unit) * 20);
+    height: calc(var(--unit) * 20);
+    border: 0.5px solid rgb(156, 163, 175);
+    border-radius: calc(var(--unit) * 1);
+    background: white;
+    align-items: center;
+    justify-content: center;
+  }
+
+  available-ability[basic] {
+    background: rgb(243, 244, 246);
+    border-color: var(--border);
+  }
+
+  available-ability[basic] icon {
+    color: rgb(156, 163, 175);
+  }
+
+  available-ability icon {
+    font-size: clamp(calc(var(--unit) * 4), 3vw, calc(var(--unit) * 8));
+  }
+
+  available-ability ability-tick-count {
+    left: 50%;
+    translate: -50% 0;
+    width: calc(var(--unit) * 6);
+    height: calc(var(--unit) * 4);
+    align-items: center;
+    justify-content: center;
+    font-size: calc(var(--unit) * 3);
+    font-weight: bold;
+    border-radius: calc(var(--unit) * 0.5);
+    border: 0.5px solid rgb(156, 163, 175);
+    background: white;
+  }
+
+  @media (width <= 768px) {
+    available-ability {
+      width: calc(var(--unit) * 14);
+      height: calc(var(--unit) * 14);
+    }
+  }
+</style>

@@ -6,10 +6,10 @@
   <!-- Lightweight modes: always in DOM, hidden when inactive.
        Content stays during fade-out animation — no flicker. -->
 
-  <spacer
+  <kingstone
     h="20"
     hidden="@[overlay.name === 'Combat' || overlay.name === 'AccountProgression']"
-  ></spacer>
+  ></kingstone>
 
   <modal-panel
     onclick="event.stopPropagation()"
@@ -87,10 +87,10 @@
     </dialog-mode>
   </modal-panel>
 
-  <spacer
+  <kingstone
     h="20"
     hidden="@[overlay.name === 'Combat' || overlay.name === 'AccountProgression']"
-  ></spacer>
+  ></kingstone>
 
   <!-- if overlay.name === 'Combat' -->
   <component src="/components/Combat.html"></component>
