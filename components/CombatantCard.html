@@ -62,22 +62,22 @@
 
   combatant-card {
     left: var(--c-x);
-    top: calc(var(--c-y) - calc(var(--unit) * 5));
+    top: calc(var(--c-y) - calc(calc(var(--unit) * 5)));
     transform: translate(-50%, -50%) scale(var(--c-scale, 1));
-    width: calc(var(--unit) * 36);
+    width: calc(calc(var(--unit) * 36));
     pointer-events: none;
-    border-radius: var(--unit);
+    border-radius: calc(calc(var(--unit) * 1));
     background: var(--combatant-card-bg);
-    backdrop-filter: blur(calc(var(--unit) * 0.75));
-    box-shadow: 0 calc(var(--unit) * 0.5) calc(var(--unit) * 1.5) var(--combatant-card-shadow);
+    backdrop-filter: blur(calc(calc(var(--unit) * 0.75)));
+    box-shadow: 0 calc(calc(var(--unit) * 0.5)) calc(calc(var(--unit) * 1.5)) var(--combatant-card-shadow);
     color: var(--foreground);
   }
 
   combatant-header {
     justify-content: space-between;
     align-items: center;
-    padding: calc(var(--unit) * 0.5) calc(var(--unit) * 1.5);
-    font-size: calc(var(--unit) * 2.5);
+    padding: calc(calc(var(--unit) * 0.5)) calc(calc(var(--unit) * 1.5));
+    font-size: calc(calc(var(--unit) * 2.5));
     font-weight: 700;
     color: var(--combatant-name-color);
     text-transform: uppercase;
@@ -92,35 +92,35 @@
 
   combatant-sprite-area {
     width: 100%;
-    height: calc(var(--unit) * 36);
+    height: calc(calc(var(--unit) * 36));
   }
 
   combatant-statuses {
-    top: calc(var(--unit) * 17);
-    left: calc(100% - calc(var(--unit) * 6));
-    gap: var(--unit);
+    top: calc(calc(var(--unit) * 17));
+    left: calc(100% - calc(calc(var(--unit) * 6)));
+    gap: calc(calc(var(--unit) * 1));
     align-items: flex-start;
   }
 
   combatant-statuses[facing-right] {
     left: auto;
-    right: calc(100% - calc(var(--unit) * 6));
+    right: calc(100% - calc(calc(var(--unit) * 6)));
     align-items: flex-end;
   }
 
   status-chip {
     display: inline-flex;
     align-items: center;
-    gap: calc(var(--unit) * 0.75);
-    font-size: calc(var(--unit) * 2.5);
-    padding: calc(var(--unit) * 0.25) var(--unit);
-    border-radius: calc(var(--unit) * 0.75);
+    gap: calc(calc(var(--unit) * 0.75));
+    font-size: calc(calc(var(--unit) * 2.5));
+    padding: calc(calc(var(--unit) * 0.25)) calc(calc(var(--unit) * 1));
+    border-radius: calc(calc(var(--unit) * 0.75));
     background: var(--status-default-bg);
     color: var(--slate);
   }
 
   status-chip icon {
-    font-size: calc(var(--unit) * 3);
+    font-size: calc(calc(var(--unit) * 3));
   }
 
   status-chip[stunned] { background: var(--status-stunned-bg); color: var(--status-stunned-fg); }
@@ -131,22 +131,22 @@
   status-chip[exposed] { background: var(--status-exposed-bg); color: var(--status-exposed-fg); }
 
   combatant-badge {
-    bottom: calc(var(--unit) * 7);
-    width: calc(var(--unit) * 8);
-    height: calc(var(--unit) * 8);
+    bottom: calc(calc(var(--unit) * 7));
+    width: calc(calc(var(--unit) * 8));
+    height: calc(calc(var(--unit) * 8));
     display: grid;
     place-items: center;
     pointer-events: none;
   }
 
-  combatant-badge[damage-badge] { left: calc(var(--unit) * -1); }
-  combatant-badge[armor-badge] { right: calc(var(--unit) * -1); }
+  combatant-badge[damage-badge] { left: calc(calc(var(--unit) * -1)); }
+  combatant-badge[armor-badge] { right: calc(calc(var(--unit) * -1)); }
 
-  combatant-slot[facing-right] combatant-badge[damage-badge] { left: auto; right: calc(var(--unit) * -1); }
-  combatant-slot[facing-right] combatant-badge[armor-badge] { right: auto; left: calc(var(--unit) * -1); }
+  combatant-slot[facing-right] combatant-badge[damage-badge] { left: auto; right: calc(calc(var(--unit) * -1)); }
+  combatant-slot[facing-right] combatant-badge[armor-badge] { right: auto; left: calc(calc(var(--unit) * -1)); }
 
   combatant-badge icon {
-    font-size: calc(var(--unit) * 7);
+    font-size: calc(calc(var(--unit) * 7));
     --color: var(--stone);
   }
 
@@ -155,8 +155,8 @@
     display: grid;
     place-items: center;
     font-family: var(--font-display, sans-serif);
-    font-size: calc(var(--unit) * 4.5);
+    font-size: calc(calc(var(--unit) * 4.5));
     color: var(--white);
-    text-shadow: 0 1px calc(var(--unit) * 0.5) oklch(0 0 0 / 0.5);
+    text-shadow: 0 1px calc(calc(var(--unit) * 0.5)) oklch(0 0 0 / 0.5);
   }
 </style>

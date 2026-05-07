@@ -337,12 +337,12 @@ eq-link [eq-name] {
 
 ::-webkit-scrollbar-track {
   background-color: oklch(from var(--background) l c h / 50%);
-  border-radius: calc(var(--radius) - (var(--unit) - 12px));
+  border-radius: calc(var(--radius) - (calc(var(--unit) * 1) - 12px));
 }
 
 ::-webkit-scrollbar-thumb {
   background-color: var(--slate);
-  border-radius: calc(var(--radius) - (var(--unit) - 12px));
+  border-radius: calc(var(--radius) - (calc(var(--unit) * 1) - 12px));
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -384,7 +384,7 @@ progress-bar {
   display: block;
   height: calc(var(--unit) * 2);
   background: var(--border);
-  border-radius: var(--unit);
+  border-radius: calc(var(--unit) * 1);
   overflow: hidden;
 }
 

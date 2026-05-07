@@ -28,18 +28,18 @@
 
 <style>
   [brawler-slot-empty] {
-    height: calc(var(--unit) * 19.5);
+    height: calc(calc(var(--unit) * 19.5));
     border: 1px dashed var(--border);
   }
 
   [brawler-slot-filled] {
-    height: calc(var(--unit) * 19.5);
+    height: calc(calc(var(--unit) * 19.5));
     border: 1px solid var(--border);
     background: rgba(255, 255, 255, 0.3);
   }
 
   brawler-slot-avatar {
-    border-radius: var(--unit);
+    border-radius: calc(calc(var(--unit) * 1));
     border: 1px solid rgba(75, 85, 99, 1);
   }
 
@@ -55,19 +55,19 @@
 
   brawler-slot-abilities {
     border: 0.5px solid rgb(120, 113, 108);
-    border-radius: 0 0 var(--unit) var(--unit);
+    border-radius: 0 0 calc(calc(var(--unit) * 1)) calc(calc(var(--unit) * 1));
     background: rgb(214, 211, 209);
     overflow: hidden;
-    max-width: calc(var(--unit) * 45);
+    max-width: calc(calc(var(--unit) * 45));
   }
 
   brawler-slot-ability {
     align-items: center;
     justify-content: center;
-    height: calc(var(--unit) * 5);
+    height: calc(calc(var(--unit) * 5));
     border-right: 0.5px solid rgb(120, 113, 108);
     color: rgb(120, 113, 108);
-    font-size: calc(var(--unit) * 3);
+    font-size: calc(calc(var(--unit) * 3));
   }
 
   brawler-slot-ability:last-child {

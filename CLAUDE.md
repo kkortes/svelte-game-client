@@ -28,7 +28,7 @@ The **`game/battle-brawlers`** branch is the per-game working branch and the sou
 
 ## Conventions
 
-- **JS comments are OK** when they explain *why*, not *what*. `// TODO: ...` is the official marker for "do later" — git tracks who/when.
+- **HTML comments are not allowed.** The only HTML "comments" in this project are Vibe directives (`<!-- if -->`, `<!-- else -->`, `<!-- /if -->`, `<!-- each -->`, `<!-- /each -->`) — those are reactive control flow, not comments. JS-side `// TODO: ...` is the official marker for "do later" (git tracks who/when).
 - **No `class=""` attributes** — use individual HTML attributes instead.
 - **No `style=""` attributes** — use custom attributes with CSS custom properties via `<element attr="@[value]">` instead of `style="--var: @[value]"`. Only acceptable for truly unavoidable cases like tooltip absolute positioning.
 - **No `<div>` elements** — use semantic or custom element names: `<page-home>`, `<fight-row>`, `<ability-cell>`, `<xp-bar>`, `<coin-stack>`, etc.
@@ -57,7 +57,8 @@ The **`game/battle-brawlers`** branch is the per-game working branch and the sou
 The WebSocket backend lives in `svelte-game-server/`. Frontend integration:
 
 - Connection lives on `$.socket` (see `js/connectSocket.js`); lifecycle is managed centrally — features should consume `$.socket` rather than open new connections.
-- Game state seeded onto `$` flows from the server through the message handlers in `js/connectSocket.js`. New backend events should plug into the same place so reactive bindings stay coherent.
+- **Calling backend functions**: every file under `svelte-game-server/events/` is a server function, addressed by its path. Invoke from the client with `await $.socket.sendAsync('<dir>/<file>', payload)` — e.g. `events/user/authenticate.js` is `$.socket.sendAsync('user/authenticate', { token, … })`, `events/pvp/get-random-opponent.js` is `$.socket.sendAsync('pvp/get-random-opponent', …)`. New backend capabilities → drop a `.js` file in `events/<dir>/<file>.js` (server auto-registers) and call it the same way from the client.
+- Game state seeded onto `$` flows from the server through `sendAsync` responses (mainly in `js/boot.js` and `js/connectSocket.js`). New event handlers should plug into the same place so reactive bindings stay coherent.
 - Auth happens via `$.token`; the server validates it on the websocket handshake. Don't store credentials elsewhere.
 - Constants (`js/constants/*`) must match the server's expectations — when the backend renames or adds a key, update the constant file in lockstep.
 - Helpers belong in `/js/helpers.js`. Tiny utilities (formatters, parsers) should not get their own files.

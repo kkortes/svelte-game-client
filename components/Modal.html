@@ -12,7 +12,7 @@
     inset: 0;
     z-index: 1;
     display: grid;
-    grid-template-rows: calc(var(--unit) * 20) 1fr calc(var(--unit) * 20);
+    grid-template-rows: calc(calc(var(--unit) * 20)) 1fr calc(calc(var(--unit) * 20));
     place-items: center;
     overflow-x: hidden;
     overflow-y: auto;
@@ -35,7 +35,7 @@
     display: block;
     position: relative;
     width: fit-content;
-    max-width: calc(100% - var(--unit) * 4);
+    max-width: calc(100% - calc(var(--unit) * 4));
     max-height: 90vh;
     overflow-y: auto;
     text-align: left;

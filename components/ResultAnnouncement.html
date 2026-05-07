@@ -44,7 +44,7 @@
     flex-direction: column;
     height: auto;
     align-items: center;
-    min-width: calc(var(--unit) * 70);
+    min-width: calc(calc(var(--unit) * 70));
     text-align: center;
   }
 
@@ -52,15 +52,15 @@
     flex-direction: column;
     height: auto;
     background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(calc(var(--unit) * 2));
+    backdrop-filter: blur(calc(calc(var(--unit) * 2)));
     border-radius: var(--radius);
-    box-shadow: 0 calc(var(--unit) * 1) calc(var(--unit) * 6) rgba(0, 0, 0, 0.3);
+    box-shadow: 0 calc(calc(var(--unit) * 1)) calc(calc(var(--unit) * 6)) rgba(0, 0, 0, 0.3);
     align-items: stretch;
   }
 
   rewards-title {
     font-family: var(--font-heading, serif);
-    font-size: calc(var(--unit) * 6);
+    font-size: calc(calc(var(--unit) * 6));
     color: white;
     text-align: center;
   }
@@ -86,8 +86,8 @@
     all: unset;
     cursor: pointer;
     font-family: var(--font-heading, serif);
-    font-size: calc(var(--unit) * 4);
-    padding: var(--unit) calc(var(--unit) * 4);
+    font-size: calc(calc(var(--unit) * 4));
+    padding: calc(calc(var(--unit) * 1)) calc(calc(var(--unit) * 4));
     border: 1px solid var(--gold-border);
     border-radius: var(--radius);
     color: white;

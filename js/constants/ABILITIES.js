@@ -5,6 +5,7 @@ import { deepMerge } from '/js/helpers.js';
 
 export const TYPE = {
   WindUp: 'WindUp',
+  WindDown: 'WindDown',
   Channeling: 'Channeling'
 };
 

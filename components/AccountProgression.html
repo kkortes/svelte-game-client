@@ -89,13 +89,13 @@
   }
 
   [progression-scroll] slides {
-    gap: calc(var(--unit) * 8);
-    padding: 0 calc(50vw - min(calc(var(--unit) * 60), 30vw));
+    gap: calc(calc(var(--unit) * 8));
+    padding: 0 calc(50vw - min(calc(calc(var(--unit) * 60)), 30vw));
   }
 
   [progression-scroll] slides>slide {
     display: flex;
-    min-width: min(calc(var(--unit) * 120), 60vw);
+    min-width: min(calc(calc(var(--unit) * 120)), 60vw);
     align-items: center;
     justify-content: center;
     scroll-snap-align: center;
@@ -105,8 +105,8 @@
     position: relative;
     text-align: center;
     border-style: dashed;
-    width: min(calc(var(--unit) * 120), 60vw);
-    min-height: calc(var(--unit) * 60);
+    width: min(calc(calc(var(--unit) * 120)), 60vw);
+    min-height: calc(calc(var(--unit) * 60));
   }
 
   [progression-card][claimed] {
@@ -125,9 +125,9 @@
   progression-premium {
     align-items: center;
     justify-content: center;
-    width: calc(100% + var(--unit) * 8);
+    width: calc(100% + calc(var(--unit) * 8));
     background: oklch(0.85 0.05 85 / 0.2);
     border-radius: 0 0 var(--radius) var(--radius);
-    font-size: calc(var(--unit) * 3);
+    font-size: calc(calc(var(--unit) * 3));
   }
 </style>

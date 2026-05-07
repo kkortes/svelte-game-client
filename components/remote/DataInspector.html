@@ -217,7 +217,7 @@
     flex: 1;
     min-height: 0;
     overflow: hidden;
-    font-size: calc(var(--unit) * 3);
+    font-size: calc(calc(var(--unit) * 3));
     background: var(--inspector-bg);
     color: var(--inspector-text);
     font-family: 'Geist Mono', 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
@@ -230,15 +230,15 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: calc(var(--unit) * 4);
-    padding: calc(var(--unit) * 2.5) calc(var(--unit) * 3);
+    gap: calc(calc(var(--unit) * 4));
+    padding: calc(calc(var(--unit) * 2.5)) calc(calc(var(--unit) * 3));
     background: var(--inspector-header-bg);
     border-bottom: 1px solid var(--inspector-border);
   }
 
   data-inspector-title {
     font-weight: 500;
-    font-size: calc(var(--unit) * 3);
+    font-size: calc(calc(var(--unit) * 3));
     letter-spacing: 0.04em;
     text-transform: uppercase;
     color: var(--inspector-text-muted);
@@ -246,18 +246,18 @@
 
   data-inspector-actions {
     display: flex;
-    gap: calc(var(--unit) * 1);
+    gap: calc(calc(var(--unit) * 1));
   }
 
   [data-inspector-copy] {
-    height: calc(var(--unit) * 6);
-    padding: 0 calc(var(--unit) * 2);
+    height: calc(calc(var(--unit) * 6));
+    padding: 0 calc(calc(var(--unit) * 2));
     font-family: inherit;
-    font-size: calc(var(--unit) * 3);
+    font-size: calc(calc(var(--unit) * 3));
     color: var(--inspector-text-muted);
     background: transparent;
     border: 1px solid var(--inspector-border);
-    border-radius: calc(var(--unit) * 1);
+    border-radius: calc(calc(var(--unit) * 1));
     cursor: pointer;
   }
 
@@ -268,7 +268,7 @@
   }
 
   data-inspector-lines {
-    --scrollbar-width: calc(var(--unit) * 4);
+    --scrollbar-width: calc(calc(var(--unit) * 4));
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -285,7 +285,7 @@
 
   data-inspector-lines::-webkit-scrollbar-thumb {
     background: var(--inspector-divider);
-    border-radius: calc(var(--unit) * 1);
+    border-radius: calc(calc(var(--unit) * 1));
   }
 
   data-inspector-lines::-webkit-scrollbar-track {
@@ -297,8 +297,8 @@
     align-items: center;
     width: 100%;
     max-width: 100%;
-    gap: calc(var(--unit) * 2);
-    padding: calc(var(--unit) * 0.5) calc(var(--unit) * 3);
+    gap: calc(calc(var(--unit) * 2));
+    padding: calc(calc(var(--unit) * 0.5)) calc(calc(var(--unit) * 3));
     box-sizing: border-box;
   }
 

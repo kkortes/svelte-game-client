@@ -182,12 +182,12 @@
 
 <style>
   [sidebar-gap] {
-    height: calc(var(--unit) * 4);
+    height: calc(calc(var(--unit) * 4));
   }
 
   brawler-list {
     display: block;
-    margin-inline: calc(var(--unit) * -4);
+    margin-inline: calc(calc(var(--unit) * -4));
   }
 
   [brawler-link] {
@@ -197,32 +197,32 @@
   }
 
   [brawler-row] {
-    padding: calc(var(--unit) * 1) calc(var(--unit) * 1.5);
-    margin: 0 calc(var(--unit) * -1.5);
+    padding: calc(calc(var(--unit) * 1)) calc(calc(var(--unit) * 1.5));
+    margin: 0 calc(calc(var(--unit) * -1.5));
     gap: 0;
-    border-radius: calc(var(--unit) * 0.5);
+    border-radius: calc(calc(var(--unit) * 0.5));
     transition: background 150ms, box-shadow 150ms, backdrop-filter 150ms;
   }
 
   [brawler-row][active] {
     background: rgba(255, 255, 255, 0.5);
-    box-shadow: 0 calc(var(--unit) * 1) calc(var(--unit) * 1.5) -1px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(calc(var(--unit) * 1));
+    box-shadow: 0 calc(calc(var(--unit) * 1)) calc(calc(var(--unit) * 1.5)) -1px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(calc(calc(var(--unit) * 1)));
   }
 
   brawler-avatar-outer {
     display: block;
     flex: none;
-    width: calc(var(--unit) * 16);
-    height: calc(var(--unit) * 16);
-    padding: calc(var(--unit) * 1);
+    width: calc(calc(var(--unit) * 16));
+    height: calc(calc(var(--unit) * 16));
+    padding: calc(calc(var(--unit) * 1));
   }
 
   brawler-avatar-inner {
     display: block;
     width: 100%;
     height: 100%;
-    border-radius: calc(var(--unit) * 0.5);
+    border-radius: calc(calc(var(--unit) * 0.5));
     border: 1px solid var(--gray-500);
     overflow: hidden;
   }
@@ -237,7 +237,7 @@
   [brawler-info] {
     flex: 1;
     min-width: 0;
-    padding: calc(var(--unit) * 1);
+    padding: calc(calc(var(--unit) * 1));
     overflow-x: hidden;
   }
 
@@ -273,7 +273,7 @@
 
   ability-preview {
     display: flex;
-    height: calc(var(--unit) * 6);
+    height: calc(calc(var(--unit) * 6));
     border: 0.5px solid var(--stone-500);
     background: var(--stone-300);
   }
@@ -286,7 +286,7 @@
     flex: none;
     border-right: 0.5px solid var(--stone-500);
     color: var(--stone-500);
-    font-size: calc(var(--unit) * 4);
+    font-size: calc(calc(var(--unit) * 4));
   }
 
   ability-preview-cell:last-child {

@@ -29,16 +29,16 @@
 <style>
   bar-track {
     display: grid;
-    height: calc(var(--unit) * 7);
+    height: calc(calc(var(--unit) * 7));
     color: var(--white);
     background: rgb(107 114 128 / 0.5);
     box-shadow: inset 0 1px 1px rgb(0 0 0 / 0.05);
-    font-size: calc(var(--unit) * 4);
+    font-size: calc(calc(var(--unit) * 4));
   }
 
   bar-track[center] {
-    height: calc(var(--unit) * 6);
-    border-radius: calc(var(--unit) * 0.5);
+    height: calc(calc(var(--unit) * 6));
+    border-radius: calc(calc(var(--unit) * 0.5));
   }
 
   bar-fill {
@@ -70,7 +70,7 @@
   }
 
   bar-track spinner {
-    border-width: calc(var(--unit) * 0.5);
+    border-width: calc(calc(var(--unit) * 0.5));
   }
 
   bar-track [bar-value-pct] {

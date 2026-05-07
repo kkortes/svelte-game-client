@@ -44,27 +44,27 @@
   }
 
   outcome-icon {
-    font-size: calc(var(--unit) * 20);
+    font-size: calc(calc(var(--unit) * 20));
   }
 
   outcome-icon icon {
-    font-size: calc(var(--unit) * 24);
+    font-size: calc(calc(var(--unit) * 24));
     --color: var(--gray-400);
-    filter: drop-shadow(0 calc(var(--unit) * 0.5) calc(var(--unit) * 1) rgba(0, 0, 0, 0.3));
+    filter: drop-shadow(0 calc(calc(var(--unit) * 0.5)) calc(calc(var(--unit) * 1)) rgba(0, 0, 0, 0.3));
   }
 
   victory-or-loss[outcome="victory"] outcome-icon icon {
     --color: var(--yellow-200);
-    filter: drop-shadow(0 calc(var(--unit) * 0.5) calc(var(--unit) * 1) rgba(0, 0, 0, 0.3));
+    filter: drop-shadow(0 calc(calc(var(--unit) * 0.5)) calc(calc(var(--unit) * 1)) rgba(0, 0, 0, 0.3));
   }
 
   outcome-label {
     font-family: var(--font-accent, var(--font-heading, sans-serif));
-    font-size: calc(var(--unit) * 10);
+    font-size: calc(calc(var(--unit) * 10));
     letter-spacing: 0.05em;
     color: var(--gray-200);
     -webkit-text-stroke: 1px var(--gray-400);
-    text-shadow: 0 calc(var(--unit) * 0.5) calc(var(--unit) * 1) rgba(0, 0, 0, 0.3);
+    text-shadow: 0 calc(calc(var(--unit) * 0.5)) calc(calc(var(--unit) * 1)) rgba(0, 0, 0, 0.3);
   }
 
   victory-or-loss[outcome="victory"] outcome-label {
