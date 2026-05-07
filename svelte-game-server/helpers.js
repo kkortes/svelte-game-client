@@ -1,6 +1,6 @@
 var validateEmail = (email) =>
   /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
-    String(email)
+    String(email),
   );
 
 const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
@@ -9,7 +9,7 @@ const filterSplit = (array, condition) =>
   array.reduce(
     ([hits, misses], item) =>
       condition(item) ? [[...hits, item], misses] : [hits, [...misses, item]],
-    [[], []]
+    [[], []],
   );
 
 const emptySlot = (obj) => typeof obj !== 'object' || !Object.keys(obj).length;
@@ -27,7 +27,7 @@ const parseVersion = (versionString) => {
   return {
     major,
     minor,
-    patch
+    patch,
   };
 };
 
@@ -54,16 +54,16 @@ const transform = (data) =>
             ...Object.entries(transform(value)).reduce(
               (ac, [k, v]) => ({
                 ...ac,
-                [`${key}.${k}`]: v
+                [`${key}.${k}`]: v,
               }),
-              {}
-            )
+              {},
+            ),
           }
         : {
             ...a,
-            [key]: value
+            [key]: value,
           },
-    {}
+    {},
   );
 
 const mongoReady = (data) =>
@@ -74,8 +74,8 @@ const mongoReady = (data) =>
       ...a,
       [mainKey]: {
         ...a[mainKey],
-        [key]: !!unset || value
-      }
+        [key]: !!unset || value,
+      },
     };
   }, {});
 
@@ -85,7 +85,9 @@ const typeSizes = {
   number: () => 8,
   string: (item) => 2 * item.length,
   object: (item) =>
-    !item ? 0 : Object.keys(item).reduce((total, key) => sizeOf(key) + sizeOf(item[key]) + total, 0)
+    !item
+      ? 0
+      : Object.keys(item).reduce((total, key) => sizeOf(key) + sizeOf(item[key]) + total, 0),
 };
 
 const sizeOf = (value) => typeSizes[typeof value](value);
@@ -107,5 +109,5 @@ export {
   mongoReady,
   sizeOf,
   readableTimestamp,
-  onlyUnique
+  onlyUnique,
 };

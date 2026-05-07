@@ -1,320 +1,346 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Battle Brawlers</title>
+    <link rel="icon" href="/static/favicon.png" />
+    <link rel="stylesheet" href="/css/index.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Battle Brawlers</title>
-  <link rel="icon" href="/static/favicon.png" />
-  <link rel="stylesheet" href="/css/index.css" />
-</head>
+  <body battle-brawlers vibe vibe-fouc stylecheat>
+    <script type="module">
+      import boot from '/js/boot.js';
+      boot();
 
-<body battle-brawlers vibe vibe-fouc stylecheat>
-  <script type="module">
-    import boot from '/js/boot.js';
-    boot();
+      import { ALL_FIGHTS } from '/js/constants/FIGHTS.js';
+      import CHARACTERS from '/js/constants/CHARACTERS.js';
+      import { getExperienceReward } from '/js/level.js';
 
-    import { ALL_FIGHTS } from '/js/constants/FIGHTS.js';
-    import CHARACTERS from '/js/constants/CHARACTERS.js';
-    import { getExperienceReward } from '/js/level.js';
-
-    window.arenaFights = [...ALL_FIGHTS].sort((a, b) => {
-      if (a.minLevel !== b.minLevel) return a.minLevel - b.minLevel;
-      if (a.boss !== b.boss) return a.boss ? 1 : -1;
-      return a.maxLevel - b.maxLevel;
-    }).map(fight => {
-      const enemies = fight.characters.map(charRef => {
-        try {
-          const hydrated = CHARACTERS({
-            ...charRef,
-            overrides: {
-              ...charRef?.overrides, level: fight.minLevel,
-              equipment: {
-                mainHand: { overrides: { level: fight.minLevel } },
-                offHand: { overrides: { level: fight.minLevel } },
-                armor: { overrides: { level: fight.minLevel } }
-              }
+      window.arenaFights = [...ALL_FIGHTS]
+        .sort((a, b) => {
+          if (a.minLevel !== b.minLevel) return a.minLevel - b.minLevel;
+          if (a.boss !== b.boss) return a.boss ? 1 : -1;
+          return a.maxLevel - b.maxLevel;
+        })
+        .map((fight) => {
+          const enemies = fight.characters.map((charRef) => {
+            try {
+              const hydrated = CHARACTERS(
+                {
+                  ...charRef,
+                  overrides: {
+                    ...charRef?.overrides,
+                    level: fight.minLevel,
+                    equipment: {
+                      mainHand: { overrides: { level: fight.minLevel } },
+                      offHand: { overrides: { level: fight.minLevel } },
+                      armor: { overrides: { level: fight.minLevel } },
+                    },
+                  },
+                },
+                true,
+              );
+              return { image: hydrated.image, name: hydrated.name };
+            } catch {
+              return { image: '', name: '?' };
             }
-          }, true);
-          return { image: hydrated.image, name: hydrated.name };
-        } catch { return { image: '', name: '?' }; }
-      });
-      return {
-        id: fight.id, name: fight.name,
-        minLevel: fight.minLevel, maxLevel: fight.maxLevel,
-        levelText: fight.minLevel === fight.maxLevel ? String(fight.minLevel) : `${fight.minLevel} - ${fight.maxLevel}`,
-        boss: fight.boss,
-        xp: getExperienceReward(fight.characters.length, fight.minLevel, fight.maxLevel, fight.boss),
-        enemies,
+          });
+          return {
+            id: fight.id,
+            name: fight.name,
+            minLevel: fight.minLevel,
+            maxLevel: fight.maxLevel,
+            levelText:
+              fight.minLevel === fight.maxLevel
+                ? String(fight.minLevel)
+                : `${fight.minLevel} - ${fight.maxLevel}`,
+            boss: fight.boss,
+            xp: getExperienceReward(
+              fight.characters.length,
+              fight.minLevel,
+              fight.maxLevel,
+              fight.boss,
+            ),
+            enemies,
+          };
+        });
+
+      window.arenaClick = (e, isLocked, bossCompleted) => {
+        if (isLocked || bossCompleted) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
       };
-    });
+    </script>
 
-    window.arenaClick = (e, isLocked, bossCompleted) => {
-      if (isLocked || bossCompleted) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
-    };
-  </script>
+    <component src="/components/Layout.html">
+      <page-content>
+        <component src="/components/TitleBar.html" title="The arena"></component>
+        <hr />
 
-  <component src="/components/Layout.html">
-    <page-content>
+        <crow vertical up left arena-table mx="-6" w="auto" mt="4">
+          <crow up left g="4" arena-header py="3" px="6" w="full">
+            <arena-col-name>name</arena-col-name>
+            <arena-col-level text-center>level</arena-col-level>
+            <arena-col-loot>loot</arena-col-loot>
+            <crow arena-col-preview right></crow>
+          </crow>
 
-      <component src="/components/TitleBar.html" title="The arena"></component>
-      <hr />
+          <!-- each arenaFights as fight, i -->
+          <a
+            href="/the-arena/@[fight.id]"
+            onclick="arenaClick(event, @[$.bossHighscore + 5 < fight.minLevel], @[fight.boss && $.bossHighscore >= fight.minLevel])"
+            arena-row
+            flex
+            g="4"
+            py="3"
+            px="6"
+            w="full"
+            even="@[i % 2 === 0]"
+            boss="@[fight.boss]"
+            locked="@[$.bossHighscore + 5 < fight.minLevel]"
+            completed="@[fight.boss && $.bossHighscore >= fight.minLevel]"
+          >
+            <crow left arena-col-name cinzel g="2">
+              <!-- if $.bossHighscore + 5 < fight.minLevel -->
+              <span>?</span>
+              <!-- /if -->
+              <!-- if $.bossHighscore + 5 >= fight.minLevel -->
+              <span fight-name>@[fight.name]</span>
+              <!-- /if -->
+              <!-- if fight.boss -->
+              <badge bg="var(--red)">Bossfight</badge>
+              <!-- /if -->
+            </crow>
 
-      <crow vertical up left arena-table mx="-6" w="auto" mt="4">
-        <crow up left g="4" arena-header py="3" px="6" w="full">
-          <arena-col-name>name</arena-col-name>
-          <arena-col-level text-center>level</arena-col-level>
-          <arena-col-loot>loot</arena-col-loot>
-          <crow arena-col-preview right></crow>
+            <arena-col-level text-center text-sm> @[fight.levelText] </arena-col-level>
+
+            <arena-col-loot text-sm>
+              <!-- if getLevelByExperience($.experience) > fight.maxLevel -->
+              <span arena-xp-dimmed>@[fight.xp] XP</span>
+              <!-- /if -->
+              <!-- if getLevelByExperience($.experience) <= fight.maxLevel -->
+              <span>@[fight.xp] XP</span>
+              <!-- /if -->
+            </arena-col-loot>
+
+            <crow arena-col-preview right>
+              <!-- each fight.enemies as enemy -->
+              <arena-enemy-wrap boss="@[fight.boss]">
+                <crow arena-enemy-box glass locked="@[$.bossHighscore + 5 < fight.minLevel]">
+                  <!-- if $.bossHighscore + 5 < fight.minLevel -->
+                  <crow arena-enemy-locked>?</crow>
+                  <!-- /if -->
+                  <!-- if $.bossHighscore + 5 >= fight.minLevel -->
+                  <img
+                    data-src="/static/images/races/@[enemy.image]"
+                    alt=""
+                    arena-enemy-img
+                    completed="@[fight.boss && $.bossHighscore >= fight.minLevel]"
+                  />
+                  <!-- /if -->
+                </crow>
+              </arena-enemy-wrap>
+              <!-- /each -->
+            </crow>
+          </a>
+          <!-- /each -->
         </crow>
-
-        <!-- each arenaFights as fight, i -->
-        <a href="/the-arena/@[fight.id]"
-          onclick="arenaClick(event, @[$.bossHighscore + 5 < fight.minLevel], @[fight.boss && $.bossHighscore >= fight.minLevel])"
-          arena-row flex g="4" py="3" px="6" w="full" even="@[i % 2 === 0]" boss="@[fight.boss]"
-          locked="@[$.bossHighscore + 5 < fight.minLevel]"
-          completed="@[fight.boss && $.bossHighscore >= fight.minLevel]">
-          <crow left arena-col-name cinzel g="2">
-            <!-- if $.bossHighscore + 5 < fight.minLevel -->
-            <span>?</span>
-            <!-- /if -->
-            <!-- if $.bossHighscore + 5 >= fight.minLevel -->
-            <span fight-name>@[fight.name]</span>
-            <!-- /if -->
-            <!-- if fight.boss -->
-            <badge bg="var(--red)">Bossfight</badge>
-            <!-- /if -->
-          </crow>
-
-          <arena-col-level text-center text-sm>
-            @[fight.levelText]
-          </arena-col-level>
-
-          <arena-col-loot text-sm>
-            <!-- if getLevelByExperience($.experience) > fight.maxLevel -->
-            <span arena-xp-dimmed>@[fight.xp] XP</span>
-            <!-- /if -->
-            <!-- if getLevelByExperience($.experience) <= fight.maxLevel -->
-            <span>@[fight.xp] XP</span>
-            <!-- /if -->
-          </arena-col-loot>
-
-          <crow arena-col-preview right>
-            <!-- each fight.enemies as enemy -->
-            <arena-enemy-wrap boss="@[fight.boss]">
-              <crow arena-enemy-box glass locked="@[$.bossHighscore + 5 < fight.minLevel]">
-                <!-- if $.bossHighscore + 5 < fight.minLevel -->
-                <crow arena-enemy-locked>?</crow>
-                <!-- /if -->
-                <!-- if $.bossHighscore + 5 >= fight.minLevel -->
-                <img data-src="/static/images/races/@[enemy.image]" alt="" arena-enemy-img
-                  completed="@[fight.boss && $.bossHighscore >= fight.minLevel]" />
-                <!-- /if -->
-              </crow>
-            </arena-enemy-wrap>
-            <!-- /each -->
-          </crow>
-        </a>
-        <!-- /each -->
-      </crow>
-
-    </page-content>
-  </component>
-  <style>
-    page[the-arena] [arena-header] {
-      align-items: center;
-      font-size: calc(calc(var(--unit) * 3));
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: oklch(from var(--foreground) l c h / 0.5);
-      border-bottom: 1px solid oklch(from var(--bb-brown) l c h / 0.2);
-    }
-
-
-    page[the-arena] arena-col-name,
-    page[the-arena] [arena-col-name] {
-      display: flex;
-      flex: 1;
-    }
-
-    page[the-arena] [arena-col-name] [fight-name] {
-      line-height: 0;
-    }
-
-    page[the-arena] arena-col-level {
-      display: block;
-      width: calc(calc(var(--unit) * 12));
-      flex: none;
-    }
-
-    page[the-arena] badge {
-      font-weight: 300;
-    }
-
-    page[the-arena] arena-col-loot {
-      display: block;
-      width: calc(calc(var(--unit) * 12));
-      flex: none;
-    }
-
-    page[the-arena] [arena-col-preview] {
-      width: calc(calc(var(--unit) * 30));
-      flex: none;
-    }
-
-    page[the-arena] [arena-row] {
-      align-items: center;
-      text-decoration: none;
-      color: var(--foreground);
-      font-size: calc(calc(var(--unit) * 4));
-      transition: background 200ms ease;
-    }
-
-    page[the-arena] [arena-row] arena-col-level,
-    page[the-arena] [arena-row] arena-col-loot {
-      font-variant-numeric: tabular-nums;
-      color: var(--muted-foreground);
-    }
-
-    page[the-arena] [arena-row][even] {
-      background: oklch(from var(--foreground) l c h / 0.04);
-    }
-
-    [dark] page[the-arena] [arena-row][even] {
-      background: oklch(from var(--foreground) l c h / 0.08);
-    }
-
-    page[the-arena] [arena-row]:not([even]) {
-      background: transparent;
-    }
-
-    page[the-arena] [arena-row][boss] {
-      margin-top: calc(calc(var(--unit) * 12));
-      padding-top: calc(calc(var(--unit) * 8));
-      padding-bottom: calc(calc(var(--unit) * 8));
-    }
-
-    page[the-arena] [arena-row][boss]+[arena-row][boss] {
-      margin-top: 0;
-    }
-
-    page[the-arena] [arena-row]:not([locked]):not([completed]):hover {
-      background: oklch(from var(--bb-brown) l c h / 0.08);
-    }
-
-    page[the-arena] [arena-row][locked] {
-      opacity: 0.5;
-      cursor: default;
-    }
-
-    page[the-arena] [arena-row][completed] {
-      cursor: default;
-    }
-
-    page[the-arena] [arena-xp-dimmed] {
-      color: var(--muted-foreground);
-      text-decoration: line-through;
-    }
-
-    page[the-arena] arena-enemy-wrap {
-      display: block;
-      width: calc(calc(var(--unit) * 7));
-      flex: none;
-    }
-
-    page[the-arena] arena-enemy-wrap[boss] {
-      width: calc(calc(var(--unit) * 14));
-    }
-
-    page[the-arena] [arena-enemy-box] {
-      width: calc(calc(var(--unit) * 11));
-      aspect-ratio: 1;
-      overflow: hidden;
-      border-radius: 0;
-      margin: calc(calc(var(--unit) * -3)) 0 calc(calc(var(--unit) * -3)) calc(calc(var(--unit) * 2));
-      position: relative;
-    }
-
-    page[the-arena] arena-enemy-wrap[boss] [arena-enemy-box] {
-      width: calc(calc(var(--unit) * 18));
-      margin-top: calc(calc(var(--unit) * -8));
-      margin-bottom: calc(calc(var(--unit) * -8));
-    }
-
-    page[the-arena] [arena-enemy-box]:not([locked]) {
-      align-items: flex-start;
-    }
-
-    page[the-arena] [arena-enemy-locked] {
-      width: calc(calc(var(--unit) * 5));
-      flex: none;
-      border-radius: 50%;
-      background: rgba(0, 0, 0, 0.25);
-      font-weight: bold;
-      color: white;
-      aspect-ratio: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: calc(calc(var(--unit) * 3));
-    }
-
-    page[the-arena] [arena-enemy-img] {
-      width: 120%;
-      max-width: none;
-      height: auto;
-      transform: scaleX(-1);
-    }
-
-    page[the-arena] [arena-enemy-img][completed] {
-      filter: grayscale(1);
-    }
-
-    @media (width <= 768px) {
-      page[the-arena] [arena-header],
-      page[the-arena] [arena-row] {
-        gap: calc(calc(var(--unit) * 2));
-        padding: calc(calc(var(--unit) * 3)) calc(calc(var(--unit) * 3));
+      </page-content>
+    </component>
+    <style>
+      page[the-arena] [arena-header] {
+        align-items: center;
+        font-size: calc(calc(var(--unit) * 3));
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: oklch(from var(--foreground) l c h / 0.5);
+        border-bottom: 1px solid oklch(from var(--bb-brown) l c h / 0.2);
       }
 
-      page[the-arena] arena-col-level,
+      page[the-arena] arena-col-name,
+      page[the-arena] [arena-col-name] {
+        display: flex;
+        flex: 1;
+      }
+
+      page[the-arena] [arena-col-name] [fight-name] {
+        line-height: 0;
+      }
+
+      page[the-arena] arena-col-level {
+        display: block;
+        width: calc(calc(var(--unit) * 12));
+        flex: none;
+      }
+
+      page[the-arena] badge {
+        font-weight: 300;
+      }
+
       page[the-arena] arena-col-loot {
-        width: calc(calc(var(--unit) * 10));
+        display: block;
+        width: calc(calc(var(--unit) * 12));
+        flex: none;
       }
 
       page[the-arena] [arena-col-preview] {
-        width: calc(calc(var(--unit) * 14));
+        width: calc(calc(var(--unit) * 30));
+        flex: none;
       }
 
-      page[the-arena] arena-enemy-wrap {
-        width: calc(calc(var(--unit) * 4));
+      page[the-arena] [arena-row] {
+        align-items: center;
+        text-decoration: none;
+        color: var(--foreground);
+        font-size: calc(calc(var(--unit) * 4));
+        transition: background 200ms ease;
       }
 
-      page[the-arena] arena-enemy-wrap[boss] {
-        width: calc(calc(var(--unit) * 8));
+      page[the-arena] [arena-row] arena-col-level,
+      page[the-arena] [arena-row] arena-col-loot {
+        font-variant-numeric: tabular-nums;
+        color: var(--muted-foreground);
       }
 
-      page[the-arena] [arena-enemy-box] {
-        width: calc(calc(var(--unit) * 6));
-        margin: calc(calc(var(--unit) * -1.5)) 0 calc(calc(var(--unit) * -1.5)) calc(calc(var(--unit) * 1));
+      page[the-arena] [arena-row][even] {
+        background: oklch(from var(--foreground) l c h / 0.04);
       }
 
-      page[the-arena] arena-enemy-wrap[boss] [arena-enemy-box] {
-        width: calc(calc(var(--unit) * 10));
-        margin-top: calc(calc(var(--unit) * -3));
-        margin-bottom: calc(calc(var(--unit) * -3));
+      [dark] page[the-arena] [arena-row][even] {
+        background: oklch(from var(--foreground) l c h / 0.08);
+      }
+
+      page[the-arena] [arena-row]:not([even]) {
+        background: transparent;
       }
 
       page[the-arena] [arena-row][boss] {
-        margin-top: calc(calc(var(--unit) * 6));
-        padding-top: calc(calc(var(--unit) * 4));
-        padding-bottom: calc(calc(var(--unit) * 4));
+        margin-top: calc(calc(var(--unit) * 12));
+        padding-top: calc(calc(var(--unit) * 8));
+        padding-bottom: calc(calc(var(--unit) * 8));
       }
-    }
-  </style>
-</body>
 
+      page[the-arena] [arena-row][boss] + [arena-row][boss] {
+        margin-top: 0;
+      }
+
+      page[the-arena] [arena-row]:not([locked]):not([completed]):hover {
+        background: oklch(from var(--bb-brown) l c h / 0.08);
+      }
+
+      page[the-arena] [arena-row][locked] {
+        opacity: 0.5;
+        cursor: default;
+      }
+
+      page[the-arena] [arena-row][completed] {
+        cursor: default;
+      }
+
+      page[the-arena] [arena-xp-dimmed] {
+        color: var(--muted-foreground);
+        text-decoration: line-through;
+      }
+
+      page[the-arena] arena-enemy-wrap {
+        display: block;
+        width: calc(calc(var(--unit) * 7));
+        flex: none;
+      }
+
+      page[the-arena] arena-enemy-wrap[boss] {
+        width: calc(calc(var(--unit) * 14));
+      }
+
+      page[the-arena] [arena-enemy-box] {
+        width: calc(calc(var(--unit) * 11));
+        aspect-ratio: 1;
+        overflow: hidden;
+        border-radius: 0;
+        margin: calc(calc(var(--unit) * -3)) 0 calc(calc(var(--unit) * -3))
+          calc(calc(var(--unit) * 2));
+        position: relative;
+      }
+
+      page[the-arena] arena-enemy-wrap[boss] [arena-enemy-box] {
+        width: calc(calc(var(--unit) * 18));
+        margin-top: calc(calc(var(--unit) * -8));
+        margin-bottom: calc(calc(var(--unit) * -8));
+      }
+
+      page[the-arena] [arena-enemy-box]:not([locked]) {
+        align-items: flex-start;
+      }
+
+      page[the-arena] [arena-enemy-locked] {
+        width: calc(calc(var(--unit) * 5));
+        flex: none;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.25);
+        font-weight: bold;
+        color: white;
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: calc(calc(var(--unit) * 3));
+      }
+
+      page[the-arena] [arena-enemy-img] {
+        width: 120%;
+        max-width: none;
+        height: auto;
+        transform: scaleX(-1);
+      }
+
+      page[the-arena] [arena-enemy-img][completed] {
+        filter: grayscale(1);
+      }
+
+      @media (width <= 768px) {
+        page[the-arena] [arena-header],
+        page[the-arena] [arena-row] {
+          gap: calc(calc(var(--unit) * 2));
+          padding: calc(calc(var(--unit) * 3)) calc(calc(var(--unit) * 3));
+        }
+
+        page[the-arena] arena-col-level,
+        page[the-arena] arena-col-loot {
+          width: calc(calc(var(--unit) * 10));
+        }
+
+        page[the-arena] [arena-col-preview] {
+          width: calc(calc(var(--unit) * 14));
+        }
+
+        page[the-arena] arena-enemy-wrap {
+          width: calc(calc(var(--unit) * 4));
+        }
+
+        page[the-arena] arena-enemy-wrap[boss] {
+          width: calc(calc(var(--unit) * 8));
+        }
+
+        page[the-arena] [arena-enemy-box] {
+          width: calc(calc(var(--unit) * 6));
+          margin: calc(calc(var(--unit) * -1.5)) 0 calc(calc(var(--unit) * -1.5))
+            calc(calc(var(--unit) * 1));
+        }
+
+        page[the-arena] arena-enemy-wrap[boss] [arena-enemy-box] {
+          width: calc(calc(var(--unit) * 10));
+          margin-top: calc(calc(var(--unit) * -3));
+          margin-bottom: calc(calc(var(--unit) * -3));
+        }
+
+        page[the-arena] [arena-row][boss] {
+          margin-top: calc(calc(var(--unit) * 6));
+          padding-top: calc(calc(var(--unit) * 4));
+          padding-bottom: calc(calc(var(--unit) * 4));
+        }
+      }
+    </style>
+  </body>
 </html>

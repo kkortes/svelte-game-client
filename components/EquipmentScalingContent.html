@@ -4,19 +4,20 @@
   const state = {
     equipChoices: Object.keys(ALL_EQUIPMENT),
     chosenEquip: 'sword',
-    equipPool: []
+    equipPool: [],
   };
 
   const compute = (s) => {
     s.equipPool = Array.from({ length: 13 }, (_, i) => {
-      const ref = i === 0
-        ? EQUIPMENT(s.chosenEquip)
-        : EQUIPMENT(s.chosenEquip, false, { overrides: { level: i } });
+      const ref =
+        i === 0
+          ? EQUIPMENT(s.chosenEquip)
+          : EQUIPMENT(s.chosenEquip, false, { overrides: { level: i } });
       const hydrated = EQUIPMENT(ref, true);
       return {
         label: i === 0 ? 'base' : `level ${i}`,
         name: hydrated.name,
-        level: hydrated.level || 0
+        level: hydrated.level || 0,
       };
     });
   };
@@ -24,10 +25,13 @@
   compute(state);
   component(state);
 
-  const id = Object.keys(window.__vibeComponents).find(k => window.__vibeComponents[k] === state);
+  const id = Object.keys(window.__vibeComponents).find((k) => window.__vibeComponents[k] === state);
   const s = $[id];
 
-  window.changeEquip = (value) => { s.chosenEquip = value; compute(s); };
+  window.changeEquip = (value) => {
+    s.chosenEquip = value;
+    compute(s);
+  };
 </script>
 
 <crow vertical g="4" left>

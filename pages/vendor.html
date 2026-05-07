@@ -1,288 +1,296 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Battle Brawlers</title>
+    <link rel="icon" href="/static/favicon.png" />
+    <link rel="stylesheet" href="/css/index.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Battle Brawlers</title>
-  <link rel="icon" href="/static/favicon.png" />
-  <link rel="stylesheet" href="/css/index.css" />
-</head>
+  <body battle-brawlers vibe vibe-fouc stylecheat>
+    <script type="module">
+      import boot from '/js/boot.js';
+      boot();
 
-<body battle-brawlers vibe vibe-fouc stylecheat>
-  <script type="module">
-    import boot from '/js/boot.js';
-    boot();
+      import EQUIPMENT, { ALL_EQUIPMENT } from '/js/constants/EQUIPMENT.js';
+      import { slotsInPrettyName } from '/js/equipment.js';
+      import { formatCoins } from '/js/helpers.js';
 
-    import EQUIPMENT, { ALL_EQUIPMENT } from '/js/constants/EQUIPMENT.js';
-    import { slotsInPrettyName } from '/js/equipment.js';
-    import { formatCoins } from '/js/helpers.js';
+      window.vendorItems = Object.keys(ALL_EQUIPMENT).map((key) => {
+        const item = EQUIPMENT(key, true);
+        return { ...item, id: key, slotLabel: slotsInPrettyName(item.slotsIn) };
+      });
 
-    window.vendorItems = Object.keys(ALL_EQUIPMENT).map(key => {
-      const item = EQUIPMENT(key, true);
-      return { ...item, id: key, slotLabel: slotsInPrettyName(item.slotsIn) };
-    });
+      const countByType = (type) =>
+        window.vendorItems.filter((item) => item.slotsIn.includes(type)).length;
 
-    const countByType = (type) => window.vendorItems.filter(item => item.slotsIn.includes(type)).length;
+      window.filterVendorItems = (filter) =>
+        filter === 'all'
+          ? window.vendorItems
+          : window.vendorItems.filter((item) => item.slotsIn.includes(filter));
 
-    window.filterVendorItems = (filter) =>
-      filter === 'all'
-        ? window.vendorItems
-        : window.vendorItems.filter(item => item.slotsIn.includes(filter));
+      window.vendorCounts = {
+        oneHand: countByType('oneHand'),
+        offHand: countByType('offHand'),
+        twoHand: countByType('twoHand'),
+        armor: countByType('armor'),
+        accessory: countByType('accessory'),
+        trinket: countByType('trinket'),
+      };
 
-    window.vendorCounts = {
-      oneHand: countByType('oneHand'),
-      offHand: countByType('offHand'),
-      twoHand: countByType('twoHand'),
-      armor: countByType('armor'),
-      accessory: countByType('accessory'),
-      trinket: countByType('trinket')
-    };
+      window.vendorAcquire = (itemId) => {
+        const item = EQUIPMENT(itemId, false);
+        const { cost, level } = EQUIPMENT(item, true);
+        item.overrides = { level };
 
-    window.vendorAcquire = (itemId) => {
-      const item = EQUIPMENT(itemId, false);
-      const { cost, level } = EQUIPMENT(item, true);
-      item.overrides = { level };
+        if ($.coins < cost) {
+          notify({ warning: 'Not enough coins.' });
+          return;
+        }
 
-      if ($.coins < cost) {
-        notify({ warning: 'Not enough coins.' });
-        return;
+        const { silver, copper } = formatCoins(cost);
+        const coinText = (silver ? silver + 's ' : '') + copper + 'c';
+
+        $.overlay = {
+          name: 'confirm',
+          text: `Are you sure you want to acquire this equipment for ${coinText}?`,
+          confirm: () => {
+            $.coins -= cost;
+            $.inventory.push(item);
+            notify({ success: 'Equipment acquired!' });
+          },
+        };
+      };
+    </script>
+
+    <component src="/components/Layout.html">
+      <page-content>
+        <component src="/components/TitleBar.html" title="Vendor"></component>
+
+        <component src="/components/VendorContent.html"></component>
+      </page-content>
+    </component>
+    <style>
+      page[vendor] vendor-filters {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: stretch;
+        position: relative;
+        isolation: isolate;
+        border-top: 1px solid oklch(from var(--bb-brown) l c h / 0.25);
+        border-bottom: 1px solid oklch(from var(--bb-brown) l c h / 0.25);
+        background: linear-gradient(
+          180deg,
+          oklch(from var(--bb-brown) l c h / 0.02),
+          oklch(from var(--bb-brown) l c h / 0.07)
+        );
       }
 
-      const { silver, copper } = formatCoins(cost);
-      const coinText = (silver ? silver + 's ' : '') + copper + 'c';
-
-      $.overlay = {
-        name: 'confirm',
-        text: `Are you sure you want to acquire this equipment for ${coinText}?`,
-        confirm: () => {
-          $.coins -= cost;
-          $.inventory.push(item);
-          notify({ success: 'Equipment acquired!' });
-        }
-      };
-    };
-
-  </script>
-
-  <component src="/components/Layout.html">
-    <page-content>
-
-      <component src="/components/TitleBar.html" title="Vendor"></component>
-
-      <component src="/components/VendorContent.html"></component>
-    </page-content>
-  </component>
-  <style>
-    page[vendor] vendor-filters {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: stretch;
-      position: relative;
-      isolation: isolate;
-      border-top: 1px solid oklch(from var(--bb-brown) l c h / 0.25);
-      border-bottom: 1px solid oklch(from var(--bb-brown) l c h / 0.25);
-      background: linear-gradient(180deg,
-          oklch(from var(--bb-brown) l c h / 0.02),
-          oklch(from var(--bb-brown) l c h / 0.07));
-    }
-
-    [dark] page[vendor] vendor-filters {
-      background: linear-gradient(180deg,
+      [dark] page[vendor] vendor-filters {
+        background: linear-gradient(
+          180deg,
           oklch(from var(--foreground) l c h / 0.02),
-          oklch(from var(--foreground) l c h / 0.06));
-    }
+          oklch(from var(--foreground) l c h / 0.06)
+        );
+      }
 
-    page[vendor] [vendor-filter] {
-      appearance: none;
-      margin: 0;
-      border: 0;
-      background: transparent;
-      cursor: pointer;
-      flex: 1 1 0;
-      min-width: calc(calc(var(--unit) * 22));
-      padding: calc(calc(var(--unit) * 3)) calc(calc(var(--unit) * 4));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      color: oklch(from var(--foreground) l c h / 0.55);
-      transition: color 200ms ease, background 200ms ease;
-    }
+      page[vendor] [vendor-filter] {
+        appearance: none;
+        margin: 0;
+        border: 0;
+        background: transparent;
+        cursor: pointer;
+        flex: 1 1 0;
+        min-width: calc(calc(var(--unit) * 22));
+        padding: calc(calc(var(--unit) * 3)) calc(calc(var(--unit) * 4));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        color: oklch(from var(--foreground) l c h / 0.55);
+        transition:
+          color 200ms ease,
+          background 200ms ease;
+      }
 
-    page[vendor] [vendor-filter] filter-label {
-      font-family: var(--font-heading);
-      font-size: calc(calc(var(--unit) * 3));
-      font-weight: 500;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      line-height: 1;
-      color: inherit;
-    }
+      page[vendor] [vendor-filter] filter-label {
+        font-family: var(--font-heading);
+        font-size: calc(calc(var(--unit) * 3));
+        font-weight: 500;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        line-height: 1;
+        color: inherit;
+      }
 
-    page[vendor] [vendor-filter]:not(:last-child)::after {
-      content: "";
-      position: absolute;
-      right: 0;
-      top: 30%;
-      bottom: 30%;
-      width: 1px;
-      background: linear-gradient(180deg,
+      page[vendor] [vendor-filter]:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 30%;
+        bottom: 30%;
+        width: 1px;
+        background: linear-gradient(
+          180deg,
           transparent,
           oklch(from var(--bb-brown) l c h / 0.28) 50%,
-          transparent);
-    }
+          transparent
+        );
+      }
 
-    page[vendor] [vendor-filter]:hover {
-      color: oklch(from var(--foreground) l c h / 0.9);
-      background: oklch(from var(--bb-brown) l c h / 0.05);
-    }
+      page[vendor] [vendor-filter]:hover {
+        color: oklch(from var(--foreground) l c h / 0.9);
+        background: oklch(from var(--bb-brown) l c h / 0.05);
+      }
 
-    page[vendor] [vendor-filter] filter-count {
-      display: block;
-      font-family: var(--font-display);
-      font-size: calc(calc(var(--unit) * 5));
-      line-height: 1;
-      letter-spacing: 0.02em;
-      font-variant-numeric: tabular-nums;
-      color: oklch(from var(--bb-brown) l c h / 0.7);
-      text-shadow: 0 1px 0 oklch(from var(--background) l c h / 0.4);
-      transition: color 200ms ease, text-shadow 200ms ease;
-    }
+      page[vendor] [vendor-filter] filter-count {
+        display: block;
+        font-family: var(--font-display);
+        font-size: calc(calc(var(--unit) * 5));
+        line-height: 1;
+        letter-spacing: 0.02em;
+        font-variant-numeric: tabular-nums;
+        color: oklch(from var(--bb-brown) l c h / 0.7);
+        text-shadow: 0 1px 0 oklch(from var(--background) l c h / 0.4);
+        transition:
+          color 200ms ease,
+          text-shadow 200ms ease;
+      }
 
-    [dark] page[vendor] [vendor-filter] filter-count {
-      color: oklch(from var(--foreground) l c h / 0.55);
-      text-shadow: none;
-    }
+      [dark] page[vendor] [vendor-filter] filter-count {
+        color: oklch(from var(--foreground) l c h / 0.55);
+        text-shadow: none;
+      }
 
-    page[vendor] [vendor-filter][active] {
-      color: var(--foreground);
-      background: oklch(from var(--bb-brown) l c h / 0.12);
-    }
+      page[vendor] [vendor-filter][active] {
+        color: var(--foreground);
+        background: oklch(from var(--bb-brown) l c h / 0.12);
+      }
 
-    page[vendor] [vendor-filter][active]::before {
-      content: "";
-      position: absolute;
-      left: calc(calc(var(--unit) * 3));
-      right: calc(calc(var(--unit) * 3));
-      bottom: -1px;
-      height: calc(calc(var(--unit) * 0.5));
-      background: linear-gradient(90deg,
+      page[vendor] [vendor-filter][active]::before {
+        content: '';
+        position: absolute;
+        left: calc(calc(var(--unit) * 3));
+        right: calc(calc(var(--unit) * 3));
+        bottom: -1px;
+        height: calc(calc(var(--unit) * 0.5));
+        background: linear-gradient(
+          90deg,
           transparent 0%,
           var(--bb-orange) 22%,
           var(--bb-yellow) 50%,
           var(--bb-orange) 78%,
-          transparent 100%);
-      box-shadow: 0 0 calc(calc(var(--unit) * 2.5)) oklch(from var(--bb-orange) l c h / 0.45);
-    }
-
-    page[vendor] [vendor-filter][active] filter-count {
-      color: oklch(from var(--bb-orange) 0.55 c h);
-      text-shadow: 0 0 calc(calc(var(--unit) * 3)) oklch(from var(--bb-orange) l c h / 0.45);
-    }
-
-    [dark] page[vendor] [vendor-filter] {
-      color: oklch(from var(--foreground) l c h / 0.5);
-    }
-
-    [dark] page[vendor] [vendor-filter][active] {
-      color: var(--foreground);
-      background: oklch(from var(--bb-brown) l c h / 0.2);
-    }
-
-    [dark] page[vendor] [vendor-filter][active] filter-count {
-      color: oklch(from var(--bb-yellow) l c h);
-      text-shadow: 0 0 calc(calc(var(--unit) * 3.5)) oklch(from var(--bb-orange) l c h / 0.55);
-    }
-
-    @media (max-width: 768px) {
-      page[vendor] [vendor-filter] {
-        flex: 1 1 33%;
-        padding: calc(calc(var(--unit) * 2.5)) calc(calc(var(--unit) * 2));
+          transparent 100%
+        );
+        box-shadow: 0 0 calc(calc(var(--unit) * 2.5)) oklch(from var(--bb-orange) l c h / 0.45);
       }
 
-      page[vendor] [vendor-filter] filter-count {
-        font-size: calc(calc(var(--unit) * 5));
+      page[vendor] [vendor-filter][active] filter-count {
+        color: oklch(from var(--bb-orange) 0.55 c h);
+        text-shadow: 0 0 calc(calc(var(--unit) * 3)) oklch(from var(--bb-orange) l c h / 0.45);
       }
 
-      page[vendor] [vendor-filter] filter-label {
-        font-size: calc(calc(var(--unit) * 2));
+      [dark] page[vendor] [vendor-filter] {
+        color: oklch(from var(--foreground) l c h / 0.5);
+      }
+
+      [dark] page[vendor] [vendor-filter][active] {
+        color: var(--foreground);
+        background: oklch(from var(--bb-brown) l c h / 0.2);
+      }
+
+      [dark] page[vendor] [vendor-filter][active] filter-count {
+        color: oklch(from var(--bb-yellow) l c h);
+        text-shadow: 0 0 calc(calc(var(--unit) * 3.5)) oklch(from var(--bb-orange) l c h / 0.55);
+      }
+
+      @media (max-width: 768px) {
+        page[vendor] [vendor-filter] {
+          flex: 1 1 33%;
+          padding: calc(calc(var(--unit) * 2.5)) calc(calc(var(--unit) * 2));
+        }
+
+        page[vendor] [vendor-filter] filter-count {
+          font-size: calc(calc(var(--unit) * 5));
+        }
+
+        page[vendor] [vendor-filter] filter-label {
+          font-size: calc(calc(var(--unit) * 2));
+          letter-spacing: 0.14em;
+        }
+      }
+
+      page[vendor] [vendor-header] {
+        align-items: center;
+        font-size: calc(calc(var(--unit) * 3));
         letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: oklch(from var(--foreground) l c h / 0.5);
+        border-bottom: 1px solid oklch(from var(--bb-brown) l c h / 0.2);
       }
-    }
 
-    page[vendor] [vendor-header] {
-      align-items: center;
-      font-size: calc(calc(var(--unit) * 3));
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: oklch(from var(--foreground) l c h / 0.5);
-      border-bottom: 1px solid oklch(from var(--bb-brown) l c h / 0.2);
-    }
+      page[vendor] [vendor-row] {
+        font-size: calc(calc(var(--unit) * 4));
+        transition: background 200ms ease;
+      }
 
-    page[vendor] [vendor-row] {
-      font-size: calc(calc(var(--unit) * 4));
-      transition: background 200ms ease;
-    }
+      page[vendor] [vendor-col-cost] {
+        font-variant-numeric: tabular-nums;
+      }
 
-    page[vendor] [vendor-col-cost] {
-      font-variant-numeric: tabular-nums;
-    }
+      page[vendor] [vendor-row]:nth-child(even) {
+        background: oklch(from var(--foreground) l c h / 0.04);
+      }
 
-    page[vendor] [vendor-row]:nth-child(even) {
-      background: oklch(from var(--foreground) l c h / 0.04);
-    }
+      [dark] page[vendor] [vendor-row]:nth-child(even) {
+        background: oklch(from var(--foreground) l c h / 0.08);
+      }
 
-    [dark] page[vendor] [vendor-row]:nth-child(even) {
-      background: oklch(from var(--foreground) l c h / 0.08);
-    }
+      page[vendor] [vendor-row]:hover,
+      page[vendor] [vendor-row]:nth-child(even):hover {
+        background: oklch(from var(--bb-brown) l c h / 0.08);
+      }
 
-    page[vendor] [vendor-row]:hover,
-    page[vendor] [vendor-row]:nth-child(even):hover {
-      background: oklch(from var(--bb-brown) l c h / 0.08);
-    }
-
-    page[vendor] vendor-col-name,
-    page[vendor] [vendor-col-name],
-    page[vendor] vendor-col-slot,
-    page[vendor] [vendor-col-slot],
-    page[vendor] vendor-col-cost,
-    page[vendor] [vendor-col-cost] {
-      flex: 1;
-    }
-
-    page[vendor] vendor-col-action,
-    page[vendor] [vendor-col-action] {
-      width: calc(calc(var(--unit) * 20));
-      flex: none;
-    }
-
-    @media (width <= 768px) {
-
+      page[vendor] vendor-col-name,
+      page[vendor] [vendor-col-name],
       page[vendor] vendor-col-slot,
-      page[vendor] [vendor-col-slot] {
-        display: none;
+      page[vendor] [vendor-col-slot],
+      page[vendor] vendor-col-cost,
+      page[vendor] [vendor-col-cost] {
+        flex: 1;
       }
 
       page[vendor] vendor-col-action,
       page[vendor] [vendor-col-action] {
-        width: calc(calc(var(--unit) * 16));
+        width: calc(calc(var(--unit) * 20));
+        flex: none;
       }
-    }
 
-    page[vendor] vendor-col-name,
-    page[vendor] vendor-col-slot,
-    page[vendor] vendor-col-cost,
-    page[vendor] vendor-col-action {
-      display: block;
-    }
+      @media (width <= 768px) {
+        page[vendor] vendor-col-slot,
+        page[vendor] [vendor-col-slot] {
+          display: none;
+        }
 
-    page[vendor] vendor-col-cost,
-    page[vendor] [vendor-col-cost] {
-      display: flex;
-      justify-content: flex-end;
-    }
-  </style>
-</body>
+        page[vendor] vendor-col-action,
+        page[vendor] [vendor-col-action] {
+          width: calc(calc(var(--unit) * 16));
+        }
+      }
 
+      page[vendor] vendor-col-name,
+      page[vendor] vendor-col-slot,
+      page[vendor] vendor-col-cost,
+      page[vendor] vendor-col-action {
+        display: block;
+      }
+
+      page[vendor] vendor-col-cost,
+      page[vendor] [vendor-col-cost] {
+        display: flex;
+        justify-content: flex-end;
+      }
+    </style>
+  </body>
 </html>

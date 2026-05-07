@@ -4,16 +4,16 @@ const loadLocalStorage = (props) =>
       ...a,
       [key]: window.localStorage.getItem(key)
         ? JSON.parse(window.localStorage.getItem(key))
-        : value
+        : value,
     }),
-    {}
+    {},
   );
 
 const SETTINGS_DEFAULT_VOLUME = {
   master: 0,
   ambient: 0.25,
   sfx: 0.5,
-  combat: 1
+  combat: 1,
 };
 
 const INITIAL_COMBAT = {
@@ -23,7 +23,7 @@ const INITIAL_COMBAT = {
   duration: 0,
   winningTeam: undefined,
   fightId: undefined,
-  audio: []
+  audio: [],
 };
 
 export default {
@@ -57,7 +57,7 @@ export default {
     codeOfConduct: false,
     rememberMe: false,
     savedEmail: '',
-    savedPassword: ''
+    savedPassword: '',
   }),
   page: { name: 'home', params: {} },
 };

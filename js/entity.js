@@ -5,9 +5,9 @@ export default (entities, id, uuid, fullBody = false, overrides = {}) => ({
     {
       uuid: uuid || crypto.randomUUID(),
       id,
-      ...(fullBody ? structuredClone(entities[id]) : undefined)
+      ...(fullBody ? structuredClone(entities[id]) : undefined),
     },
-    fullBody ? overrides : {}
+    fullBody ? overrides : {},
   ),
-  ...(JSON.stringify(overrides) !== '{}' ? { overrides } : {})
+  ...(JSON.stringify(overrides) !== '{}' ? { overrides } : {}),
 });

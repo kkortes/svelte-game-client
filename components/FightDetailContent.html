@@ -8,12 +8,12 @@
   window.formatDescription = formatDescription;
 
   const fightId = $.page.params.fightId;
-  const fight = ALL_FIGHTS.find(f => f.id === fightId);
+  const fight = ALL_FIGHTS.find((f) => f.id === fightId);
 
   let currentFight = null;
 
   if (fight) {
-    const characters = fight.characters.map(charRef => ({
+    const characters = fight.characters.map((charRef) => ({
       ...charRef,
       overrides: {
         ...charRef?.overrides,
@@ -21,9 +21,9 @@
         equipment: {
           mainHand: { overrides: { level: fight.minLevel } },
           offHand: { overrides: { level: fight.minLevel } },
-          armor: { overrides: { level: fight.minLevel } }
-        }
-      }
+          armor: { overrides: { level: fight.minLevel } },
+        },
+      },
     }));
 
     currentFight = {
@@ -34,7 +34,7 @@
           const char = CHARACTERS(ref, true);
           const stats = calculateCombatStatsByCharacter(char);
           let tickCursor = 0;
-          const abilities = char.abilities.map(a => {
+          const abilities = char.abilities.map((a) => {
             try {
               const h = ABILITIES(a, true);
               const tickStart = tickCursor;
@@ -53,16 +53,30 @@
           });
           const lastTick = tickCursor;
           return {
-            name: char.name, image: char.image, race: char.race,
+            name: char.name,
+            image: char.image,
+            race: char.race,
             description: char.description || '',
-            maxHealth: stats.maxHealth, maxArmor: stats.maxArmor, damage: stats.damage,
+            maxHealth: stats.maxHealth,
+            maxArmor: stats.maxArmor,
+            damage: stats.damage,
             abilities,
             lastTick,
           };
         } catch {
-          return { name: '?', image: '', race: '', description: '', maxHealth: 0, maxArmor: 0, damage: 0, abilities: [], lastTick: 0 };
+          return {
+            name: '?',
+            image: '',
+            race: '',
+            description: '',
+            maxHealth: 0,
+            maxArmor: 0,
+            damage: 0,
+            abilities: [],
+            lastTick: 0,
+          };
         }
-      })
+      }),
     };
     $.maxBrawlers = fight.allowedNumberOfCharacters;
     $.selectedBrawlers = [];
@@ -70,7 +84,9 @@
 
   const localState = { currentFight, brawlerSlots: [] };
   component(localState);
-  const componentId = Object.keys(window.__vibeComponents).find(k => window.__vibeComponents[k] === localState);
+  const componentId = Object.keys(window.__vibeComponents).find(
+    (k) => window.__vibeComponents[k] === localState,
+  );
   const s = $[componentId];
 
   window.updateFightSlots = () => {
@@ -80,15 +96,28 @@
     s.brawlerSlots = Array.from({ length: count }, (_, i) => {
       const uuid = $.selectedBrawlers[i];
       if (!uuid) return { empty: true, index: i };
-      const ref = $.characters.find(c => c.uuid === uuid);
+      const ref = $.characters.find((c) => c.uuid === uuid);
       if (!ref) return { empty: true, index: i };
       try {
         const char = C(ref, true);
-        const abilities = char.abilities.map(a => {
-          try { const h = A(a, true); return { icon: h.icon, ticks: h.ticks }; }
-          catch { return null; }
-        }).filter(Boolean);
-        return { empty: false, name: char.name, image: char.image, mugshot: char.image.replace('.png', '-mugshot.png'), abilities, index: i };
+        const abilities = char.abilities
+          .map((a) => {
+            try {
+              const h = A(a, true);
+              return { icon: h.icon, ticks: h.ticks };
+            } catch {
+              return null;
+            }
+          })
+          .filter(Boolean);
+        return {
+          empty: false,
+          name: char.name,
+          image: char.image,
+          mugshot: char.image.replace('.png', '-mugshot.png'),
+          abilities,
+          index: i,
+        };
       } catch {
         return { empty: true, index: i };
       }
@@ -99,25 +128,40 @@
   window.startFight = () => {
     if (!currentFight) return;
 
-    const selected = $.characters.filter(c => $.selectedBrawlers.includes(c.uuid));
+    const selected = $.characters.filter((c) => $.selectedBrawlers.includes(c.uuid));
     if (selected.length === 0) return;
 
-    if (selected.some(c => {
-      try { return CHARACTERS(c, true).combatStats.currentHealth <= 0; } catch { return false; }
-    })) {
+    if (
+      selected.some((c) => {
+        try {
+          return CHARACTERS(c, true).combatStats.currentHealth <= 0;
+        } catch {
+          return false;
+        }
+      })
+    ) {
       notify({ warning: 'One of your brawlers is knocked out!' });
       return;
     }
 
-    const enemies = currentFight.characters.map(charRef => ({
+    const enemies = currentFight.characters.map((charRef) => ({
       ...charRef,
       overrides: {
-        ...charRef?.overrides, level: currentFight.minLevel,
-        equipment: { mainHand: { overrides: { level: currentFight.minLevel } }, offHand: { overrides: { level: currentFight.minLevel } }, armor: { overrides: { level: currentFight.minLevel } } }
-      }
+        ...charRef?.overrides,
+        level: currentFight.minLevel,
+        equipment: {
+          mainHand: { overrides: { level: currentFight.minLevel } },
+          offHand: { overrides: { level: currentFight.minLevel } },
+          armor: { overrides: { level: currentFight.minLevel } },
+        },
+      },
     }));
 
-    $.combat = generateCombat(prepareTeams(JSON.parse(JSON.stringify(selected)), enemies), undefined, currentFight.id);
+    $.combat = generateCombat(
+      prepareTeams(JSON.parse(JSON.stringify(selected)), enemies),
+      undefined,
+      currentFight.id,
+    );
     $.selectedBrawlers = [];
     $.elapsedMilliseconds = 0;
     $.overlay = { name: 'Combat' };
@@ -140,14 +184,23 @@
   <!-- each this.currentFight.enemies as enemy, i -->
   <crow left fight-enemy-row>
     <crow w="0" overflow-hidden>
-      <component src="/components/CoreStats.html" hp="@[enemy.maxHealth]" armor="@[enemy.maxArmor]"
-        damage="@[enemy.damage]" vertical></component>
+      <component
+        src="/components/CoreStats.html"
+        hp="@[enemy.maxHealth]"
+        armor="@[enemy.maxArmor]"
+        damage="@[enemy.damage]"
+        vertical
+      ></component>
     </crow>
 
     <crow vertical up left fight-info-col>
       <crow left text-lg mb="4">
-        <component src="/components/CoreStats.html" hp="@[enemy.maxHealth]"
-          armor="@[enemy.maxArmor]" damage="@[enemy.damage]"></component>
+        <component
+          src="/components/CoreStats.html"
+          hp="@[enemy.maxHealth]"
+          armor="@[enemy.maxArmor]"
+          damage="@[enemy.damage]"
+        ></component>
       </crow>
 
       <enemy-description h="60">
@@ -157,15 +210,27 @@
       </enemy-description>
 
       <h5>Abilities</h5>
-      <component src="/components/AbilityBar.html"
+      <component
+        src="/components/AbilityBar.html"
         abilities="@[enemy.abilities]"
         lasttick="@[enemy.lastTick]"
-        dndDisabled minimalistic>
+        dndDisabled
+        minimalistic
+      >
       </component>
     </crow>
 
     <fight-enemy-image block f="none" relative>
-      <img t="0" r="0" b="0" l="0" absolute w="full" data-src="/static/images/races/@[enemy.image]" alt="" />
+      <img
+        t="0"
+        r="0"
+        b="0"
+        l="0"
+        absolute
+        w="full"
+        data-src="/static/images/races/@[enemy.image]"
+        alt=""
+      />
     </fight-enemy-image>
   </crow>
   <!-- /each -->
@@ -186,13 +251,16 @@
     <component src="/components/BackButton.html" href="/the-arena"></component>
   </crow>
   <!-- /if -->
-
 </page-content>
 
 <!-- if this.currentFight -->
 <stay reverse w="full" sm:b="8" p="3">
-  <button mx="auto" primary onclick="startFight()"
-    disabled="@[selectedBrawlers.length === 0 || combat.duration !== 0]">
+  <button
+    mx="auto"
+    primary
+    onclick="startFight()"
+    disabled="@[selectedBrawlers.length === 0 || combat.duration !== 0]"
+  >
     Fight
   </button>
 </stay>

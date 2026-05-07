@@ -44,7 +44,16 @@
       </crow>
       <button primary onclick="$.characters = []">Reset characters</button>
       <button primary onclick="$.accountRewards = 1">Reset rewards</button>
-      <button primary danger onclick="localStorage.clear(); location.reload()">Clear localStorage</button>
+      <button
+        primary
+        danger
+        onclick="
+          localStorage.clear();
+          location.reload();
+        "
+      >
+        Clear localStorage
+      </button>
     </crow>
     <crow vertical left p="2">
       <span>My Server: @[new Date(clock.server).toLocaleString()]</span>
@@ -58,8 +67,12 @@
       </crow>
     </crow>
     <crow vertical left g="1" p="2">
-      <button secondary onclick="document.dispatchEvent(new CustomEvent('pauseCombat'))">Pause combat</button>
-      <button secondary onclick="document.dispatchEvent(new CustomEvent('resumeCombat'))">Resume combat</button>
+      <button secondary onclick="document.dispatchEvent(new CustomEvent('pauseCombat'))">
+        Pause combat
+      </button>
+      <button secondary onclick="document.dispatchEvent(new CustomEvent('resumeCombat'))">
+        Resume combat
+      </button>
       <span>Elapsed ms: @[elapsedMilliseconds.toFixed(0)]</span>
       <span>Duration: @[combat.duration]</span>
     </crow>

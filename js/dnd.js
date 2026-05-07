@@ -11,10 +11,10 @@ let activeZone = null;
 let dragState = null;
 
 const getItemRects = (el) => {
-  const items = [...el.children].filter(c => !c.hasAttribute('dnd-ghost'));
-  return items.map(child => ({
+  const items = [...el.children].filter((c) => !c.hasAttribute('dnd-ghost'));
+  return items.map((child) => ({
     el: child,
-    rect: child.getBoundingClientRect()
+    rect: child.getBoundingClientRect(),
   }));
 };
 
@@ -25,28 +25,24 @@ const animateFLIP = (entries, duration = SHIFT_DURATION) => {
     const dy = oldRect.top - newRect.top;
     if (dx === 0 && dy === 0) return;
 
-    el.animate([
-      { transform: `translate(${dx}px, ${dy}px)` },
-      { transform: 'translate(0, 0)' }
-    ], {
+    el.animate([{ transform: `translate(${dx}px, ${dy}px)` }, { transform: 'translate(0, 0)' }], {
       duration,
       easing: EASE,
-      fill: 'none'
+      fill: 'none',
     });
   });
 };
 
 const getInsertIndex = (zoneEl, x, y, direction) => {
-  const children = [...zoneEl.children].filter(c =>
-    !c.hasAttribute('dnd-ghost') && !c.hasAttribute('dnd-placeholder')
+  const children = [...zoneEl.children].filter(
+    (c) => !c.hasAttribute('dnd-ghost') && !c.hasAttribute('dnd-placeholder'),
   );
   if (!children.length) return 0;
 
   for (let i = 0; i < children.length; i++) {
     const rect = children[i].getBoundingClientRect();
-    const mid = direction === 'horizontal'
-      ? rect.left + rect.width / 2
-      : rect.top + rect.height / 2;
+    const mid =
+      direction === 'horizontal' ? rect.left + rect.width / 2 : rect.top + rect.height / 2;
     const pos = direction === 'horizontal' ? x : y;
     if (pos < mid) return i;
   }
@@ -107,8 +103,8 @@ const startDrag = (e, itemEl, zoneEl) => {
   if (!config) return;
 
   const items = config.items();
-  const children = [...zoneEl.children].filter(c =>
-    !c.hasAttribute('dnd-ghost') && !c.hasAttribute('dnd-placeholder')
+  const children = [...zoneEl.children].filter(
+    (c) => !c.hasAttribute('dnd-ghost') && !c.hasAttribute('dnd-placeholder'),
   );
   const itemIndex = children.indexOf(itemEl);
   if (itemIndex === -1) return;
@@ -141,7 +137,7 @@ const startDrag = (e, itemEl, zoneEl) => {
     item: items[itemIndex],
     sourceRect: rect,
     currentZone: zoneEl,
-    currentIndex: itemIndex
+    currentIndex: itemIndex,
   };
 
   activeZone = { el: zoneEl, config };
@@ -174,8 +170,11 @@ const moveDrag = (e) => {
       }
 
       // Insert in new position
-      const visibleChildren = [...targetZone.children].filter(c =>
-        !c.hasAttribute('dnd-ghost') && !c.hasAttribute('dnd-placeholder') && c.style.display !== 'none'
+      const visibleChildren = [...targetZone.children].filter(
+        (c) =>
+          !c.hasAttribute('dnd-ghost') &&
+          !c.hasAttribute('dnd-placeholder') &&
+          c.style.display !== 'none',
       );
 
       if (newIndex >= visibleChildren.length) {
@@ -196,8 +195,15 @@ const endDrag = () => {
   if (!dragState) return;
 
   const {
-    ghost, placeholder, sourceEl, sourceZone, sourceConfig,
-    sourceIndex, item, currentZone, currentIndex
+    ghost,
+    placeholder,
+    sourceEl,
+    sourceZone,
+    sourceConfig,
+    sourceIndex,
+    item,
+    currentZone,
+    currentIndex,
   } = dragState;
 
   // Snap ghost to placeholder position
@@ -264,10 +270,14 @@ const handlePointerDown = (e) => {
 
 const bindMoveEnd = () => {
   document.addEventListener('pointermove', moveDrag);
-  document.addEventListener('pointerup', () => {
-    endDrag();
-    document.removeEventListener('pointermove', moveDrag);
-  }, { once: true });
+  document.addEventListener(
+    'pointerup',
+    () => {
+      endDrag();
+      document.removeEventListener('pointermove', moveDrag);
+    },
+    { once: true },
+  );
 };
 
 // Public API
@@ -290,7 +300,7 @@ const dnd = {
   destroy() {
     document.removeEventListener('pointerdown', handlePointerDown);
     zones.clear();
-  }
+  },
 };
 
 export default dnd;

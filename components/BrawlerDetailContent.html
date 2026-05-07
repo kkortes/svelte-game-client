@@ -2,7 +2,11 @@
   import CHARACTERS from '/js/constants/CHARACTERS.js';
   import EQUIPMENT from '/js/constants/EQUIPMENT.js';
   import ABILITIES from '/js/constants/ABILITIES.js';
-  import { calculateCombatStatsByCharacter, calculateAvailableAbilitiesByCharacter, calculateTickStart } from '/js/utils.js';
+  import {
+    calculateCombatStatsByCharacter,
+    calculateAvailableAbilitiesByCharacter,
+    calculateTickStart,
+  } from '/js/utils.js';
   import { slotsInPrettyName, unequip } from '/js/equipment.js';
   import { getLevelByExperience } from '/js/level.js';
   import { generateCombat, healFull, prepareTeams } from '/js/combat.js';
@@ -10,7 +14,13 @@
   window.eqRowTooltip = (slot, anchor) => {
     const ref = $.characters[Number($.page.params.characterIndex)]?.overrides?.equipment?.[slot];
     if (!ref) return;
-    try { showTooltip(equipmentTooltipProps(EQUIPMENT(ref, true)), anchor.querySelector('eq-link') || anchor, { direction: 'up' }); } catch { }
+    try {
+      showTooltip(
+        equipmentTooltipProps(EQUIPMENT(ref, true)),
+        anchor.querySelector('eq-link') || anchor,
+        { direction: 'up' },
+      );
+    } catch {}
   };
 
   const state = {
@@ -19,7 +29,7 @@
     currentSlots: [],
     currentAbilities: [],
     currentAvailableAbilities: [],
-    currentLastTickEnd: 0
+    currentLastTickEnd: 0,
   };
 
   // Wrap the whole character-setup in a function so we can re-run it when
@@ -38,9 +48,10 @@
 
     const char = CHARACTERS(characterRef, true);
     const combatStats = calculateCombatStatsByCharacter(char);
-    const isTwoHanded = char.equipment.mainHand && EQUIPMENT(char.equipment.mainHand, true).slotsIn === 'twoHand';
+    const isTwoHanded =
+      char.equipment.mainHand && EQUIPMENT(char.equipment.mainHand, true).slotsIn === 'twoHand';
 
-    const slots = ['mainHand', 'offHand', 'armor', 'accessory', 'trinket'].map(slot => {
+    const slots = ['mainHand', 'offHand', 'armor', 'accessory', 'trinket'].map((slot) => {
       const eq = char.equipment[slot];
       const item = eq ? EQUIPMENT(eq, true) : null;
       const isTwoHandOffHand = slot === 'offHand' && isTwoHanded;
@@ -49,30 +60,42 @@
         prettyName: slotsInPrettyName(slot),
         itemName: isTwoHandOffHand
           ? EQUIPMENT(char.equipment.mainHand, true).name
-          : item ? item.name : ['mainHand', 'offHand'].includes(slot) ? 'Fist' : '-',
+          : item
+            ? item.name
+            : ['mainHand', 'offHand'].includes(slot)
+              ? 'Fist'
+              : '-',
         hasItem: !!eq,
         disabled: isTwoHandOffHand,
-        level: item ? (item.level || 1) : 0
+        level: item ? item.level || 1 : 0,
       };
     });
 
     const eq = char.equipment;
     const isShield = !!(eq.offHand && EQUIPMENT(eq.offHand, true).slotsIn === 'offHand');
     const isTwoHandedWeapon = !!(eq.mainHand && EQUIPMENT(eq.mainHand, true).slotsIn === 'twoHand');
-    const isOneHandedMainhand = !!(eq.mainHand && EQUIPMENT(eq.mainHand, true).slotsIn === 'oneHand');
+    const isOneHandedMainhand = !!(
+      eq.mainHand && EQUIPMENT(eq.mainHand, true).slotsIn === 'oneHand'
+    );
     const isOneHandedOffhand = !!(eq.offHand && EQUIPMENT(eq.offHand, true).slotsIn === 'oneHand');
     const isOneHandedWeapon = isOneHandedMainhand || isOneHandedOffhand;
 
     const getBasicAbilities = (slot) => {
       if (!eq[slot]) return [];
-      return EQUIPMENT(eq[slot], true).abilities
-        .map(a => ABILITIES(a, true))
-        .filter(a => a.basic)
-        .map((a, i) => ({ ...ABILITIES(a), uuid: `${char.id}::${slot}::${eq[slot]?.id}::${a.id}::${a.name}::${i}` }));
+      return EQUIPMENT(eq[slot], true)
+        .abilities.map((a) => ABILITIES(a, true))
+        .filter((a) => a.basic)
+        .map((a, i) => ({
+          ...ABILITIES(a),
+          uuid: `${char.id}::${slot}::${eq[slot]?.id}::${a.id}::${a.name}::${i}`,
+        }));
     };
 
     const punches = Array.from({ length: 6 }, (_, i) =>
-      ABILITIES({ id: 'punch', uuid: `${char.id}::${i < 3 ? 'mainHand' : 'offHand'}::_::punch::${i}` })
+      ABILITIES({
+        id: 'punch',
+        uuid: `${char.id}::${i < 3 ? 'mainHand' : 'offHand'}::_::punch::${i}`,
+      }),
     );
 
     let defaultAbilities = [...punches];
@@ -81,37 +104,55 @@
       defaultAbilities = getBasicAbilities('mainHand');
     } else if (isShield) {
       defaultAbilities = [];
-      defaultAbilities.push(...(isOneHandedWeapon ? getBasicAbilities('mainHand') : punches.slice(0, 3)));
+      defaultAbilities.push(
+        ...(isOneHandedWeapon ? getBasicAbilities('mainHand') : punches.slice(0, 3)),
+      );
       defaultAbilities.push(...getBasicAbilities('offHand'));
     } else if (isOneHandedWeapon) {
       defaultAbilities = [];
-      defaultAbilities.push(...(isOneHandedMainhand ? getBasicAbilities('mainHand') : punches.slice(0, 3)));
-      defaultAbilities.push(...(isOneHandedOffhand ? getBasicAbilities('offHand') : punches.slice(3, 6)));
+      defaultAbilities.push(
+        ...(isOneHandedMainhand ? getBasicAbilities('mainHand') : punches.slice(0, 3)),
+      );
+      defaultAbilities.push(
+        ...(isOneHandedOffhand ? getBasicAbilities('offHand') : punches.slice(3, 6)),
+      );
     }
 
-    const currentOverrides = (characterRef.overrides?.abilities || []);
-    const nonBasicFromOverrides = currentOverrides.filter(a => {
-      try { return !ABILITIES(a, true).basic; } catch { return false; }
+    const currentOverrides = characterRef.overrides?.abilities || [];
+    const nonBasicFromOverrides = currentOverrides.filter((a) => {
+      try {
+        return !ABILITIES(a, true).basic;
+      } catch {
+        return false;
+      }
     });
 
     const merged = [
-      ...nonBasicFromOverrides.map(a => JSON.parse(JSON.stringify(a))),
-      ...defaultAbilities
+      ...nonBasicFromOverrides.map((a) => JSON.parse(JSON.stringify(a))),
+      ...defaultAbilities,
     ];
 
-    const mergedUuids = merged.map(a => a.uuid).sort().join(',');
-    const currentUuids = currentOverrides.map(a => a.uuid).sort().join(',');
+    const mergedUuids = merged
+      .map((a) => a.uuid)
+      .sort()
+      .join(',');
+    const currentUuids = currentOverrides
+      .map((a) => a.uuid)
+      .sort()
+      .join(',');
     if (mergedUuids !== currentUuids) {
       characterRef.overrides.abilities = merged;
     }
 
     const availableAbilities = calculateAvailableAbilitiesByCharacter(char);
-    const activeAbilities = (characterRef.overrides?.abilities || []).map(a => ABILITIES(a, true));
-    const usedUuids = new Set(activeAbilities.map(a => a.uuid));
+    const activeAbilities = (characterRef.overrides?.abilities || []).map((a) =>
+      ABILITIES(a, true),
+    );
+    const usedUuids = new Set(activeAbilities.map((a) => a.uuid));
 
     const availableNonBasic = availableAbilities
-      .filter(a => !ABILITIES(a, true).basic && !usedUuids.has(a.uuid))
-      .map(a => ABILITIES(a, true))
+      .filter((a) => !ABILITIES(a, true).basic && !usedUuids.has(a.uuid))
+      .map((a) => ABILITIES(a, true))
       .sort((a, b) => a.name.localeCompare(b.name))
       .sort((a, b) => a.ticks - b.ticks);
 
@@ -122,11 +163,11 @@
       return { ...ability, tickStart, widthPct, overTick: tickStart > 11 };
     });
 
-    const lastTick = abilityBarItems.filter(a => a.tickStart < char.maxTicks).at(-1);
+    const lastTick = abilityBarItems.filter((a) => a.tickStart < char.maxTicks).at(-1);
     const lastTickEnd = lastTick ? lastTick.tickStart + lastTick.ticks : 0;
 
     const canRetire = getLevelByExperience($.experience) <= 4;
-    const fmt = (v) => v === 0 ? '-' : v > 1 ? v : `${(v * 100).toFixed(0)}%`;
+    const fmt = (v) => (v === 0 ? '-' : v > 1 ? v : `${(v * 100).toFixed(0)}%`);
 
     target.currentCharacter = { ...char, slots, _canRetire: canRetire };
     target.currentCombatStats = {
@@ -145,9 +186,9 @@
         maxHealth: fmt((combatStats.modifiers || {}).maxHealth || 0),
         maxArmor: fmt((combatStats.modifiers || {}).maxArmor || 0),
         damage: fmt((combatStats.modifiers || {}).damage || 0),
-        resistance: fmt((combatStats.modifiers || {}).resistance || 0)
+        resistance: fmt((combatStats.modifiers || {}).resistance || 0),
       },
-      limits: combatStats.limits || {}
+      limits: combatStats.limits || {},
     };
     target.currentSlots = slots;
     target.currentAbilities = abilityBarItems;
@@ -158,7 +199,7 @@
   setupCharacter(state);
   component(state);
 
-  const id = Object.keys(window.__vibeComponents).find(k => window.__vibeComponents[k] === state);
+  const id = Object.keys(window.__vibeComponents).find((k) => window.__vibeComponents[k] === state);
   const s = $[id];
 
   $.on('afterUpdate', (current, prev) => {
@@ -168,7 +209,10 @@
   });
 
   window.toggleDetailedView = () => {
-    $.settings = { ...$.settings, showDetailedCharacterView: !$.settings.showDetailedCharacterView };
+    $.settings = {
+      ...$.settings,
+      showDetailedCharacterView: !$.settings.showDetailedCharacterView,
+    };
   };
 
   window.retireCharacter = () => {
@@ -177,10 +221,10 @@
       name: 'confirm',
       text: `You are retiring ${char.name}. Do you wish to proceed?`,
       confirm: () => {
-        $.selectedBrawlers = $.selectedBrawlers.filter(uuid => uuid !== char.uuid);
+        $.selectedBrawlers = $.selectedBrawlers.filter((uuid) => uuid !== char.uuid);
         window.location.href = '/brawlers';
         $.characters = [];
-      }
+      },
     };
   };
 
@@ -224,17 +268,25 @@
           onReorder: (newItems) => {
             const ref = characterRef();
             if (!ref) return;
-            ref.overrides.abilities = newItems.map(a => ({ id: a.id, uuid: a.uuid, overrides: a.overrides }));
+            ref.overrides.abilities = newItems.map((a) => ({
+              id: a.id,
+              uuid: a.uuid,
+              overrides: a.overrides,
+            }));
             setupCharacter(s);
           },
           onReceive: (item, _fromZone, insertIndex) => {
             const ref = characterRef();
             if (!ref) return;
             const current = ref.overrides.abilities.slice();
-            current.splice(insertIndex, 0, { id: item.id, uuid: item.uuid, overrides: item.overrides });
+            current.splice(insertIndex, 0, {
+              id: item.id,
+              uuid: item.uuid,
+              overrides: item.overrides,
+            });
             ref.overrides.abilities = current;
             setupCharacter(s);
-          }
+          },
         });
       }
 
@@ -252,9 +304,9 @@
           onReceive: (item) => {
             const ref = characterRef();
             if (!ref) return;
-            ref.overrides.abilities = ref.overrides.abilities.filter(a => a.uuid !== item.uuid);
+            ref.overrides.abilities = ref.overrides.abilities.filter((a) => a.uuid !== item.uuid);
             setupCharacter(s);
-          }
+          },
         });
       }
     });
@@ -264,12 +316,19 @@
 <page-content>
   <!-- if this.currentCharacter -->
   <crow vertical g="4" left>
-    <component src="/components/TitleBar.html" title="@[this.currentCharacter.name]"
-      back="/brawlers">
+    <component
+      src="/components/TitleBar.html"
+      title="@[this.currentCharacter.name]"
+      back="/brawlers"
+    >
       <accordion open="@[!settings.showDetailedCharacterView]">
         <accordion-content>
-          <component src="/components/CoreStats.html" hp="@[this.currentCombatStats.maxHealth]"
-            armor="@[this.currentCombatStats.maxArmor]" damage="@[this.currentCombatStats.damage]">
+          <component
+            src="/components/CoreStats.html"
+            hp="@[this.currentCombatStats.maxHealth]"
+            armor="@[this.currentCombatStats.maxArmor]"
+            damage="@[this.currentCombatStats.damage]"
+          >
           </component>
         </accordion-content>
       </accordion>
@@ -292,8 +351,12 @@
 
     <crow left up g="4" w="full" main-content>
       <crow vertical left f="none" avatar-col>
-        <component src="/components/CharacterAvatar.html" image="@[this.currentCharacter.image]"
-          size="@[this.currentCharacter.size]" name="@[this.currentCharacter.name]"></component>
+        <component
+          src="/components/CharacterAvatar.html"
+          image="@[this.currentCharacter.image]"
+          size="@[this.currentCharacter.size]"
+          name="@[this.currentCharacter.name]"
+        ></component>
       </crow>
 
       <crow vertical left f="2" detail-col>
@@ -463,7 +526,6 @@
                 </crow>
               </crow>
             </crow>
-
           </accordion-content>
         </accordion>
 
@@ -486,8 +548,11 @@
               <!-- if !eq.disabled -->
               <!-- if eq.hasItem -->
               <eq-name-target onmouseenter="eqRowTooltip('@[eq.slot]', this)">
-                <component src="/components/EquipmentLink.html" level="@[eq.level]"
-                  name="@[eq.itemName]"></component>
+                <component
+                  src="/components/EquipmentLink.html"
+                  level="@[eq.level]"
+                  name="@[eq.itemName]"
+                ></component>
               </eq-name-target>
               <!-- /if -->
               <!-- if !eq.hasItem -->
@@ -513,8 +578,11 @@
         <button sm secondary onclick="tryOutBuild()">Try out build</button>
       </component>
 
-      <component src="/components/AbilityBar.html" abilities="@[this.currentAbilities]"
-        lasttick="@[this.currentLastTickEnd]"></component>
+      <component
+        src="/components/AbilityBar.html"
+        abilities="@[this.currentAbilities]"
+        lasttick="@[this.currentLastTickEnd]"
+      ></component>
 
       <div h="10"></div>
 
@@ -522,16 +590,29 @@
 
       <crow available-grid w="full" g="2" p="2">
         <!-- each this.currentAvailableAbilities as ability -->
-        <available-ability dnd-item flex down f="none" relative basic="@[ability.basic]"
+        <available-ability
+          dnd-item
+          flex
+          down
+          f="none"
+          relative
+          basic="@[ability.basic]"
           data-ability="@[JSON.stringify(ability)]"
-          onmouseenter="showTooltip(abilityTooltipProps(JSON.parse(this.dataset.ability)), this, { direction: 'up', lock: true })">
+          onmouseenter="
+            showTooltip(abilityTooltipProps(JSON.parse(this.dataset.ability)), this, {
+              direction: 'up',
+              lock: true,
+            })
+          "
+        >
           <icon @[ability.icon]></icon>
           <ability-tick-count absolute flex b="-2.5">@[ability.ticks]</ability-tick-count>
         </available-ability>
         <!-- /each -->
         <!-- if this.currentAvailableAbilities.length === 0 -->
-        <span text-muted text-sm>No additional abilities available. Equip items to unlock
-          more.</span>
+        <span text-muted text-sm
+          >No additional abilities available. Equip items to unlock more.</span
+        >
         <!-- /if -->
       </crow>
     </crow>

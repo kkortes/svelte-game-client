@@ -9,28 +9,49 @@
 
           <stay w="full" sm:reverse tab-bar t="8.5">
             <crow up sm:g="0" g="1" tab-row w="full" py="3" sm:h="8" overflow-hidden sm:p="0">
-              <a href="/" sm:px="6" class="button" tertiary="@[!page.name.startsWith('home')]"
-                primary="@[page.name.startsWith('home')]">
+              <a
+                href="/"
+                sm:px="6"
+                class="button"
+                tertiary="@[!page.name.startsWith('home')]"
+                primary="@[page.name.startsWith('home')]"
+              >
                 <icon info hide sm:block></icon><span sm:hide>Game Guide</span>
               </a>
-              <a href="/the-arena" sm:px="6" class="button"
+              <a
+                href="/the-arena"
+                sm:px="6"
+                class="button"
                 tertiary="@[!page.name.startsWith('the-arena')]"
-                primary="@[page.name.startsWith('the-arena')]">
+                primary="@[page.name.startsWith('the-arena')]"
+              >
                 <icon damage hide sm:block></icon><span sm:hide>The Arena</span>
               </a>
-              <a href="/random-duel" sm:px="6" class="button"
+              <a
+                href="/random-duel"
+                sm:px="6"
+                class="button"
                 tertiary="@[!page.name.startsWith('random-duel')]"
-                primary="@[page.name.startsWith('random-duel')]">
+                primary="@[page.name.startsWith('random-duel')]"
+              >
                 <icon dice hide sm:block></icon><span sm:hide>Random duel</span>
               </a>
-              <a href="/vendor" sm:px="6" class="button"
+              <a
+                href="/vendor"
+                sm:px="6"
+                class="button"
                 tertiary="@[!page.name.startsWith('vendor')]"
-                primary="@[page.name.startsWith('vendor')]">
+                primary="@[page.name.startsWith('vendor')]"
+              >
                 <icon coin hide sm:block></icon><span sm:hide>Vendor</span>
               </a>
-              <a href="/brawlers" sm:px="6" class="button"
+              <a
+                href="/brawlers"
+                sm:px="6"
+                class="button"
                 tertiary="@[!page.name.startsWith('brawlers')]"
-                primary="@[page.name.startsWith('brawlers')]">
+                primary="@[page.name.startsWith('brawlers')]"
+              >
                 <icon maxHealth hide sm:block></icon><span sm:hide>Brawlers</span>
               </a>
             </crow>
@@ -41,9 +62,7 @@
 
       <component src="/components/Sidebar.html"></component>
 
-
       <!-- <component src="/components/Armory.html"></component> -->
-
     </crow>
   </component>
 
@@ -85,7 +104,6 @@
       gap: 0;
     }
 
-
     game-layout auth-form {
       position: relative;
       width: 100%;
@@ -108,7 +126,8 @@
       width: 100%;
       max-width: calc(calc(var(--unit) * 320));
       margin: 0 auto;
-      padding: calc(calc(var(--unit) * 3)) calc(calc(var(--unit) * 3)) calc(calc(var(--unit) * 0)) calc(calc(var(--unit) * 3));
+      padding: calc(calc(var(--unit) * 3)) calc(calc(var(--unit) * 3)) calc(calc(var(--unit) * 0))
+        calc(calc(var(--unit) * 3));
       gap: calc(calc(var(--unit) * 3));
     }
 
@@ -127,7 +146,9 @@
 
     game-layout sidebar[armory] {
       order: 1;
-      transition: opacity 200ms, transform 200ms;
+      transition:
+        opacity 200ms,
+        transform 200ms;
       opacity: 0;
       transform: translateX(calc(calc(var(--unit) * 4)));
       pointer-events: none;
@@ -225,7 +246,6 @@
       box-shadow: inset 0 0 calc(calc(var(--unit) * 25)) rgb(0 0 0 / 80%);
       color: rgb(156, 163, 175);
     }
-
 
     menu-label {
       width: min(calc(calc(var(--unit) * 40)), 50%);

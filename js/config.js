@@ -6,5 +6,5 @@ export default {
   IS_DEV,
   IS_PROD: !IS_DEV,
   AUTO_EMAIL: import.meta.env.VITE_AUTO_EMAIL ?? '',
-  AUTO_PASSWORD: import.meta.env.VITE_AUTO_PASSWORD ?? ''
+  AUTO_PASSWORD: import.meta.env.VITE_AUTO_PASSWORD ?? '',
 };

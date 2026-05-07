@@ -1,16 +1,33 @@
 <health-bar relative block w="full" left="@[card.facingRight]">
-  <component src="/components/Bar.html" center color="green"
+  <component
+    src="/components/Bar.html"
+    center
+    color="green"
     current="@[Math.max(0, card.currentHealth)]"
-    max="@[card.maxHealth]"></component>
+    max="@[card.maxHealth]"
+  ></component>
   <!-- if card.maxArmor > 0 -->
-  <component src="/components/Bar.html" center color="blue"
+  <component
+    src="/components/Bar.html"
+    center
+    color="blue"
     current="@[Math.max(0, card.currentArmor)]"
-    max="@[card.maxArmor]"></component>
+    max="@[card.maxArmor]"
+  ></component>
   <!-- /if -->
 
   <!-- each card.floaters as f -->
-  <hp-floater absolute @[f.vfxName] crit="@[f.isCritical]"
-    style="--rnd: @[f.random]; --dir: @[f.dir]; --y-offset: @[f.vfxName === 'armorHurt' ? '160px' : '0px']; --scale: @[f.isCritical ? 2 : 1];">
+  <hp-floater
+    absolute
+    @[f.vfxName]
+    crit="@[f.isCritical]"
+    style="
+      --rnd: @[f.random];
+      --dir: @[f.dir];
+      --y-offset: @[f.vfxName === 'armorHurt' ? '160px': '0px'];
+      --scale: @[f.isCritical ? 2: 1];
+    "
+  >
     <hp-floater-x>
       <hp-floater-y>
         <!-- if f.vfxName === 'heal' -->+@[f.amount]<!-- /if -->

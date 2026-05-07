@@ -5,7 +5,10 @@
   "scripts": {
     "predev": "npx vercel env pull .env.local",
     "dev": "../dev.sh 'bunx vite --port $PORT'",
-    "build": "bunx vite build"
+    "build": "bunx vite build",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "git config core.hooksPath .githooks"
   },
   "dependencies": {
     "@ape-egg/vibe": "^1.9.1",
@@ -14,7 +17,8 @@
     "seedrandom": "^3.0.5"
   },
   "devDependencies": {
-    "vite": "^8.0.8",
-    "@ape-egg/vite-plugin-vibe": "^0.0.2"
+    "@ape-egg/vite-plugin-vibe": "^0.0.2",
+    "prettier": "^3.8.3",
+    "vite": "^8.0.8"
   }
 }

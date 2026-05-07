@@ -39,7 +39,7 @@ export const calculateAvailableAbilitiesByCharacter = (character) =>
       const instanceKey = `${character.id}::${slot}::${equipment.id}::${a.id}::${abilityIndex}`;
       return {
         ...a,
-        uuid: instanceKey
+        uuid: instanceKey,
       };
     });
   });
@@ -54,7 +54,7 @@ export const calculateCombatStatsByCharacter = (character) => {
   const levelCombatStats = {
     maxHealth: HEALTH_PER_LEVEL * (characterLevel - 1),
     damage: DAMAGE_PER_LEVEL * (characterLevel - 1),
-    maxArmor: ARMOR_PER_LEVEL * (characterLevel - 1)
+    maxArmor: ARMOR_PER_LEVEL * (characterLevel - 1),
   };
 
   const parts = [
@@ -62,13 +62,10 @@ export const calculateCombatStatsByCharacter = (character) => {
     levelCombatStats,
     ...Object.values(character.equipment)
       .filter((equipment) => equipment !== null)
-      .map((equipment) => EQUIPMENT(equipment, true)?.combatStats ?? {})
+      .map((equipment) => EQUIPMENT(equipment, true)?.combatStats ?? {}),
   ];
 
-  return parts.reduce(
-    (acc, cur) => deepAdd(acc, cur),
-    {}
-  );
+  return parts.reduce((acc, cur) => deepAdd(acc, cur), {});
 };
 
 export const calculateTickStart = (abilities, index) => {
@@ -79,7 +76,13 @@ export const calculateTickStart = (abilities, index) => {
   return tickStart;
 };
 
-export const prepareCombatant = (characterRef, teamCount, combatantCount, teamIndex, combatantIndex) => {
+export const prepareCombatant = (
+  characterRef,
+  teamCount,
+  combatantCount,
+  teamIndex,
+  combatantIndex,
+) => {
   const character = CHARACTERS(characterRef, true);
 
   const rotation = 360 / teamCount;
@@ -87,9 +90,8 @@ export const prepareCombatant = (characterRef, teamCount, combatantCount, teamIn
 
   combatStats.currentArmor = combatStats.maxArmor;
 
-  const abilitiesHydrated = (
-    character.abilities.map((ability) => ABILITIES(ability, true))
-  )
+  const abilitiesHydrated = character.abilities
+    .map((ability) => ABILITIES(ability, true))
     .map((ability) => {
       const { calc, ...rest } = ability;
 
@@ -98,12 +100,12 @@ export const prepareCombatant = (characterRef, teamCount, combatantCount, teamIn
         calc: undefined,
         damage: ability?.calc?.damage()?.result || 0,
         healing: ability?.calc?.healing()?.result || 0,
-        duration: ability?.calc?.duration()?.result || 0
+        duration: ability?.calc?.duration()?.result || 0,
       };
     });
 
   const abilitiesCut = abilitiesHydrated.filter(
-    (_, i) => calculateTickStart(abilitiesHydrated, i) < character.maxTicks
+    (_, i) => calculateTickStart(abilitiesHydrated, i) < character.maxTicks,
   );
 
   const abilitiesCopied = abilitiesCut.reduce((a, ability, i) => {
@@ -129,7 +131,7 @@ export const prepareCombatant = (characterRef, teamCount, combatantCount, teamIn
                 }
 
                 return ab;
-              })
+              }),
           ]
         : [...a, ability];
     }, [])
@@ -151,7 +153,7 @@ export const prepareCombatant = (characterRef, teamCount, combatantCount, teamIn
   const position = {
     x: Math.sin(rotRadians) * radius,
     y: Math.cos(rotRadians) * radius,
-    rot
+    rot,
   };
 
   return {
@@ -172,31 +174,31 @@ export const prepareCombatant = (characterRef, teamCount, combatantCount, teamIn
       knockedOut: 0,
       isStunned: {
         ticks: 0,
-        value: 0
+        value: 0,
       },
       isBleeding: {
         ticks: 0,
-        value: 0
+        value: 0,
       },
       isVulnerable: {
         ticks: 0,
-        value: 0
+        value: 0,
       },
       isWounded: {
         max: combatStats.limits.wounded,
-        value: 0
+        value: 0,
       },
       isConcussed: {
         max: combatStats.limits.concussed,
-        value: 0
+        value: 0,
       },
       isExposed: {
         max: combatStats.limits.exposed,
-        value: 0
-      }
+        value: 0,
+      },
     },
     abilities,
-    abilitiesCopied
+    abilitiesCopied,
   };
 };
 

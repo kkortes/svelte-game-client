@@ -84,8 +84,7 @@ const recursiveLookup = (target, searches = []) => {
   return false;
 };
 
-const capitalizeFirstLetter = (string) =>
-  `${string.charAt(0).toUpperCase()}${string.slice(1)}`;
+const capitalizeFirstLetter = (string) => `${string.charAt(0).toUpperCase()}${string.slice(1)}`;
 
 const colorStrength = (col, amt) => {
   let usePound = false;
@@ -165,7 +164,7 @@ const filterSplit = (array, condition) =>
   array.reduce(
     ([hits, misses], item) =>
       condition(item) ? [[...hits, item], misses] : [hits, [...misses, item]],
-    [[], []]
+    [[], []],
   );
 
 const findNIndex = (array, condition, n = 1, searched = []) => {
@@ -178,7 +177,7 @@ const findNIndex = (array, condition, n = 1, searched = []) => {
       array.slice(index + 1, array.length),
       condition,
       n - 1,
-      array.slice(0, index + 1)
+      array.slice(0, index + 1),
     );
   }
 
@@ -192,7 +191,7 @@ const msToTime = (ms) => ({
   seconds: Math.floor((ms / 1000) % 60),
   minutes: Math.floor((ms / (1000 * 60)) % 60),
   hours: Math.floor((ms / (1000 * 60 * 60)) % 24),
-  days: Math.floor((ms / (1000 * 60 * 60 * 24)) % 365)
+  days: Math.floor((ms / (1000 * 60 * 60 * 24)) % 365),
 });
 
 const upsertArray = (players, nearby) =>
@@ -271,7 +270,7 @@ const formatDescription = (text) => (text || '').replace(/<br\s*\/?>/gi, '\n').t
 const formatCoins = (amount) => ({
   gold: 0,
   silver: Math.floor(amount / 100),
-  copper: amount % 100
+  copper: amount % 100,
 });
 
 export {
@@ -311,5 +310,5 @@ export {
   preventDefault,
   deepMerge,
   deepAdd,
-  deepSubtract
+  deepSubtract,
 };

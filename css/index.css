@@ -100,12 +100,12 @@
   --purple-600: #9333ea;
 
   --gold-border: #b8860b;
-  --gold-highlight: #FEDB37;
-  --gold-warm: #FDB931;
+  --gold-highlight: #fedb37;
+  --gold-warm: #fdb931;
   --gold-deep: #9f7928;
-  --gold-shadow: #8A6E2F;
-  --gold-pale: #FFFFAC;
-  --gold-soft: #D1B464;
+  --gold-shadow: #8a6e2f;
+  --gold-pale: #ffffac;
+  --gold-soft: #d1b464;
   --gold-bronze: #5d4a1f;
 
   --inspector-bg: #1e1e1e;
@@ -405,13 +405,13 @@ progress-bar > div {
   min-height: calc(var(--unit) * 10);
 }
 
-[dnd-item]:not([dnd-item="false"]) {
+[dnd-item]:not([dnd-item='false']) {
   cursor: grab;
   user-select: none;
   touch-action: none;
 }
 
-[dnd-item]:not([dnd-item="false"]):active {
+[dnd-item]:not([dnd-item='false']):active {
   cursor: grabbing;
 }
 

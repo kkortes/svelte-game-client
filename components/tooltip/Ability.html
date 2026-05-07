@@ -3,11 +3,16 @@
   <hr />
 
   <!-- if tooltip.props.ticks -->
-  <span tooltip-stat><strong>Wind up:</strong> @[tooltip.props.ticks] tick@[tooltip.props.ticks === 1 ? '' : 's']</span>
+  <span tooltip-stat
+    ><strong>Wind up:</strong> @[tooltip.props.ticks] tick@[tooltip.props.ticks === 1 ? '' :
+    's']</span
+  >
   <!-- /if -->
 
   <!-- if tooltip.props.kind -->
-  <span tooltip-tag @[tooltip.props.kind]>@[tooltip.props.kind === 'basic' ? 'Basic' : 'Special']</span>
+  <span tooltip-tag @[tooltip.props.kind]
+    >@[tooltip.props.kind === 'basic' ? 'Basic' : 'Special']</span
+  >
   <!-- /if -->
 
   <!-- if tooltip.props.description -->

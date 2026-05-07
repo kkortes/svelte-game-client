@@ -114,5 +114,5 @@ export const slotsInPrettyName = (slotsIn) =>
     offHand: 'Off-Hand',
     accessory: 'Accessory',
     trinket: 'Trinket',
-    armor: 'Armor'
+    armor: 'Armor',
   })[slotsIn];

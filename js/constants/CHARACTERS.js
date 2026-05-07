@@ -11,7 +11,7 @@ export const DEFAULT_MODIFIERS = {
   maxHealth: 0,
   maxArmor: 0,
   damage: 0,
-  resistance: 0
+  resistance: 0,
 };
 
 export const DEFAULT_LUCKY_STATS = {
@@ -19,13 +19,13 @@ export const DEFAULT_LUCKY_STATS = {
   criticalDamage: 0.5,
   dodgeChance: 0.05,
   blockChance: 0,
-  magicChance: 0
+  magicChance: 0,
 };
 
 const DEFAULT_LIMITS = {
   wounded: 8,
   concussed: 8,
-  exposed: 8
+  exposed: 8,
 };
 
 export const DEFAULT_EQUIPMENT = {
@@ -33,7 +33,7 @@ export const DEFAULT_EQUIPMENT = {
   offHand: null,
   armor: null,
   accessory: null,
-  trinket: null
+  trinket: null,
 };
 
 const DEFAULT_NPC_EQUIPMENT = {
@@ -41,7 +41,7 @@ const DEFAULT_NPC_EQUIPMENT = {
   offHand: null,
   armor: EQUIPMENT('leatherBoots'),
   accessory: null,
-  trinket: null
+  trinket: null,
 };
 
 export const ALL_CHARACTERS = {
@@ -62,13 +62,13 @@ export const ALL_CHARACTERS = {
       ...{
         ...DEFAULT_LUCKY_STATS,
         dodgeChance: DEFAULT_LUCKY_STATS.dodgeChance + 0.04,
-        magicChance: DEFAULT_LUCKY_STATS.magicChance + 0.02
+        magicChance: DEFAULT_LUCKY_STATS.magicChance + 0.02,
       },
       limits: DEFAULT_LIMITS,
-      modifiers: DEFAULT_MODIFIERS
+      modifiers: DEFAULT_MODIFIERS,
     },
     maxTicks: DEFAULT_MAX_TICKS,
-    abilities: [ABILITIES('pierce'), ABILITIES('pierce'), ABILITIES('pierce'), ABILITIES('pierce')]
+    abilities: [ABILITIES('pierce'), ABILITIES('pierce'), ABILITIES('pierce'), ABILITIES('pierce')],
   },
   elfFemale: {
     name: 'Brawler',
@@ -87,13 +87,13 @@ export const ALL_CHARACTERS = {
       ...{
         ...DEFAULT_LUCKY_STATS,
         dodgeChance: DEFAULT_LUCKY_STATS.dodgeChance + 0.02,
-        magicChance: DEFAULT_LUCKY_STATS.magicChance + 0.04
+        magicChance: DEFAULT_LUCKY_STATS.magicChance + 0.04,
       },
       limits: DEFAULT_LIMITS,
-      modifiers: DEFAULT_MODIFIERS
+      modifiers: DEFAULT_MODIFIERS,
     },
     maxTicks: DEFAULT_MAX_TICKS,
-    abilities: [ABILITIES('pierce'), ABILITIES('pierce'), ABILITIES('pierce'), ABILITIES('pierce')]
+    abilities: [ABILITIES('pierce'), ABILITIES('pierce'), ABILITIES('pierce'), ABILITIES('pierce')],
   },
   humanMale: {
     name: 'Brawler',
@@ -110,17 +110,17 @@ export const ALL_CHARACTERS = {
       currentArmor: 0,
       damage: DEFAULT_DAMAGE,
       ...{
-        ...DEFAULT_LUCKY_STATS
+        ...DEFAULT_LUCKY_STATS,
       },
       limits: DEFAULT_LIMITS,
       modifiers: {
         ...DEFAULT_MODIFIERS,
         damage: DEFAULT_MODIFIERS.damage + 0.15,
-        resistance: DEFAULT_MODIFIERS.resistance + 0.25
-      }
+        resistance: DEFAULT_MODIFIERS.resistance + 0.25,
+      },
     },
     maxTicks: DEFAULT_MAX_TICKS,
-    abilities: [ABILITIES('swing'), ABILITIES('swing'), ABILITIES('swing'), ABILITIES('swing')]
+    abilities: [ABILITIES('swing'), ABILITIES('swing'), ABILITIES('swing'), ABILITIES('swing')],
   },
   humanFemale: {
     name: 'Brawler',
@@ -141,11 +141,16 @@ export const ALL_CHARACTERS = {
       modifiers: {
         ...DEFAULT_MODIFIERS,
         damage: DEFAULT_MODIFIERS.damage + 0.05,
-        resistance: DEFAULT_MODIFIERS.resistance + 0.5
-      }
+        resistance: DEFAULT_MODIFIERS.resistance + 0.5,
+      },
     },
     maxTicks: DEFAULT_MAX_TICKS,
-    abilities: [ABILITIES('swing'), ABILITIES('swing'), ABILITIES('block'), ABILITIES('shieldBash')]
+    abilities: [
+      ABILITIES('swing'),
+      ABILITIES('swing'),
+      ABILITIES('block'),
+      ABILITIES('shieldBash'),
+    ],
   },
   trollMale: {
     name: 'Brawler',
@@ -162,17 +167,17 @@ export const ALL_CHARACTERS = {
       currentArmor: 0,
       damage: DEFAULT_DAMAGE,
       ...{
-        ...DEFAULT_LUCKY_STATS
+        ...DEFAULT_LUCKY_STATS,
       },
       limits: DEFAULT_LIMITS,
       modifiers: {
         ...DEFAULT_MODIFIERS,
         maxHealth: DEFAULT_MODIFIERS.maxHealth + 0.2,
-        damage: DEFAULT_MODIFIERS.damage + 0.4
-      }
+        damage: DEFAULT_MODIFIERS.damage + 0.4,
+      },
     },
     maxTicks: DEFAULT_MAX_TICKS,
-    abilities: [ABILITIES('slam'), ABILITIES('slam'), ABILITIES('slam')]
+    abilities: [ABILITIES('slam'), ABILITIES('slam'), ABILITIES('slam')],
   },
   trollFemale: {
     name: 'Brawler',
@@ -189,30 +194,30 @@ export const ALL_CHARACTERS = {
       maxArmor: 0,
       currentArmor: 0,
       ...{
-        ...DEFAULT_LUCKY_STATS
+        ...DEFAULT_LUCKY_STATS,
       },
       limits: DEFAULT_LIMITS,
       modifiers: {
         ...DEFAULT_MODIFIERS,
         maxHealth: DEFAULT_MODIFIERS.maxHealth + 0.4,
-        damage: DEFAULT_MODIFIERS.damage + 0.2
-      }
+        damage: DEFAULT_MODIFIERS.damage + 0.2,
+      },
     },
     maxTicks: DEFAULT_MAX_TICKS,
     abilities: [
       ABILITIES('slam', false, {
-        overrides: { ticks: 3 }
+        overrides: { ticks: 3 },
       }),
       ABILITIES('slam', false, {
-        overrides: { ticks: 3 }
+        overrides: { ticks: 3 },
       }),
       ABILITIES('slam', false, {
-        overrides: { ticks: 3 }
+        overrides: { ticks: 3 },
       }),
       ABILITIES('slam', false, {
-        overrides: { ticks: 3 }
-      })
-    ]
+        overrides: { ticks: 3 },
+      }),
+    ],
   },
   dwarfMale: {
     name: 'Brawler',
@@ -229,17 +234,17 @@ export const ALL_CHARACTERS = {
       currentArmor: 0,
       damage: DEFAULT_DAMAGE,
       ...{
-        ...DEFAULT_LUCKY_STATS
+        ...DEFAULT_LUCKY_STATS,
       },
       limits: DEFAULT_LIMITS,
       modifiers: {
         ...DEFAULT_MODIFIERS,
         maxArmor: DEFAULT_MODIFIERS.maxArmor + 0.4,
-        maxHealth: DEFAULT_MODIFIERS.maxHealth + 0.2
-      }
+        maxHealth: DEFAULT_MODIFIERS.maxHealth + 0.2,
+      },
     },
     maxTicks: DEFAULT_MAX_TICKS,
-    abilities: [ABILITIES('slam'), ABILITIES('slam'), ABILITIES('block'), ABILITIES('shieldBash')]
+    abilities: [ABILITIES('slam'), ABILITIES('slam'), ABILITIES('block'), ABILITIES('shieldBash')],
   },
   dwarfFemale: {
     name: 'Brawler',
@@ -260,15 +265,15 @@ export const ALL_CHARACTERS = {
       modifiers: {
         ...DEFAULT_MODIFIERS,
         maxArmor: DEFAULT_MODIFIERS.maxArmor + 0.5,
-        maxHealth: DEFAULT_MODIFIERS.maxHealth + 0.1
-      }
+        maxHealth: DEFAULT_MODIFIERS.maxHealth + 0.1,
+      },
     },
     maxTicks: DEFAULT_MAX_TICKS,
     abilities: [
       ABILITIES('swing', false, { overrides: { ticks: 4 } }),
       ABILITIES('swing', false, { overrides: { ticks: 4 } }),
-      ABILITIES('swing', false, { overrides: { ticks: 4 } })
-    ]
+      ABILITIES('swing', false, { overrides: { ticks: 4 } }),
+    ],
   },
   goblinMale: {
     name: 'Brawler',
@@ -287,10 +292,10 @@ export const ALL_CHARACTERS = {
       ...{
         ...DEFAULT_LUCKY_STATS,
         criticalChance: DEFAULT_LUCKY_STATS.criticalChance + 0.02,
-        criticalDamage: DEFAULT_LUCKY_STATS.criticalDamage + 0.4
+        criticalDamage: DEFAULT_LUCKY_STATS.criticalDamage + 0.4,
       },
       limits: DEFAULT_LIMITS,
-      modifiers: DEFAULT_MODIFIERS
+      modifiers: DEFAULT_MODIFIERS,
     },
     maxTicks: DEFAULT_MAX_TICKS,
     abilities: [
@@ -299,8 +304,8 @@ export const ALL_CHARACTERS = {
       ABILITIES('stab'),
       ABILITIES('stab'),
       ABILITIES('stab'),
-      ABILITIES('stab')
-    ]
+      ABILITIES('stab'),
+    ],
   },
   goblinFemale: {
     name: 'Brawler',
@@ -319,13 +324,13 @@ export const ALL_CHARACTERS = {
       ...{
         ...DEFAULT_LUCKY_STATS,
         criticalChance: DEFAULT_LUCKY_STATS.criticalChance + 0.04,
-        criticalDamage: DEFAULT_LUCKY_STATS.criticalDamage + 0.2
+        criticalDamage: DEFAULT_LUCKY_STATS.criticalDamage + 0.2,
       },
       limits: DEFAULT_LIMITS,
-      modifiers: DEFAULT_MODIFIERS
+      modifiers: DEFAULT_MODIFIERS,
     },
     maxTicks: DEFAULT_MAX_TICKS,
-    abilities: [ABILITIES('swing'), ABILITIES('swing'), ABILITIES('swing'), ABILITIES('swing')]
+    abilities: [ABILITIES('swing'), ABILITIES('swing'), ABILITIES('swing'), ABILITIES('swing')],
   },
   succubus: {
     name: 'Succubus',
@@ -344,10 +349,10 @@ export const ALL_CHARACTERS = {
       damage: DEFAULT_DAMAGE,
       ...DEFAULT_LUCKY_STATS,
       limits: DEFAULT_LIMITS,
-      modifiers: DEFAULT_MODIFIERS
+      modifiers: DEFAULT_MODIFIERS,
     },
     maxTicks: Infinity,
-    abilities: [ABILITIES('swing'), ABILITIES('whirlwind', false, { overrides: { basic: true } })]
+    abilities: [ABILITIES('swing'), ABILITIES('whirlwind', false, { overrides: { basic: true } })],
   },
   rat: {
     name: 'Giant rat',
@@ -366,10 +371,10 @@ export const ALL_CHARACTERS = {
       damage: DEFAULT_DAMAGE,
       ...DEFAULT_LUCKY_STATS,
       limits: DEFAULT_LIMITS,
-      modifiers: DEFAULT_MODIFIERS
+      modifiers: DEFAULT_MODIFIERS,
     },
     maxTicks: Infinity,
-    abilities: [ABILITIES('bite'), ABILITIES('cheesyTactics'), ABILITIES('bite')]
+    abilities: [ABILITIES('bite'), ABILITIES('cheesyTactics'), ABILITIES('bite')],
   },
   undead: {
     name: 'Undead',
@@ -387,7 +392,7 @@ export const ALL_CHARACTERS = {
       damage: DEFAULT_DAMAGE,
       ...DEFAULT_LUCKY_STATS,
       limits: DEFAULT_LIMITS,
-      modifiers: DEFAULT_MODIFIERS
+      modifiers: DEFAULT_MODIFIERS,
     },
     maxTicks: Infinity,
     abilities: [
@@ -396,8 +401,8 @@ export const ALL_CHARACTERS = {
       ABILITIES('stab'),
       ABILITIES('stab'),
       ABILITIES('stab'),
-      ABILITIES('stab')
-    ]
+      ABILITIES('stab'),
+    ],
   },
   golem: {
     name: 'Golem',
@@ -415,10 +420,10 @@ export const ALL_CHARACTERS = {
       currentArmor: 100,
       damage: DEFAULT_DAMAGE,
       limits: DEFAULT_LIMITS,
-      modifiers: DEFAULT_MODIFIERS
+      modifiers: DEFAULT_MODIFIERS,
     },
     maxTicks: Infinity,
-    abilities: [ABILITIES('slam'), ABILITIES('slam'), ABILITIES('slam'), ABILITIES('harden')]
+    abilities: [ABILITIES('slam'), ABILITIES('slam'), ABILITIES('slam'), ABILITIES('harden')],
   },
   trainingDummy: {
     name: 'Training Dummy',
@@ -426,7 +431,7 @@ export const ALL_CHARACTERS = {
     image: 'creature/training-dummy.png',
     size: 1,
     equipment: {
-      ...DEFAULT_NPC_EQUIPMENT
+      ...DEFAULT_NPC_EQUIPMENT,
     },
     description: '',
     element: '',
@@ -437,13 +442,13 @@ export const ALL_CHARACTERS = {
       currentArmor: 0,
       damage: 0,
       ...{
-        ...DEFAULT_LUCKY_STATS
+        ...DEFAULT_LUCKY_STATS,
       },
       limits: DEFAULT_LIMITS,
-      modifiers: DEFAULT_MODIFIERS
+      modifiers: DEFAULT_MODIFIERS,
     },
     maxTicks: Infinity,
-    abilities: [ABILITIES('playingTheVictim')]
+    abilities: [ABILITIES('playingTheVictim')],
   },
   boar: {
     name: 'Boar',
@@ -451,7 +456,7 @@ export const ALL_CHARACTERS = {
     image: 'creature/boar.png',
     size: 1,
     equipment: {
-      ...DEFAULT_NPC_EQUIPMENT
+      ...DEFAULT_NPC_EQUIPMENT,
     },
     description: '',
     element: '',
@@ -462,10 +467,10 @@ export const ALL_CHARACTERS = {
       currentArmor: 0,
       damage: DEFAULT_DAMAGE,
       ...{
-        ...DEFAULT_LUCKY_STATS
+        ...DEFAULT_LUCKY_STATS,
       },
       limits: DEFAULT_LIMITS,
-      modifiers: DEFAULT_MODIFIERS
+      modifiers: DEFAULT_MODIFIERS,
     },
     maxTicks: Infinity,
     abilities: [
@@ -474,8 +479,8 @@ export const ALL_CHARACTERS = {
       ABILITIES('punch'),
       ABILITIES('punch'),
       ABILITIES('punch'),
-      ABILITIES('punch')
-    ]
+      ABILITIES('punch'),
+    ],
   },
   jester: {
     name: 'Jester',
@@ -483,7 +488,7 @@ export const ALL_CHARACTERS = {
     image: 'creature/jester.png',
     size: 1,
     equipment: {
-      ...DEFAULT_NPC_EQUIPMENT
+      ...DEFAULT_NPC_EQUIPMENT,
     },
     description: '',
     element: '',
@@ -495,7 +500,7 @@ export const ALL_CHARACTERS = {
       damage: DEFAULT_DAMAGE,
       ...DEFAULT_LUCKY_STATS,
       limits: DEFAULT_LIMITS,
-      modifiers: DEFAULT_MODIFIERS
+      modifiers: DEFAULT_MODIFIERS,
     },
     maxTicks: Infinity,
     abilities: [
@@ -504,8 +509,8 @@ export const ALL_CHARACTERS = {
       ABILITIES('stab'),
       ABILITIES('stab'),
       ABILITIES('stab'),
-      ABILITIES('stab')
-    ]
+      ABILITIES('stab'),
+    ],
   },
   lostCivilian: {
     name: 'Lost civilian',
@@ -513,7 +518,7 @@ export const ALL_CHARACTERS = {
     image: 'creature/lost-civilian.png',
     size: 1,
     equipment: {
-      ...DEFAULT_NPC_EQUIPMENT
+      ...DEFAULT_NPC_EQUIPMENT,
     },
     description: 'This civilian took the wrong turn when going shopping and ended up in the arena.',
     element: '',
@@ -525,7 +530,7 @@ export const ALL_CHARACTERS = {
       damage: DEFAULT_DAMAGE,
       ...DEFAULT_LUCKY_STATS,
       limits: DEFAULT_LIMITS,
-      modifiers: DEFAULT_MODIFIERS
+      modifiers: DEFAULT_MODIFIERS,
     },
     maxTicks: Infinity,
     abilities: [
@@ -534,8 +539,8 @@ export const ALL_CHARACTERS = {
       ABILITIES('punch'),
       ABILITIES('punch'),
       ABILITIES('punch'),
-      ABILITIES('punch')
-    ]
+      ABILITIES('punch'),
+    ],
   },
   nomad: {
     name: 'Nomad',
@@ -544,7 +549,7 @@ export const ALL_CHARACTERS = {
     size: 1,
     equipment: {
       ...DEFAULT_NPC_EQUIPMENT,
-      accessory: EQUIPMENT('ring')
+      accessory: EQUIPMENT('ring'),
     },
     description:
       'The nomad is a wanderer from the outer dunes, a survivor of endless storms and scorching suns. Cloaked in weathered leathers and cloth dyed by the sand itself, they carry the dust of a thousand miles on their shoulders. Their weapons are mismatched yet deadly — a curved blade forged from scavenged steel and a handmade bow strung with sinew. Years of solitude have honed their reflexes and instincts beyond human measure; they fight not for glory but for survival, their every motion born of necessity. Their silence speaks of exile, their gaze of battles fought in forgotten places.',
@@ -557,17 +562,17 @@ export const ALL_CHARACTERS = {
       damage: DEFAULT_DAMAGE,
       ...{
         ...DEFAULT_LUCKY_STATS,
-        dodgeChance: 0
+        dodgeChance: 0,
       },
       limits: DEFAULT_LIMITS,
-      modifiers: DEFAULT_MODIFIERS
+      modifiers: DEFAULT_MODIFIERS,
     },
     maxTicks: Infinity,
     abilities: [
       ABILITIES('stab', false, { overrides: { ticks: 4 } }),
       ABILITIES('stab', false, { overrides: { ticks: 4 } }),
-      ABILITIES('stab', false, { overrides: { ticks: 4 } })
-    ]
+      ABILITIES('stab', false, { overrides: { ticks: 4 } }),
+    ],
   },
   pitchforkPatrick: {
     name: 'Pitchfork Patrick',
@@ -575,7 +580,7 @@ export const ALL_CHARACTERS = {
     image: 'creature/pitchfork-patrick.png',
     size: 1,
     equipment: {
-      ...DEFAULT_NPC_EQUIPMENT
+      ...DEFAULT_NPC_EQUIPMENT,
     },
     description: '',
     element: '',
@@ -587,7 +592,7 @@ export const ALL_CHARACTERS = {
       damage: DEFAULT_DAMAGE,
       ...DEFAULT_LUCKY_STATS,
       limits: DEFAULT_LIMITS,
-      modifiers: DEFAULT_MODIFIERS
+      modifiers: DEFAULT_MODIFIERS,
     },
     maxTicks: Infinity,
     abilities: [
@@ -596,8 +601,8 @@ export const ALL_CHARACTERS = {
       ABILITIES('punch'),
       ABILITIES('punch'),
       ABILITIES('punch'),
-      ABILITIES('punch')
-    ]
+      ABILITIES('punch'),
+    ],
   },
   poorestKnightInTown: {
     name: 'Poorest Knight in Town',
@@ -605,7 +610,7 @@ export const ALL_CHARACTERS = {
     image: 'creature/poorest-knight-in-town.png',
     size: 1,
     equipment: {
-      ...DEFAULT_NPC_EQUIPMENT
+      ...DEFAULT_NPC_EQUIPMENT,
     },
     description: '',
     element: '',
@@ -617,7 +622,7 @@ export const ALL_CHARACTERS = {
       damage: DEFAULT_DAMAGE,
       ...DEFAULT_LUCKY_STATS,
       limits: DEFAULT_LIMITS,
-      modifiers: DEFAULT_MODIFIERS
+      modifiers: DEFAULT_MODIFIERS,
     },
     maxTicks: Infinity,
     abilities: [
@@ -626,8 +631,8 @@ export const ALL_CHARACTERS = {
       ABILITIES('punch'),
       ABILITIES('punch'),
       ABILITIES('punch'),
-      ABILITIES('punch')
-    ]
+      ABILITIES('punch'),
+    ],
   },
   sabertoothTiger: {
     name: 'Sabertooth Tiger',
@@ -635,7 +640,7 @@ export const ALL_CHARACTERS = {
     image: 'creature/sabertooth-tiger.png',
     size: 1,
     equipment: {
-      ...DEFAULT_NPC_EQUIPMENT
+      ...DEFAULT_NPC_EQUIPMENT,
     },
     description: '',
     element: '',
@@ -647,7 +652,7 @@ export const ALL_CHARACTERS = {
       damage: DEFAULT_DAMAGE,
       ...DEFAULT_LUCKY_STATS,
       limits: DEFAULT_LIMITS,
-      modifiers: DEFAULT_MODIFIERS
+      modifiers: DEFAULT_MODIFIERS,
     },
     maxTicks: Infinity,
     abilities: [
@@ -656,9 +661,9 @@ export const ALL_CHARACTERS = {
       ABILITIES('punch'),
       ABILITIES('punch'),
       ABILITIES('punch'),
-      ABILITIES('punch')
-    ]
-  }
+      ABILITIES('punch'),
+    ],
+  },
 };
 
 export default (id, fullBody = false, meta) =>
@@ -671,5 +676,5 @@ export default (id, fullBody = false, meta) =>
       ? meta?.overrides
       : meta?.overrides
         ? deepMerge(id.overrides || {}, meta.overrides || {})
-        : id.overrides
+        : id.overrides,
   );

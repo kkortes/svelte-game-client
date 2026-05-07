@@ -1,5 +1,4 @@
 {
-  "outputDirectory": "dist",
   "cleanUrls": true,
   "rewrites": [
     { "source": "/", "destination": "/pages/home" },

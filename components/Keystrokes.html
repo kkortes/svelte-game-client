@@ -2,7 +2,40 @@
   // Seed the key whitelist + disabled flag on mount (not in app.js — these
   // are owned by this component and only need to exist while it's mounted).
   if (!$.keys) {
-    $.keys = ['keyw','keya','keys','keyd','keyi','keyq','keye','keyz','keyx','keyc','arrowright','arrowleft','arrowdown','arrowup','escape','enter','shiftleft','shiftright','digit1','digit2','digit3','digit4','digit5','numpad1','numpad2','numpad3','numpad4','numpad5','numpad6','numpad7','numpad8','numpad9'].reduce((a, key) => ({ ...a, [key]: false }), {});
+    $.keys = [
+      'keyw',
+      'keya',
+      'keys',
+      'keyd',
+      'keyi',
+      'keyq',
+      'keye',
+      'keyz',
+      'keyx',
+      'keyc',
+      'arrowright',
+      'arrowleft',
+      'arrowdown',
+      'arrowup',
+      'escape',
+      'enter',
+      'shiftleft',
+      'shiftright',
+      'digit1',
+      'digit2',
+      'digit3',
+      'digit4',
+      'digit5',
+      'numpad1',
+      'numpad2',
+      'numpad3',
+      'numpad4',
+      'numpad5',
+      'numpad6',
+      'numpad7',
+      'numpad8',
+      'numpad9',
+    ].reduce((a, key) => ({ ...a, [key]: false }), {});
   }
   if ($.gameKeyboardDisabled === undefined) $.gameKeyboardDisabled = false;
 
@@ -16,12 +49,15 @@
 
       // Cmd/Ctrl shortcuts — clear all tracked keys so nothing stays "held"
       if (metaKey || ctrlKey) {
-        Object.keys($.keys).forEach((k) => { if ($.keys[k]) $.keys[k] = false; });
+        Object.keys($.keys).forEach((k) => {
+          if ($.keys[k]) $.keys[k] = false;
+        });
         return;
       }
 
       // Respect gameKeyboardDisabled, but always allow enter/escape/shift.
-      if ($.gameKeyboardDisabled && !['enter', 'escape', 'shiftleft', 'shiftright'].includes(lcKey)) return;
+      if ($.gameKeyboardDisabled && !['enter', 'escape', 'shiftleft', 'shiftright'].includes(lcKey))
+        return;
 
       if (lcKey in $.keys) {
         const down = type === 'keydown';

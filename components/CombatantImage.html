@@ -1,4 +1,6 @@
-<combatant-sprite absolute combatant-wrap="@[card.cardId]"
+<combatant-sprite
+  absolute
+  combatant-wrap="@[card.cardId]"
   attack-class="@[card.attackClass]"
   hurt="@[card.hurtActive]"
   block="@[card.blockActive]"
@@ -16,12 +18,16 @@
     --attack-duration: @[card.attackDuration]ms;
     --dir: @[card.dir];
     --sprite-height: @[card.spriteHeight]px;
-  ">
+  "
+>
   <sprite-inner flex down>
-    <img class="combatant-avatar" src="@[card.imageUrl]"
+    <img
+      class="combatant-avatar"
+      src="@[card.imageUrl]"
       alt="@[card.name]"
-      onerror="if(!this.src.includes('@['))this.style.display='none'" />
-    <sprite-hurt-mask absolute style="--img: url('@[card.imageUrl]');"></sprite-hurt-mask>
+      onerror="if (!this.src.includes('@[')) this.style.display = 'none';"
+    />
+    <sprite-hurt-mask absolute style="--img: url('@[card.imageUrl]')"></sprite-hurt-mask>
     <sprite-block absolute>
       <img src="/static/images/shield.png" alt="" />
     </sprite-block>
@@ -93,16 +99,16 @@
     opacity: 1;
   }
 
-  combatant-sprite[attack-class="basicAttackFast"] {
+  combatant-sprite[attack-class='basicAttackFast'] {
     animation: bb-basicAttackFast var(--attack-duration) cubic-bezier(0.25, 0.1, 0.25, 1);
   }
-  combatant-sprite[attack-class="basicAttackRegular"] {
+  combatant-sprite[attack-class='basicAttackRegular'] {
     animation: bb-basicAttackRegular var(--attack-duration) cubic-bezier(0.25, 0.1, 0.25, 1);
   }
-  combatant-sprite[attack-class="basicAttackSlow"] {
+  combatant-sprite[attack-class='basicAttackSlow'] {
     animation: bb-basicAttackSlow var(--attack-duration) cubic-bezier(0.25, 0.1, 0.25, 1);
   }
-  combatant-sprite[attack-class="whirlwind"] {
+  combatant-sprite[attack-class='whirlwind'] {
     animation: bb-whirlwind 500ms cubic-bezier(0.25, 0.1, 0.25, 1);
   }
 </style>

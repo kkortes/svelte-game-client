@@ -1,196 +1,222 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Battle Brawlers</title>
+    <link rel="icon" href="/static/favicon.png" />
+    <link rel="stylesheet" href="/css/index.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Battle Brawlers</title>
-  <link rel="icon" href="/static/favicon.png" />
-  <link rel="stylesheet" href="/css/index.css" />
-</head>
+  <body battle-brawlers vibe vibe-fouc stylecheat>
+    <script type="module">
+      import boot from '/js/boot.js';
+      boot();
 
-<body battle-brawlers vibe vibe-fouc stylecheat>
-  <script type="module">
-    import boot from '/js/boot.js';
-    boot();
+      import CHARACTERS, {
+        DEFAULT_LUCKY_STATS,
+        DEFAULT_MODIFIERS,
+      } from '/js/constants/CHARACTERS.js';
+      import { RECRUITABLE_CHARACTERS } from '/js/constants/RECRUITABLE_CHARACTERS.js';
+      import { ALL_ELEMENTS } from '/js/constants/ELEMENTS.js';
+      import { correctHealth } from '/js/equipment.js';
+      import { saveNow } from '/js/connectSocket.js';
+      import { calculateCombatStatsByCharacter } from '/js/utils.js';
 
-    import CHARACTERS, { DEFAULT_LUCKY_STATS, DEFAULT_MODIFIERS } from '/js/constants/CHARACTERS.js';
-    import { RECRUITABLE_CHARACTERS } from '/js/constants/RECRUITABLE_CHARACTERS.js';
-    import { ALL_ELEMENTS } from '/js/constants/ELEMENTS.js';
-    import { correctHealth } from '/js/equipment.js';
-    import { saveNow } from '/js/connectSocket.js';
-    import { calculateCombatStatsByCharacter } from '/js/utils.js';
+      const formatBonuses = (current, defaults, labels) =>
+        Object.entries(labels)
+          .filter(([k]) => current[k] !== defaults[k])
+          .map(([k, label]) => `${label} +${Math.round((current[k] - defaults[k]) * 100)}%`)
+          .join('  ');
 
-    const formatBonuses = (current, defaults, labels) =>
-      Object.entries(labels)
-        .filter(([k]) => current[k] !== defaults[k])
-        .map(([k, label]) => `${label} +${Math.round((current[k] - defaults[k]) * 100)}%`)
-        .join('  ');
+      window.brawlerCards = RECRUITABLE_CHARACTERS.map((ref) => {
+        const char = CHARACTERS(ref, true);
+        const element = ALL_ELEMENTS[char.element] || {
+          color: { primary: 'var(--bb-stone)', secondary: 'var(--bb-stone)' },
+        };
+        const stats = calculateCombatStatsByCharacter(char);
+        const cs = char.combatStats;
+        return {
+          ref,
+          name: char.name,
+          id: char.id,
+          image: char.image,
+          size: char.size || 1,
+          primary: element.color.primary,
+          secondary: element.color.secondary,
+          hp: stats.maxHealth,
+          armor: stats.maxArmor,
+          damage: stats.damage,
+          luckyBonuses: formatBonuses(cs, DEFAULT_LUCKY_STATS, {
+            criticalChance: 'Crit%',
+            criticalDamage: 'CritDmg',
+            dodgeChance: 'Dodge',
+            blockChance: 'Block',
+            magicChance: 'Magic',
+          }),
+          modBonuses: formatBonuses(cs.modifiers || {}, DEFAULT_MODIFIERS, {
+            maxHealth: 'HP',
+            maxArmor: 'Armor',
+            damage: 'Dmg',
+            resistance: 'Res',
+          }),
+        };
+      });
 
-    window.brawlerCards = RECRUITABLE_CHARACTERS.map(ref => {
-      const char = CHARACTERS(ref, true);
-      const element = ALL_ELEMENTS[char.element] || { color: { primary: 'var(--bb-stone)', secondary: 'var(--bb-stone)' } };
-      const stats = calculateCombatStatsByCharacter(char);
-      const cs = char.combatStats;
-      return {
-        ref,
-        name: char.name,
-        id: char.id,
-        image: char.image,
-        size: char.size || 1,
-        primary: element.color.primary,
-        secondary: element.color.secondary,
-        hp: stats.maxHealth,
-        armor: stats.maxArmor,
-        damage: stats.damage,
-        luckyBonuses: formatBonuses(cs, DEFAULT_LUCKY_STATS, {
-          criticalChance: 'Crit%', criticalDamage: 'CritDmg',
-          dodgeChance: 'Dodge', blockChance: 'Block', magicChance: 'Magic'
-        }),
-        modBonuses: formatBonuses(cs.modifiers || {}, DEFAULT_MODIFIERS, {
-          maxHealth: 'HP', maxArmor: 'Armor', damage: 'Dmg', resistance: 'Res'
-        }),
-      };
-    });
-
-
-    window.pickCharacter = (index) => {
-      if ($.characters.length >= allowedNumberOfCharacters()) {
-        notify({ warning: 'You cannot recruit more brawlers. Level up your ludus first.' });
-        return;
-      }
-
-      const card = window.brawlerCards[index];
-      if ($.characters.find(c => c.id === card.id)) {
-        notify({ warning: `${card.name} is already recruited` });
-        return;
-      }
-
-      $.overlay = {
-        name: 'confirm',
-        text: `Recruiting ${card.name} to your Ludus.`,
-        confirm: async () => {
-          $.characters.push(correctHealth(card.ref));
-          const targetIndex = $.characters.length - 1;
-          await saveNow();
-          // window.location.href = `/brawlers/${targetIndex}`;
+      window.pickCharacter = (index) => {
+        if ($.characters.length >= allowedNumberOfCharacters()) {
+          notify({ warning: 'You cannot recruit more brawlers. Level up your ludus first.' });
+          return;
         }
+
+        const card = window.brawlerCards[index];
+        if ($.characters.find((c) => c.id === card.id)) {
+          notify({ warning: `${card.name} is already recruited` });
+          return;
+        }
+
+        $.overlay = {
+          name: 'confirm',
+          text: `Recruiting ${card.name} to your Ludus.`,
+          confirm: async () => {
+            $.characters.push(correctHealth(card.ref));
+            const targetIndex = $.characters.length - 1;
+            await saveNow();
+            // window.location.href = `/brawlers/${targetIndex}`;
+          },
+        };
       };
-    };
-  </script>
+    </script>
 
-  <component src="/components/Layout.html">
-    <page-content>
-      <component src="/components/TitleBar.html" title="Brawlers"></component>
-      <hr />
+    <component src="/components/Layout.html">
+      <page-content>
+        <component src="/components/TitleBar.html" title="Brawlers"></component>
+        <hr />
 
-      <crow vertical cinzel text-center mx="auto" py="8">
-        <!-- if characters.length === 0 -->
-        <span>Select your first brawler</span>
-        <!-- /if -->
-        <!-- if characters.length > 0 && characters.length >= allowedNumberOfCharacters() -->
-        <span>Level up your ludus in order<br />to recruit new brawlers</span>
-        <!-- /if -->
-        <!-- if characters.length > 0 && characters.length < allowedNumberOfCharacters() -->
-        <span>Select a brawler</span>
-        <!-- /if -->
-      </crow>
+        <crow vertical cinzel text-center mx="auto" py="8">
+          <!-- if characters.length === 0 -->
+          <span>Select your first brawler</span>
+          <!-- /if -->
+          <!-- if characters.length > 0 && characters.length >= allowedNumberOfCharacters() -->
+          <span>Level up your ludus in order<br />to recruit new brawlers</span>
+          <!-- /if -->
+          <!-- if characters.length > 0 && characters.length < allowedNumberOfCharacters() -->
+          <span>Select a brawler</span>
+          <!-- /if -->
+        </crow>
 
-      <crow brawlers-grid g="4" sm:g="3">
-        <!-- each brawlerCards as card, idx -->
-        <brawler-card flex down f="none" p="2" overflow-hidden onclick="pickCharacter(@[idx])"
-          style="--card-primary: @[card.primary]; --card-secondary: @[card.secondary]"
-          recruited="@[characters.some(c => c.id === card.id)]">
-          <span cinzel brawler-name text-center w="full">@[card.name]</span>
-          <hr />
-          <crow left up brawler-row>
-            <component src="/components/CharacterAvatar.html" image="@[card.image]"
-              size="@[card.size]" name="@[card.name]"></component>
-            <crow vertical left brawler-info>
-              <component src="/components/CoreStats.html" hp="@[card.hp]" armor="@[card.armor]"
-                damage="@[card.damage]" vertical></component>
-              <crow vertical left>
-                <!-- if card.luckyBonuses -->
-                <crow bonus-row>
-                  <span bonus-stat>@[card.luckyBonuses]</span>
+        <crow brawlers-grid g="4" sm:g="3">
+          <!-- each brawlerCards as card, idx -->
+          <brawler-card
+            flex
+            down
+            f="none"
+            p="2"
+            overflow-hidden
+            onclick="pickCharacter(@[idx])"
+            style="--card-primary: @[card.primary]; --card-secondary: @[card.secondary]"
+            recruited="@[characters.some(c => c.id === card.id)]"
+          >
+            <span cinzel brawler-name text-center w="full">@[card.name]</span>
+            <hr />
+            <crow left up brawler-row>
+              <component
+                src="/components/CharacterAvatar.html"
+                image="@[card.image]"
+                size="@[card.size]"
+                name="@[card.name]"
+              ></component>
+              <crow vertical left brawler-info>
+                <component
+                  src="/components/CoreStats.html"
+                  hp="@[card.hp]"
+                  armor="@[card.armor]"
+                  damage="@[card.damage]"
+                  vertical
+                ></component>
+                <crow vertical left>
+                  <!-- if card.luckyBonuses -->
+                  <crow bonus-row>
+                    <span bonus-stat>@[card.luckyBonuses]</span>
+                  </crow>
+                  <!-- /if -->
+                  <!-- if card.modBonuses -->
+                  <crow bonus-row>
+                    <span bonus-stat>@[card.modBonuses]</span>
+                  </crow>
+                  <!-- /if -->
                 </crow>
-                <!-- /if -->
-                <!-- if card.modBonuses -->
-                <crow bonus-row>
-                  <span bonus-stat>@[card.modBonuses]</span>
-                </crow>
-                <!-- /if -->
               </crow>
             </crow>
-          </crow>
-        </brawler-card>
-        <!-- /each -->
-      </crow>
-    </page-content>
-  </component>
-  <style>
-    page[brawlers] [brawlers-grid] {
-      flex-wrap: wrap;
-      align-items: flex-start;
-      justify-content: flex-start;
-    }
-
-    page[brawlers] brawler-card {
-      align-items: center;
-      justify-content: flex-start;
-      width: calc(calc(var(--unit) * 90));
-      max-width: 100%;
-      height: calc(calc(var(--unit) * 70));
-      cursor: pointer;
-      border: 0.5px solid var(--card-primary, var(--border));
-      background:
-        linear-gradient(135deg,
-          oklch(from var(--card-primary, transparent) l c h / 0.2),
-          oklch(from var(--card-secondary, transparent) l c h / 0.2)),
-        oklch(0.96 0.005 85);
-    }
-
-    @media (width <= 768px) {
-      page[brawlers] brawler-card {
-        width: 100%;
+          </brawler-card>
+          <!-- /each -->
+        </crow>
+      </page-content>
+    </component>
+    <style>
+      page[brawlers] [brawlers-grid] {
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: flex-start;
       }
-    }
 
-    page[brawlers] brawler-card[recruited] {
-      opacity: 0.5;
-      filter: grayscale(1);
-      cursor: not-allowed;
-    }
+      page[brawlers] brawler-card {
+        align-items: center;
+        justify-content: flex-start;
+        width: calc(calc(var(--unit) * 90));
+        max-width: 100%;
+        height: calc(calc(var(--unit) * 70));
+        cursor: pointer;
+        border: 0.5px solid var(--card-primary, var(--border));
+        background:
+          linear-gradient(
+            135deg,
+            oklch(from var(--card-primary, transparent) l c h / 0.2),
+            oklch(from var(--card-secondary, transparent) l c h / 0.2)
+          ),
+          oklch(0.96 0.005 85);
+      }
 
-    page[brawlers] [brawler-name] {
-      font-size: calc(calc(var(--unit) * 6));
-      position: relative;
-      z-index: 1;
-    }
+      @media (width <= 768px) {
+        page[brawlers] brawler-card {
+          width: 100%;
+        }
+      }
 
-    page[brawlers] [divider] {
-      width: 100%;
-      border: none;
-      border-top: 1px solid oklch(from var(--bb-brown) l c h / 0.35);
-      margin: 0;
-      position: relative;
-      z-index: 1;
-    }
+      page[brawlers] brawler-card[recruited] {
+        opacity: 0.5;
+        filter: grayscale(1);
+        cursor: not-allowed;
+      }
 
-    page[brawlers] char-portrait {
-      width: calc(calc(var(--unit) * 30));
-      height: calc(calc(var(--unit) * 33));
-      background: var(--slate);
-    }
+      page[brawlers] [brawler-name] {
+        font-size: calc(calc(var(--unit) * 6));
+        position: relative;
+        z-index: 1;
+      }
 
-    page[brawlers] [bonus-stat] {
-      color: oklch(from var(--bb-green) 0.58 0.2 h);
-    }
+      page[brawlers] [divider] {
+        width: 100%;
+        border: none;
+        border-top: 1px solid oklch(from var(--bb-brown) l c h / 0.35);
+        margin: 0;
+        position: relative;
+        z-index: 1;
+      }
 
-    page[brawlers] [bonus-row] {
-      flex-wrap: wrap;
-    }
-  </style>
-</body>
+      page[brawlers] char-portrait {
+        width: calc(calc(var(--unit) * 30));
+        height: calc(calc(var(--unit) * 33));
+        background: var(--slate);
+      }
 
+      page[brawlers] [bonus-stat] {
+        color: oklch(from var(--bb-green) 0.58 0.2 h);
+      }
+
+      page[brawlers] [bonus-row] {
+        flex-wrap: wrap;
+      }
+    </style>
+  </body>
 </html>

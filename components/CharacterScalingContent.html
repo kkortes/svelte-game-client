@@ -10,7 +10,7 @@
     charScaling: true,
     equipScaling: true,
     charPool: [],
-    charEquipmentSlots: []
+    charEquipmentSlots: [],
   };
 
   const compute = (s) => {
@@ -22,9 +22,9 @@
           equipment: {
             mainHand: { overrides: { level: s.equipScaling ? level : 0 } },
             offHand: { overrides: { level: s.equipScaling ? level : 0 } },
-            armor: { overrides: { level: s.equipScaling ? level : 0 } }
-          }
-        }
+            armor: { overrides: { level: s.equipScaling ? level : 0 } },
+          },
+        },
       });
       const hydrated = CHARACTERS(ref, true);
       const stats = calculateCombatStatsByCharacter(hydrated);
@@ -34,7 +34,7 @@
         charLevel: hydrated.level || 0,
         maxHealth: stats.maxHealth || 0,
         maxArmor: stats.maxArmor || 0,
-        damage: stats.damage || 0
+        damage: stats.damage || 0,
       };
     });
 
@@ -44,9 +44,9 @@
         equipment: {
           mainHand: { overrides: { level: s.equipScaling ? 25 : 0 } },
           offHand: { overrides: { level: s.equipScaling ? 25 : 0 } },
-          armor: { overrides: { level: s.equipScaling ? 25 : 0 } }
-        }
-      }
+          armor: { overrides: { level: s.equipScaling ? 25 : 0 } },
+        },
+      },
     });
     const top = CHARACTERS(topRef, true);
     const mainHandHydrated = top.equipment.mainHand
@@ -64,7 +64,7 @@
         hasEquipment: !!h && !isTwoHandOff,
         name: h?.name || '',
         level: h?.level || 0,
-        empty: !h && !isTwoHandOff && slot !== 'mainHand' && slot !== 'offHand'
+        empty: !h && !isTwoHandOff && slot !== 'mainHand' && slot !== 'offHand',
       };
     });
   };
@@ -72,12 +72,21 @@
   compute(state);
   component(state);
 
-  const id = Object.keys(window.__vibeComponents).find(k => window.__vibeComponents[k] === state);
+  const id = Object.keys(window.__vibeComponents).find((k) => window.__vibeComponents[k] === state);
   const s = $[id];
 
-  window.changeChar = (value) => { s.chosenChar = value; compute(s); };
-  window.toggleCharScaling = (checked) => { s.charScaling = checked; compute(s); };
-  window.toggleEquipScaling = (checked) => { s.equipScaling = checked; compute(s); };
+  window.changeChar = (value) => {
+    s.chosenChar = value;
+    compute(s);
+  };
+  window.toggleCharScaling = (checked) => {
+    s.charScaling = checked;
+    compute(s);
+  };
+  window.toggleEquipScaling = (checked) => {
+    s.equipScaling = checked;
+    compute(s);
+  };
 </script>
 
 <crow vertical g="4" left>
@@ -90,7 +99,12 @@
       Character scaling
     </label>
     <label crow left g="2" for="equipScaling" text-sm>
-      <input type="checkbox" id="equipScaling" checked onchange="toggleEquipScaling(this.checked)" />
+      <input
+        type="checkbox"
+        id="equipScaling"
+        checked
+        onchange="toggleEquipScaling(this.checked)"
+      />
       Equipment scaling
     </label>
   </crow>
@@ -109,8 +123,12 @@
         <component src="/components/EquipmentLink.html" level="@[ch.charLevel]" name="@[ch.name]">
         </component>
       </crow>
-      <component src="/components/CoreStats.html" hp="@[ch.maxHealth]" armor="@[ch.maxArmor]"
-        damage="@[ch.damage]"></component>
+      <component
+        src="/components/CoreStats.html"
+        hp="@[ch.maxHealth]"
+        armor="@[ch.maxArmor]"
+        damage="@[ch.damage]"
+      ></component>
     </crow>
     <!-- /each -->
   </crow>

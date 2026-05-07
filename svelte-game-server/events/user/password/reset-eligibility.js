@@ -11,7 +11,7 @@ export default async ({ secret }, { mongo }) => {
   if (!pwr) throw Error('Reset link is either invalid or expired');
 
   const user = await collection.findOne({
-    pwr
+    pwr,
   });
 
   if (!user) throw Error('Reset link is either invalid or expired');

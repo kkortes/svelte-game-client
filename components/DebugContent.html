@@ -8,14 +8,14 @@
   const state = { debugTeamCount: 2, debugCombatantCount: 1 };
   component(state);
 
-  const npcKeys = Object.keys(ALL_CHARACTERS).filter(k => ALL_CHARACTERS[k].race === 'creature');
+  const npcKeys = Object.keys(ALL_CHARACTERS).filter((k) => ALL_CHARACTERS[k].race === 'creature');
 
   window.initializeCombat = () => {
     const teams = Array.from({ length: state.debugTeamCount }, (_, teamIndex) =>
       Array.from({ length: state.debugCombatantCount }, (_, i) => {
         const key = npcKeys[seededRandom(0, npcKeys.length - 1, `debug_${teamIndex}_${i}`)];
         return CHARACTERS(key);
-      })
+      }),
     );
 
     if ($.characters[0]) teams[0][0] = $.characters[0];
@@ -33,8 +33,14 @@
       const combatStats = calculateCombatStatsByCharacter(CHARACTERS($.characters[0], true));
       $.characters = $.characters.map((c, i) =>
         i === 0
-          ? { ...c, overrides: { ...c.overrides, combatStats: { ...c.overrides?.combatStats, currentHealth: combatStats.maxHealth } } }
-          : c
+          ? {
+              ...c,
+              overrides: {
+                ...c.overrides,
+                combatStats: { ...c.overrides?.combatStats, currentHealth: combatStats.maxHealth },
+              },
+            }
+          : c,
       );
     }
     $.combat = structuredClone(INITIAL_COMBAT);
@@ -55,22 +61,33 @@
         <span text-sm text-muted>Teams</span>
         <crow g="2" align-center>
           <span text-sm font-medium>@[this.debugTeamCount]</span>
-          <input type="range" min="1" max="8" value="@[this.debugTeamCount]"
-            oninput="$.this.debugTeamCount = +this.value" />
+          <input
+            type="range"
+            min="1"
+            max="8"
+            value="@[this.debugTeamCount]"
+            oninput="$.this.debugTeamCount = +this.value"
+          />
         </crow>
       </crow>
       <crow justify-between align-center>
         <span text-sm text-muted>Combatants per team</span>
         <crow g="2" align-center>
           <span text-sm font-medium>@[this.debugCombatantCount]</span>
-          <input type="range" min="1" max="6" value="@[this.debugCombatantCount]"
-            oninput="$.this.debugCombatantCount = +this.value" />
+          <input
+            type="range"
+            min="1"
+            max="6"
+            value="@[this.debugCombatantCount]"
+            oninput="$.this.debugCombatantCount = +this.value"
+          />
         </crow>
       </crow>
       <crow g="2">
         <button primary onclick="initializeCombat()">Initialize Combat</button>
-        <button primary onclick="startCombat()" disabled="@[combat?.duration !== 0]">Start
-          Combat</button>
+        <button primary onclick="startCombat()" disabled="@[combat?.duration !== 0]">
+          Start Combat
+        </button>
         <button destructive onclick="resetState()">Reset</button>
       </crow>
     </crow>

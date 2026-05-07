@@ -1,5 +1,4 @@
 <script type="module">
-
   window.authLogin = async (email, password, rememberMe, codeOfConduct) => {
     if (!codeOfConduct) {
       notify({ error: 'you must to agree to the Code of Conduct in order to play' });
@@ -22,28 +21,73 @@
   };
 </script>
 
-<form onsubmit="event.preventDefault(); authLogin($.email, $.password, $.settings.rememberMe, $.settings.codeOfConduct)">
+<form
+  onsubmit="
+    event.preventDefault();
+    authLogin($.email, $.password, $.settings.rememberMe, $.settings.codeOfConduct);
+  "
+>
   <crow g="2" mb="3">
-    <input type="email" placeholder="Email" value="@[email]" oninput="$.email = this.value; if ($.settings.rememberMe) $.settings = { ...$.settings, savedEmail: this.value }"
-      required auth-input />
-    <input type="password" placeholder="Password" value="@[password]"
-      oninput="$.password = this.value; if ($.settings.rememberMe) $.settings = { ...$.settings, savedPassword: this.value }" required auth-input />
-    <button primary type="submit">
-      Log in
-    </button>
+    <input
+      type="email"
+      placeholder="Email"
+      value="@[email]"
+      oninput="
+        $.email = this.value;
+        if ($.settings.rememberMe) $.settings = { ...$.settings, savedEmail: this.value };
+      "
+      required
+      auth-input
+    />
+    <input
+      type="password"
+      placeholder="Password"
+      value="@[password]"
+      oninput="
+        $.password = this.value;
+        if ($.settings.rememberMe) $.settings = { ...$.settings, savedPassword: this.value };
+      "
+      required
+      auth-input
+    />
+    <button primary type="submit">Log in</button>
   </crow>
   <crow g="2" mb="2" left>
-    <input type="checkbox" id="codeOfConduct" checked="@[$.settings.codeOfConduct]"
-      onchange="$.settings = { ...$.settings, codeOfConduct: this.checked }" />
-    <label for="codeOfConduct" text-sm>I agree to the <a href="#" primary
-        onclick="event.preventDefault(); $.overlay = { name: 'codeOfConduct' }">
+    <input
+      type="checkbox"
+      id="codeOfConduct"
+      checked="@[$.settings.codeOfConduct]"
+      onchange="$.settings = { ...$.settings, codeOfConduct: this.checked }"
+    />
+    <label for="codeOfConduct" text-sm
+      >I agree to the
+      <a
+        href="#"
+        primary
+        onclick="
+          event.preventDefault();
+          $.overlay = { name: 'codeOfConduct' };
+        "
+      >
         Code of Conduct
       </a>
     </label>
   </crow>
   <crow g="2" mb="2" left>
-    <input type="checkbox" id="rememberMe" checked="@[$.settings.rememberMe]"
-      onchange="$.settings = { ...$.settings, rememberMe: this.checked, ...(this.checked ? { savedEmail: $.email, savedPassword: $.password } : { savedEmail: '', savedPassword: '' }) }" />
+    <input
+      type="checkbox"
+      id="rememberMe"
+      checked="@[$.settings.rememberMe]"
+      onchange="
+        $.settings = {
+          ...$.settings,
+          rememberMe: this.checked,
+          ...(this.checked
+            ? { savedEmail: $.email, savedPassword: $.password }
+            : { savedEmail: '', savedPassword: '' }),
+        }
+      "
+    />
     <label for="rememberMe" text-sm>Remember me</label>
   </crow>
 </form>

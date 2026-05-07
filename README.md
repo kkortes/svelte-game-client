@@ -28,11 +28,10 @@ attrs (or ships `ready-src`), drop the sweep and use plain `src`.
 `components/CombatantImage.html:23`:
 
 ```html
-<img src="@[card.imageUrl]"
-  onerror="if(!this.src.includes('@['))this.style.display='none'" />
+<img src="@[card.imageUrl]" onerror="if(!this.src.includes('@['))this.style.display='none'" />
 ```
 
-Same root cause as above, but for images whose `src` updates *reactively*
+Same root cause as above, but for images whose `src` updates _reactively_
 (can't be statically swapped to `data-src`). The guard suppresses the bogus
 `onerror` that fires when `src` briefly equals the literal binding text.
 Remove once Vibe holds URL attrs until binding resolution.
@@ -46,7 +45,7 @@ see the iteration variable, so the whole object is round-tripped through a
 
 ### `window.X = …` pollution
 
-Inline `onclick=` handlers run in the *global* scope, not the module scope of
+Inline `onclick=` handlers run in the _global_ scope, not the module scope of
 the component's `<script type="module">`. So any handler used inline must be
 hung on `window`. This is a JS module-scope reality, not a Vibe bug — but
 once Vibe ships scope-aware event handlers (see above) most of these go away.

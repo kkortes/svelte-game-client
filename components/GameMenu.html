@@ -10,28 +10,65 @@
   <crow vertical g="4" mt="4">
     <crow justify-between w="full" align-center g="2">
       <span cinzel>Audio settings</span>
-      <button secondary
-        onclick="$.settings = { ...$.settings, volume: { master: 0.5, ambient: 0.25, sfx: 0.5, combat: 1 } }">
+      <button
+        secondary
+        onclick="
+          $.settings = {
+            ...$.settings,
+            volume: { master: 0.5, ambient: 0.25, sfx: 0.5, combat: 1 },
+          }
+        "
+      >
         Reset to default
       </button>
     </crow>
 
     <audio-grid>
       <label>Master</label>
-      <input type="range" min="0" max="1" step="0.05" value="@[settings.volume.master]"
-        oninput="$.settings = { ...$.settings, volume: { ...$.settings.volume, master: +this.value } }" />
+      <input
+        type="range"
+        min="0"
+        max="1"
+        step="0.05"
+        value="@[settings.volume.master]"
+        oninput="
+          $.settings = { ...$.settings, volume: { ...$.settings.volume, master: +this.value } }
+        "
+      />
 
       <label>Ambient</label>
-      <input type="range" min="0" max="1" step="0.05" value="@[settings.volume.ambient]"
-        oninput="$.settings = { ...$.settings, volume: { ...$.settings.volume, ambient: +this.value } }" />
+      <input
+        type="range"
+        min="0"
+        max="1"
+        step="0.05"
+        value="@[settings.volume.ambient]"
+        oninput="
+          $.settings = { ...$.settings, volume: { ...$.settings.volume, ambient: +this.value } }
+        "
+      />
 
       <label>Sound effect</label>
-      <input type="range" min="0" max="1" step="0.05" value="@[settings.volume.sfx]"
-        oninput="$.settings = { ...$.settings, volume: { ...$.settings.volume, sfx: +this.value } }" />
+      <input
+        type="range"
+        min="0"
+        max="1"
+        step="0.05"
+        value="@[settings.volume.sfx]"
+        oninput="$.settings = { ...$.settings, volume: { ...$.settings.volume, sfx: +this.value } }"
+      />
 
       <label>Combat</label>
-      <input type="range" min="0" max="1" step="0.05" value="@[settings.volume.combat]"
-        oninput="$.settings = { ...$.settings, volume: { ...$.settings.volume, combat: +this.value } }" />
+      <input
+        type="range"
+        min="0"
+        max="1"
+        step="0.05"
+        value="@[settings.volume.combat]"
+        oninput="
+          $.settings = { ...$.settings, volume: { ...$.settings.volume, combat: +this.value } }
+        "
+      />
     </audio-grid>
 
     <hr menu-divider />
@@ -41,8 +78,14 @@
         Release notes
       </button>
       <!-- if token -->
-      <button primary w="full"
-        onclick="document.cookie = 'token=; Max-Age=0'; location.href = '/'">
+      <button
+        primary
+        w="full"
+        onclick="
+          document.cookie = 'token=; Max-Age=0';
+          location.href = '/';
+        "
+      >
         Logout
       </button>
       <!-- /if -->
@@ -59,7 +102,7 @@
     width: 100%;
   }
 
-  audio-grid input[type="range"] {
+  audio-grid input[type='range'] {
     width: 100%;
     min-width: 0;
   }

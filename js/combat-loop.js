@@ -1,7 +1,10 @@
 import { COMBAT_TICK_TIME, COMBAT_RING_BASE_RADIUS } from '/js/constants/APP.js';
 
 // Ring geometry — main scales down cards when the ring gets crowded.
-const getGeometry = (n, { baseRadius = COMBAT_RING_BASE_RADIUS, itemWidth = 140, gap = 0 } = {}) => {
+const getGeometry = (
+  n,
+  { baseRadius = COMBAT_RING_BASE_RADIUS, itemWidth = 140, gap = 0 } = {},
+) => {
   const cBase = 2 * Math.PI * baseRadius;
   const cItem = Math.max(1, n) * (itemWidth + gap);
   return { scale: Math.min(1, cBase / cItem) };
@@ -18,24 +21,30 @@ const enrichCombatant = (c, ti, ci, elapsed, scale) => {
   const facingRight = angleDiff < 0;
 
   const abilitiesCopied = c.abilitiesCopied || [];
-  const totalTime = (c.abilities || []).reduce((acc, a) => acc + (a.ticks || 0), 0) * COMBAT_TICK_TIME || 1;
-  const individualProgress = ((c.statuses?.knockedOut ? c.statuses.knockedOut : elapsed) / totalTime) % 1;
+  const totalTime =
+    (c.abilities || []).reduce((acc, a) => acc + (a.ticks || 0), 0) * COMBAT_TICK_TIME || 1;
+  const individualProgress =
+    ((c.statuses?.knockedOut ? c.statuses.knockedOut : elapsed) / totalTime) % 1;
 
   const anims = c.animations || [];
   const activeByName = (name) =>
-    anims.find(a => a.start < elapsed && a.end > elapsed && a.vfxName === name);
+    anims.find((a) => a.start < elapsed && a.end > elapsed && a.vfxName === name);
 
-  const attackAnim = anims.find(a =>
-    a.start < elapsed && a.end > elapsed &&
-    ['basicAttackFast', 'basicAttackRegular', 'basicAttackSlow', 'whirlwind'].includes(a.vfxName)
+  const attackAnim = anims.find(
+    (a) =>
+      a.start < elapsed &&
+      a.end > elapsed &&
+      ['basicAttackFast', 'basicAttackRegular', 'basicAttackSlow', 'whirlwind'].includes(a.vfxName),
   );
 
   // Compute attack start/end points (for sprite charge animation)
   const tx = attackAnim?.targetX ?? x;
   const ty = attackAnim?.targetY ?? y;
-  const dX = tx - x, dY = ty - y;
+  const dX = tx - x,
+    dY = ty - y;
   const distance = Math.hypot(dX, dY) || 1;
-  const ux = dX / distance, uy = dY / distance;
+  const ux = dX / distance,
+    uy = dY / distance;
   let anticipate = 0;
   if (attackAnim?.vfxName === 'basicAttackSlow') anticipate = 50;
   if (attackAnim?.vfxName === 'basicAttackRegular') anticipate = 30;
@@ -59,27 +68,46 @@ const enrichCombatant = (c, ti, ci, elapsed, scale) => {
 
   // Health-bar floaters — collect all active hurt/armorHurt/heal animations.
   const floaters = anims
-    .filter(a => a.start < elapsed && a.end > elapsed && ['hurt', 'armorHurt', 'heal'].includes(a.vfxName))
-    .map(a => ({
+    .filter(
+      (a) =>
+        a.start < elapsed && a.end > elapsed && ['hurt', 'armorHurt', 'heal'].includes(a.vfxName),
+    )
+    .map((a) => ({
       id: a.id,
       vfxName: a.vfxName,
       amount: a.amount || 0,
       isCritical: !!a.isCritical,
       random: (parseInt((a.id || '0').slice(0, 8), 16) % 1000) / 1000, // stable pseudo-random from id
-      dir: facingRight ? -1 : 1
+      dir: facingRight ? -1 : 1,
     }));
 
   const statusEffects = [
     { key: 'bleeding', ticks: c.statuses?.isBleeding?.ticks || 0 },
     { key: 'stunned', ticks: c.statuses?.isStunned?.ticks || 0 },
     { key: 'vulnerable', ticks: c.statuses?.isVulnerable?.ticks || 0 },
-  ].filter(s => s.ticks > 0).sort((a, b) => a.ticks - b.ticks);
+  ]
+    .filter((s) => s.ticks > 0)
+    .sort((a, b) => a.ticks - b.ticks);
 
   const statusStacks = [
-    { key: 'wounded', value: c.statuses?.isWounded?.value || 0, max: c.statuses?.isWounded?.max || 0 },
-    { key: 'concussed', value: c.statuses?.isConcussed?.value || 0, max: c.statuses?.isConcussed?.max || 0 },
-    { key: 'exposed', value: c.statuses?.isExposed?.value || 0, max: c.statuses?.isExposed?.max || 0 },
-  ].filter(s => s.value > 0 && s.max > 0).sort((a, b) => b.value - a.value);
+    {
+      key: 'wounded',
+      value: c.statuses?.isWounded?.value || 0,
+      max: c.statuses?.isWounded?.max || 0,
+    },
+    {
+      key: 'concussed',
+      value: c.statuses?.isConcussed?.value || 0,
+      max: c.statuses?.isConcussed?.max || 0,
+    },
+    {
+      key: 'exposed',
+      value: c.statuses?.isExposed?.value || 0,
+      max: c.statuses?.isExposed?.max || 0,
+    },
+  ]
+    .filter((s) => s.value > 0 && s.max > 0)
+    .sort((a, b) => b.value - a.value);
 
   // Flatten ability cells (for ability bar). Each cell: width px = 12 * ticks.
   const abilityCells = abilitiesCopied.map((a, i) => ({
@@ -112,16 +140,26 @@ const enrichCombatant = (c, ti, ci, elapsed, scale) => {
     knockedOut,
     isStunned,
     facingRight,
-    x, y, z, rot, scale,
+    x,
+    y,
+    z,
+    rot,
+    scale,
     // Sprite offsets / vars for position transform
     spriteHeight,
     attackClass,
-    attackStartX, attackStartY, attackEndX, attackEndY,
+    attackStartX,
+    attackStartY,
+    attackEndX,
+    attackEndY,
     attackDuration,
     dir: facingRight ? 1 : -1,
     attackAnimId: attackAnim?.id || '',
-    hurtActive, blockActive, attackBlocked: attackBlockedActive,
-    whirlwindActive, attackDodgedActive,
+    hurtActive,
+    blockActive,
+    attackBlocked: attackBlockedActive,
+    whirlwindActive,
+    attackDodgedActive,
     floaters,
     statusEffects,
     statusStacks,
@@ -144,7 +182,8 @@ export const init = () => {
     const teams = $.liveTeams;
     if (!teams?.length) return;
 
-    const totalCombatants = teams.reduce((a, t) => (t.combatants?.length || 0) + a, 0) * teams.length;
+    const totalCombatants =
+      teams.reduce((a, t) => (t.combatants?.length || 0) + a, 0) * teams.length;
     const { scale } = getGeometry(totalCombatants);
 
     const elapsed = $.elapsedMilliseconds;
@@ -188,9 +227,9 @@ export const init = () => {
     try {
       new window.Howl({
         src: [src],
-        volume: ($.settings?.volume?.combat ?? 1) * ($.settings?.volume?.master ?? 0.5)
+        volume: ($.settings?.volume?.combat ?? 1) * ($.settings?.volume?.master ?? 0.5),
       }).play();
-    } catch { }
+    } catch {}
   };
 
   const loop = (timestamp) => {
@@ -218,8 +257,8 @@ export const init = () => {
       cancelAnimationFrame(animationId);
       animationId = null;
 
-      $.characters.forEach(character => {
-        const myCharacter = $.liveTeams[0]?.combatants?.find(c => c.uuid === character.uuid);
+      $.characters.forEach((character) => {
+        const myCharacter = $.liveTeams[0]?.combatants?.find((c) => c.uuid === character.uuid);
         if (myCharacter) {
           character.overrides.combatStats.currentHealth = myCharacter.combatStats.currentHealth;
         }
@@ -230,7 +269,10 @@ export const init = () => {
     animationId = requestAnimationFrame(loop);
   };
 
-  const pauseCombat = () => { cancelAnimationFrame(animationId); animationId = null; };
+  const pauseCombat = () => {
+    cancelAnimationFrame(animationId);
+    animationId = null;
+  };
   const resumeCombat = () => {
     if ($.combat.duration > 0 && $.elapsedMilliseconds < $.combat.duration) {
       lastTimestamp = 0;

@@ -4,8 +4,7 @@ const MAX_LEVEL = 25;
 export const getLevelByExperience = (experience) =>
   Math.min(Math.floor(Math.pow(experience / 100, 1 / SCALING)) + 1, MAX_LEVEL);
 
-export const getExperienceByLevel = (level) =>
-  Math.pow(level - 1, SCALING) * 100;
+export const getExperienceByLevel = (level) => Math.pow(level - 1, SCALING) * 100;
 
 export const getExperienceForNextLevel = (currentLevel) => {
   const xpCurrentLevel = getExperienceByLevel(currentLevel);
@@ -19,8 +18,7 @@ export const getCurrentExperienceAtLevel = (experience) => {
   return Math.ceil(experience - xpForCurrentLevel);
 };
 
-export const allowedNumberOfCharacters = () =>
-  Math.floor($.accountRewards / 5) + 1;
+export const allowedNumberOfCharacters = () => Math.floor($.accountRewards / 5) + 1;
 
 export const getExperienceRangeForLevel = (level) => {
   const minXp = getExperienceByLevel(level) + 1;

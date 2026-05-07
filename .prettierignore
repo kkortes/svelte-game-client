@@ -1,0 +1,13 @@
+node_modules
+dist
+build
+.vercel
+.output
+test-results
+bun.lockb
+.env*
+.claude/settings.local.json
+static
+*.svg
+_potential
+_unused

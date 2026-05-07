@@ -7,7 +7,9 @@
 
   const localState = { healTimerElapsed: 0, healTimerTotal: FULL_TIME };
   component(localState);
-  const componentId = Object.keys(window.__vibeComponents).find(k => window.__vibeComponents[k] === localState);
+  const componentId = Object.keys(window.__vibeComponents).find(
+    (k) => window.__vibeComponents[k] === localState,
+  );
   const s = $[componentId];
 
   window.hydrateBrawler = (ref) => {
@@ -16,7 +18,15 @@
       const stats = calculateCombatStatsByCharacter(char);
       const AB = window.ABILITIES_FN;
       const hydrated = AB
-        ? char.abilities.map((a) => { try { return AB(a, true); } catch { return null; } }).filter(Boolean)
+        ? char.abilities
+            .map((a) => {
+              try {
+                return AB(a, true);
+              } catch {
+                return null;
+              }
+            })
+            .filter(Boolean)
         : [];
       const abilities = hydrated
         .filter((_, i) => calculateTickStart(hydrated, i) < char.maxTicks)
@@ -28,10 +38,18 @@
         currentHealth: char.combatStats?.currentHealth ?? stats.maxHealth ?? 0,
         maxHealth: stats.maxHealth ?? 0,
         abilities,
-        totalTicks: abilities.reduce((acc, a) => acc + (a.ticks || 0), 0)
+        totalTicks: abilities.reduce((acc, a) => acc + (a.ticks || 0), 0),
       };
     } catch {
-      return { uuid: ref?.uuid, name: '', mugshot: '', currentHealth: 0, maxHealth: 0, abilities: [], totalTicks: 0 };
+      return {
+        uuid: ref?.uuid,
+        name: '',
+        mugshot: '',
+        currentHealth: 0,
+        maxHealth: 0,
+        abilities: [],
+        totalTicks: 0,
+      };
     }
   };
 
@@ -56,9 +74,9 @@
           const heal = Math.ceil(stats.maxHealth * 0.33);
           ref.overrides.combatStats.currentHealth = Math.min(
             char.combatStats.currentHealth + heal,
-            stats.maxHealth
+            stats.maxHealth,
           );
-        } catch { }
+        } catch {}
       });
       $.clock = { ...$.clock, server: nowMs, client: performance.now() };
     }
@@ -72,15 +90,31 @@
       <!-- if combat.duration !== 0 -->
       <crow>
         <!-- if elapsedMilliseconds < combat.duration -->
-        <a class="crow" g="2" href="#" primary
-          onclick="event.preventDefault(); $.overlay = { name: 'Combat' }">
+        <a
+          class="crow"
+          g="2"
+          href="#"
+          primary
+          onclick="
+            event.preventDefault();
+            $.overlay = { name: 'Combat' };
+          "
+        >
           <spinner sm></spinner>
           <span>Fighting..</span>
         </a>
         <!-- /if -->
         <!-- if elapsedMilliseconds >= combat.duration && combat.duration !== 0 -->
-        <a class="crow" g="2" href="#" primary
-          onclick="event.preventDefault(); $.overlay = { name: 'Combat' }">
+        <a
+          class="crow"
+          g="2"
+          href="#"
+          primary
+          onclick="
+            event.preventDefault();
+            $.overlay = { name: 'Combat' };
+          "
+        >
           <span>View outcome</span>
         </a>
         <!-- /if -->
@@ -105,28 +139,47 @@
             </button>
           </crow>
           <!-- if getLevelByExperience(experience) < 25 -->
-          <component src="/components/Bar.html" center color="yellow"
+          <component
+            src="/components/Bar.html"
+            center
+            color="yellow"
             current="@[getCurrentExperienceAtLevel(experience)]"
-            max="@[getExperienceForNextLevel(getLevelByExperience(experience))]"></component>
+            max="@[getExperienceForNextLevel(getLevelByExperience(experience))]"
+          ></component>
           <!-- /if -->
         </crow>
 
         <crow vertical left w="full">
           <crow justify-between w="full">
             <span text-sm>Medical area</span>
-            <button primary sm onclick="
-          $.characters.forEach(c => {
-            try {
-              const ch = CHARACTERS(c, true);
-              const stats = calculateCombatStatsByCharacter(ch);
-              const heal = Math.ceil(stats.maxHealth * 0.33);
-              c.overrides.combatStats.currentHealth = Math.min(ch.combatStats.currentHealth + heal, stats.maxHealth);
-            } catch {}
-          });
-        ">Heal now</button>
+            <button
+              primary
+              sm
+              onclick="
+                $.characters.forEach((c) => {
+                  try {
+                    const ch = CHARACTERS(c, true);
+                    const stats = calculateCombatStatsByCharacter(ch);
+                    const heal = Math.ceil(stats.maxHealth * 0.33);
+                    c.overrides.combatStats.currentHealth = Math.min(
+                      ch.combatStats.currentHealth + heal,
+                      stats.maxHealth,
+                    );
+                  } catch {}
+                })
+              "
+            >
+              Heal now
+            </button>
           </crow>
-          <component src="/components/Bar.html" center timer color="stone"
-            current="@[this.healTimerElapsed]" max="@[this.healTimerTotal]"></component>
+          <component
+            src="/components/Bar.html"
+            center
+            timer
+            color="stone"
+            current="@[this.healTimerElapsed]"
+            max="@[this.healTimerTotal]"
+          ></component>
         </crow>
       </crow>
 
@@ -141,23 +194,29 @@
           <!-- if characters.length === 0 -->
           <crow vertical w="full" g="2" text-sm>
             You have no brawlers yet.
-            <a class="button" href="/brawlers" primary>
-              Recruit brawler
-            </a>
+            <a class="button" href="/brawlers" primary> Recruit brawler </a>
           </crow>
           <!-- /if -->
           <!-- each characters.map(hydrateBrawler) as brawler (brawler.uuid), i -->
           <a href="/brawlers/@[i]" onclick="selectBrawler(event, brawler.uuid, @[i])" brawler-link>
-            <crow left brawler-row
-              active="@[Number(page.params.characterIndex) === i || selectedBrawlers.includes(brawler.uuid)]">
+            <crow
+              left
+              brawler-row
+              active="@[Number(page.params.characterIndex) === i || selectedBrawlers.includes(brawler.uuid)]"
+            >
               <brawler-avatar-outer>
                 <brawler-avatar-inner glass>
                   <img data-src="/static/images/races/@[brawler.mugshot]" alt="" brawler-img />
                 </brawler-avatar-inner>
               </brawler-avatar-outer>
               <crow vertical left brawler-info>
-                <component src="/components/Bar.html" text="@[brawler.name]"
-                  current="@[brawler.currentHealth]" max="@[brawler.maxHealth]" percentage="1">
+                <component
+                  src="/components/Bar.html"
+                  text="@[brawler.name]"
+                  current="@[brawler.currentHealth]"
+                  max="@[brawler.maxHealth]"
+                  percentage="1"
+                >
                 </component>
                 <ability-accordion>
                   <ability-accordion-content>
@@ -201,7 +260,10 @@
     margin: 0 calc(calc(var(--unit) * -1.5));
     gap: 0;
     border-radius: calc(calc(var(--unit) * 0.5));
-    transition: background 150ms, box-shadow 150ms, backdrop-filter 150ms;
+    transition:
+      background 150ms,
+      box-shadow 150ms,
+      backdrop-filter 150ms;
   }
 
   [brawler-row][active] {

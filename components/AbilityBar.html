@@ -23,8 +23,7 @@
     <!-- /if -->
 
     <!-- if !minimalistic -->
-    <ability-marker-sequence absolute
-      style="left: calc((100% / var(--grid-cells)) * @[lasttick]);">
+    <ability-marker-sequence absolute style="left: calc((100% / var(--grid-cells)) * @[lasttick])">
       <ability-marker-label absolute vertical right g="1">
         <strong>Ability&nbsp;sequence</strong>
         <span>@[lasttick]&nbsp;ticks</span>
@@ -34,11 +33,22 @@
 
     <ability-overlay absolute t="0" l="0" r="0" b="0">
       <!-- each abilities as ability -->
-      <ability-segment relative flex f="none" dnd-item="@[!dndDisabled]" basic="@[ability.basic]"
+      <ability-segment
+        relative
+        flex
+        f="none"
+        dnd-item="@[!dndDisabled]"
+        basic="@[ability.basic]"
         overflow="@[ability.overflow]"
         data-ability="@[JSON.stringify(ability)]"
-        onmouseenter="showTooltip(abilityTooltipProps(JSON.parse(this.dataset.ability)), this, { direction: 'up', lock: true })"
-        style="width: calc(((100% / var(--grid-cells)) * @[ability.ticks]) + 1px);">
+        onmouseenter="
+          showTooltip(abilityTooltipProps(JSON.parse(this.dataset.ability)), this, {
+            direction: 'up',
+            lock: true,
+          })
+        "
+        style="width: calc(((100% / var(--grid-cells)) * @[ability.ticks]) + 1px)"
+      >
         <ability-icon w="full" h="full">
           <icon @[ability.icon]></icon>
         </ability-icon>
@@ -69,7 +79,7 @@
     margin-left: -1px;
   }
 
-  ability-track[small] ability-cell:nth-child(n+13) {
+  ability-track[small] ability-cell:nth-child(n + 13) {
     display: none;
   }
 

@@ -16,21 +16,31 @@
   };
 
   window.combatRewardXp = (combat) => {
-    const fight = (window.ALL_FIGHTS || []).find(f => f.id === combat.fightId);
+    const fight = (window.ALL_FIGHTS || []).find((f) => f.id === combat.fightId);
     if (!fight || combat.winningTeam?.index !== 0) return 0;
-    return window.getExperienceReward(fight.characters.length, fight.minLevel, fight.maxLevel, fight.boss);
+    return window.getExperienceReward(
+      fight.characters.length,
+      fight.minLevel,
+      fight.maxLevel,
+      fight.boss,
+    );
   };
 
   window.combatRewardBoss = (combat, bossHighscore) => {
-    const fight = (window.ALL_FIGHTS || []).find(f => f.id === combat.fightId);
-    return !!(fight && fight.boss && combat.winningTeam?.index === 0 && fight.minLevel > bossHighscore);
+    const fight = (window.ALL_FIGHTS || []).find((f) => f.id === combat.fightId);
+    return !!(
+      fight &&
+      fight.boss &&
+      combat.winningTeam?.index === 0 &&
+      fight.minLevel > bossHighscore
+    );
   };
 
   window.claimCombatReward = () => {
     const combat = $.combat;
     if (!combat?.duration || combat._rewarded) return;
 
-    const fight = (window.ALL_FIGHTS || []).find(f => f.id === combat.fightId);
+    const fight = (window.ALL_FIGHTS || []).find((f) => f.id === combat.fightId);
     if (fight) {
       $.experience += window.combatRewardXp(combat);
       if (fight.boss && combat.winningTeam?.index === 0 && fight.minLevel > $.bossHighscore) {
@@ -41,9 +51,9 @@
     try {
       new window.Howl({
         src: [window.AUDIO['Victory Stinger 1']],
-        volume: $.settings.volume.sfx * $.settings.volume.master
+        volume: $.settings.volume.sfx * $.settings.volume.master,
       }).play();
-    } catch { }
+    } catch {}
 
     combat._rewarded = true;
     resetCombat();
@@ -53,9 +63,9 @@
     try {
       new window.Howl({
         src: [window.AUDIO['Stinger - Ominous Timpani']],
-        volume: $.settings.volume.sfx * $.settings.volume.master
+        volume: $.settings.volume.sfx * $.settings.volume.master,
       }).play();
-    } catch { }
+    } catch {}
     resetCombat();
   };
 </script>

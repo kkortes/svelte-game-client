@@ -1,14 +1,19 @@
 <script type="module">
   $.on('afterUpdate', (current, prev) => {
-    if (current.overlay.name === 'AccountProgression' && prev.overlay.name !== 'AccountProgression') {
+    if (
+      current.overlay.name === 'AccountProgression' &&
+      prev.overlay.name !== 'AccountProgression'
+    ) {
       const el = document.querySelector('[progression-scroll] slides');
       if (!el) return;
       const target = el.children[current.accountRewards - 1];
-      if (target) target.scrollIntoView({ behavior: 'instant', block: 'nearest', inline: 'center' });
+      if (target)
+        target.scrollIntoView({ behavior: 'instant', block: 'nearest', inline: 'center' });
       setTimeout(() => {
         const level = window.getLevelByExperience(current.experience);
         const lvlTarget = el.children[level - 1];
-        if (lvlTarget) lvlTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        if (lvlTarget)
+          lvlTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
       }, 50);
     }
   });
@@ -19,14 +24,16 @@
     const accountLevel = window.getLevelByExperience($.experience);
     if (lvl !== $.accountRewards + 1 || lvl > accountLevel) return;
     if (lvl === accountLevel) {
-      setTimeout(() => { $.overlay = {}; }, 500);
+      setTimeout(() => {
+        $.overlay = {};
+      }, 500);
     }
     try {
       new window.Howl({
         src: [window.AUDIO['Special Lootbox 13']],
-        volume: $.settings.volume.master * $.settings.volume.sfx
+        volume: $.settings.volume.master * $.settings.volume.sfx,
       }).play();
-    } catch { }
+    } catch {}
     $.accountRewards += 1;
     $.coins += 100;
   };
@@ -37,8 +44,12 @@
     <!-- each this.levels as lvl -->
     <slide>
       <slide-center>
-        <card progression-card onclick="event.stopPropagation()" claimed="@[lvl <= accountRewards]"
-          reached="@[lvl <= getLevelByExperience(experience)]">
+        <card
+          progression-card
+          onclick="event.stopPropagation()"
+          claimed="@[lvl <= accountRewards]"
+          reached="@[lvl <= getLevelByExperience(experience)]"
+        >
           <!-- if lvl <= accountRewards -->
           <icon checkmark progression-check absolute t="2" r="2"></icon>
           <!-- /if -->
@@ -47,31 +58,31 @@
           <crow g="8" up>
             <crow vertical up left>
               <strong sm>Account</strong>
-              <crow g="1">+1 <icon coin coin-platinum></icon>
-              </crow>
+              <crow g="1">+1 <icon coin coin-platinum></icon> </crow>
               <!-- if lvl % 5 === 0 || lvl === 1 -->
               <span sm>+1 brawler</span>
               <!-- /if -->
             </crow>
             <crow vertical up left>
               <strong sm>Brawlers</strong>
-              <crow g="1">+4 <icon maxHealth></icon>
-              </crow>
-              <crow g="1">+2 <icon damage></icon>
-              </crow>
+              <crow g="1">+4 <icon maxHealth></icon> </crow>
+              <crow g="1">+2 <icon damage></icon> </crow>
             </crow>
           </crow>
 
           <!-- if lvl > accountRewards -->
-          <button primary
+          <button
+            primary
             disabled="@[lvl > accountRewards + 1 || lvl > getLevelByExperience(experience)]"
-            onclick="claimAccountReward(@[lvl])">Claim</button>
+            onclick="claimAccountReward(@[lvl])"
+          >
+            Claim
+          </button>
           <!-- /if -->
 
-          <progression-premium mt="auto" flex p="4" mx="-4" mb="-4" text-muted>Premium rewards
-            TBA.</progression-premium>
-
-
+          <progression-premium mt="auto" flex p="4" mx="-4" mb="-4" text-muted
+            >Premium rewards TBA.</progression-premium
+          >
         </card>
       </slide-center>
     </slide>
@@ -93,7 +104,7 @@
     padding: 0 calc(50vw - min(calc(calc(var(--unit) * 60)), 30vw));
   }
 
-  [progression-scroll] slides>slide {
+  [progression-scroll] slides > slide {
     display: flex;
     min-width: min(calc(calc(var(--unit) * 120)), 60vw);
     align-items: center;

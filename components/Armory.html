@@ -4,9 +4,11 @@
   window.equipItem = equip;
   window.dismantleItem = dismantle;
 </script>
-<sidebar sm-hide armory
-  visible="@[page.params.characterIndex !== undefined || page.name === 'vendor']">
-
+<sidebar
+  sm-hide
+  armory
+  visible="@[page.params.characterIndex !== undefined || page.name === 'vendor']"
+>
   <sidebar-content>
     <crow justify-between>
       <h5>ARMORY</h5>
@@ -15,24 +17,47 @@
 
     <crow vertical up left>
       <!-- each inventory as item, idx -->
-      <crow justify-between w="full" g="2" py="1" armory-row
+      <crow
+        justify-between
+        w="full"
+        g="2"
+        py="1"
+        armory-row
         onmouseenter="showTooltip(equipmentTooltipProps(EQUIPMENT($.inventory[@[idx]], true)), this.querySelector('eq-link') || this, { direction: 'up' })"
-        onmouseleave="hideTooltip()">
-        <component src="/components/EquipmentLink.html"
-          level="@[item.overrides?.level]" name="@[item.overrides?.name || item.id]"></component>
+        onmouseleave="hideTooltip()"
+      >
+        <component
+          src="/components/EquipmentLink.html"
+          level="@[item.overrides?.level]"
+          name="@[item.overrides?.name || item.id]"
+        ></component>
         <!-- if page.params.characterIndex !== undefined -->
         <button tertiary text-xs onclick="equipItem($.inventory[@[idx]])">Equip</button>
         <!-- /if -->
         <!-- if page.name === 'vendor' -->
         <!-- if item.overrides?.cost > 0 -->
-        <button tertiary text-xs text-red onclick="
+        <button
+          tertiary
+          text-xs
+          text-red
+          onclick="
         $.overlay = { name: 'confirm', text: 'Refund this item?', confirm: () => { $.coins += $.inventory[@[idx]].overrides?.cost || 0; dismantleItem($.inventory[@[idx]]); } }
-      ">Refund</button>
+      "
+        >
+          Refund
+        </button>
         <!-- /if -->
         <!-- if !item.overrides?.cost -->
-        <button tertiary text-xs text-red onclick="
+        <button
+          tertiary
+          text-xs
+          text-red
+          onclick="
         $.overlay = { name: 'confirm', text: 'Dismantle this item?', confirm: () => { dismantleItem($.inventory[@[idx]]); } }
-      ">Dismantle</button>
+      "
+        >
+          Dismantle
+        </button>
         <!-- /if -->
         <!-- /if -->
       </crow>
@@ -42,6 +67,5 @@
     <!-- if inventory.length === 0 -->
     <p text-sm text-muted mt="2">No items</p>
     <!-- /if -->
-
   </sidebar-content>
 </sidebar>

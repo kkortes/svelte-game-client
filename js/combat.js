@@ -23,9 +23,9 @@ export const healFull = (characters) =>
         ...character.overrides,
         combatStats: {
           ...character.overrides?.combatStats,
-          currentHealth: combatStats.maxHealth
-        }
-      }
+          currentHealth: combatStats.maxHealth,
+        },
+      },
     };
   });
 
@@ -38,8 +38,8 @@ export const prepareTeams = (...teams) => {
           teams.length,
           team.length,
           teamIndex,
-          combatatantIndex
-        )
+          combatatantIndex,
+        ),
     );
 
     return preparedTeam;
@@ -48,13 +48,13 @@ export const prepareTeams = (...teams) => {
   return preparedCombatants.map((team, index) => ({
     name: `Team ${index}`,
     index,
-    combatants: team
+    combatants: team,
   }));
 };
 
 const moreThanOneTeamStanding = (teams) => {
   const teamsStanding = teams.filter((team) =>
-    team.combatants.some((combatant) => combatant.combatStats.currentHealth > 0)
+    team.combatants.some((combatant) => combatant.combatStats.currentHealth > 0),
   );
   return teamsStanding.length > 1;
 };
@@ -83,7 +83,7 @@ const injectAnimation = (combatant, target, currentAbility, now, teams, events =
   const vfx = structuredClone(currentAbility.vfx);
   if (
     !['basicAttackFast', 'basicAttackRegular', 'basicAttackSlow', 'whirlwind', 'block'].includes(
-      vfx.vfxName
+      vfx.vfxName,
     )
   )
     return;
@@ -102,7 +102,7 @@ const injectAnimation = (combatant, target, currentAbility, now, teams, events =
   events.forEach((event) => {
     if (event.eventTimestamp >= now - currentAbility.ticks * COMBAT_TICK_TIME) {
       event.teams[combatant.teamIndex].combatants[cIndex].animations.push(
-        ...combatant.injectedAnimations
+        ...combatant.injectedAnimations,
       );
     }
   });
@@ -114,10 +114,10 @@ const pickAbility = (abilities, ability, now, startOrEnd) =>
 
 const sortByAbilityPriority = (a, b, now, startOrEnd) => {
   const aAbility = a.abilities.find((ability) =>
-    pickAbility(a.abilities, ability, now, startOrEnd)
+    pickAbility(a.abilities, ability, now, startOrEnd),
   );
   const bAbility = b.abilities.find((ability) =>
-    pickAbility(b.abilities, ability, now, startOrEnd)
+    pickAbility(b.abilities, ability, now, startOrEnd),
   );
 
   const aPriority = ABILITY_PRIORITY.indexOf(aAbility.id);
@@ -134,8 +134,8 @@ const sortByAbilityPriority = (a, b, now, startOrEnd) => {
 const timedAbility = (combatants, now, startOrEnd) =>
   combatants.filter((combatant) =>
     combatant.abilities.some((ability) =>
-      pickAbility(combatant.abilities, ability, now, startOrEnd)
-    )
+      pickAbility(combatant.abilities, ability, now, startOrEnd),
+    ),
   );
 
 const prioritySorting = (combatants, now, startOrEnd) =>
@@ -183,8 +183,8 @@ export const generateCombat = (teams, seed = `${Math.random()}`, fightId) => {
   events.push(
     structuredClone({
       eventTimestamp: now,
-      teams
-    })
+      teams,
+    }),
   );
 
   while (moreThanOneTeamStanding(teams)) {
@@ -201,7 +201,7 @@ export const generateCombat = (teams, seed = `${Math.random()}`, fightId) => {
 
     orderedCombatantsStarting.forEach((combatant) => {
       const currentAbilityIndex = combatant.abilities.findIndex((ability) =>
-        pickAbility(combatant.abilities, ability, now, 'start')
+        pickAbility(combatant.abilities, ability, now, 'start'),
       );
       const currentAbility = combatant.abilities[currentAbilityIndex];
 
@@ -214,10 +214,10 @@ export const generateCombat = (teams, seed = `${Math.random()}`, fightId) => {
 
     orderedCombatantsEnding.forEach((combatant, i) => {
       const targetableCombatants = stillStandingCombatants.filter(
-        ({ teamIndex }) => teamIndex !== combatant.teamIndex
+        ({ teamIndex }) => teamIndex !== combatant.teamIndex,
       );
       const currentAbilityIndex = combatant.abilities.findIndex((ability) =>
-        pickAbility(combatant.abilities, ability, now, 'end')
+        pickAbility(combatant.abilities, ability, now, 'end'),
       );
       const currentAbility = combatant.abilities[currentAbilityIndex];
 
@@ -226,16 +226,16 @@ export const generateCombat = (teams, seed = `${Math.random()}`, fightId) => {
           seededRandom(
             0,
             targetableCombatants.length - 1,
-            `${seed}_${currentAbilityIndex}_${now}_defender`
+            `${seed}_${currentAbilityIndex}_${now}_defender`,
           )
         ];
 
       const damage = {
         amount: 0,
-        isCritical: false
+        isCritical: false,
       };
       const heal = {
-        amount: 0
+        amount: 0,
       };
 
       const isWindUp = currentAbility.type === TYPE.WindUp;
@@ -251,12 +251,12 @@ export const generateCombat = (teams, seed = `${Math.random()}`, fightId) => {
           if (isStunned.ticks === 0) {
             combatant.statuses.isStunned = {
               ticks: 0,
-              value: 0
+              value: 0,
             };
           }
         } else if (isWindUp) {
           const healingAmount = Math.floor(
-            combatant.combatStats.maxHealth * currentAbility.healing * healingEfficiency
+            combatant.combatStats.maxHealth * currentAbility.healing * healingEfficiency,
           );
 
           const missingHealth =
@@ -273,13 +273,13 @@ export const generateCombat = (teams, seed = `${Math.random()}`, fightId) => {
           const isBlocked = isLucky(
             target.combatStats.blockChance,
             `${seed}_${tickCount}_${i}_blockChance`,
-            luckDisabled
+            luckDisabled,
           );
 
           const isDodged = isLucky(
             target.combatStats.dodgeChance,
             `${seed}_${tickCount}_${i}_dodgeChance`,
-            luckDisabled
+            luckDisabled,
           );
 
           if (isBlocking || isBlocked) {
@@ -292,7 +292,7 @@ export const generateCombat = (teams, seed = `${Math.random()}`, fightId) => {
             const isCritical = isLucky(
               combatant.combatStats.criticalChance,
               `${seed}_${tickCount}_${i}_criticalDamage`,
-              luckDisabled
+              luckDisabled,
             );
 
             const abilityDamage = combatant.combatStats.damage * currentAbility.damage;
@@ -338,7 +338,7 @@ export const generateCombat = (teams, seed = `${Math.random()}`, fightId) => {
                 target.statuses.isExposed.value = 0;
                 target.statuses.isVulnerable = {
                   ticks: target.statuses.isVulnerable.ticks + 4 + overflow,
-                  value: 0.5
+                  value: 0.5,
                 };
               }
             }
@@ -351,7 +351,7 @@ export const generateCombat = (teams, seed = `${Math.random()}`, fightId) => {
                 target.statuses.isConcussed.value = 0;
                 target.statuses.isStunned = {
                   ticks: target.statuses.isStunned.value + 3 + overflow,
-                  value: 1
+                  value: 1,
                 };
               }
             }
@@ -369,7 +369,7 @@ export const generateCombat = (teams, seed = `${Math.random()}`, fightId) => {
                 target.statuses.isWounded.value = 0;
                 target.statuses.isBleeding = {
                   ticks: target.statuses.isBleeding.value + 4 + overflow,
-                  value
+                  value,
                 };
               }
             }
@@ -386,14 +386,14 @@ export const generateCombat = (teams, seed = `${Math.random()}`, fightId) => {
                 value:
                   target.statuses.isBleeding.value > value
                     ? target.statuses.isBleeding.value
-                    : value
+                    : value,
               };
             }
 
             if (currentAbility.statusEffects.includes('isVulnerable')) {
               target.statuses.isVulnerable = {
                 ticks: target.statuses.isVulnerable.ticks + currentAbility.duration,
-                value: 0.5
+                value: 0.5,
               };
             }
 
@@ -415,7 +415,7 @@ export const generateCombat = (teams, seed = `${Math.random()}`, fightId) => {
           if (currentAbility.id === 'shieldBash') {
             target.statuses.isStunned = {
               ticks: target.statuses.isStunned.ticks + 3,
-              value: 1
+              value: 1,
             };
           }
 
@@ -437,15 +437,12 @@ export const generateCombat = (teams, seed = `${Math.random()}`, fightId) => {
             });
 
             const endTime = targetCurrentAbility.end % total;
-            const remainingTime =
-              endTime > t
-                ? endTime - t
-                : total - t + endTime;
+            const remainingTime = endTime > t ? endTime - t : total - t + endTime;
             const ticks = remainingTime / COMBAT_TICK_TIME;
 
             target.statuses.isStunned = {
               ticks,
-              value: 1
+              value: 1,
             };
           }
         } else if (currentAbility.id === 'block') {
@@ -464,15 +461,15 @@ export const generateCombat = (teams, seed = `${Math.random()}`, fightId) => {
             c.statuses.isConcussed = { max: 0, value: 0 };
             c.statuses.isExposed = { max: 0, value: 0 };
           }
-        })
+        }),
       );
     });
 
     events.push(
       structuredClone({
         eventTimestamp: now,
-        teams
-      })
+        teams,
+      }),
     );
 
     if (tickCount % 12 === 0 && tickCount !== 0) {
@@ -486,29 +483,26 @@ export const generateCombat = (teams, seed = `${Math.random()}`, fightId) => {
   const duration = events[events.length - 1]?.eventTimestamp;
   const teamsEndState = events[events.length - 1].teams;
   const winningTeam = teamsEndState.find((team) =>
-    team.combatants.some((combatant) => combatant.combatStats.currentHealth > 0)
+    team.combatants.some((combatant) => combatant.combatStats.currentHealth > 0),
   );
 
   const combined = Object.values(
-    audio.reduce(
-      (acc, item) => {
-        const key = `${item.sfxName}-${item.start}`;
-        if (!acc[key]) {
-          acc[key] = {
-            sfxName: item.sfxName,
-            start: item.start,
-            duration: item.duration,
-            id: item.id,
-            variants: item.variants,
-            count: 1
-          };
-        } else {
-          acc[key].count += 1;
-        }
-        return acc;
-      },
-      {}
-    )
+    audio.reduce((acc, item) => {
+      const key = `${item.sfxName}-${item.start}`;
+      if (!acc[key]) {
+        acc[key] = {
+          sfxName: item.sfxName,
+          start: item.start,
+          duration: item.duration,
+          id: item.id,
+          variants: item.variants,
+          count: 1,
+        };
+      } else {
+        acc[key].count += 1;
+      }
+      return acc;
+    }, {}),
   );
 
   return {
@@ -518,6 +512,6 @@ export const generateCombat = (teams, seed = `${Math.random()}`, fightId) => {
     teamsEndState,
     duration,
     winningTeam,
-    fightId
+    fightId,
   };
 };

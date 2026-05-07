@@ -6,7 +6,7 @@ import { deepMerge } from '/js/helpers.js';
 export const TYPE = {
   WindUp: 'WindUp',
   WindDown: 'WindDown',
-  Channeling: 'Channeling'
+  Channeling: 'Channeling',
 };
 
 export const ALL_ABILITIES = {
@@ -22,7 +22,7 @@ export const ALL_ABILITIES = {
     sfx: SFX.stab,
     damageModifier: -0.05,
     healingModifier: null,
-    durationModifier: null
+    durationModifier: null,
   },
   pierce: {
     name: 'Pierce',
@@ -36,7 +36,7 @@ export const ALL_ABILITIES = {
     sfx: SFX.bowShot,
     damageModifier: -0.05,
     healingModifier: null,
-    durationModifier: null
+    durationModifier: null,
   },
   swing: {
     name: 'Swing',
@@ -50,7 +50,7 @@ export const ALL_ABILITIES = {
     sfx: SFX.swing,
     damageModifier: 0,
     healingModifier: null,
-    durationModifier: null
+    durationModifier: null,
   },
   slam: {
     name: 'Slam',
@@ -64,7 +64,7 @@ export const ALL_ABILITIES = {
     sfx: SFX.slam,
     damageModifier: 0.05,
     healingModifier: null,
-    durationModifier: null
+    durationModifier: null,
   },
   punch: {
     name: 'Punch',
@@ -78,7 +78,7 @@ export const ALL_ABILITIES = {
     sfx: SFX.punch,
     damageModifier: -0.1,
     healingModifier: null,
-    durationModifier: null
+    durationModifier: null,
   },
   block: {
     name: 'Block',
@@ -92,7 +92,7 @@ export const ALL_ABILITIES = {
     sfx: SFX.stab,
     damageModifier: null,
     healingModifier: null,
-    durationModifier: 0
+    durationModifier: 0,
   },
   shieldBash: {
     name: 'Shield Bash',
@@ -106,7 +106,7 @@ export const ALL_ABILITIES = {
     sfx: SFX.slam,
     damageModifier: 0,
     healingModifier: null,
-    durationModifier: null
+    durationModifier: null,
   },
   kick: {
     name: 'Kick',
@@ -120,7 +120,7 @@ export const ALL_ABILITIES = {
     sfx: SFX.stab,
     damageModifier: null,
     healingModifier: null,
-    durationModifier: Infinity
+    durationModifier: Infinity,
   },
   whirlwind: {
     name: 'Whirlwind',
@@ -135,7 +135,7 @@ export const ALL_ABILITIES = {
     sfx: SFX.stab,
     damageModifier: 0,
     healingModifier: null,
-    durationModifier: 0
+    durationModifier: 0,
   },
   lacerate: {
     name: 'Lacerate',
@@ -149,7 +149,7 @@ export const ALL_ABILITIES = {
     sfx: SFX.doubleCut,
     damageModifier: null,
     healingModifier: null,
-    durationModifier: 1
+    durationModifier: 1,
   },
   demoralizingShout: {
     name: 'Demoralizing Shout',
@@ -163,7 +163,7 @@ export const ALL_ABILITIES = {
     sfx: SFX.demoralizingShout,
     damageModifier: null,
     healingModifier: null,
-    durationModifier: 2
+    durationModifier: 2,
   },
   cheesyTactics: {
     name: 'Cheesy Tactics',
@@ -178,7 +178,7 @@ export const ALL_ABILITIES = {
     sfx: SFX.chew,
     damageModifier: null,
     healingModifier: 0,
-    durationModifier: 0
+    durationModifier: 0,
   },
   bite: {
     name: 'Bite',
@@ -192,7 +192,7 @@ export const ALL_ABILITIES = {
     sfx: SFX.stab,
     damageModifier: 0,
     healingModifier: null,
-    durationModifier: 1
+    durationModifier: 1,
   },
   harden: {
     name: 'Harden',
@@ -206,7 +206,7 @@ export const ALL_ABILITIES = {
     sfx: SFX.stab,
     damageModifier: null,
     healingModifier: null,
-    durationModifier: null
+    durationModifier: null,
   },
   playingTheVictim: {
     name: 'Playing the Victim',
@@ -220,8 +220,8 @@ export const ALL_ABILITIES = {
     sfx: SFX.stab,
     damageModifier: null,
     healingModifier: null,
-    durationModifier: null
-  }
+    durationModifier: null,
+  },
 };
 
 const scalingCalc = (ticks, modifier = 0) => {
@@ -254,7 +254,7 @@ function durationCalc() {
   const ticks = this.ticks;
 
   return {
-    result: ticks * (1 + this.durationModifier)
+    result: ticks * (1 + this.durationModifier),
   };
 }
 
@@ -265,9 +265,9 @@ function attachCalcs(a) {
       return {
         damage: damageCalc.bind(a),
         healing: healingCalc.bind(a),
-        duration: durationCalc.bind(a)
+        duration: durationCalc.bind(a),
       };
-    }
+    },
   });
   return a;
 }
@@ -282,7 +282,7 @@ export default (id, fullBody = false, meta) => {
       ? meta?.overrides
       : meta?.overrides
         ? deepMerge(id.overrides || {}, meta.overrides || {})
-        : id.overrides
+        : id.overrides,
   );
 
   return fullBody ? attachCalcs(ent) : ent;

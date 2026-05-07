@@ -1,5 +1,5 @@
 const {
-  password: { hash, verify }
+  password: { hash, verify },
 } = Bun;
 
 export default async ({ email, password }, { ws, mongo }) => {
@@ -13,7 +13,7 @@ export default async ({ email, password }, { ws, mongo }) => {
   email = email.toLowerCase().trim();
 
   const user = await users.findOne({
-    email
+    email,
   });
 
   if (!user) throw Error('Invalid login credentials');
@@ -24,9 +24,9 @@ export default async ({ email, password }, { ws, mongo }) => {
 
   await users.updateOne(
     {
-      email
+      email,
     },
-    { $set: { token, updated } }
+    { $set: { token, updated } },
   );
 
   return token;

@@ -6,8 +6,8 @@
   try {
     const raw = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
     if (raw && typeof raw === 'object' && !Array.isArray(raw)) initialOpen = raw;
-    else if (Array.isArray(raw)) initialOpen = raw.reduce((acc, p) => (acc[p] = true, acc), {});
-  } catch { }
+    else if (Array.isArray(raw)) initialOpen = raw.reduce((acc, p) => ((acc[p] = true), acc), {});
+  } catch {}
 
   const localState = { openPaths: initialOpen };
   component(localState);
@@ -17,7 +17,9 @@
   const s = $[componentId];
 
   const persistOpenPaths = () => {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s.openPaths)); } catch { }
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(s.openPaths));
+    } catch {}
   };
 
   const isOpen = (path) => !!s.openPaths[path];
@@ -73,7 +75,16 @@
     const childVisible = visible && open;
     if (Array.isArray(value)) {
       value.forEach((item, i) => {
-        walk(item, depth + 1, childPath(path, i), `#${i + 1}`, rows, ancestors, opens, childVisible);
+        walk(
+          item,
+          depth + 1,
+          childPath(path, i),
+          `#${i + 1}`,
+          rows,
+          ancestors,
+          opens,
+          childVisible,
+        );
       });
     } else {
       sortedEntries(value).forEach(([k, v]) => {
@@ -127,9 +138,7 @@
   };
 
   window.dataInspectorShallowCount = (data) =>
-    data && typeof data === 'object'
-      ? Object.keys(data).filter((k) => !isHiddenKey(k)).length
-      : 0;
+    data && typeof data === 'object' ? Object.keys(data).filter((k) => !isHiddenKey(k)).length : 0;
 
   window.dataInspectorTotalCount = (data) => {
     if (!data || typeof data !== 'object') return 0;
@@ -143,8 +152,7 @@
     return all.length > 0 && all.every(isOpen);
   };
 
-  window.dataInspectorAllOpenLabel = (data) =>
-    allExpandableOpen(data) ? 'Close all' : 'Open all';
+  window.dataInspectorAllOpenLabel = (data) => (allExpandableOpen(data) ? 'Close all' : 'Open all');
 
   window.toggleInspectorPath = (e) => {
     const row = e.currentTarget;
@@ -174,23 +182,30 @@
       setOpenPaths({});
     } else {
       const next = { ...s.openPaths };
-      collectExpandablePaths(data).forEach((p) => { next[p] = true; });
+      collectExpandablePaths(data).forEach((p) => {
+        next[p] = true;
+      });
       setOpenPaths(next);
     }
   };
 
   window.copyDataInspectorJson = () => {
-    try { navigator.clipboard?.writeText(JSON.stringify(window.$, null, 2)); } catch { }
+    try {
+      navigator.clipboard?.writeText(JSON.stringify(window.$, null, 2));
+    } catch {}
   };
 </script>
 
 <data-inspector>
   <data-inspector-header>
-    <data-inspector-title>Vibe state (@[window.dataInspectorShallowCount(data)] |
-      @[window.dataInspectorTotalCount(data)] items)</data-inspector-title>
+    <data-inspector-title
+      >Vibe state (@[window.dataInspectorShallowCount(data)] |
+      @[window.dataInspectorTotalCount(data)] items)</data-inspector-title
+    >
     <data-inspector-actions>
-      <button onclick="toggleInspectorAll()"
-        data-inspector-copy>@[window.dataInspectorAllOpenLabel(data)]</button>
+      <button onclick="toggleInspectorAll()" data-inspector-copy>
+        @[window.dataInspectorAllOpenLabel(data)]
+      </button>
       <button onclick="copyDataInspectorJson()" data-inspector-copy>Copy JSON</button>
     </data-inspector-actions>
   </data-inspector-header>
@@ -198,10 +213,15 @@
     <!-- each window.dataInspectorRows(data, this.openPaths) as row (row.path) -->
     <accordion open="@[row.visible]">
       <accordion-content>
-        <data-inspector-row data-path="@[row.path]" expandable="@[row.expandable]" open="@[row.open]"
-          onclick="toggleInspectorPath(event)">
-          <data-inspector-key
-            style="padding-left: calc(@[row.depth] * 1ch)">@[row.key]</data-inspector-key>
+        <data-inspector-row
+          data-path="@[row.path]"
+          expandable="@[row.expandable]"
+          open="@[row.open]"
+          onclick="toggleInspectorPath(event)"
+        >
+          <data-inspector-key style="padding-left: calc(@[row.depth] * 1ch)"
+            >@[row.key]</data-inspector-key
+          >
           <data-inspector-value bracket="@[row.expandable]">@[row.summary]</data-inspector-value>
         </data-inspector-row>
       </accordion-content>
@@ -220,7 +240,8 @@
     font-size: calc(calc(var(--unit) * 3));
     background: var(--inspector-bg);
     color: var(--inspector-text);
-    font-family: 'Geist Mono', 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
+    font-family:
+      'Geist Mono', 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
   }
 
   data-inspector-header {

@@ -1,128 +1,146 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Battle Brawlers</title>
+    <link rel="icon" href="/static/favicon.png" />
+    <link rel="stylesheet" href="/css/index.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Battle Brawlers</title>
-  <link rel="icon" href="/static/favicon.png" />
-  <link rel="stylesheet" href="/css/index.css" />
-</head>
+  <body battle-brawlers vibe vibe-fouc stylecheat>
+    <script type="module">
+      import boot from '/js/boot.js';
+      boot();
 
-<body battle-brawlers vibe vibe-fouc stylecheat>
-  <script type="module">
-    import boot from '/js/boot.js';
-    boot();
+      import { getLevelByExperience, getExperienceRangeForLevel } from '/js/level.js';
+      import { generateCombat, healFull, prepareTeams } from '/js/combat.js';
+      import CHARACTERS from '/js/constants/CHARACTERS.js';
 
-    import { getLevelByExperience, getExperienceRangeForLevel } from '/js/level.js';
-    import { generateCombat, healFull, prepareTeams } from '/js/combat.js';
-    import CHARACTERS from '/js/constants/CHARACTERS.js';
+      const count = Math.floor(getLevelByExperience($.experience) / 5) + 1;
+      $.maxBrawlers = count;
 
-    const count = Math.floor(getLevelByExperience($.experience) / 5) + 1;
-    $.maxBrawlers = count;
-
-    window.updateFightSlots = () => {
-      const C = window.CHARACTERS || CHARACTERS;
-      const A = window.ABILITIES_FN;
-      $.brawlerSlots = Array.from({ length: count }, (_, i) => {
-        const uuid = $.selectedBrawlers[i];
-        if (!uuid) return { empty: true, index: i };
-        const ref = $.characters.find(c => c.uuid === uuid);
-        if (!ref) return { empty: true, index: i };
-        try {
-          const char = C(ref, true);
-          const abilities = A ? char.abilities.map(a => {
-            try { const h = A(a, true); return { icon: h.icon, ticks: h.ticks }; }
-            catch { return null; }
-          }).filter(Boolean) : [];
-          return { empty: false, name: char.name, image: char.image, mugshot: char.image.replace('.png', '-mugshot.png'), abilities, index: i };
-        } catch {
-          return { empty: true, index: i };
-        }
-      });
-    };
-    window.updateFightSlots();
-
-    window.runPvpCombat = async () => {
-      const selected = $.characters.filter(c => $.selectedBrawlers.includes(c.uuid));
-
-      if (selected.length === 0) {
-        notify({ warning: 'Select at least one brawler.' });
-        return;
-      }
-
-      try {
-        const level = getLevelByExperience($.experience);
-        const { minXp, maxXp } = getExperienceRangeForLevel(level);
-
-        const opponents = await $.socket.sendAsync('pvp/get-random-opponent', {
-          count: selected.length,
-          minXp,
-          maxXp
+      window.updateFightSlots = () => {
+        const C = window.CHARACTERS || CHARACTERS;
+        const A = window.ABILITIES_FN;
+        $.brawlerSlots = Array.from({ length: count }, (_, i) => {
+          const uuid = $.selectedBrawlers[i];
+          if (!uuid) return { empty: true, index: i };
+          const ref = $.characters.find((c) => c.uuid === uuid);
+          if (!ref) return { empty: true, index: i };
+          try {
+            const char = C(ref, true);
+            const abilities = A
+              ? char.abilities
+                  .map((a) => {
+                    try {
+                      const h = A(a, true);
+                      return { icon: h.icon, ticks: h.ticks };
+                    } catch {
+                      return null;
+                    }
+                  })
+                  .filter(Boolean)
+              : [];
+            return {
+              empty: false,
+              name: char.name,
+              image: char.image,
+              mugshot: char.image.replace('.png', '-mugshot.png'),
+              abilities,
+              index: i,
+            };
+          } catch {
+            return { empty: true, index: i };
+          }
         });
+      };
+      window.updateFightSlots();
 
-        if (!opponents?.length) {
-          notify({ warning: 'No opponents found.' });
+      window.runPvpCombat = async () => {
+        const selected = $.characters.filter((c) => $.selectedBrawlers.includes(c.uuid));
+
+        if (selected.length === 0) {
+          notify({ warning: 'Select at least one brawler.' });
           return;
         }
 
-        const myCharacters = JSON.parse(JSON.stringify(selected));
-        $.selectedBrawlers = [];
-        $.combat = generateCombat(prepareTeams(myCharacters, healFull(opponents.slice(0, myCharacters.length))));
-        $.overlay = { name: 'Combat' };
-      } catch (e) {
-        notify({ error: 'Failed to find opponent' });
-      }
-    };
-  </script>
+        try {
+          const level = getLevelByExperience($.experience);
+          const { minXp, maxXp } = getExperienceRangeForLevel(level);
 
-  <component src="/components/Layout.html">
-    <page-content>
+          const opponents = await $.socket.sendAsync('pvp/get-random-opponent', {
+            count: selected.length,
+            minXp,
+            maxXp,
+          });
 
-      <component src="/components/TitleBar.html" title="Random duel">
-        <badge>@[selectedBrawlers.length || maxBrawlers]&nbsp;vs&nbsp;@[selectedBrawlers.length ||
-          maxBrawlers]</badge>
-      </component>
-      <hr />
+          if (!opponents?.length) {
+            notify({ warning: 'No opponents found.' });
+            return;
+          }
 
-      <crow py="4">
-        <crow pvp-mystery f="none">
-          ?
+          const myCharacters = JSON.parse(JSON.stringify(selected));
+          $.selectedBrawlers = [];
+          $.combat = generateCombat(
+            prepareTeams(myCharacters, healFull(opponents.slice(0, myCharacters.length))),
+          );
+          $.overlay = { name: 'Combat' };
+        } catch (e) {
+          notify({ error: 'Failed to find opponent' });
+        }
+      };
+    </script>
+
+    <component src="/components/Layout.html">
+      <page-content>
+        <component src="/components/TitleBar.html" title="Random duel">
+          <badge
+            >@[selectedBrawlers.length || maxBrawlers]&nbsp;vs&nbsp;@[selectedBrawlers.length ||
+            maxBrawlers]</badge
+          >
+        </component>
+        <hr />
+
+        <crow py="4">
+          <crow pvp-mystery f="none"> ? </crow>
         </crow>
-      </crow>
 
-      <crow vertical w="full" g="2" mt="4">
-        <!-- each brawlerSlots as slot, i -->
-        <component src="/components/BrawlerSlot.html" slot="@[slot]"></component>
-        <!-- /each -->
-      </crow>
-    </page-content>
+        <crow vertical w="full" g="2" mt="4">
+          <!-- each brawlerSlots as slot, i -->
+          <component src="/components/BrawlerSlot.html" slot="@[slot]"></component>
+          <!-- /each -->
+        </crow>
+      </page-content>
 
-    <stay reverse w="full" sm:b="8" p="3">
-      <button mx="auto" primary onclick="runPvpCombat()"
-        disabled="@[selectedBrawlers.length === 0 || combat.duration !== 0]">
-        Fight
-      </button>
-    </stay>
-  </component>
-  <style>
-    page[random-duel] [pvp-mystery] {
-      width: calc(calc(var(--unit) * 40));
-      height: calc(calc(var(--unit) * 40));
-      border-radius: 50%;
-      background: rgba(0, 0, 0, 0.25);
-      font-size: calc(calc(var(--unit) * 24));
-      color: white;
-    }
+      <stay reverse w="full" sm:b="8" p="3">
+        <button
+          mx="auto"
+          primary
+          onclick="runPvpCombat()"
+          disabled="@[selectedBrawlers.length === 0 || combat.duration !== 0]"
+        >
+          Fight
+        </button>
+      </stay>
+    </component>
+    <style>
+      page[random-duel] [pvp-mystery] {
+        width: calc(calc(var(--unit) * 40));
+        height: calc(calc(var(--unit) * 40));
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.25);
+        font-size: calc(calc(var(--unit) * 24));
+        color: white;
+      }
 
-    page[random-duel] stay {
-      background: var(--background);
-    }
+      page[random-duel] stay {
+        background: var(--background);
+      }
 
-    page[random-duel] stay button {
-      min-width: calc(calc(var(--unit) * 50));
-    }
-  </style>
-</body>
-
+      page[random-duel] stay button {
+        min-width: calc(calc(var(--unit) * 50));
+      }
+    </style>
+  </body>
 </html>

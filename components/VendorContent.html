@@ -9,43 +9,61 @@
       <filter-label>All</filter-label>
     </crow>
   </button>
-  <button vendor-filter active="@[this.filter === 'oneHand']"
-    onclick="$.this.filter = $.this.filter === 'oneHand' ? 'all' : 'oneHand'">
+  <button
+    vendor-filter
+    active="@[this.filter === 'oneHand']"
+    onclick="$.this.filter = $.this.filter === 'oneHand' ? 'all' : 'oneHand'"
+  >
     <crow vertical center g="1">
       <filter-count>@[vendorCounts.oneHand]</filter-count>
       <filter-label>One-Handed</filter-label>
     </crow>
   </button>
-  <button vendor-filter active="@[this.filter === 'offHand']"
-    onclick="$.this.filter = $.this.filter === 'offHand' ? 'all' : 'offHand'">
+  <button
+    vendor-filter
+    active="@[this.filter === 'offHand']"
+    onclick="$.this.filter = $.this.filter === 'offHand' ? 'all' : 'offHand'"
+  >
     <crow vertical center g="1">
       <filter-count>@[vendorCounts.offHand]</filter-count>
       <filter-label>Off-Hand</filter-label>
     </crow>
   </button>
-  <button vendor-filter active="@[this.filter === 'twoHand']"
-    onclick="$.this.filter = $.this.filter === 'twoHand' ? 'all' : 'twoHand'">
+  <button
+    vendor-filter
+    active="@[this.filter === 'twoHand']"
+    onclick="$.this.filter = $.this.filter === 'twoHand' ? 'all' : 'twoHand'"
+  >
     <crow vertical center g="1">
       <filter-count>@[vendorCounts.twoHand]</filter-count>
       <filter-label>Two-Handed</filter-label>
     </crow>
   </button>
-  <button vendor-filter active="@[this.filter === 'armor']"
-    onclick="$.this.filter = $.this.filter === 'armor' ? 'all' : 'armor'">
+  <button
+    vendor-filter
+    active="@[this.filter === 'armor']"
+    onclick="$.this.filter = $.this.filter === 'armor' ? 'all' : 'armor'"
+  >
     <crow vertical center g="1">
       <filter-count>@[vendorCounts.armor]</filter-count>
       <filter-label>Armor</filter-label>
     </crow>
   </button>
-  <button vendor-filter active="@[this.filter === 'accessory']"
-    onclick="$.this.filter = $.this.filter === 'accessory' ? 'all' : 'accessory'">
+  <button
+    vendor-filter
+    active="@[this.filter === 'accessory']"
+    onclick="$.this.filter = $.this.filter === 'accessory' ? 'all' : 'accessory'"
+  >
     <crow vertical center g="1">
       <filter-count>@[vendorCounts.accessory]</filter-count>
       <filter-label>Accessory</filter-label>
     </crow>
   </button>
-  <button vendor-filter active="@[this.filter === 'trinket']"
-    onclick="$.this.filter = $.this.filter === 'trinket' ? 'all' : 'trinket'">
+  <button
+    vendor-filter
+    active="@[this.filter === 'trinket']"
+    onclick="$.this.filter = $.this.filter === 'trinket' ? 'all' : 'trinket'"
+  >
     <crow vertical center g="1">
       <filter-count>@[vendorCounts.trinket]</filter-count>
       <filter-label>Trinket</filter-label>
@@ -65,8 +83,15 @@
   <crow left vendor-row g="4" sm:g="2" py="3" px="6" sm:px="3" w="full">
     <crow left vendor-col-name>
       <eq-name-target
-        onmouseenter="showTooltip(equipmentTooltipProps(vendorItems.find(it => it.id === '@[item.id]')), this.querySelector('eq-link') || this, { direction: 'up' })"
-        onmouseleave="hideTooltip()">
+        onmouseenter="
+          showTooltip(
+            equipmentTooltipProps(vendorItems.find((it) => it.id === '@[item.id]')),
+            this.querySelector('eq-link') || this,
+            { direction: 'up' },
+          )
+        "
+        onmouseleave="hideTooltip()"
+      >
         <component src="/components/EquipmentLink.html" level="@[item.level]" name="@[item.name]">
         </component>
       </eq-name-target>
@@ -76,8 +101,9 @@
       <component src="/components/Coins.html" amount="@[item.cost]"></component>
     </vendor-col-cost>
     <crow vendor-col-action right>
-      <button secondary sm onclick="vendorAcquire('@[item.id]')"
-        disabled="@[$.coins < item.cost]">Acquire</button>
+      <button secondary sm onclick="vendorAcquire('@[item.id]')" disabled="@[$.coins < item.cost]">
+        Acquire
+      </button>
     </crow>
   </crow>
   <!-- /each -->

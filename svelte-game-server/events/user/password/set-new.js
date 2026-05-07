@@ -1,7 +1,7 @@
 import hashids from 'hashids';
 
 const {
-  password: { hash, verify }
+  password: { hash, verify },
 } = Bun;
 
 const { PASSWORD_RESET_HASH } = process.env;
@@ -19,9 +19,9 @@ export default async ({ password, secret }, { mongo }) => {
     {
       $set: {
         password: await hash(password),
-        pwr: null
-      }
-    }
+        pwr: null,
+      },
+    },
   );
 
   if (matchedCount) return;

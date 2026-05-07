@@ -1,11 +1,15 @@
-<stay glass p="0.2" style="z-index: 1;">
+<stay glass p="0.2" style="z-index: 1">
   <crow justify-between topbar>
-    <logo px="2">
-      Battle Brawlers
-    </logo>
+    <logo px="2"> Battle Brawlers </logo>
     <crow>
-      <button tertiary
-        onclick="$.settings = { ...$.settings, darkMode: !$.settings.darkMode }; document.body.toggleAttribute('dark', $.settings.darkMode); document.body.toggleAttribute('light', !$.settings.darkMode)">
+      <button
+        tertiary
+        onclick="
+          $.settings = { ...$.settings, darkMode: !$.settings.darkMode };
+          document.body.toggleAttribute('dark', $.settings.darkMode);
+          document.body.toggleAttribute('light', !$.settings.darkMode);
+        "
+      >
         <!-- if settings.darkMode -->
         <icon light text-yellow></icon>
         <!-- /if -->
@@ -32,8 +36,6 @@
   </accordion>
   <!-- /if -->
 </stay>
-
-
 
 <style>
   [topbar] {

@@ -1,7 +1,7 @@
 import { validateEmail } from '../../helpers';
 
 const {
-  password: { hash }
+  password: { hash },
 } = Bun;
 
 export default async ({ email, password }, { mongo }) => {
@@ -14,7 +14,7 @@ export default async ({ email, password }, { mongo }) => {
     throw Error('Invalid email address format, please try again');
 
   const exists = await collection.findOne({
-    email: correctEmailFormat
+    email: correctEmailFormat,
   });
 
   if (exists) throw Error('A user with that email address already exists');
@@ -27,6 +27,6 @@ export default async ({ email, password }, { mongo }) => {
     token: null,
     pwr: null,
     created: date,
-    updated: date
+    updated: date,
   });
 };

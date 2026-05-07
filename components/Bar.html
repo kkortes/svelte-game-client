@@ -1,7 +1,15 @@
-<bar-track relative w="full" overflow-hidden center="@[center]" color="@[color]"
-  percentage="@[percentage]">
-  <bar-fill block
-    style="width: @[Math.max(0, Math.min(100, ((current || 0) / Math.max(1, max || 1)) * 100))]%"></bar-fill>
+<bar-track
+  relative
+  w="full"
+  overflow-hidden
+  center="@[center]"
+  color="@[color]"
+  percentage="@[percentage]"
+>
+  <bar-fill
+    block
+    style="width: @[Math.max (0, Math.min(100, ((current || 0) / Math.max(1, max || 1)) * 100))]%"
+  ></bar-fill>
   <!-- if loading -->
   <crow px="2" bar-text justify-between="@[!center]">
     <spinner w="3.5" h="3.5"></spinner>
@@ -9,9 +17,11 @@
   <!-- /if -->
   <!-- if !loading && timer -->
   <crow px="2" bar-text justify-between="@[!center]">
-    <bar-timer>@[String(Math.floor(Math.max(0, (max || 0) - (current || 0)) / 60000)).padStart(2,
+    <bar-timer
+      >@[String(Math.floor(Math.max(0, (max || 0) - (current || 0)) / 60000)).padStart(2,
       '0')]:@[String(Math.floor((Math.max(0, (max || 0) - (current || 0)) % 60000) /
-      1000)).padStart(2, '0')]</bar-timer>
+      1000)).padStart(2, '0')]</bar-timer
+    >
   </crow>
   <!-- /if -->
   <!-- if !loading && !timer -->
@@ -20,8 +30,10 @@
     <span bar-label>@[text]</span>
     <!-- /if -->
     <span bar-value-actual>@[current] / @[max]</span>
-    <span bar-value-pct>@[Math.max(0, Math.min(100, ((current || 0) / Math.max(1, max || 1)) *
-      100)).toFixed(0)]%</span>
+    <span bar-value-pct
+      >@[Math.max(0, Math.min(100, ((current || 0) / Math.max(1, max || 1)) *
+      100)).toFixed(0)]%</span
+    >
   </crow>
   <!-- /if -->
 </bar-track>
@@ -48,19 +60,19 @@
     transition: width 200ms ease-in-out;
   }
 
-  bar-track[color="yellow"] bar-fill {
+  bar-track[color='yellow'] bar-fill {
     background: var(--bb-yellow);
   }
 
-  bar-track[color="stone"] bar-fill {
+  bar-track[color='stone'] bar-fill {
     background: var(--bb-stone);
   }
 
-  bar-track[color="green"] bar-fill {
+  bar-track[color='green'] bar-fill {
     background: var(--green-500);
   }
 
-  bar-track[color="blue"] bar-fill {
+  bar-track[color='blue'] bar-fill {
     background: var(--blue-400);
   }
 

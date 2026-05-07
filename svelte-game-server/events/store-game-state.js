@@ -8,19 +8,19 @@ export default async (data, { ws, mongo }) => {
   const users = mongo.collection('users');
 
   const user = await users.findOne({
-    token: data.token
+    token: data.token,
   });
 
   if (!user) throw Error('User not logged in');
 
   await gameStates.updateOne(
     {
-      _id: ObjectId(user._id)
+      _id: ObjectId(user._id),
     },
     { $set: { ...data, updated } },
     {
-      upsert: true
-    }
+      upsert: true,
+    },
   );
 
   return Date.now() - 2 * 60 * 60 * 1000;

@@ -50,12 +50,16 @@
   outcome-icon icon {
     font-size: calc(calc(var(--unit) * 24));
     --color: var(--gray-400);
-    filter: drop-shadow(0 calc(calc(var(--unit) * 0.5)) calc(calc(var(--unit) * 1)) rgba(0, 0, 0, 0.3));
+    filter: drop-shadow(
+      0 calc(calc(var(--unit) * 0.5)) calc(calc(var(--unit) * 1)) rgba(0, 0, 0, 0.3)
+    );
   }
 
-  victory-or-loss[outcome="victory"] outcome-icon icon {
+  victory-or-loss[outcome='victory'] outcome-icon icon {
     --color: var(--yellow-200);
-    filter: drop-shadow(0 calc(calc(var(--unit) * 0.5)) calc(calc(var(--unit) * 1)) rgba(0, 0, 0, 0.3));
+    filter: drop-shadow(
+      0 calc(calc(var(--unit) * 0.5)) calc(calc(var(--unit) * 1)) rgba(0, 0, 0, 0.3)
+    );
   }
 
   outcome-label {
@@ -67,7 +71,7 @@
     text-shadow: 0 calc(calc(var(--unit) * 0.5)) calc(calc(var(--unit) * 1)) rgba(0, 0, 0, 0.3);
   }
 
-  victory-or-loss[outcome="victory"] outcome-label {
+  victory-or-loss[outcome='victory'] outcome-label {
     color: var(--yellow-100);
     -webkit-text-stroke: 1px var(--yellow-300);
   }

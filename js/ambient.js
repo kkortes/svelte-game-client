@@ -30,8 +30,18 @@ export const init = () => {
   if (!window.Howl || !window.AUDIO) return;
 
   tracks = {
-    arena: new window.Howl({ src: [window.AUDIO['Pure Desert Wind']], volume: 0, loop: true, preload: false }),
-    wilderness: new window.Howl({ src: [window.AUDIO['Summer Day In Nature']], volume: 0, loop: true, preload: false })
+    arena: new window.Howl({
+      src: [window.AUDIO['Pure Desert Wind']],
+      volume: 0,
+      loop: true,
+      preload: false,
+    }),
+    wilderness: new window.Howl({
+      src: [window.AUDIO['Summer Day In Nature']],
+      volume: 0,
+      loop: true,
+      preload: false,
+    }),
   };
 
   $.on('afterUpdate', (current, prev) => {

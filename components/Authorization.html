@@ -1,11 +1,14 @@
 <script type="module">
   component({
     mode: 'login',
-    email: config.IS_DEV ? config.AUTO_EMAIL : ($.settings.rememberMe ? $.settings.savedEmail : ''),
-    password: config.IS_DEV ? config.AUTO_PASSWORD : ($.settings.rememberMe ? $.settings.savedPassword : ''),
+    email: config.IS_DEV ? config.AUTO_EMAIL : $.settings.rememberMe ? $.settings.savedEmail : '',
+    password: config.IS_DEV
+      ? config.AUTO_PASSWORD
+      : $.settings.rememberMe
+        ? $.settings.savedPassword
+        : '',
   });
 </script>
-
 
 <center-full auth-padding>
   <auth-scene w="full">
@@ -16,8 +19,12 @@
       <!-- /if -->
 
       <!-- if this.mode === 'register' -->
-      <component src="/components/Register.html" email="@[this.email]" password="@[this.password]"
-        mode="@[this.mode]"></component>
+      <component
+        src="/components/Register.html"
+        email="@[this.email]"
+        password="@[this.password]"
+        mode="@[this.mode]"
+      ></component>
       <!-- /if -->
 
       <!-- if this.mode === 'forgot' -->
@@ -27,19 +34,13 @@
 
       <crow g="2" mt="4">
         <!-- if this.mode !== 'login' -->
-        <button secondary type="button" onclick="$.this.mode = 'login'">
-          Login
-        </button>
+        <button secondary type="button" onclick="$.this.mode = 'login'">Login</button>
         <!-- /if -->
         <!-- if this.mode !== 'register' -->
-        <button secondary type="button" onclick="$.this.mode = 'register'">
-          Register
-        </button>
+        <button secondary type="button" onclick="$.this.mode = 'register'">Register</button>
         <!-- /if -->
         <!-- if this.mode !== 'forgot' -->
-        <button secondary type="button" onclick="$.this.mode = 'forgot'">
-          Forgot password
-        </button>
+        <button secondary type="button" onclick="$.this.mode = 'forgot'">Forgot password</button>
         <!-- /if -->
       </crow>
     </card>

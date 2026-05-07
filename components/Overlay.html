@@ -1,14 +1,17 @@
-<modal-root open="@[Object.keys(overlay).length]" bare="@[overlay.name === 'Combat' || overlay.name === 'AccountProgression']"
-  onclick="$.overlay = {}">
-
+<modal-root
+  open="@[Object.keys(overlay).length]"
+  bare="@[overlay.name === 'Combat' || overlay.name === 'AccountProgression']"
+  onclick="$.overlay = {}"
+>
   <!-- Lightweight modes: always in DOM, hidden when inactive.
        Content stays during fade-out animation — no flicker. -->
 
   <div h="20" hidden="@[overlay.name === 'Combat' || overlay.name === 'AccountProgression']"></div>
 
-  <modal-panel onclick="event.stopPropagation()"
-    hidden="@[overlay.name === 'Combat' || overlay.name === 'AccountProgression']">
-
+  <modal-panel
+    onclick="event.stopPropagation()"
+    hidden="@[overlay.name === 'Combat' || overlay.name === 'AccountProgression']"
+  >
     <game-menu-mode hidden="@[overlay.name !== 'GameMenu']">
       <component src="/components/GameMenu.html"></component>
     </game-menu-mode>
@@ -25,8 +28,15 @@
           </typography>
           <crow g="2" right mt="4">
             <button tertiary onclick="$.overlay = {}">Cancel</button>
-            <button primary
-              onclick="if($.overlay.confirm) $.overlay.confirm(); $.overlay = {}">Confirm</button>
+            <button
+              primary
+              onclick="
+                if ($.overlay.confirm) $.overlay.confirm();
+                $.overlay = {};
+              "
+            >
+              Confirm
+            </button>
           </crow>
         </confirm-content>
 
@@ -43,19 +53,23 @@
               <li>No NSFW Content in chat</li>
               <li>Always respect a moderators request</li>
             </ol>
-            <p text-sm>We want to promote a sense of community where conversations and discussion is
+            <p text-sm>
+              We want to promote a sense of community where conversations and discussion is
               encouraged. Therefore we expect everyone to behave in a civil and respectful manner.
             </p>
             <h5 cinzel>Verbal abuse, threatening behaviour, harassment</h5>
-            <p text-sm>Remember this is a game where people come to relax and have fun. Although you
-              may disagree with other players and their opinions, this does not mean you need to be
-              abusive or offensive.</p>
+            <p text-sm>
+              Remember this is a game where people come to relax and have fun. Although you may
+              disagree with other players and their opinions, this does not mean you need to be
+              abusive or offensive.
+            </p>
             <h5 cinzel>Racism, discrimination and hate speech</h5>
             <p text-sm>Any kind of racism, discrimination or hate speech will not be tolerated.</p>
             <h5 cinzel>Moderators discretion</h5>
-            <p text-sm>Moderators reserve the right to request conversations to end. Remember
-              everyone is
-              here to have fun.</p>
+            <p text-sm>
+              Moderators reserve the right to request conversations to end. Remember everyone is
+              here to have fun.
+            </p>
           </typography>
         </coc-content>
 
@@ -68,7 +82,6 @@
         </release-content>
       </card>
     </dialog-mode>
-
   </modal-panel>
 
   <div h="20" hidden="@[overlay.name === 'Combat' || overlay.name === 'AccountProgression']"></div>
@@ -80,7 +93,6 @@
   <!-- if overlay.name === 'AccountProgression' -->
   <component src="/components/AccountProgression.html"></component>
   <!-- /if -->
-
 </modal-root>
 
 <style>
@@ -115,7 +127,7 @@
     background: oklch(from var(--destructive) l c h / 0.2);
   }
 
-  @media (width <= 768px) {
+  @media (width <=768px) {
     [dialog-card] {
       min-width: 0;
       max-width: none;

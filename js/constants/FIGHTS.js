@@ -7,14 +7,14 @@ export const ALL_FIGHTS = [
     characters: [
       CHARACTERS('trainingDummy'),
       CHARACTERS('trainingDummy'),
-      CHARACTERS('trainingDummy')
+      CHARACTERS('trainingDummy'),
     ],
     description: '',
     boss: false,
     allowedNumberOfCharacters: 2,
     minLevel: 5,
     maxLevel: 9,
-    loot: []
+    loot: [],
   },
   {
     id: 'overgrown-dwarf',
@@ -25,7 +25,7 @@ export const ALL_FIGHTS = [
     allowedNumberOfCharacters: 1,
     minLevel: 12,
     maxLevel: 15,
-    loot: []
+    loot: [],
   },
   {
     id: 'crazy-old-man',
@@ -36,7 +36,7 @@ export const ALL_FIGHTS = [
     allowedNumberOfCharacters: 1,
     minLevel: 4,
     maxLevel: 6,
-    loot: []
+    loot: [],
   },
   {
     id: 'fired-cityguard',
@@ -47,7 +47,7 @@ export const ALL_FIGHTS = [
     allowedNumberOfCharacters: 1,
     minLevel: 5,
     maxLevel: 7,
-    loot: []
+    loot: [],
   },
   {
     id: 'beastmaster',
@@ -58,7 +58,7 @@ export const ALL_FIGHTS = [
     allowedNumberOfCharacters: 1,
     minLevel: 10,
     maxLevel: 10,
-    loot: []
+    loot: [],
   },
   {
     id: 'drunk-veteran',
@@ -69,7 +69,7 @@ export const ALL_FIGHTS = [
     allowedNumberOfCharacters: 1,
     minLevel: 11,
     maxLevel: 13,
-    loot: []
+    loot: [],
   },
   {
     id: 'frenzied-bunny',
@@ -80,7 +80,7 @@ export const ALL_FIGHTS = [
     allowedNumberOfCharacters: 1,
     minLevel: 4,
     maxLevel: 7,
-    loot: []
+    loot: [],
   },
   {
     id: 'serious-soldier',
@@ -91,7 +91,7 @@ export const ALL_FIGHTS = [
     allowedNumberOfCharacters: 1,
     minLevel: 3,
     maxLevel: 5,
-    loot: []
+    loot: [],
   },
   {
     id: 'blind-seer',
@@ -102,7 +102,7 @@ export const ALL_FIGHTS = [
     allowedNumberOfCharacters: 1,
     minLevel: 10,
     maxLevel: 12,
-    loot: []
+    loot: [],
   },
   {
     id: 'pack-of-wolves',
@@ -110,14 +110,14 @@ export const ALL_FIGHTS = [
     characters: [
       CHARACTERS('trainingDummy'),
       CHARACTERS('trainingDummy'),
-      CHARACTERS('trainingDummy')
+      CHARACTERS('trainingDummy'),
     ],
     description: '',
     boss: false,
     allowedNumberOfCharacters: 1,
     minLevel: 8,
     maxLevel: 10,
-    loot: []
+    loot: [],
   },
   {
     id: 'tanky-triplets',
@@ -125,14 +125,14 @@ export const ALL_FIGHTS = [
     characters: [
       CHARACTERS('trainingDummy'),
       CHARACTERS('trainingDummy'),
-      CHARACTERS('trainingDummy')
+      CHARACTERS('trainingDummy'),
     ],
     description: '',
     boss: false,
     allowedNumberOfCharacters: 1,
     minLevel: 6,
     maxLevel: 9,
-    loot: []
+    loot: [],
   },
   {
     id: 'pitchfork-patrick',
@@ -143,7 +143,7 @@ export const ALL_FIGHTS = [
     allowedNumberOfCharacters: 1,
     minLevel: 3,
     maxLevel: 5,
-    loot: []
+    loot: [],
   },
   {
     id: 'lost-civilian',
@@ -154,7 +154,7 @@ export const ALL_FIGHTS = [
     allowedNumberOfCharacters: 1,
     minLevel: 1,
     maxLevel: 1,
-    loot: []
+    loot: [],
   },
   {
     id: 'poorest-knight-in-town',
@@ -165,7 +165,7 @@ export const ALL_FIGHTS = [
     allowedNumberOfCharacters: 1,
     minLevel: 2,
     maxLevel: 4,
-    loot: []
+    loot: [],
   },
   {
     id: 'rhino',
@@ -176,7 +176,7 @@ export const ALL_FIGHTS = [
     allowedNumberOfCharacters: 1,
     minLevel: 6,
     maxLevel: 8,
-    loot: []
+    loot: [],
   },
   {
     id: 'grave-guy',
@@ -187,7 +187,7 @@ export const ALL_FIGHTS = [
     allowedNumberOfCharacters: 1,
     minLevel: 8,
     maxLevel: 10,
-    loot: []
+    loot: [],
   },
   {
     id: 'jester',
@@ -198,7 +198,7 @@ export const ALL_FIGHTS = [
     allowedNumberOfCharacters: 1,
     minLevel: 2,
     maxLevel: 3,
-    loot: []
+    loot: [],
   },
   {
     id: 'desert-greyhound',
@@ -209,7 +209,7 @@ export const ALL_FIGHTS = [
     allowedNumberOfCharacters: 1,
     minLevel: 5,
     maxLevel: 8,
-    loot: []
+    loot: [],
   },
   {
     id: 'sabertooth-tiger',
@@ -220,7 +220,7 @@ export const ALL_FIGHTS = [
     allowedNumberOfCharacters: 1,
     minLevel: 2,
     maxLevel: 4,
-    loot: []
+    loot: [],
   },
   {
     id: 'the-inventor-of-ballista',
@@ -231,7 +231,7 @@ export const ALL_FIGHTS = [
     allowedNumberOfCharacters: 1,
     minLevel: 9,
     maxLevel: 11,
-    loot: []
+    loot: [],
   },
   {
     id: 'elephant',
@@ -242,7 +242,7 @@ export const ALL_FIGHTS = [
     allowedNumberOfCharacters: 1,
     minLevel: 10,
     maxLevel: 14,
-    loot: []
+    loot: [],
   },
   {
     id: 'nomad',
@@ -253,7 +253,7 @@ export const ALL_FIGHTS = [
     allowedNumberOfCharacters: 1,
     minLevel: 1,
     maxLevel: 2,
-    loot: []
+    loot: [],
   },
   {
     id: 'grizzly-bear',
@@ -264,7 +264,7 @@ export const ALL_FIGHTS = [
     allowedNumberOfCharacters: 1,
     minLevel: 9,
     maxLevel: 13,
-    loot: []
+    loot: [],
   },
   {
     id: 'giant-scorpion',
@@ -275,7 +275,7 @@ export const ALL_FIGHTS = [
     allowedNumberOfCharacters: 1,
     minLevel: 3,
     maxLevel: 5,
-    loot: []
+    loot: [],
   },
   {
     id: 'boar',
@@ -286,7 +286,7 @@ export const ALL_FIGHTS = [
     allowedNumberOfCharacters: 1,
     minLevel: 1,
     maxLevel: 2,
-    loot: []
+    loot: [],
   },
   {
     id: 'bastard-brothers',
@@ -297,7 +297,7 @@ export const ALL_FIGHTS = [
     allowedNumberOfCharacters: 1,
     minLevel: 7,
     maxLevel: 10,
-    loot: []
+    loot: [],
   },
   {
     id: 'the-grand-champion',
@@ -308,7 +308,7 @@ export const ALL_FIGHTS = [
     allowedNumberOfCharacters: 1,
     minLevel: 15,
     maxLevel: 15,
-    loot: []
+    loot: [],
   },
   {
     id: 'the-emperor',
@@ -319,7 +319,7 @@ export const ALL_FIGHTS = [
     allowedNumberOfCharacters: 1,
     minLevel: 15,
     maxLevel: 15,
-    loot: []
+    loot: [],
   },
   {
     id: 'giant-rat',
@@ -330,7 +330,7 @@ export const ALL_FIGHTS = [
     allowedNumberOfCharacters: 1,
     minLevel: 5,
     maxLevel: 5,
-    loot: []
+    loot: [],
   },
   {
     id: 'succubus',
@@ -341,7 +341,7 @@ export const ALL_FIGHTS = [
     allowedNumberOfCharacters: 1,
     minLevel: 16,
     maxLevel: 25,
-    loot: []
+    loot: [],
   },
   {
     id: 'undead',
@@ -352,7 +352,7 @@ export const ALL_FIGHTS = [
     allowedNumberOfCharacters: 1,
     minLevel: 16,
     maxLevel: 25,
-    loot: []
+    loot: [],
   },
   {
     id: 'golem',
@@ -363,6 +363,6 @@ export const ALL_FIGHTS = [
     allowedNumberOfCharacters: 1,
     minLevel: 16,
     maxLevel: 25,
-    loot: []
-  }
+    loot: [],
+  },
 ];

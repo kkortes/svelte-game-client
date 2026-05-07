@@ -10,5 +10,5 @@ export default {
   attackBlocked: { vfxName: 'attackBlocked', duration: 340 },
   attackDodged: { vfxName: 'attackDodged', duration: 340 },
   heal: { vfxName: 'heal', duration: 500 },
-  filler: { vfxName: 'filler', duration: 500 }
+  filler: { vfxName: 'filler', duration: 500 },
 };

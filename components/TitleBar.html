@@ -1,5 +1,5 @@
 <!-- if back -->
-<button title-back tertiary absolute py="0.5" px="2" g="1" onclick="location.href='@[back]'">
+<button title-back tertiary absolute py="0.5" px="2" g="1" onclick="location.href = '@[back]'">
   <icon back></icon> Back
 </button>
 <!-- /if -->
@@ -7,15 +7,15 @@
 <crow justify-between w="full" g="4">
   <crow left g="4">
     <crow vertical left w="full" g="1">
-      <!-- if small-->
-      <h5 m="0">@[title]</h4>
-        <!-- /if -->
-        <!-- if !small -->
-        <h3 m="0">@[title]</h3>
-        <!-- /if -->
-        <!-- if description -->
-        <span>@[description]</span>
-        <!-- /if -->
+      <!-- if small -->
+      <h5 m="0">@[title]</h5>
+      <!-- /if -->
+      <!-- if !small -->
+      <h3 m="0">@[title]</h3>
+      <!-- /if -->
+      <!-- if description -->
+      <span>@[description]</span>
+      <!-- /if -->
     </crow>
   </crow>
   <crow left g="2">

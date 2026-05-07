@@ -7,27 +7,30 @@
     bars: [],
   };
 
-  const compute = (chosen) => Array.from({ length: 12 }, (_, i) => {
-    const ticks = i + 1;
-    const ref = ABILITIES(chosen, false, { overrides: { ticks } });
-    const h = ABILITIES(ref, true);
-    return {
-      abilities: [{
-        name: h.name,
-        icon: h.icon,
-        ticks: h.ticks,
-        basic: !!h.basic,
-        tickStart: 0,
-        overflow: false
-      }],
-      lastTick: h.ticks
-    };
-  });
+  const compute = (chosen) =>
+    Array.from({ length: 12 }, (_, i) => {
+      const ticks = i + 1;
+      const ref = ABILITIES(chosen, false, { overrides: { ticks } });
+      const h = ABILITIES(ref, true);
+      return {
+        abilities: [
+          {
+            name: h.name,
+            icon: h.icon,
+            ticks: h.ticks,
+            basic: !!h.basic,
+            tickStart: 0,
+            overflow: false,
+          },
+        ],
+        lastTick: h.ticks,
+      };
+    });
 
   state.bars = compute(state.chosenAbility);
   component(state);
 
-  const id = Object.keys(window.__vibeComponents).find(k => window.__vibeComponents[k] === state);
+  const id = Object.keys(window.__vibeComponents).find((k) => window.__vibeComponents[k] === state);
   const s = $[id];
 
   window.changeAbility = (value) => {
@@ -48,10 +51,14 @@
 
   <crow vertical left g="4" w="full">
     <!-- each this.bars as bar, i -->
-    <component src="/components/AbilityBar.html"
+    <component
+      src="/components/AbilityBar.html"
       abilities="@[bar.abilities]"
       lastTick="@[bar.lastTick]"
-      small minimalistic dndDisabled>
+      small
+      minimalistic
+      dndDisabled
+    >
     </component>
     <!-- /each -->
   </crow>

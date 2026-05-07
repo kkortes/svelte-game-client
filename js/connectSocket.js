@@ -64,7 +64,7 @@ export const init = () => {
       characters: JSON.parse(JSON.stringify($.characters)),
       experience: $.experience,
       coins: $.coins,
-      accountRewards: $.accountRewards
+      accountRewards: $.accountRewards,
     });
   });
 

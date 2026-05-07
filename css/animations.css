@@ -29,78 +29,132 @@
 }
 
 @keyframes sprite-hurt {
-  0% { background-color: transparent; opacity: 0; }
-  25% { background-color: rgba(255, 0, 0, 0.4); opacity: 1; }
-  100% { background-color: transparent; opacity: 0; }
+  0% {
+    background-color: transparent;
+    opacity: 0;
+  }
+  25% {
+    background-color: rgba(255, 0, 0, 0.4);
+    opacity: 1;
+  }
+  100% {
+    background-color: transparent;
+    opacity: 0;
+  }
 }
 
 @keyframes bb-basicAttackFast {
-  0% { transform: translate(var(--position-x), var(--position-y)); }
+  0% {
+    transform: translate(var(--position-x), var(--position-y));
+  }
   90% {
     transform: translate(var(--attack-start-x), var(--attack-start-y));
     animation-timing-function: cubic-bezier(0.2, 0.8, 0.5, 1.33);
   }
-  100% { transform: translate(var(--attack-end-x), var(--attack-end-y)); }
+  100% {
+    transform: translate(var(--attack-end-x), var(--attack-end-y));
+  }
 }
 
 @keyframes bb-basicAttackRegular {
-  0% { transform: translate(var(--position-x), var(--position-y)); }
+  0% {
+    transform: translate(var(--position-x), var(--position-y));
+  }
   90% {
     transform: translate(var(--attack-start-x), var(--attack-start-y));
     animation-timing-function: cubic-bezier(0.2, 0.8, 0.5, 1.33);
   }
-  100% { transform: translate(var(--attack-end-x), var(--attack-end-y)); }
+  100% {
+    transform: translate(var(--attack-end-x), var(--attack-end-y));
+  }
 }
 
 @keyframes bb-basicAttackSlow {
-  0% { transform: translate(var(--position-x), var(--position-y)); }
+  0% {
+    transform: translate(var(--position-x), var(--position-y));
+  }
   90% {
     transform: translate(var(--attack-start-x), var(--attack-start-y));
     animation-timing-function: cubic-bezier(0.2, 0.8, 0.5, 1.33);
   }
-  100% { transform: translate(var(--attack-end-x), var(--attack-end-y)); }
+  100% {
+    transform: translate(var(--attack-end-x), var(--attack-end-y));
+  }
 }
 
 @keyframes bb-whirlwind {
-  0% { transform: translate(var(--position-x), var(--position-y)) scaleX(1); }
-  50% { transform: translate(var(--position-x), var(--position-y)) scaleX(-1); }
-  100% { transform: translate(var(--position-x), var(--position-y)) scaleX(1); }
+  0% {
+    transform: translate(var(--position-x), var(--position-y)) scaleX(1);
+  }
+  50% {
+    transform: translate(var(--position-x), var(--position-y)) scaleX(-1);
+  }
+  100% {
+    transform: translate(var(--position-x), var(--position-y)) scaleX(1);
+  }
 }
 
 @keyframes hp-floater-fade {
-  0% { opacity: 0; }
-  20% { opacity: 1; }
-  80% { opacity: 1; }
-  100% { opacity: 0; }
+  0% {
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 @keyframes hp-floater-heal-fade {
-  0% { opacity: 1; }
-  50% { opacity: 1; }
-  100% { opacity: 0; }
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 @keyframes hp-floater-x {
   0% {
-    transform: translateY(var(--y-offset, 0)) translateX(calc(var(--dir, 1) * -15px)) scale(calc(var(--scale, 1) * 3));
+    transform: translateY(var(--y-offset, 0)) translateX(calc(var(--dir, 1) * -15px))
+      scale(calc(var(--scale, 1) * 3));
   }
   100% {
-    transform: translateY(var(--y-offset, 0)) translateX(calc(var(--dir, 1) * (5px + var(--rnd, 0.5) * 25px))) scale(calc(0.6 + 0.4 * var(--scale, 1)));
+    transform: translateY(var(--y-offset, 0))
+      translateX(calc(var(--dir, 1) * (5px + var(--rnd, 0.5) * 25px)))
+      scale(calc(0.6 + 0.4 * var(--scale, 1)));
   }
 }
 
 @keyframes hp-floater-y {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(-40px); }
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-40px);
+  }
 }
 
 @keyframes hp-floater-heal-y {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(-20px); }
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-20px);
+  }
 }
 
 @keyframes halo-spin {
-  to { transform: translate(-50%, -50%) rotate(360deg); }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
 }
 
 @keyframes overlayIn {
@@ -111,6 +165,12 @@
 }
 
 @keyframes result-in {
-  from { transform: scale(0); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }

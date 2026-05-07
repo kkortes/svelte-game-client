@@ -8,7 +8,7 @@ const DEFAULT_ABILITIES = [
   ABILITIES('punch'),
   ABILITIES('punch'),
   ABILITIES('punch'),
-  ABILITIES('punch')
+  ABILITIES('punch'),
 ];
 
 export const RECRUITABLE_CHARACTERS = [
@@ -24,22 +24,24 @@ export const RECRUITABLE_CHARACTERS = [
             level: 1,
             abilities: [
               ABILITIES('pierce', false, {
-                overrides: { name: 'Basic Pierce', statusEffects: [] }
+                overrides: { name: 'Basic Pierce', statusEffects: [] },
               }),
               ABILITIES('pierce', false, {
-                overrides: { name: 'Basic Pierce', statusEffects: [] }
+                overrides: { name: 'Basic Pierce', statusEffects: [] },
               }),
               ABILITIES('pierce', false, {
-                overrides: { name: 'Basic Pierce', statusEffects: [] }
+                overrides: { name: 'Basic Pierce', statusEffects: [] },
               }),
-              ABILITIES('pierce', false, { overrides: { name: 'Basic Pierce', statusEffects: [] } })
-            ]
-          }
-        })
+              ABILITIES('pierce', false, {
+                overrides: { name: 'Basic Pierce', statusEffects: [] },
+              }),
+            ],
+          },
+        }),
       },
       abilities: DEFAULT_ABILITIES,
-      combatStats: { currentHealth: 24 }
-    }
+      combatStats: { currentHealth: 24 },
+    },
   }),
   CHARACTERS('elfFemale', false, {
     overrides: {
@@ -53,13 +55,13 @@ export const RECRUITABLE_CHARACTERS = [
             level: 1,
             abilities: [
               ABILITIES('swing', false, {
-                overrides: { name: 'Basic Swing', statusEffects: [] }
+                overrides: { name: 'Basic Swing', statusEffects: [] },
               }),
               ABILITIES('swing', false, {
-                overrides: { name: 'Basic Swing', statusEffects: [] }
-              })
-            ]
-          }
+                overrides: { name: 'Basic Swing', statusEffects: [] },
+              }),
+            ],
+          },
         }),
         offHand: EQUIPMENT('sword', false, {
           overrides: {
@@ -68,14 +70,14 @@ export const RECRUITABLE_CHARACTERS = [
             level: 1,
             abilities: [
               ABILITIES('swing', false, { overrides: { name: 'Basic Swing', statusEffects: [] } }),
-              ABILITIES('swing', false, { overrides: { name: 'Basic Swing', statusEffects: [] } })
-            ]
-          }
-        })
+              ABILITIES('swing', false, { overrides: { name: 'Basic Swing', statusEffects: [] } }),
+            ],
+          },
+        }),
       },
       abilities: DEFAULT_ABILITIES,
-      combatStats: { currentHealth: 24 }
-    }
+      combatStats: { currentHealth: 24 },
+    },
   }),
   CHARACTERS('trollMale', false, {
     overrides: {
@@ -90,14 +92,14 @@ export const RECRUITABLE_CHARACTERS = [
             abilities: [
               ABILITIES('slam', false, { overrides: { name: 'Basic Slam', statusEffects: [] } }),
               ABILITIES('slam', false, { overrides: { name: 'Basic Slam', statusEffects: [] } }),
-              ABILITIES('slam', false, { overrides: { name: 'Basic Slam', statusEffects: [] } })
-            ]
-          }
-        })
+              ABILITIES('slam', false, { overrides: { name: 'Basic Slam', statusEffects: [] } }),
+            ],
+          },
+        }),
       },
       abilities: DEFAULT_ABILITIES,
-      combatStats: { currentHealth: 24 }
-    }
+      combatStats: { currentHealth: 24 },
+    },
   }),
   CHARACTERS('trollFemale', false, {
     overrides: {
@@ -111,13 +113,13 @@ export const RECRUITABLE_CHARACTERS = [
             level: 1,
             abilities: [
               ABILITIES('slam', false, {
-                overrides: { name: 'Basic Slam', ticks: 3, statusEffects: [] }
+                overrides: { name: 'Basic Slam', ticks: 3, statusEffects: [] },
               }),
               ABILITIES('slam', false, {
-                overrides: { name: 'Basic Slam', ticks: 3, statusEffects: [] }
-              })
-            ]
-          }
+                overrides: { name: 'Basic Slam', ticks: 3, statusEffects: [] },
+              }),
+            ],
+          },
         }),
         offHand: EQUIPMENT('club', false, {
           overrides: {
@@ -126,18 +128,18 @@ export const RECRUITABLE_CHARACTERS = [
             level: 1,
             abilities: [
               ABILITIES('slam', false, {
-                overrides: { name: 'Basic Slam', ticks: 3, statusEffects: [] }
+                overrides: { name: 'Basic Slam', ticks: 3, statusEffects: [] },
               }),
               ABILITIES('slam', false, {
-                overrides: { name: 'Basic Slam', ticks: 3, statusEffects: [] }
-              })
-            ]
-          }
-        })
+                overrides: { name: 'Basic Slam', ticks: 3, statusEffects: [] },
+              }),
+            ],
+          },
+        }),
       },
       abilities: DEFAULT_ABILITIES,
-      combatStats: { currentHealth: 24 }
-    }
+      combatStats: { currentHealth: 24 },
+    },
   }),
   CHARACTERS('goblinMale', false, {
     overrides: {
@@ -152,9 +154,9 @@ export const RECRUITABLE_CHARACTERS = [
             abilities: [
               ABILITIES('stab', false, { overrides: { name: 'Basic Stab', statusEffects: [] } }),
               ABILITIES('stab', false, { overrides: { name: 'Basic Stab', statusEffects: [] } }),
-              ABILITIES('stab', false, { overrides: { name: 'Basic Stab', statusEffects: [] } })
-            ]
-          }
+              ABILITIES('stab', false, { overrides: { name: 'Basic Stab', statusEffects: [] } }),
+            ],
+          },
         }),
         offHand: EQUIPMENT('dagger', false, {
           overrides: {
@@ -164,14 +166,14 @@ export const RECRUITABLE_CHARACTERS = [
             abilities: [
               ABILITIES('stab', false, { overrides: { name: 'Basic Stab', statusEffects: [] } }),
               ABILITIES('stab', false, { overrides: { name: 'Basic Stab', statusEffects: [] } }),
-              ABILITIES('stab', false, { overrides: { name: 'Basic Stab', statusEffects: [] } })
-            ]
-          }
-        })
+              ABILITIES('stab', false, { overrides: { name: 'Basic Stab', statusEffects: [] } }),
+            ],
+          },
+        }),
       },
       abilities: DEFAULT_ABILITIES,
-      combatStats: { currentHealth: 24 }
-    }
+      combatStats: { currentHealth: 24 },
+    },
   }),
   CHARACTERS('goblinFemale', false, {
     overrides: {
@@ -185,21 +187,21 @@ export const RECRUITABLE_CHARACTERS = [
             level: 1,
             abilities: [
               ABILITIES('stab', false, {
-                overrides: { name: 'Basic Stab', ticks: 4, statusEffects: [] }
+                overrides: { name: 'Basic Stab', ticks: 4, statusEffects: [] },
               }),
               ABILITIES('stab', false, {
-                overrides: { name: 'Basic Stab', ticks: 4, statusEffects: [] }
+                overrides: { name: 'Basic Stab', ticks: 4, statusEffects: [] },
               }),
               ABILITIES('stab', false, {
-                overrides: { name: 'Basic Stab', ticks: 4, statusEffects: [] }
-              })
-            ]
-          }
-        })
+                overrides: { name: 'Basic Stab', ticks: 4, statusEffects: [] },
+              }),
+            ],
+          },
+        }),
       },
       abilities: DEFAULT_ABILITIES,
-      combatStats: { currentHealth: 24 }
-    }
+      combatStats: { currentHealth: 24 },
+    },
   }),
   CHARACTERS('humanMale', false, {
     overrides: {
@@ -213,9 +215,9 @@ export const RECRUITABLE_CHARACTERS = [
             level: 1,
             abilities: [
               ABILITIES('swing', false, { overrides: { name: 'Basic Swing', statusEffects: [] } }),
-              ABILITIES('swing', false, { overrides: { name: 'Basic Swing', statusEffects: [] } })
-            ]
-          }
+              ABILITIES('swing', false, { overrides: { name: 'Basic Swing', statusEffects: [] } }),
+            ],
+          },
         }),
         offHand: EQUIPMENT('axe', false, {
           overrides: {
@@ -224,14 +226,14 @@ export const RECRUITABLE_CHARACTERS = [
             level: 1,
             abilities: [
               ABILITIES('swing', false, { overrides: { name: 'Basic Swing', statusEffects: [] } }),
-              ABILITIES('swing', false, { overrides: { name: 'Basic Swing', statusEffects: [] } })
-            ]
-          }
-        })
+              ABILITIES('swing', false, { overrides: { name: 'Basic Swing', statusEffects: [] } }),
+            ],
+          },
+        }),
       },
       abilities: DEFAULT_ABILITIES,
-      combatStats: { currentHealth: 24 }
-    }
+      combatStats: { currentHealth: 24 },
+    },
   }),
   CHARACTERS('humanFemale', false, {
     overrides: {
@@ -245,9 +247,9 @@ export const RECRUITABLE_CHARACTERS = [
             level: 1,
             abilities: [
               ABILITIES('swing', false, { overrides: { name: 'Basic Swing', statusEffects: [] } }),
-              ABILITIES('swing', false, { overrides: { name: 'Basic Swing', statusEffects: [] } })
-            ]
-          }
+              ABILITIES('swing', false, { overrides: { name: 'Basic Swing', statusEffects: [] } }),
+            ],
+          },
         }),
         offHand: EQUIPMENT('shield', false, {
           overrides: {
@@ -257,15 +259,15 @@ export const RECRUITABLE_CHARACTERS = [
             abilities: [
               ABILITIES('block'),
               ABILITIES('shieldBash', false, {
-                overrides: { name: 'Basic Shield Bash', statusEffects: [] }
-              })
-            ]
-          }
-        })
+                overrides: { name: 'Basic Shield Bash', statusEffects: [] },
+              }),
+            ],
+          },
+        }),
       },
       abilities: DEFAULT_ABILITIES,
-      combatStats: { currentHealth: 24 }
-    }
+      combatStats: { currentHealth: 24 },
+    },
   }),
   CHARACTERS('dwarfMale', false, {
     overrides: {
@@ -279,13 +281,13 @@ export const RECRUITABLE_CHARACTERS = [
             level: 1,
             abilities: [
               ABILITIES('slam', false, {
-                overrides: { name: 'Basic Slam', ticks: 3, statusEffects: [] }
+                overrides: { name: 'Basic Slam', ticks: 3, statusEffects: [] },
               }),
               ABILITIES('slam', false, {
-                overrides: { name: 'Basic Slam', ticks: 3, statusEffects: [] }
-              })
-            ]
-          }
+                overrides: { name: 'Basic Slam', ticks: 3, statusEffects: [] },
+              }),
+            ],
+          },
         }),
         offHand: EQUIPMENT('shield', false, {
           overrides: {
@@ -295,15 +297,15 @@ export const RECRUITABLE_CHARACTERS = [
             abilities: [
               ABILITIES('block'),
               ABILITIES('shieldBash', false, {
-                overrides: { name: 'Basic Shield Bash', statusEffects: [] }
-              })
-            ]
-          }
-        })
+                overrides: { name: 'Basic Shield Bash', statusEffects: [] },
+              }),
+            ],
+          },
+        }),
       },
       abilities: DEFAULT_ABILITIES,
-      combatStats: { currentHealth: 24 }
-    }
+      combatStats: { currentHealth: 24 },
+    },
   }),
   CHARACTERS('dwarfFemale', false, {
     overrides: {
@@ -317,20 +319,20 @@ export const RECRUITABLE_CHARACTERS = [
             level: 1,
             abilities: [
               ABILITIES('swing', false, {
-                overrides: { name: 'Basic Swing', ticks: 4, statusEffects: [] }
+                overrides: { name: 'Basic Swing', ticks: 4, statusEffects: [] },
               }),
               ABILITIES('swing', false, {
-                overrides: { name: 'Basic Swing', ticks: 4, statusEffects: [] }
+                overrides: { name: 'Basic Swing', ticks: 4, statusEffects: [] },
               }),
               ABILITIES('swing', false, {
-                overrides: { name: 'Basic Swing', ticks: 4, statusEffects: [] }
-              })
-            ]
-          }
-        })
+                overrides: { name: 'Basic Swing', ticks: 4, statusEffects: [] },
+              }),
+            ],
+          },
+        }),
       },
       abilities: DEFAULT_ABILITIES,
-      combatStats: { currentHealth: 24 }
-    }
-  })
+      combatStats: { currentHealth: 24 },
+    },
+  }),
 ];

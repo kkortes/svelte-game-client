@@ -1,11 +1,9 @@
-<combatant-slot absolute combatant-slot="@[card.cardId]"
+<combatant-slot
+  absolute
+  combatant-slot="@[card.cardId]"
   facing-right="@[card.facingRight]"
-  style="
-    --c-x: @[card.x]px;
-    --c-y: @[card.y]px;
-    --c-z: @[card.z];
-    --c-scale: @[card.scale];
-  ">
+  style="--c-x: @[card.x]px; --c-y: @[card.y]px; --c-z: @[card.z]; --c-scale: @[card.scale]"
+>
   <combatant-card absolute combat-card="@[card.cardId]" flex down>
     <combatant-header flex>
       <combatant-name>@[card.name]</combatant-name>
@@ -69,7 +67,8 @@
     border-radius: calc(calc(var(--unit) * 1));
     background: var(--combatant-card-bg);
     backdrop-filter: blur(calc(calc(var(--unit) * 0.75)));
-    box-shadow: 0 calc(calc(var(--unit) * 0.5)) calc(calc(var(--unit) * 1.5)) var(--combatant-card-shadow);
+    box-shadow: 0 calc(calc(var(--unit) * 0.5)) calc(calc(var(--unit) * 1.5))
+      var(--combatant-card-shadow);
     color: var(--foreground);
   }
 
@@ -123,12 +122,30 @@
     font-size: calc(calc(var(--unit) * 3));
   }
 
-  status-chip[stunned] { background: var(--status-stunned-bg); color: var(--status-stunned-fg); }
-  status-chip[bleeding] { background: var(--status-bleeding-bg); color: var(--status-bleeding-fg); }
-  status-chip[vulnerable] { background: var(--status-vulnerable-bg); color: var(--status-vulnerable-fg); }
-  status-chip[wounded] { background: var(--status-wounded-bg); color: var(--status-wounded-fg); }
-  status-chip[concussed] { background: var(--status-concussed-bg); color: var(--status-concussed-fg); }
-  status-chip[exposed] { background: var(--status-exposed-bg); color: var(--status-exposed-fg); }
+  status-chip[stunned] {
+    background: var(--status-stunned-bg);
+    color: var(--status-stunned-fg);
+  }
+  status-chip[bleeding] {
+    background: var(--status-bleeding-bg);
+    color: var(--status-bleeding-fg);
+  }
+  status-chip[vulnerable] {
+    background: var(--status-vulnerable-bg);
+    color: var(--status-vulnerable-fg);
+  }
+  status-chip[wounded] {
+    background: var(--status-wounded-bg);
+    color: var(--status-wounded-fg);
+  }
+  status-chip[concussed] {
+    background: var(--status-concussed-bg);
+    color: var(--status-concussed-fg);
+  }
+  status-chip[exposed] {
+    background: var(--status-exposed-bg);
+    color: var(--status-exposed-fg);
+  }
 
   combatant-badge {
     bottom: calc(calc(var(--unit) * 7));
@@ -139,11 +156,21 @@
     pointer-events: none;
   }
 
-  combatant-badge[damage-badge] { left: calc(calc(var(--unit) * -1)); }
-  combatant-badge[armor-badge] { right: calc(calc(var(--unit) * -1)); }
+  combatant-badge[damage-badge] {
+    left: calc(calc(var(--unit) * -1));
+  }
+  combatant-badge[armor-badge] {
+    right: calc(calc(var(--unit) * -1));
+  }
 
-  combatant-slot[facing-right] combatant-badge[damage-badge] { left: auto; right: calc(calc(var(--unit) * -1)); }
-  combatant-slot[facing-right] combatant-badge[armor-badge] { right: auto; left: calc(calc(var(--unit) * -1)); }
+  combatant-slot[facing-right] combatant-badge[damage-badge] {
+    left: auto;
+    right: calc(calc(var(--unit) * -1));
+  }
+  combatant-slot[facing-right] combatant-badge[armor-badge] {
+    right: auto;
+    left: calc(calc(var(--unit) * -1));
+  }
 
   combatant-badge icon {
     font-size: calc(calc(var(--unit) * 7));

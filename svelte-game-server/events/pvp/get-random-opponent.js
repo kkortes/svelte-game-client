@@ -17,7 +17,7 @@ export default async ({ minXp, maxXp, count }, { mongo }) => {
   const matches = await collection
     .find({
       $expr: { $gte: [{ $size: '$characters' }, count] },
-      experience
+      experience,
     })
     .toArray();
 

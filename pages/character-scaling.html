@@ -1,31 +1,29 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Battle Brawlers</title>
+    <link rel="icon" href="/static/favicon.png" />
+    <link rel="stylesheet" href="/css/index.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Battle Brawlers</title>
-  <link rel="icon" href="/static/favicon.png" />
-  <link rel="stylesheet" href="/css/index.css" />
-</head>
+  <body battle-brawlers vibe vibe-fouc stylecheat>
+    <script type="module">
+      import boot from '/js/boot.js';
+      boot();
+    </script>
 
-<body battle-brawlers vibe vibe-fouc stylecheat>
-  <script type="module">
-    import boot from '/js/boot.js';
-    boot();
-  </script>
-
-  <component src="/components/Layout.html">
-    <page-content>
-      <component src="/components/CharacterScalingContent.html"></component>
-    </page-content>
-  </component>
-  <style>
-    page[character-scaling] [char-equipment-block] {
-      background: var(--gray-light);
-      border-radius: var(--radius);
-    }
-  </style>
-</body>
-
+    <component src="/components/Layout.html">
+      <page-content>
+        <component src="/components/CharacterScalingContent.html"></component>
+      </page-content>
+    </component>
+    <style>
+      page[character-scaling] [char-equipment-block] {
+        background: var(--gray-light);
+        border-radius: var(--radius);
+      }
+    </style>
+  </body>
 </html>

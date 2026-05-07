@@ -50,8 +50,11 @@ const audioFiles = [
 
 export const AUDIO = {};
 
-audioFiles.forEach(path => {
-  const filename = path.split('/').pop().replace(/\.(wav|mp3)$/, '');
+audioFiles.forEach((path) => {
+  const filename = path
+    .split('/')
+    .pop()
+    .replace(/\.(wav|mp3)$/, '');
   AUDIO[filename] = path;
 });
 

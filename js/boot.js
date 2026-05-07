@@ -18,7 +18,7 @@ import {
   getCurrentExperienceAtLevel,
   getExperienceForNextLevel,
   allowedNumberOfCharacters,
-  getExperienceReward
+  getExperienceReward,
 } from '/js/level.js';
 import AUDIO from '/js/audio.js';
 import { correctHealth } from '/js/equipment.js';
@@ -29,7 +29,7 @@ const loadGameState = async (token) => {
     const { gameState, serverTimestampSnapshot } = await $.socket.sendAsync('user/authenticate', {
       token,
       clientVersion: '0.1.0',
-      isDev: config.IS_DEV
+      isDev: config.IS_DEV,
     });
     if (gameState) {
       if (gameState.characters) $.characters = gameState.characters;
@@ -59,18 +59,18 @@ const parseRoute = () => {
     {
       pattern: /^\/brawlers\/(\d+)$/,
       route: '/brawlers/:characterIndex',
-      params: (m) => ({ characterIndex: m[1] })
+      params: (m) => ({ characterIndex: m[1] }),
     },
     {
       pattern: /^\/the-arena\/(.+)$/,
       route: '/the-arena/:fightId',
-      params: (m) => ({ fightId: m[1] })
+      params: (m) => ({ fightId: m[1] }),
     },
     {
       pattern: /^\/reset-password\/(.+)$/,
       route: '/reset-password/:secret',
-      params: (m) => ({ secret: m[1] })
-    }
+      params: (m) => ({ secret: m[1] }),
+    },
   ];
   for (const { pattern, route, params } of patterns) {
     const m = path.match(pattern);
@@ -130,7 +130,7 @@ export default () => {
       token: cookie?.token,
       page: { name: pageName, params: routeParams },
     },
-    { debug: false }
+    { debug: false },
   );
 
   // Force synchronous boot so window.$ is the real proxy immediately
@@ -144,7 +144,7 @@ export default () => {
     smartphone: '(max-width: 767px)',
     landscape: '(orientation: landscape)',
     portrait: '(orientation: portrait)',
-    hoverable: '(hover: hover)'
+    hoverable: '(hover: hover)',
   };
 
   const mqls = {};
@@ -197,7 +197,6 @@ export default () => {
         $.clock.now = $.clock.server + (performance.now() - $.clock.client);
       }
     }, 250);
-
   });
 
   $.on('afterUpdate', (current, prev) => {
@@ -223,7 +222,7 @@ export default () => {
         try {
           new Howl({
             src: [AUDIO['Fire & Shimmer']],
-            volume: ($.settings?.volume?.sfx ?? 0.5) * ($.settings?.volume?.master ?? 0.5)
+            volume: ($.settings?.volume?.sfx ?? 0.5) * ($.settings?.volume?.master ?? 0.5),
           }).play();
         } catch {}
       }

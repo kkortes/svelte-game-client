@@ -14,7 +14,7 @@ export default async ({ email, url }, { mongo }) => {
   if (!validateEmail(LCemail)) throw Error('Invalid email address format, please try again');
 
   const user = await collection.findOne({
-    email: LCemail
+    email: LCemail,
   });
 
   if (!user) return;
@@ -26,9 +26,9 @@ export default async ({ email, url }, { mongo }) => {
     { email: LCemail },
     {
       $set: {
-        pwr
-      }
-    }
+        pwr,
+      },
+    },
   );
 
   try {
@@ -37,7 +37,7 @@ export default async ({ email, url }, { mongo }) => {
       from: '"Battle Brawlers" <noreply@worldseed.eu>',
       to: email,
       subject: 'Battle-brawlers password reset request',
-      html: `<p>Hello ${user.email}!</p><p>Here is your link to reset your password:<br><a href="${url}/reset-password/${token}">${url}/reset-password/${token}</a><br>The link expires in 10 minutes.</p><p>You can't reply to this email.</p>`
+      html: `<p>Hello ${user.email}!</p><p>Here is your link to reset your password:<br><a href="${url}/reset-password/${token}">${url}/reset-password/${token}</a><br>The link expires in 10 minutes.</p><p>You can't reply to this email.</p>`,
     });
   } catch (e) {
     console.error(e);

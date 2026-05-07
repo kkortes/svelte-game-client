@@ -6,7 +6,7 @@ const { PORT, MONGO_CONNECT } = process.env;
 
 const client = new MongoClient(MONGO_CONNECT, {
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
 });
 
 client.connect((error, mongo) => {
@@ -27,6 +27,6 @@ client.connect((error, mongo) => {
       if (error) toLog.push(error);
 
       log(toLog.join(' | '));
-    }
+    },
   );
 });

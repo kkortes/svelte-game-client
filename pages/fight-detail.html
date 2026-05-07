@@ -1,58 +1,56 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Battle Brawlers</title>
+    <link rel="icon" href="/static/favicon.png" />
+    <link rel="stylesheet" href="/css/index.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Battle Brawlers</title>
-  <link rel="icon" href="/static/favicon.png" />
-  <link rel="stylesheet" href="/css/index.css" />
-</head>
+  <body battle-brawlers vibe vibe-fouc stylecheat>
+    <script type="module">
+      import boot from '/js/boot.js';
+      boot();
+    </script>
 
-<body battle-brawlers vibe vibe-fouc stylecheat>
-  <script type="module">
-    import boot from '/js/boot.js';
-    boot();
-  </script>
-
-  <component src="/components/Layout.html">
-    <component src="/components/FightDetailContent.html"></component>
-  </component>
-  <style>
-    page[the-arena-fightId] [fight-enemy-row] {
-      align-items: stretch;
-      overflow: hidden;
-    }
-
-    page[the-arena-fightId] [fight-enemy-description] {
-      white-space: pre-line;
-    }
-
-    page[the-arena-fightId] [fight-info-col] {
-      flex: 1;
-      min-width: 0;
-    }
-
-    page[the-arena-fightId] fight-enemy-image {
-      width: calc(calc(var(--unit) * 40));
-      pointer-events: none;
-      transform: scaleX(-1);
-    }
-
-    @media (width <= 768px) {
-      page[the-arena-fightId] fight-enemy-image {
-        width: calc(calc(var(--unit) * 24));
+    <component src="/components/Layout.html">
+      <component src="/components/FightDetailContent.html"></component>
+    </component>
+    <style>
+      page[the-arena-fightId] [fight-enemy-row] {
+        align-items: stretch;
+        overflow: hidden;
       }
-    }
 
-    page[the-arena-fightId] stay {
-      background: var(--background);
-    }
+      page[the-arena-fightId] [fight-enemy-description] {
+        white-space: pre-line;
+      }
 
-    page[the-arena-fightId] stay button {
-      min-width: calc(calc(var(--unit) * 50));
-    }
-  </style>
-</body>
+      page[the-arena-fightId] [fight-info-col] {
+        flex: 1;
+        min-width: 0;
+      }
 
+      page[the-arena-fightId] fight-enemy-image {
+        width: calc(calc(var(--unit) * 40));
+        pointer-events: none;
+        transform: scaleX(-1);
+      }
+
+      @media (width <= 768px) {
+        page[the-arena-fightId] fight-enemy-image {
+          width: calc(calc(var(--unit) * 24));
+        }
+      }
+
+      page[the-arena-fightId] stay {
+        background: var(--background);
+      }
+
+      page[the-arena-fightId] stay button {
+        min-width: calc(calc(var(--unit) * 50));
+      }
+    </style>
+  </body>
 </html>
