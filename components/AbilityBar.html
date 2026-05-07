@@ -40,10 +40,7 @@
         dnd-item="@[!dndDisabled]"
         basic="@[ability.basic]"
         overflow="@[ability.overflow]"
-        ability-name="@[ability.name]"
-        ability-ticks="@[ability.ticks]"
-        ability-description="@[ability.description]"
-        onmouseenter="showAbilityTooltipFromEl(this)"
+        onmouseenter="showAbilityTooltip(this, '@[ability.id]', @[ability.ticks])"
         style="width: calc(((100% / var(--grid-cells)) * @[ability.ticks]) + 1px)"
       >
         <ability-icon w="full" h="full">

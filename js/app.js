@@ -52,6 +52,7 @@ export default {
   settings: loadLocalStorage({
     volume: SETTINGS_DEFAULT_VOLUME,
     debugOpen: false,
+    devbarOpen: false,
     showDetailedCharacterView: false,
     darkMode: false,
     codeOfConduct: false,

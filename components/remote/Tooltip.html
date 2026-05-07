@@ -68,7 +68,7 @@
       targetY: target.y,
       visible: true,
       props: props || {},
-      direction,
+      direction: direction || 'none',
       lock,
       persist,
     };
@@ -159,7 +159,8 @@
 
 <!-- if tooltip && tooltip.visible -->
 <tooltip-layer style="left: @[tooltip.x]px; top: @[tooltip.y]px">
-  <tooltip-body direction="@[tooltip.direction || 'none']">
+  <tooltip-body @[tooltip.direction]>
+    <tooltip-pointer></tooltip-pointer>
     <slot></slot>
   </tooltip-body>
 </tooltip-layer>
@@ -178,12 +179,57 @@
     display: block;
     position: absolute;
     width: max-content;
+    height: auto;
     left: 0;
     top: 0;
     visibility: hidden;
   }
 
+  tooltip-body > slot {
+    display: block;
+  }
+
   tooltip-body[positioned] {
     visibility: visible;
+  }
+
+  tooltip-pointer {
+    position: absolute;
+    width: calc(var(--unit) * 3);
+    height: calc(var(--unit) * 3);
+    background: var(--card);
+    border: 1px solid var(--border);
+  }
+
+  tooltip-body[up] tooltip-pointer {
+    left: 50%;
+    bottom: 1px;
+    transform: translate(-50%, 50%) rotate(45deg);
+    clip-path: polygon(0% 100%, 100% 100%, 100% 0%);
+  }
+
+  tooltip-body[down] tooltip-pointer {
+    left: 50%;
+    top: 1px;
+    transform: translate(-50%, -50%) rotate(45deg);
+    clip-path: polygon(0% 0%, 0% 100%, 100% 0%);
+  }
+
+  tooltip-body[left] tooltip-pointer {
+    right: 1px;
+    top: 50%;
+    transform: translate(50%, -50%) rotate(45deg);
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%);
+  }
+
+  tooltip-body[right] tooltip-pointer {
+    left: 1px;
+    top: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+    clip-path: polygon(0% 0%, 0% 100%, 100% 100%);
+  }
+
+  tooltip-body[none] tooltip-pointer {
+    display: none;
   }
 </style>

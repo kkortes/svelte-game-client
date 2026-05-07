@@ -31,9 +31,7 @@
         max="1"
         step="0.05"
         value="@[settings.volume.master]"
-        oninput="
-          $.settings = { ...$.settings, volume: { ...$.settings.volume, master: +this.value } }
-        "
+        oninput="$.settings.volume.master = +this.value"
       />
 
       <label>Ambient</label>
@@ -43,9 +41,7 @@
         max="1"
         step="0.05"
         value="@[settings.volume.ambient]"
-        oninput="
-          $.settings = { ...$.settings, volume: { ...$.settings.volume, ambient: +this.value } }
-        "
+        oninput="$.settings.volume.ambient = +this.value"
       />
 
       <label>Sound effect</label>
@@ -55,7 +51,7 @@
         max="1"
         step="0.05"
         value="@[settings.volume.sfx]"
-        oninput="$.settings = { ...$.settings, volume: { ...$.settings.volume, sfx: +this.value } }"
+        oninput="$.settings.volume.sfx = +this.value"
       />
 
       <label>Combat</label>
@@ -65,9 +61,7 @@
         max="1"
         step="0.05"
         value="@[settings.volume.combat]"
-        oninput="
-          $.settings = { ...$.settings, volume: { ...$.settings.volume, combat: +this.value } }
-        "
+        oninput="$.settings.volume.combat = +this.value"
       />
     </audio-grid>
 

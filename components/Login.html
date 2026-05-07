@@ -34,7 +34,7 @@
       value="@[email]"
       oninput="
         $.email = this.value;
-        if ($.settings.rememberMe) $.settings = { ...$.settings, savedEmail: this.value };
+        if ($.settings.rememberMe) $.settings.savedEmail = this.value;
       "
       required
       auth-input
@@ -45,7 +45,7 @@
       value="@[password]"
       oninput="
         $.password = this.value;
-        if ($.settings.rememberMe) $.settings = { ...$.settings, savedPassword: this.value };
+        if ($.settings.rememberMe) $.settings.savedPassword = this.value;
       "
       required
       auth-input
@@ -57,7 +57,7 @@
       type="checkbox"
       id="codeOfConduct"
       checked="@[$.settings.codeOfConduct]"
-      onchange="$.settings = { ...$.settings, codeOfConduct: this.checked }"
+      onchange="$.settings.codeOfConduct = this.checked"
     />
     <label for="codeOfConduct" text-sm
       >I agree to the

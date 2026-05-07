@@ -23,6 +23,7 @@ import {
 import AUDIO from '/js/audio.js';
 import { correctHealth } from '/js/equipment.js';
 import { equipmentTooltipProps, abilityTooltipProps } from '/js/tooltip.js';
+import STATUS_EFFECTS from '/js/constants/STATUS_EFFECTS.js';
 
 const loadGameState = async (token) => {
   try {
@@ -98,17 +99,65 @@ export default () => {
   window.equipmentTooltipProps = equipmentTooltipProps;
   window.abilityTooltipProps = abilityTooltipProps;
 
-  window.showAbilityTooltipFromEl = (el) => {
+  window.showAbilityTooltip = (el, id, ticks) => {
+    const a = ABILITIES(id, true, ticks ? { overrides: { ticks } } : undefined);
+    const charRef = $.characters[0];
+    const char = charRef ? CHARACTERS(charRef, true) : null;
+    const stats = char ? calculateCombatStatsByCharacter(char) : null;
+
+    const dmg = a.calc.damage()?.result;
+    const heal = a.calc.healing()?.result;
+    const dur = a.calc.duration()?.result;
+
+    const statusEffects = (a.statusEffects || []).map((key) => {
+      const fx = STATUS_EFFECTS[key];
+      const into = fx?.convertsInto ? STATUS_EFFECTS[fx.convertsInto] : null;
+      return {
+        word: fx?.singleWord,
+        icon: fx?.icon,
+        convertsWord: into?.singleWord,
+        convertsIcon: into?.icon,
+      };
+    });
+
     window.showTooltip(
       {
-        name: el.getAttribute('ability-name'),
-        ticks: Number(el.getAttribute('ability-ticks')),
-        kind: el.hasAttribute('basic') ? 'basic' : 'special',
-        description: el.getAttribute('ability-description') || '',
+        name: a.name,
+        type: a.type,
+        ticks: a.ticks,
+        chainTicks: a.chainLink ? a.ticks / a.chainLink : null,
+        duration:
+          dur === Infinity
+            ? 'variable'
+            : dur
+              ? `${Math.floor(dur)} tick${dur === 1 ? '' : 's'}`
+              : null,
+        damage: dmg
+          ? {
+              amount: stats ? Math.floor(stats.damage * dmg) : null,
+              pct: Math.floor(dmg * 100),
+            }
+          : null,
+        healing: heal
+          ? {
+              amount: stats ? Math.floor(stats.maxHealth * heal) : null,
+              pct: Math.floor(heal * 100),
+            }
+          : null,
+        isBlock: a.name === 'Block',
+        statusEffects,
+        description: a.description || '',
       },
       el,
       { direction: 'up', lock: true },
     );
+  };
+
+  window.showEquipmentTooltip = (el, id, level) => {
+    const item = EQUIPMENT(id, true, level ? { overrides: { level } } : undefined);
+    window.showTooltip(equipmentTooltipProps(item), el.querySelector('eq-link') || el, {
+      direction: 'up',
+    });
   };
   window.ALL_FIGHTS = ALL_FIGHTS;
   window.INITIAL_COMBAT = INITIAL_COMBAT;
@@ -196,7 +245,7 @@ export default () => {
       // have to deal with Option producing the special `∂` character on macOS.
       if (window.isDev && e.shiftKey && e.altKey && e.code === 'KeyD') {
         e.preventDefault();
-        $.devbarOpen = !$.devbarOpen;
+        $.settings.devbarOpen = !$.settings.devbarOpen;
       }
       if (window.isDev && e.shiftKey && e.altKey && e.code === 'KeyS') {
         e.preventDefault();

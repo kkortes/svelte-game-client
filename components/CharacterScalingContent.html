@@ -13,16 +13,16 @@
     charEquipmentSlots: [],
   };
 
-  const compute = (s) => {
-    s.charPool = Array.from({ length: 25 }, (_, i) => {
+  const computePool = (chosenChar, charScaling, equipScaling) =>
+    Array.from({ length: 25 }, (_, i) => {
       const level = i + 1;
-      const ref = CHARACTERS(s.chosenChar, false, {
+      const ref = CHARACTERS(chosenChar, false, {
         overrides: {
-          level: s.charScaling ? level : 1,
+          level: charScaling ? level : 1,
           equipment: {
-            mainHand: { overrides: { level: s.equipScaling ? level : 0 } },
-            offHand: { overrides: { level: s.equipScaling ? level : 0 } },
-            armor: { overrides: { level: s.equipScaling ? level : 0 } },
+            mainHand: { overrides: { level: equipScaling ? level : 0 } },
+            offHand: { overrides: { level: equipScaling ? level : 0 } },
+            armor: { overrides: { level: equipScaling ? level : 0 } },
           },
         },
       });
@@ -38,13 +38,14 @@
       };
     });
 
-    const topRef = CHARACTERS(s.chosenChar, false, {
+  const computeSlots = (chosenChar, charScaling, equipScaling) => {
+    const topRef = CHARACTERS(chosenChar, false, {
       overrides: {
-        level: s.charScaling ? 25 : 1,
+        level: charScaling ? 25 : 1,
         equipment: {
-          mainHand: { overrides: { level: s.equipScaling ? 25 : 0 } },
-          offHand: { overrides: { level: s.equipScaling ? 25 : 0 } },
-          armor: { overrides: { level: s.equipScaling ? 25 : 0 } },
+          mainHand: { overrides: { level: equipScaling ? 25 : 0 } },
+          offHand: { overrides: { level: equipScaling ? 25 : 0 } },
+          armor: { overrides: { level: equipScaling ? 25 : 0 } },
         },
       },
     });
@@ -53,39 +54,50 @@
       ? EQUIPMENT(top.equipment.mainHand, true)
       : null;
 
-    s.charEquipmentSlots = Object.entries(top.equipment).map(([slot, eq]) => {
+    return Object.entries(top.equipment).map(([slot, eq]) => {
       const h = eq ? EQUIPMENT(eq, true) : null;
+      const real = !!h?.id;
       const isTwoHandOff = slot === 'offHand' && mainHandHydrated?.slotsIn === 'twoHand';
       return {
         slot,
         slotLabel: slotsInPrettyName(slot),
-        emptyFist: (slot === 'mainHand' || slot === 'offHand') && !h && !isTwoHandOff,
+        emptyFist: (slot === 'mainHand' || slot === 'offHand') && !real && !isTwoHandOff,
         twoHandName: isTwoHandOff ? mainHandHydrated.name : '',
-        hasEquipment: !!h && !isTwoHandOff,
+        hasEquipment: real && !isTwoHandOff,
         name: h?.name || '',
         level: h?.level || 0,
-        empty: !h && !isTwoHandOff && slot !== 'mainHand' && slot !== 'offHand',
+        empty: !real && !isTwoHandOff && slot !== 'mainHand' && slot !== 'offHand',
       };
     });
   };
 
-  compute(state);
+  state.charPool = computePool(state.chosenChar, state.charScaling, state.equipScaling);
+  state.charEquipmentSlots = computeSlots(state.chosenChar, state.charScaling, state.equipScaling);
   component(state);
 
   const id = Object.keys(window.__vibeComponents).find((k) => window.__vibeComponents[k] === state);
   const s = $[id];
 
+  const recompute = () => {
+    computePool(s.chosenChar, s.charScaling, s.equipScaling).forEach((c, i) =>
+      Object.assign(s.charPool[i], c),
+    );
+    computeSlots(s.chosenChar, s.charScaling, s.equipScaling).forEach((slot, i) =>
+      Object.assign(s.charEquipmentSlots[i], slot),
+    );
+  };
+
   window.changeChar = (value) => {
     s.chosenChar = value;
-    compute(s);
+    recompute();
   };
   window.toggleCharScaling = (checked) => {
     s.charScaling = checked;
-    compute(s);
+    recompute();
   };
   window.toggleEquipScaling = (checked) => {
     s.equipScaling = checked;
-    compute(s);
+    recompute();
   };
 </script>
 
@@ -109,11 +121,13 @@
     </label>
   </crow>
 
-  <select onchange="changeChar(this.value)">
-    <!-- each this.charChoices as choice -->
-    <option value="@[choice]">@[choice]</option>
-    <!-- /each -->
-  </select>
+  <label>
+    <select onchange="changeChar(this.value)">
+      <!-- each this.charChoices as choice -->
+      <option value="@[choice]">@[choice]</option>
+      <!-- /each -->
+    </select>
+  </label>
 
   <crow vertical left g="2" w="full">
     <!-- each this.charPool as ch -->

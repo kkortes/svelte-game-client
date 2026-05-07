@@ -13,17 +13,12 @@
       const ref = ABILITIES(chosen, false, { overrides: { ticks } });
       const h = ABILITIES(ref, true);
       return {
-        abilities: [
-          {
-            name: h.name,
-            icon: h.icon,
-            ticks: h.ticks,
-            basic: !!h.basic,
-            tickStart: 0,
-            overflow: false,
-          },
-        ],
-        lastTick: h.ticks,
+        id: h.id,
+        name: h.name,
+        icon: h.icon,
+        ticks: h.ticks,
+        basic: !!h.basic,
+        widthPct: (h.ticks / 12) * 100,
       };
     });
 
@@ -35,7 +30,7 @@
 
   window.changeAbility = (value) => {
     s.chosenAbility = value;
-    s.bars = compute(value);
+    compute(value).forEach((bar, i) => Object.assign(s.bars[i], bar));
   };
 </script>
 
@@ -43,23 +38,106 @@
   <component src="/components/TitleBar.html" title="Ability Scaling"></component>
   <hr />
 
-  <select onchange="changeAbility(this.value)">
-    <!-- each this.abilityChoices as choice -->
-    <option value="@[choice]">@[choice]</option>
-    <!-- /each -->
-  </select>
+  <label>
+    <select onchange="changeAbility(this.value)">
+      <!-- each this.abilityChoices as choice -->
+      <option value="@[choice]">@[choice]</option>
+      <!-- /each -->
+    </select>
+  </label>
 
-  <crow vertical left g="4" w="full">
+  <crow vertical left g="4" w="full" scaling-bars>
     <!-- each this.bars as bar, i -->
-    <component
-      src="/components/AbilityBar.html"
-      abilities="@[bar.abilities]"
-      lastTick="@[bar.lastTick]"
-      small
-      minimalistic
-      dndDisabled
-    >
-    </component>
+    <ability-row block w="full">
+      <ability-row-track block relative w="full">
+        <ability-row-grid w="full">
+          <ability-cell></ability-cell>
+          <ability-cell></ability-cell>
+          <ability-cell></ability-cell>
+          <ability-cell></ability-cell>
+          <ability-cell></ability-cell>
+          <ability-cell></ability-cell>
+          <ability-cell></ability-cell>
+          <ability-cell></ability-cell>
+          <ability-cell></ability-cell>
+          <ability-cell></ability-cell>
+          <ability-cell></ability-cell>
+          <ability-cell></ability-cell>
+        </ability-row-grid>
+
+        <ability-row-overlay absolute t="0" l="0" r="0" b="0">
+          <ability-row-segment
+            relative
+            flex
+            f="none"
+            basic="@[bar.basic]"
+            onmouseenter="showAbilityTooltip(this, '@[bar.id]', @[bar.ticks])"
+            style="width: calc(@[bar.widthPct] * 1% + 1px)"
+          >
+            <ability-icon w="full" h="full">
+              <icon @[bar.icon]></icon>
+            </ability-icon>
+          </ability-row-segment>
+        </ability-row-overlay>
+      </ability-row-track>
+    </ability-row>
     <!-- /each -->
   </crow>
 </crow>
+
+<style>
+  [scaling-bars] ability-row-track {
+    --grid-cells: 12;
+  }
+
+  [scaling-bars] ability-row-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--grid-cells), 1fr);
+  }
+
+  [scaling-bars] ability-cell {
+    display: block;
+    aspect-ratio: 2 / 3;
+    border: 1px dashed var(--gray-300);
+    margin-left: -1px;
+  }
+
+  [scaling-bars] ability-row-overlay {
+    border-radius: calc(var(--unit) * 2);
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: flex-start;
+  }
+
+  [scaling-bars] ability-row-segment {
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    margin-left: -1px;
+    border: 1px solid var(--gray-500);
+    background: var(--white);
+    border-radius: calc(var(--unit) * 1);
+    z-index: 10;
+  }
+
+  [scaling-bars] ability-row-segment[basic] {
+    border-color: var(--gray-300);
+    background: var(--gray-light);
+    z-index: auto;
+  }
+
+  [scaling-bars] ability-icon {
+    display: grid;
+    place-items: center;
+  }
+
+  [scaling-bars] ability-icon icon {
+    grid-area: 1 / 1;
+    font-size: clamp(calc(var(--unit) * 4), 3vw, calc(var(--unit) * 8));
+  }
+
+  [scaling-bars] ability-row-segment[basic] ability-icon icon {
+    color: var(--gray-400);
+  }
+</style>

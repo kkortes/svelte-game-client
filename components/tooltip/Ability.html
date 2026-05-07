@@ -2,17 +2,64 @@
   <strong tooltip-name>@[tooltip.props.name]</strong>
   <hr />
 
-  <!-- if tooltip.props.ticks -->
+  <!-- if tooltip.props.type === 'WindUp' -->
   <span tooltip-stat
     ><strong>Wind up:</strong> @[tooltip.props.ticks] tick@[tooltip.props.ticks === 1 ? '' :
     's']</span
   >
   <!-- /if -->
 
-  <!-- if tooltip.props.kind -->
-  <span tooltip-tag @[tooltip.props.kind]
-    >@[tooltip.props.kind === 'basic' ? 'Basic' : 'Special']</span
+  <!-- if tooltip.props.duration -->
+  <span tooltip-stat><strong>Duration:</strong> @[tooltip.props.duration]</span>
+  <!-- /if -->
+
+  <!-- if tooltip.props.chainTicks -->
+  <span tooltip-stat
+    ><strong>Triggers each:</strong> @[tooltip.props.chainTicks] tick@[tooltip.props.chainTicks ===
+    1 ? '' : 's']</span
   >
+  <!-- /if -->
+
+  <!-- if tooltip.props.damage -->
+  <span tooltip-stat>
+    <strong>Damage:</strong>
+    <!-- if tooltip.props.damage.amount -->
+    @[tooltip.props.damage.amount] (@[tooltip.props.damage.pct]% of total damage)
+    <!-- /if -->
+    <!-- if !tooltip.props.damage.amount -->
+    @[tooltip.props.damage.pct]% of total damage
+    <!-- /if -->
+  </span>
+  <!-- /if -->
+
+  <!-- if tooltip.props.isBlock -->
+  <span tooltip-stat><strong>Block chance:</strong> <span text-green>100%</span></span>
+  <!-- /if -->
+
+  <!-- if tooltip.props.healing -->
+  <span tooltip-stat>
+    <strong>Heal:</strong>
+    <!-- if tooltip.props.healing.amount -->
+    @[tooltip.props.healing.amount] (@[tooltip.props.healing.pct]% of max health)
+    <!-- /if -->
+    <!-- if !tooltip.props.healing.amount -->
+    @[tooltip.props.healing.pct]% of max health
+    <!-- /if -->
+  </span>
+  <!-- /if -->
+
+  <!-- if tooltip.props.statusEffects.length -->
+  <tooltip-status-effects>
+    <!-- each tooltip.props.statusEffects as fx -->
+    <p m="0" mt="2" text-xs>
+      This ability inflicts <strong>@[fx.word]</strong> (<icon @[fx.icon]></icon>)<!-- if
+      fx.convertsWord -->, which in turn inflicts <strong>@[fx.convertsWord]</strong> (<icon
+        @[fx.convertsIcon]
+      ></icon
+      >)<!-- /if -->.
+    </p>
+    <!-- /each -->
+  </tooltip-status-effects>
   <!-- /if -->
 
   <!-- if tooltip.props.description -->

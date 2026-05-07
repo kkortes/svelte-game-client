@@ -22,10 +22,7 @@
       f="none"
       relative
       basic="@[ability.basic]"
-      ability-name="@[ability.name]"
-      ability-ticks="@[ability.ticks]"
-      ability-description="@[ability.description]"
-      onmouseenter="showAbilityTooltipFromEl(this)"
+      onmouseenter="showAbilityTooltip(this, '@[ability.id]', @[ability.ticks])"
     >
       <icon @[ability.icon]></icon>
       <ability-tick-count absolute flex b="-2.5">@[ability.ticks]</ability-tick-count>

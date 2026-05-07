@@ -7,22 +7,20 @@
     equipPool: [],
   };
 
-  const compute = (s) => {
-    s.equipPool = Array.from({ length: 13 }, (_, i) => {
+  const compute = (chosen) =>
+    Array.from({ length: 13 }, (_, i) => {
       const ref =
-        i === 0
-          ? EQUIPMENT(s.chosenEquip)
-          : EQUIPMENT(s.chosenEquip, false, { overrides: { level: i } });
+        i === 0 ? EQUIPMENT(chosen) : EQUIPMENT(chosen, false, { overrides: { level: i } });
       const hydrated = EQUIPMENT(ref, true);
       return {
+        id: chosen,
         label: i === 0 ? 'base' : `level ${i}`,
         name: hydrated.name,
         level: hydrated.level || 0,
       };
     });
-  };
 
-  compute(state);
+  state.equipPool = compute(state.chosenEquip);
   component(state);
 
   const id = Object.keys(window.__vibeComponents).find((k) => window.__vibeComponents[k] === state);
@@ -30,7 +28,7 @@
 
   window.changeEquip = (value) => {
     s.chosenEquip = value;
-    compute(s);
+    compute(value).forEach((eq, i) => Object.assign(s.equipPool[i], eq));
   };
 </script>
 
@@ -38,18 +36,22 @@
   <component src="/components/TitleBar.html" title="Equipment Scaling"></component>
   <hr />
 
-  <select onchange="changeEquip(this.value)">
-    <!-- each this.equipChoices as choice -->
-    <option value="@[choice]">@[choice]</option>
-    <!-- /each -->
-  </select>
+  <label>
+    <select onchange="changeEquip(this.value)">
+      <!-- each this.equipChoices as choice -->
+      <option value="@[choice]">@[choice]</option>
+      <!-- /each -->
+    </select>
+  </label>
 
   <crow vertical left g="2" w="full">
     <!-- each this.equipPool as eq -->
     <crow left g="2">
       <span>@[eq.label]</span>
-      <component src="/components/EquipmentLink.html" level="@[eq.level]" name="@[eq.name]">
-      </component>
+      <eq-tooltip-target onmouseenter="showEquipmentTooltip(this, '@[eq.id]', @[eq.level])">
+        <component src="/components/EquipmentLink.html" level="@[eq.level]" name="@[eq.name]">
+        </component>
+      </eq-tooltip-target>
     </crow>
     <!-- /each -->
   </crow>

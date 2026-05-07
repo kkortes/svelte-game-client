@@ -5,7 +5,7 @@
       <button
         tertiary
         onclick="
-          $.settings = { ...$.settings, darkMode: !$.settings.darkMode };
+          $.settings.darkMode = !$.settings.darkMode;
           document.body.toggleAttribute('dark', $.settings.darkMode);
           document.body.toggleAttribute('light', !$.settings.darkMode);
         "
@@ -29,7 +29,7 @@
   </crow>
 
   <!-- if window.isDev -->
-  <accordion open="@[devbarOpen]">
+  <accordion open="@[settings.devbarOpen]">
     <accordion-content>
       <component src="/components/DevBar.html"></component>
     </accordion-content>

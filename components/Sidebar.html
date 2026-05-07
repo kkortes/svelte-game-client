@@ -78,7 +78,8 @@
           );
         } catch {}
       });
-      $.clock = { ...$.clock, server: nowMs, client: performance.now() };
+      $.clock.server = nowMs;
+      $.clock.client = performance.now();
     }
   }, 1000);
 </script>
