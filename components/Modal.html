@@ -1,9 +1,9 @@
 <modal-root open="@[when]" bare="@[bare]" onclick="@[dismiss]">
-  <div h="20"></div>
+  <spacer h="20"></spacer>
   <modal-panel onclick="event.stopPropagation()">
     <slot></slot>
   </modal-panel>
-  <div h="20"></div>
+  <spacer h="20"></spacer>
 </modal-root>
 
 <style>
@@ -12,7 +12,7 @@
     inset: 0;
     z-index: 1;
     display: grid;
-    grid-template-rows: calc(calc(var(--unit) * 20)) 1fr calc(calc(var(--unit) * 20));
+    grid-template-rows: calc(var(--unit) * 20) 1fr calc(var(--unit) * 20);
     place-items: center;
     overflow-x: hidden;
     overflow-y: auto;

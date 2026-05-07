@@ -30,19 +30,19 @@
 
 <style>
   ability-bar {
-    width: var(--ability-bar-width, calc(calc(var(--unit) * 36)));
+    width: var(--ability-bar-width, calc(var(--unit) * 36));
     margin: 0 auto;
   }
 
   ability-bar-grid {
     display: grid;
-    border-radius: 0 0 calc(calc(var(--unit) * 0.75)) calc(calc(var(--unit) * 0.75));
+    border-radius: 0 0 calc(var(--unit) * 0.75) calc(var(--unit) * 0.75);
     border: 0.5px solid var(--stone-500);
   }
 
   ability-row {
     grid-area: 1/1;
-    height: calc(calc(var(--unit) * 6));
+    height: calc(var(--unit) * 6);
     background: var(--stone-300);
   }
 
@@ -57,7 +57,7 @@
 
   ability-cell {
     flex: none;
-    width: var(--cell-width, calc(calc(var(--unit) * 3)));
+    width: var(--cell-width, calc(var(--unit) * 3));
     height: 100%;
     display: grid;
     place-items: center;
@@ -66,7 +66,7 @@
   }
 
   ability-cell icon {
-    font-size: calc(calc(var(--unit) * 3));
+    font-size: calc(var(--unit) * 3);
     --color: var(--stone-500);
   }
 

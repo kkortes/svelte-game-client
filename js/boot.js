@@ -97,6 +97,19 @@ export default () => {
   window.EQUIPMENT = EQUIPMENT;
   window.equipmentTooltipProps = equipmentTooltipProps;
   window.abilityTooltipProps = abilityTooltipProps;
+
+  window.showAbilityTooltipFromEl = (el) => {
+    window.showTooltip(
+      {
+        name: el.getAttribute('ability-name'),
+        ticks: Number(el.getAttribute('ability-ticks')),
+        kind: el.hasAttribute('basic') ? 'basic' : 'special',
+        description: el.getAttribute('ability-description') || '',
+      },
+      el,
+      { direction: 'up', lock: true },
+    );
+  };
   window.ALL_FIGHTS = ALL_FIGHTS;
   window.INITIAL_COMBAT = INITIAL_COMBAT;
   window.calculateCombatStatsByCharacter = calculateCombatStatsByCharacter;
@@ -200,15 +213,12 @@ export default () => {
   });
 
   $.on('afterUpdate', (current, prev) => {
-    // Load game state when socket + token are both available
-    // Matches SvelteKit's $effect pattern: fires on either transition
     const justConnected = current.socket && !prev.socket && current.token;
     const justGotToken = current.token && !prev.token && current.socket;
     if (justConnected || justGotToken) {
       loadGameState(current.token);
     }
 
-    // Level-up detection (stays global — triggers overlay + heals all characters)
     try {
       const level = getLevelByExperience(current.experience || 0);
       const prevLevel = getLevelByExperience(prev.experience || 0);

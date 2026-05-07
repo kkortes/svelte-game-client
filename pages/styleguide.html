@@ -28,8 +28,8 @@
             <sg-head>
               <h2>Palette · <code>--bb-*</code></h2>
               <p>
-                Eleven hue anchors distilled from the original SvelteKit theme — covers elements,
-                teams, rarity tiers, coins, and damage/healing feedback.
+                Eleven hue anchors covering elements, teams, rarity tiers, coins, and damage/healing
+                feedback.
               </p>
             </sg-head>
             <swatch-grid>
@@ -396,10 +396,7 @@
           <sg-section>
             <sg-head>
               <h2>Derivation examples</h2>
-              <p>
-                A few real usage patterns that replace the SvelteKit originals — shown live so you
-                can verify the derived shades.
-              </p>
+              <p>A few real usage patterns — shown live so you can verify the derived shades.</p>
             </sg-head>
             <usage-grid>
               <usage-card>
@@ -456,13 +453,13 @@
       sg-section {
         display: flex;
         flex-direction: column;
-        gap: calc(calc(var(--unit) * 4));
+        gap: calc(var(--unit) * 4);
       }
 
       sg-head {
         display: flex;
         flex-direction: column;
-        gap: calc(calc(var(--unit) * 1));
+        gap: calc(var(--unit) * 1);
       }
 
       sg-head h2 {
@@ -485,8 +482,8 @@
 
       swatch-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(calc(calc(var(--unit) * 48)), 1fr));
-        gap: calc(calc(var(--unit) * 3));
+        grid-template-columns: repeat(auto-fill, minmax(calc(var(--unit) * 48), 1fr));
+        gap: calc(var(--unit) * 3);
       }
 
       color-swatch {
@@ -500,30 +497,30 @@
 
       swatch-fill {
         display: block;
-        height: calc(calc(var(--unit) * 20));
+        height: calc(var(--unit) * 20);
       }
 
       swatch-meta {
         display: flex;
         flex-direction: column;
-        gap: calc(calc(var(--unit) * 0.5));
-        padding: calc(calc(var(--unit) * 2.5)) calc(calc(var(--unit) * 3));
+        gap: calc(var(--unit) * 0.5);
+        padding: calc(var(--unit) * 2.5) calc(var(--unit) * 3);
       }
 
       swatch-name {
         font-family: var(--font-accent);
-        font-size: calc(calc(var(--unit) * 4));
+        font-size: calc(var(--unit) * 4);
         font-weight: 600;
       }
 
       swatch-value {
         font-family: monospace;
-        font-size: calc(calc(var(--unit) * 3));
+        font-size: calc(var(--unit) * 3);
         color: var(--muted-foreground);
       }
 
       swatch-role {
-        font-size: calc(calc(var(--unit) * 3));
+        font-size: calc(var(--unit) * 3);
         color: var(--muted-foreground);
       }
 
@@ -658,13 +655,13 @@
       ramp-grid {
         display: flex;
         flex-direction: column;
-        gap: calc(calc(var(--unit) * 2));
+        gap: calc(var(--unit) * 2);
       }
 
       ramp-row {
         display: grid;
-        grid-template-columns: calc(calc(var(--unit) * 30)) repeat(5, 1fr);
-        gap: calc(calc(var(--unit) * 1));
+        grid-template-columns: calc(var(--unit) * 30) repeat(5, 1fr);
+        gap: calc(var(--unit) * 1);
         align-items: stretch;
       }
 
@@ -672,19 +669,19 @@
         display: flex;
         align-items: center;
         font-family: var(--font-accent);
-        font-size: calc(calc(var(--unit) * 4));
+        font-size: calc(var(--unit) * 4);
         font-weight: 600;
       }
 
       ramp-stop {
         display: block;
-        height: calc(calc(var(--unit) * 10));
+        height: calc(var(--unit) * 10);
         border-radius: calc(var(--radius) * 0.5);
       }
 
       ramp-stop[anchor] {
-        outline: calc(calc(var(--unit) * 0.5)) solid var(--foreground);
-        outline-offset: calc(calc(var(--unit) * 0.5));
+        outline: calc(var(--unit) * 0.5) solid var(--foreground);
+        outline-offset: calc(var(--unit) * 0.5);
       }
 
       ramp-row[bb-red] ramp-stop[l-35] {
@@ -909,8 +906,8 @@
 
       usage-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(calc(calc(var(--unit) * 56)), 1fr));
-        gap: calc(calc(var(--unit) * 3));
+        grid-template-columns: repeat(auto-fill, minmax(calc(var(--unit) * 56), 1fr));
+        gap: calc(var(--unit) * 3);
       }
 
       usage-card {
@@ -926,19 +923,19 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        min-height: calc(calc(var(--unit) * 24));
+        min-height: calc(var(--unit) * 24);
         background: oklch(from var(--foreground) 0.15 c h);
         color: var(--background);
         font-family: var(--font-display);
-        font-size: calc(calc(var(--unit) * 8));
+        font-size: calc(var(--unit) * 8);
         letter-spacing: 0.02em;
       }
 
       usage-meta {
         display: flex;
         flex-direction: column;
-        gap: calc(calc(var(--unit) * 0.5));
-        padding: calc(calc(var(--unit) * 2.5)) calc(calc(var(--unit) * 3));
+        gap: calc(var(--unit) * 0.5);
+        padding: calc(var(--unit) * 2.5) calc(var(--unit) * 3);
       }
 
       usage-name {
@@ -948,7 +945,7 @@
 
       usage-code {
         font-family: monospace;
-        font-size: calc(calc(var(--unit) * 3));
+        font-size: calc(var(--unit) * 3);
         color: var(--muted-foreground);
       }
 
@@ -958,8 +955,8 @@
 
       usage-preview[critical-number] {
         color: var(--bb-red);
-        font-size: calc(calc(var(--unit) * 12));
-        text-shadow: 0 calc(calc(var(--unit) * 0.5)) calc(calc(var(--unit) * 1.5))
+        font-size: calc(var(--unit) * 12);
+        text-shadow: 0 calc(var(--unit) * 0.5) calc(var(--unit) * 1.5)
           oklch(from var(--bb-red) 0.2 c h);
       }
 
@@ -969,7 +966,7 @@
 
       usage-preview[muted-text] {
         color: oklch(from var(--bb-stone) 0.4 c h);
-        font-size: calc(calc(var(--unit) * 4));
+        font-size: calc(var(--unit) * 4);
         font-family: var(--font-sans);
         letter-spacing: normal;
         text-transform: uppercase;
@@ -977,14 +974,14 @@
 
       usage-preview[health-bar] {
         background: oklch(from var(--foreground) 0.35 0.02 h / 0.5);
-        padding: calc(calc(var(--unit) * 3));
+        padding: calc(var(--unit) * 3);
         align-items: stretch;
       }
 
       health-fill {
         display: block;
         flex: 1;
-        height: calc(calc(var(--unit) * 5));
+        height: calc(var(--unit) * 5);
         border-radius: calc(var(--radius) * 0.4);
         background: oklch(from var(--bb-red) 0.44 c h);
         margin-block: auto;
@@ -1000,7 +997,7 @@
           oklch(from var(--bb-orange) 0.55 c h) 75%,
           oklch(from var(--bb-brown) 0.35 c h)
         );
-        font-size: calc(calc(var(--unit) * 5));
+        font-size: calc(var(--unit) * 5);
         letter-spacing: 0.2em;
       }
     </style>

@@ -49,9 +49,9 @@
 
   sprite-inner {
     align-items: center;
-    width: calc(calc(var(--unit) * 36));
-    height: var(--sprite-height, calc(calc(var(--unit) * 36)));
-    transform: translate(-50%, calc(calc(calc(var(--unit) * 17.5)) - 100%));
+    width: calc(var(--unit) * 36);
+    height: var(--sprite-height, calc(var(--unit) * 36));
+    transform: translate(-50%, calc(var(--unit) * 17.5 - 100%));
   }
 
   sprite-inner img.combatant-avatar {
@@ -65,7 +65,7 @@
 
   combatant-sprite[attack-dodged] sprite-inner img.combatant-avatar {
     opacity: 0.2;
-    transform: scaleX(var(--dir)) translate(calc(var(--dir) * -calc(calc(var(--unit) * 2.5))), 0);
+    transform: scaleX(var(--dir)) translate(calc(var(--dir) * -calc(var(--unit) * 2.5)), 0);
   }
 
   sprite-hurt-mask {

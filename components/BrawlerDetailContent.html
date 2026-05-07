@@ -396,7 +396,7 @@
                   </crow>
                 </crow>
 
-                <div h="10"></div>
+                <spacer h="10"></spacer>
 
                 <h5>Lucky Stats</h5>
                 <hr />
@@ -491,7 +491,7 @@
                   </crow>
                 </crow>
 
-                <div h="4"></div>
+                <spacer h="4"></spacer>
 
                 <h5>Resistances</h5>
                 <hr />
@@ -531,7 +531,7 @@
 
         <equipment-heading open="@[settings.showDetailedCharacterView]">
           <equipment-heading-content>
-            <div h="4"></div>
+            <spacer h="4"></spacer>
             <h5>Equipment</h5>
             <hr />
           </equipment-heading-content>
@@ -571,7 +571,7 @@
       </crow>
     </crow>
 
-    <div h="20"></div>
+    <spacer h="20"></spacer>
 
     <crow vertical left w="full" g="3" ability-section>
       <component small src="/components/TitleBar.html" title="Active Abilities">
@@ -584,7 +584,7 @@
         lasttick="@[this.currentLastTickEnd]"
       ></component>
 
-      <div h="10"></div>
+      <spacer h="10"></spacer>
 
       <component small src="/components/TitleBar.html" title="Available Abilities"></component>
 
@@ -597,13 +597,10 @@
           f="none"
           relative
           basic="@[ability.basic]"
-          data-ability="@[JSON.stringify(ability)]"
-          onmouseenter="
-            showTooltip(abilityTooltipProps(JSON.parse(this.dataset.ability)), this, {
-              direction: 'up',
-              lock: true,
-            })
-          "
+          ability-name="@[ability.name]"
+          ability-ticks="@[ability.ticks]"
+          ability-description="@[ability.description]"
+          onmouseenter="showAbilityTooltipFromEl(this)"
         >
           <icon @[ability.icon]></icon>
           <ability-tick-count absolute flex b="-2.5">@[ability.ticks]</ability-tick-count>

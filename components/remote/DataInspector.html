@@ -157,7 +157,7 @@
   window.toggleInspectorPath = (e) => {
     const row = e.currentTarget;
     if (!row?.hasAttribute('expandable')) return;
-    const path = row.dataset.path;
+    const path = row.getAttribute('path');
     if (!path) return;
     const nextOpen = !isOpen(path);
     const next = { ...s.openPaths };
@@ -203,10 +203,8 @@
       @[window.dataInspectorTotalCount(data)] items)</data-inspector-title
     >
     <data-inspector-actions>
-      <button onclick="toggleInspectorAll()" data-inspector-copy>
-        @[window.dataInspectorAllOpenLabel(data)]
-      </button>
-      <button onclick="copyDataInspectorJson()" data-inspector-copy>Copy JSON</button>
+      <button onclick="toggleInspectorAll()">@[window.dataInspectorAllOpenLabel(data)]</button>
+      <button onclick="copyDataInspectorJson()">Copy JSON</button>
     </data-inspector-actions>
   </data-inspector-header>
   <data-inspector-lines>
@@ -214,7 +212,7 @@
     <accordion open="@[row.visible]">
       <accordion-content>
         <data-inspector-row
-          data-path="@[row.path]"
+          path="@[row.path]"
           expandable="@[row.expandable]"
           open="@[row.open]"
           onclick="toggleInspectorPath(event)"
@@ -237,7 +235,7 @@
     flex: 1;
     min-height: 0;
     overflow: hidden;
-    font-size: calc(calc(var(--unit) * 3));
+    font-size: calc(var(--unit) * 3);
     background: var(--inspector-bg);
     color: var(--inspector-text);
     font-family:
@@ -251,15 +249,15 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: calc(calc(var(--unit) * 4));
-    padding: calc(calc(var(--unit) * 2.5)) calc(calc(var(--unit) * 3));
+    gap: calc(var(--unit) * 4);
+    padding: calc(var(--unit) * 2.5) calc(var(--unit) * 3);
     background: var(--inspector-header-bg);
     border-bottom: 1px solid var(--inspector-border);
   }
 
   data-inspector-title {
     font-weight: 500;
-    font-size: calc(calc(var(--unit) * 3));
+    font-size: calc(var(--unit) * 3);
     letter-spacing: 0.04em;
     text-transform: uppercase;
     color: var(--inspector-text-muted);
@@ -267,29 +265,29 @@
 
   data-inspector-actions {
     display: flex;
-    gap: calc(calc(var(--unit) * 1));
+    gap: calc(var(--unit) * 1);
   }
 
-  [data-inspector-copy] {
-    height: calc(calc(var(--unit) * 6));
-    padding: 0 calc(calc(var(--unit) * 2));
+  data-inspector-actions button {
+    height: calc(var(--unit) * 6);
+    padding: 0 calc(var(--unit) * 2);
     font-family: inherit;
-    font-size: calc(calc(var(--unit) * 3));
+    font-size: calc(var(--unit) * 3);
     color: var(--inspector-text-muted);
     background: transparent;
     border: 1px solid var(--inspector-border);
-    border-radius: calc(calc(var(--unit) * 1));
+    border-radius: calc(var(--unit) * 1);
     cursor: pointer;
   }
 
-  [data-inspector-copy]:hover {
+  data-inspector-actions button:hover {
     color: var(--inspector-text);
     background: var(--inspector-row-hover);
     border-color: var(--inspector-divider-strong);
   }
 
   data-inspector-lines {
-    --scrollbar-width: calc(calc(var(--unit) * 4));
+    --scrollbar-width: calc(var(--unit) * 4);
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -306,7 +304,7 @@
 
   data-inspector-lines::-webkit-scrollbar-thumb {
     background: var(--inspector-divider);
-    border-radius: calc(calc(var(--unit) * 1));
+    border-radius: calc(var(--unit) * 1);
   }
 
   data-inspector-lines::-webkit-scrollbar-track {
@@ -318,8 +316,8 @@
     align-items: center;
     width: 100%;
     max-width: 100%;
-    gap: calc(calc(var(--unit) * 2));
-    padding: calc(calc(var(--unit) * 0.5)) calc(calc(var(--unit) * 3));
+    gap: calc(var(--unit) * 2);
+    padding: calc(var(--unit) * 0.5) calc(var(--unit) * 3);
     box-sizing: border-box;
   }
 

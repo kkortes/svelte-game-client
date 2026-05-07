@@ -152,7 +152,7 @@
     <style>
       page[the-arena] [arena-header] {
         align-items: center;
-        font-size: calc(calc(var(--unit) * 3));
+        font-size: calc(var(--unit) * 3);
         letter-spacing: 0.14em;
         text-transform: uppercase;
         color: oklch(from var(--foreground) l c h / 0.5);
@@ -171,7 +171,7 @@
 
       page[the-arena] arena-col-level {
         display: block;
-        width: calc(calc(var(--unit) * 12));
+        width: calc(var(--unit) * 12);
         flex: none;
       }
 
@@ -181,12 +181,12 @@
 
       page[the-arena] arena-col-loot {
         display: block;
-        width: calc(calc(var(--unit) * 12));
+        width: calc(var(--unit) * 12);
         flex: none;
       }
 
       page[the-arena] [arena-col-preview] {
-        width: calc(calc(var(--unit) * 30));
+        width: calc(var(--unit) * 30);
         flex: none;
       }
 
@@ -194,7 +194,7 @@
         align-items: center;
         text-decoration: none;
         color: var(--foreground);
-        font-size: calc(calc(var(--unit) * 4));
+        font-size: calc(var(--unit) * 4);
         transition: background 200ms ease;
       }
 
@@ -217,9 +217,9 @@
       }
 
       page[the-arena] [arena-row][boss] {
-        margin-top: calc(calc(var(--unit) * 12));
-        padding-top: calc(calc(var(--unit) * 8));
-        padding-bottom: calc(calc(var(--unit) * 8));
+        margin-top: calc(var(--unit) * 12);
+        padding-top: calc(var(--unit) * 8);
+        padding-bottom: calc(var(--unit) * 8);
       }
 
       page[the-arena] [arena-row][boss] + [arena-row][boss] {
@@ -246,28 +246,27 @@
 
       page[the-arena] arena-enemy-wrap {
         display: block;
-        width: calc(calc(var(--unit) * 7));
+        width: calc(var(--unit) * 7);
         flex: none;
       }
 
       page[the-arena] arena-enemy-wrap[boss] {
-        width: calc(calc(var(--unit) * 14));
+        width: calc(var(--unit) * 14);
       }
 
       page[the-arena] [arena-enemy-box] {
-        width: calc(calc(var(--unit) * 11));
+        width: calc(var(--unit) * 11);
         aspect-ratio: 1;
         overflow: hidden;
         border-radius: 0;
-        margin: calc(calc(var(--unit) * -3)) 0 calc(calc(var(--unit) * -3))
-          calc(calc(var(--unit) * 2));
+        margin: calc(var(--unit) * -3) 0 calc(var(--unit) * -3) calc(var(--unit) * 2);
         position: relative;
       }
 
       page[the-arena] arena-enemy-wrap[boss] [arena-enemy-box] {
-        width: calc(calc(var(--unit) * 18));
-        margin-top: calc(calc(var(--unit) * -8));
-        margin-bottom: calc(calc(var(--unit) * -8));
+        width: calc(var(--unit) * 18);
+        margin-top: calc(var(--unit) * -8);
+        margin-bottom: calc(var(--unit) * -8);
       }
 
       page[the-arena] [arena-enemy-box]:not([locked]) {
@@ -275,7 +274,7 @@
       }
 
       page[the-arena] [arena-enemy-locked] {
-        width: calc(calc(var(--unit) * 5));
+        width: calc(var(--unit) * 5);
         flex: none;
         border-radius: 50%;
         background: rgba(0, 0, 0, 0.25);
@@ -285,7 +284,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: calc(calc(var(--unit) * 3));
+        font-size: calc(var(--unit) * 3);
       }
 
       page[the-arena] [arena-enemy-img] {
@@ -302,43 +301,42 @@
       @media (width <= 768px) {
         page[the-arena] [arena-header],
         page[the-arena] [arena-row] {
-          gap: calc(calc(var(--unit) * 2));
-          padding: calc(calc(var(--unit) * 3)) calc(calc(var(--unit) * 3));
+          gap: calc(var(--unit) * 2);
+          padding: calc(var(--unit) * 3) calc(var(--unit) * 3);
         }
 
         page[the-arena] arena-col-level,
         page[the-arena] arena-col-loot {
-          width: calc(calc(var(--unit) * 10));
+          width: calc(var(--unit) * 10);
         }
 
         page[the-arena] [arena-col-preview] {
-          width: calc(calc(var(--unit) * 14));
+          width: calc(var(--unit) * 14);
         }
 
         page[the-arena] arena-enemy-wrap {
-          width: calc(calc(var(--unit) * 4));
+          width: calc(var(--unit) * 4);
         }
 
         page[the-arena] arena-enemy-wrap[boss] {
-          width: calc(calc(var(--unit) * 8));
+          width: calc(var(--unit) * 8);
         }
 
         page[the-arena] [arena-enemy-box] {
-          width: calc(calc(var(--unit) * 6));
-          margin: calc(calc(var(--unit) * -1.5)) 0 calc(calc(var(--unit) * -1.5))
-            calc(calc(var(--unit) * 1));
+          width: calc(var(--unit) * 6);
+          margin: calc(var(--unit) * -1.5) 0 calc(var(--unit) * -1.5) calc(var(--unit) * 1);
         }
 
         page[the-arena] arena-enemy-wrap[boss] [arena-enemy-box] {
-          width: calc(calc(var(--unit) * 10));
-          margin-top: calc(calc(var(--unit) * -3));
-          margin-bottom: calc(calc(var(--unit) * -3));
+          width: calc(var(--unit) * 10);
+          margin-top: calc(var(--unit) * -3);
+          margin-bottom: calc(var(--unit) * -3);
         }
 
         page[the-arena] [arena-row][boss] {
-          margin-top: calc(calc(var(--unit) * 6));
-          padding-top: calc(calc(var(--unit) * 4));
-          padding-bottom: calc(calc(var(--unit) * 4));
+          margin-top: calc(var(--unit) * 6);
+          padding-top: calc(var(--unit) * 4);
+          padding-bottom: calc(var(--unit) * 4);
         }
       }
     </style>

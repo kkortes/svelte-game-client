@@ -33,14 +33,14 @@
       }
 
       page[the-arena-fightId] fight-enemy-image {
-        width: calc(calc(var(--unit) * 40));
+        width: calc(var(--unit) * 40);
         pointer-events: none;
         transform: scaleX(-1);
       }
 
       @media (width <= 768px) {
         page[the-arena-fightId] fight-enemy-image {
-          width: calc(calc(var(--unit) * 24));
+          width: calc(var(--unit) * 24);
         }
       }
 
@@ -49,7 +49,7 @@
       }
 
       page[the-arena-fightId] stay button {
-        min-width: calc(calc(var(--unit) * 50));
+        min-width: calc(var(--unit) * 50);
       }
     </style>
   </body>

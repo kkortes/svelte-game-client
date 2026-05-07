@@ -263,8 +263,8 @@ eq-link eq-bg-center {
   background: var(--eq-color);
   clip-path: polygon(
     calc(var(--unit) * 4.75) 0%,
-    calc(100% - calc(var(--unit) * 4.25)) 0%,
-    calc(100% - calc(var(--unit) * 4.25)) 100%,
+    calc(100% - var(--unit) * 4.25) 0%,
+    calc(100% - var(--unit) * 4.25) 100%,
     calc(var(--unit) * 4.75) 100%
   );
   mask: url('/static/images/brush-center.png') repeat-x 0 0 / auto calc(var(--unit) * 5);
@@ -281,8 +281,8 @@ eq-link eq-bg-right {
   clip-path: polygon(
     100% 0,
     100% 100%,
-    calc(100% - calc(var(--unit) * 4.25)) 100%,
-    calc(100% - calc(var(--unit) * 4.25)) 0
+    calc(100% - var(--unit) * 4.25) 100%,
+    calc(100% - var(--unit) * 4.25) 0
   );
   mask: url('/static/images/brush-right.png') no-repeat 100% 0 / auto calc(var(--unit) * 5);
 }
@@ -368,6 +368,10 @@ page-content {
     padding: calc(var(--unit) * 3);
     gap: calc(var(--unit) * 3);
   }
+}
+
+spacer {
+  display: block;
 }
 
 spinner {

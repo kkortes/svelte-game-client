@@ -163,9 +163,9 @@
       page[brawlers] brawler-card {
         align-items: center;
         justify-content: flex-start;
-        width: calc(calc(var(--unit) * 90));
+        width: calc(var(--unit) * 90);
         max-width: 100%;
-        height: calc(calc(var(--unit) * 70));
+        height: calc(var(--unit) * 70);
         cursor: pointer;
         border: 0.5px solid var(--card-primary, var(--border));
         background:
@@ -190,7 +190,7 @@
       }
 
       page[brawlers] [brawler-name] {
-        font-size: calc(calc(var(--unit) * 6));
+        font-size: calc(var(--unit) * 6);
         position: relative;
         z-index: 1;
       }
@@ -205,8 +205,8 @@
       }
 
       page[brawlers] char-portrait {
-        width: calc(calc(var(--unit) * 30));
-        height: calc(calc(var(--unit) * 33));
+        width: calc(var(--unit) * 30);
+        height: calc(var(--unit) * 33);
         background: var(--slate);
       }
 

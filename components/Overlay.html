@@ -6,7 +6,10 @@
   <!-- Lightweight modes: always in DOM, hidden when inactive.
        Content stays during fade-out animation — no flicker. -->
 
-  <div h="20" hidden="@[overlay.name === 'Combat' || overlay.name === 'AccountProgression']"></div>
+  <spacer
+    h="20"
+    hidden="@[overlay.name === 'Combat' || overlay.name === 'AccountProgression']"
+  ></spacer>
 
   <modal-panel
     onclick="event.stopPropagation()"
@@ -84,7 +87,10 @@
     </dialog-mode>
   </modal-panel>
 
-  <div h="20" hidden="@[overlay.name === 'Combat' || overlay.name === 'AccountProgression']"></div>
+  <spacer
+    h="20"
+    hidden="@[overlay.name === 'Combat' || overlay.name === 'AccountProgression']"
+  ></spacer>
 
   <!-- if overlay.name === 'Combat' -->
   <component src="/components/Combat.html"></component>
@@ -113,8 +119,8 @@
   }
 
   [dialog-card] {
-    min-width: min(calc(calc(var(--unit) * 75)), 100%);
-    max-width: calc(calc(var(--unit) * 120));
+    min-width: min(calc(var(--unit) * 75), 100%);
+    max-width: calc(var(--unit) * 120);
     border-radius: var(--radius);
   }
 

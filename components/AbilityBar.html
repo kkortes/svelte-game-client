@@ -40,13 +40,10 @@
         dnd-item="@[!dndDisabled]"
         basic="@[ability.basic]"
         overflow="@[ability.overflow]"
-        data-ability="@[JSON.stringify(ability)]"
-        onmouseenter="
-          showTooltip(abilityTooltipProps(JSON.parse(this.dataset.ability)), this, {
-            direction: 'up',
-            lock: true,
-          })
-        "
+        ability-name="@[ability.name]"
+        ability-ticks="@[ability.ticks]"
+        ability-description="@[ability.description]"
+        onmouseenter="showAbilityTooltipFromEl(this)"
         style="width: calc(((100% / var(--grid-cells)) * @[ability.ticks]) + 1px)"
       >
         <ability-icon w="full" h="full">
@@ -84,8 +81,8 @@
   }
 
   ability-marker-12 {
-    top: calc(calc(var(--unit) * -2));
-    bottom: calc(calc(var(--unit) * -4));
+    top: calc(var(--unit) * -2);
+    bottom: calc(var(--unit) * -4);
     left: calc((100% / var(--grid-cells)) * 12);
     width: 1px;
     border-right: 1px solid var(--gray-500);
@@ -94,8 +91,8 @@
   }
 
   ability-marker-sequence {
-    top: calc(calc(var(--unit) * -2));
-    bottom: calc(calc(var(--unit) * -2));
+    top: calc(var(--unit) * -2);
+    bottom: calc(var(--unit) * -2);
     width: 1px;
     border-right: 1px dashed var(--gray-500);
     transform: translateX(-0.5px);
@@ -104,21 +101,21 @@
 
   ability-marker-label {
     bottom: 100%;
-    right: calc(calc(var(--unit) * 1));
+    right: calc(var(--unit) * 1);
     align-items: flex-end;
     text-align: right;
-    font-size: calc(calc(var(--unit) * 3));
+    font-size: calc(var(--unit) * 3);
     line-height: 0.9;
     white-space: nowrap;
   }
 
   ability-marker-label strong {
     color: var(--black);
-    line-height: calc(calc(var(--unit) * 3));
+    line-height: calc(var(--unit) * 3);
   }
 
   ability-overlay {
-    border-radius: calc(calc(var(--unit) * 2));
+    border-radius: calc(var(--unit) * 2);
     display: flex;
     flex-direction: row;
     align-items: stretch;
@@ -132,7 +129,7 @@
     margin-left: -1px;
     border: 1px solid var(--gray-500);
     background: var(--white);
-    border-radius: calc(calc(var(--unit) * 1));
+    border-radius: calc(var(--unit) * 1);
     z-index: 10;
   }
 
@@ -154,7 +151,7 @@
 
   ability-icon icon {
     grid-area: 1 / 1;
-    font-size: clamp(calc(calc(var(--unit) * 4)), 3vw, calc(calc(var(--unit) * 8)));
+    font-size: clamp(calc(var(--unit) * 4), 3vw, calc(var(--unit) * 8));
   }
 
   ability-segment[basic] ability-icon icon {
