@@ -1,5 +1,5 @@
 <card text-sm tooltip-card>
-  <crow justify-between w-full>
+  <crow justify-between w="full">
     <strong tooltip-name>@[tooltip.props.name]</strong>
     <!-- if tooltip.props.level -->
     <span cinzel text-xs>level @[tooltip.props.level]</span>
@@ -14,43 +14,43 @@
   <!-- if tooltip.props.combatStats -->
   <tooltip-stats>
     <!-- if tooltip.props.combatStats.maxHealth -->
-    <crow justify-between w-full>
-      <crow left g-1>
+    <crow justify-between w="full">
+      <crow left g="1">
         <icon maxHealth></icon> Health
       </crow> <span>@[tooltip.props.combatStats.maxHealth]</span>
     </crow>
     <!-- /if -->
     <!-- if tooltip.props.combatStats.damage -->
-    <crow justify-between w-full>
-      <crow left g-1>
+    <crow justify-between w="full">
+      <crow left g="1">
         <icon damage></icon> Damage
       </crow> <span>@[tooltip.props.combatStats.damage]</span>
     </crow>
     <!-- /if -->
     <!-- if tooltip.props.combatStats.maxArmor -->
-    <crow justify-between w-full>
-      <crow left g-1>
+    <crow justify-between w="full">
+      <crow left g="1">
         <icon maxArmor></icon> Armor
       </crow> <span>@[tooltip.props.combatStats.maxArmor]</span>
     </crow>
     <!-- /if -->
     <!-- if tooltip.props.combatStats.blockChance -->
-    <crow justify-between w-full>
-      <crow left g-1>
+    <crow justify-between w="full">
+      <crow left g="1">
         <icon blockChance></icon> Block
       </crow> <span text-green>@[Math.round(tooltip.props.combatStats.blockChance * 100)]%</span>
     </crow>
     <!-- /if -->
     <!-- if tooltip.props.combatStats.dodgeChance -->
-    <crow justify-between w-full>
-      <crow left g-1>
+    <crow justify-between w="full">
+      <crow left g="1">
         <icon dodgeChance></icon> Dodge
       </crow> <span text-green>@[Math.round(tooltip.props.combatStats.dodgeChance * 100)]%</span>
     </crow>
     <!-- /if -->
     <!-- if tooltip.props.combatStats.criticalChance -->
-    <crow justify-between w-full>
-      <crow left g-1>
+    <crow justify-between w="full">
+      <crow left g="1">
         <icon criticalChance></icon> Crit
       </crow> <span text-green>@[Math.round(tooltip.props.combatStats.criticalChance * 100)]%</span>
     </crow>
@@ -59,6 +59,6 @@
   <!-- /if -->
 
   <!-- if tooltip.props.description -->
-  <p m-0 mt-2 text-xs tooltip-desc>@[tooltip.props.description]</p>
+  <p m="0" mt="2" text-xs tooltip-desc>@[tooltip.props.description]</p>
   <!-- /if -->
 </card>

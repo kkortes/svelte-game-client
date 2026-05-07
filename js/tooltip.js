@@ -9,6 +9,6 @@ export const equipmentTooltipProps = (item) => ({
 export const abilityTooltipProps = (ability) => ({
   name: ability.name,
   ticks: ability.ticks,
-  basic: ability.basic,
+  kind: ability.basic ? 'basic' : 'special',
   description: ability.description
 });

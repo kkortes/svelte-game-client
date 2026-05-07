@@ -68,18 +68,18 @@
 <sidebar sm:t="8.5" t="12">
   <input type="checkbox" id="sidebar-toggle" />
   <sidebar-content sm:bg="var(--background)" h="300">
-    <crow vertical g-2 w-full>
+    <crow vertical g="2" w="full">
       <!-- if combat.duration !== 0 -->
       <crow>
         <!-- if elapsedMilliseconds < combat.duration -->
-        <a class="crow" g-2 href="#" primary
+        <a class="crow" g="2" href="#" primary
           onclick="event.preventDefault(); $.overlay = { name: 'Combat' }">
           <spinner sm></spinner>
           <span>Fighting..</span>
         </a>
         <!-- /if -->
         <!-- if elapsedMilliseconds >= combat.duration && combat.duration !== 0 -->
-        <a class="crow" g-2 href="#" primary
+        <a class="crow" g="2" href="#" primary
           onclick="event.preventDefault(); $.overlay = { name: 'Combat' }">
           <span>View outcome</span>
         </a>
@@ -88,17 +88,17 @@
       <!-- /if -->
 
       <component src="/components/TitleBar.html" small title="My Ludus">
-        <span cinzel flex-none>level @[getLevelByExperience(experience)]</span>
+        <span cinzel f="none">level @[getLevelByExperience(experience)]</span>
       </component>
 
-      <crow vertical left w-full g-2>
-        <crow justify-between w-full>
+      <crow vertical left w="full" g="2">
+        <crow justify-between w="full">
           <span text-sm>Coins</span>
           <component src="/components/Coins.html" amount="@[coins]"></component>
         </crow>
 
-        <crow vertical left w-full>
-          <crow justify-between w-full>
+        <crow vertical left w="full">
+          <crow justify-between w="full">
             <span text-sm>Experience</span>
             <button primary sm onclick="$.overlay = { name: 'AccountProgression' }">
               See progress
@@ -111,8 +111,8 @@
           <!-- /if -->
         </crow>
 
-        <crow vertical left w-full>
-          <crow justify-between w-full>
+        <crow vertical left w="full">
+          <crow justify-between w="full">
             <span text-sm>Medical area</span>
             <button primary sm onclick="
           $.characters.forEach(c => {
@@ -133,13 +133,13 @@
       <div h="4"></div>
 
       <component src="/components/TitleBar.html" small title="My Brawlers">
-        <span cinzel flex-none>@[characters.length] / @[allowedNumberOfCharacters()]</span>
+        <span cinzel f="none">@[characters.length] / @[allowedNumberOfCharacters()]</span>
       </component>
 
       <brawler-list max-brawlers="@[!!maxBrawlers]">
         <crow vertical up left>
           <!-- if characters.length === 0 -->
-          <crow vertical w-full g-2 text-sm>
+          <crow vertical w="full" g="2" text-sm>
             You have no brawlers yet.
             <a class="button" href="/brawlers" primary>
               Recruit brawler
@@ -181,22 +181,22 @@
 </sidebar>
 
 <style>
-  [battle-brawlers] [sidebar-gap] {
+  [sidebar-gap] {
     height: calc(var(--unit) * 4);
   }
 
-  [battle-brawlers] brawler-list {
+  brawler-list {
     display: block;
     margin-inline: calc(var(--unit) * -4);
   }
 
-  [battle-brawlers] [brawler-link] {
+  [brawler-link] {
     display: block;
     text-decoration: none;
     color: inherit;
   }
 
-  [battle-brawlers] [brawler-row] {
+  [brawler-row] {
     padding: calc(var(--unit) * 1) calc(var(--unit) * 1.5);
     margin: 0 calc(var(--unit) * -1.5);
     gap: 0;
@@ -204,92 +204,92 @@
     transition: background 150ms, box-shadow 150ms, backdrop-filter 150ms;
   }
 
-  [battle-brawlers] [brawler-row][active] {
+  [brawler-row][active] {
     background: rgba(255, 255, 255, 0.5);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(4px);
+    box-shadow: 0 calc(var(--unit) * 1) calc(var(--unit) * 1.5) -1px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(calc(var(--unit) * 1));
   }
 
-  [battle-brawlers] brawler-avatar-outer {
+  brawler-avatar-outer {
     display: block;
     flex: none;
-    width: 64px;
-    height: 64px;
-    padding: 4px;
+    width: calc(var(--unit) * 16);
+    height: calc(var(--unit) * 16);
+    padding: calc(var(--unit) * 1);
   }
 
-  [battle-brawlers] brawler-avatar-inner {
+  brawler-avatar-inner {
     display: block;
     width: 100%;
     height: 100%;
     border-radius: calc(var(--unit) * 0.5);
-    border: 1px solid #6b7280;
+    border: 1px solid var(--gray-500);
     overflow: hidden;
   }
 
-  [battle-brawlers] [brawler-img] {
+  [brawler-img] {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
   }
 
-  [battle-brawlers] [brawler-info] {
+  [brawler-info] {
     flex: 1;
     min-width: 0;
     padding: calc(var(--unit) * 1);
     overflow-x: hidden;
   }
 
-  [battle-brawlers] ability-accordion {
+  ability-accordion {
     display: grid;
     grid-template-rows: 0fr;
     transition: grid-template-rows 200ms ease-out;
     width: 100%;
   }
 
-  [battle-brawlers] brawler-list:hover ability-accordion,
-  [battle-brawlers] brawler-list[max-brawlers] ability-accordion,
-  [battle-brawlers] brawler-list [brawler-row][active] ability-accordion {
+  brawler-list:hover ability-accordion,
+  brawler-list[max-brawlers] ability-accordion,
+  brawler-list [brawler-row][active] ability-accordion {
     grid-template-rows: 1fr;
   }
 
-  [battle-brawlers] ability-accordion-content {
+  ability-accordion-content {
     overflow: hidden;
     padding-right: 1px;
   }
 
-  [battle-brawlers] brawler-list:hover bar-track[percentage] [bar-value-pct],
-  [battle-brawlers] brawler-list[max-brawlers] bar-track[percentage] [bar-value-pct],
-  [battle-brawlers] brawler-list [brawler-row][active] bar-track[percentage] [bar-value-pct] {
+  brawler-list:hover bar-track[percentage] [bar-value-pct],
+  brawler-list[max-brawlers] bar-track[percentage] [bar-value-pct],
+  brawler-list [brawler-row][active] bar-track[percentage] [bar-value-pct] {
     display: none;
   }
 
-  [battle-brawlers] brawler-list:hover bar-track[percentage] [bar-value-actual],
-  [battle-brawlers] brawler-list[max-brawlers] bar-track[percentage] [bar-value-actual],
-  [battle-brawlers] brawler-list [brawler-row][active] bar-track[percentage] [bar-value-actual] {
+  brawler-list:hover bar-track[percentage] [bar-value-actual],
+  brawler-list[max-brawlers] bar-track[percentage] [bar-value-actual],
+  brawler-list [brawler-row][active] bar-track[percentage] [bar-value-actual] {
     display: inline;
   }
 
-  [battle-brawlers] ability-preview {
+  ability-preview {
     display: flex;
-    height: 24px;
-    border: 0.5px solid #78716c;
-    background: #d6d3d1;
+    height: calc(var(--unit) * 6);
+    border: 0.5px solid var(--stone-500);
+    background: var(--stone-300);
   }
 
-  [battle-brawlers] ability-preview-cell {
+  ability-preview-cell {
     display: flex;
     align-items: center;
     justify-content: center;
     height: 100%;
     flex: none;
-    border-right: 0.5px solid #78716c;
-    color: #78716c;
-    font-size: 0.875rem;
+    border-right: 0.5px solid var(--stone-500);
+    color: var(--stone-500);
+    font-size: calc(var(--unit) * 4);
   }
 
-  [battle-brawlers] ability-preview-cell:last-child {
+  ability-preview-cell:last-child {
     border-right: none;
   }
 </style>

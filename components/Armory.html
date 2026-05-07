@@ -15,7 +15,7 @@
 
     <crow vertical up left>
       <!-- each inventory as item, idx -->
-      <crow justify-between w-full g-2 py-1 armory-row
+      <crow justify-between w="full" g="2" py="1" armory-row
         onmouseenter="showTooltip(equipmentTooltipProps(EQUIPMENT($.inventory[@[idx]], true)), this.querySelector('eq-link') || this, { direction: 'up' })"
         onmouseleave="hideTooltip()">
         <component src="/components/EquipmentLink.html"
@@ -40,7 +40,7 @@
     </crow>
 
     <!-- if inventory.length === 0 -->
-    <p text-sm text-muted mt-2>No items</p>
+    <p text-sm text-muted mt="2">No items</p>
     <!-- /if -->
 
   </sidebar-content>

@@ -1,5 +1,5 @@
-<combatant-sprite absolute data-combatant-wrap="@[card.cardId]"
-  data-attack-class="@[card.attackClass]"
+<combatant-sprite absolute combatant-wrap="@[card.cardId]"
+  attack-class="@[card.attackClass]"
   hurt="@[card.hurtActive]"
   block="@[card.blockActive]"
   attack-blocked="@[card.attackBlocked]"
@@ -29,7 +29,7 @@
 </combatant-sprite>
 
 <style>
-  [battle-brawlers] combatant-sprite {
+  combatant-sprite {
     top: 50%;
     left: 50%;
     width: 0;
@@ -37,18 +37,18 @@
     transform: translate(var(--position-x), var(--position-y));
   }
 
-  [battle-brawlers] combatant-sprite[knocked-out] sprite-inner {
+  combatant-sprite[knocked-out] sprite-inner {
     filter: grayscale(100%);
   }
 
-  [battle-brawlers] sprite-inner {
+  sprite-inner {
     align-items: center;
-    width: 144px;
-    height: var(--sprite-height, 144px);
-    transform: translate(-50%, calc(70px - 100%));
+    width: calc(var(--unit) * 36);
+    height: var(--sprite-height, calc(var(--unit) * 36));
+    transform: translate(-50%, calc(calc(var(--unit) * 17.5) - 100%));
   }
 
-  [battle-brawlers] sprite-inner img.combatant-avatar {
+  sprite-inner img.combatant-avatar {
     width: 100%;
     height: 100%;
     object-fit: contain;
@@ -57,12 +57,12 @@
     transition: all 250ms cubic-bezier(0.25, 0.1, 0.25, 1);
   }
 
-  [battle-brawlers] combatant-sprite[attack-dodged] sprite-inner img.combatant-avatar {
+  combatant-sprite[attack-dodged] sprite-inner img.combatant-avatar {
     opacity: 0.2;
-    transform: scaleX(var(--dir)) translate(calc(var(--dir) * -10px), 0);
+    transform: scaleX(var(--dir)) translate(calc(var(--dir) * -calc(var(--unit) * 2.5)), 0);
   }
 
-  [battle-brawlers] sprite-hurt-mask {
+  sprite-hurt-mask {
     inset: 0;
     background-color: transparent;
     mix-blend-mode: multiply;
@@ -71,11 +71,11 @@
     mask: var(--img) no-repeat bottom / auto 100%;
   }
 
-  [battle-brawlers] combatant-sprite[hurt] sprite-hurt-mask {
+  combatant-sprite[hurt] sprite-hurt-mask {
     animation: sprite-hurt 340ms ease;
   }
 
-  [battle-brawlers] sprite-block {
+  sprite-block {
     inset: 0;
     display: grid;
     place-items: center;
@@ -84,25 +84,25 @@
     filter: grayscale(100%);
   }
 
-  [battle-brawlers] sprite-block img {
+  sprite-block img {
     width: 50%;
   }
 
-  [battle-brawlers] combatant-sprite[block] sprite-block,
-  [battle-brawlers] combatant-sprite[attack-blocked] sprite-block {
+  combatant-sprite[block] sprite-block,
+  combatant-sprite[attack-blocked] sprite-block {
     opacity: 1;
   }
 
-  [battle-brawlers] combatant-sprite[data-attack-class="basicAttackFast"] {
+  combatant-sprite[attack-class="basicAttackFast"] {
     animation: bb-basicAttackFast var(--attack-duration) cubic-bezier(0.25, 0.1, 0.25, 1);
   }
-  [battle-brawlers] combatant-sprite[data-attack-class="basicAttackRegular"] {
+  combatant-sprite[attack-class="basicAttackRegular"] {
     animation: bb-basicAttackRegular var(--attack-duration) cubic-bezier(0.25, 0.1, 0.25, 1);
   }
-  [battle-brawlers] combatant-sprite[data-attack-class="basicAttackSlow"] {
+  combatant-sprite[attack-class="basicAttackSlow"] {
     animation: bb-basicAttackSlow var(--attack-duration) cubic-bezier(0.25, 0.1, 0.25, 1);
   }
-  [battle-brawlers] combatant-sprite[data-attack-class="whirlwind"] {
+  combatant-sprite[attack-class="whirlwind"] {
     animation: bb-whirlwind 500ms cubic-bezier(0.25, 0.1, 0.25, 1);
   }
 </style>

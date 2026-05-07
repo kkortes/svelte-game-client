@@ -30,7 +30,7 @@
   window.changeEquip = (value) => { s.chosenEquip = value; compute(s); };
 </script>
 
-<crow vertical g-4 left>
+<crow vertical g="4" left>
   <component src="/components/TitleBar.html" title="Equipment Scaling"></component>
   <hr />
 
@@ -40,9 +40,9 @@
     <!-- /each -->
   </select>
 
-  <crow vertical left g-2 w-full>
+  <crow vertical left g="2" w="full">
     <!-- each this.equipPool as eq -->
-    <crow left g-2>
+    <crow left g="2">
       <span>@[eq.label]</span>
       <component src="/components/EquipmentLink.html" level="@[eq.level]" name="@[eq.name]">
       </component>

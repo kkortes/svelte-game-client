@@ -1,5 +1,7 @@
 import vibe from '@ape-egg/vibe';
 import { boot as vibeBoot } from '@ape-egg/vibe/boot';
+import { Howl } from 'howler';
+
 import appState, { INITIAL_COMBAT } from '/js/app.js';
 import config from '/js/config.js';
 import { getCookie } from '/js/helpers.js';
@@ -18,7 +20,6 @@ import {
   allowedNumberOfCharacters,
   getExperienceReward
 } from '/js/level.js';
-import { Howl } from 'howler';
 import AUDIO from '/js/audio.js';
 import { correctHealth } from '/js/equipment.js';
 import { equipmentTooltipProps, abilityTooltipProps } from '/js/tooltip.js';

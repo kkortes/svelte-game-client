@@ -3,10 +3,15 @@ import SFX from '/js/constants/SFX.js';
 import entity from '/js/entity.js';
 import { deepMerge } from '/js/helpers.js';
 
+export const TYPE = {
+  WindUp: 'WindUp',
+  Channeling: 'Channeling'
+};
+
 export const ALL_ABILITIES = {
   stab: {
     name: 'Stab',
-    type: 'WindUp',
+    type: TYPE.WindUp,
     description: '',
     ticks: 2,
     icon: 'stab',
@@ -20,7 +25,7 @@ export const ALL_ABILITIES = {
   },
   pierce: {
     name: 'Pierce',
-    type: 'WindUp',
+    type: TYPE.WindUp,
     description: '',
     ticks: 3,
     icon: 'bowshot',
@@ -34,7 +39,7 @@ export const ALL_ABILITIES = {
   },
   swing: {
     name: 'Swing',
-    type: 'WindUp',
+    type: TYPE.WindUp,
     description: '',
     ticks: 3,
     icon: 'slash',
@@ -48,7 +53,7 @@ export const ALL_ABILITIES = {
   },
   slam: {
     name: 'Slam',
-    type: 'WindUp',
+    type: TYPE.WindUp,
     description: '',
     ticks: 4,
     icon: 'slam',
@@ -62,7 +67,7 @@ export const ALL_ABILITIES = {
   },
   punch: {
     name: 'Punch',
-    type: 'WindUp',
+    type: TYPE.WindUp,
     description: '',
     ticks: 2,
     icon: 'punch',
@@ -76,7 +81,7 @@ export const ALL_ABILITIES = {
   },
   block: {
     name: 'Block',
-    type: 'Channeling',
+    type: TYPE.Channeling,
     description: 'Raise your shield to block. Prevent all damage for the duration.',
     ticks: 3,
     icon: 'block',
@@ -90,7 +95,7 @@ export const ALL_ABILITIES = {
   },
   shieldBash: {
     name: 'Shield Bash',
-    type: 'WindUp',
+    type: TYPE.WindUp,
     description: 'Lunge forward and bash your opponent with your shield.',
     ticks: 3,
     icon: 'shieldBash',
@@ -104,7 +109,7 @@ export const ALL_ABILITIES = {
   },
   kick: {
     name: 'Kick',
-    type: 'WindUp',
+    type: TYPE.WindUp,
     description: 'Kick your opponent, stunning them for the duration of their current ability.',
     ticks: 1,
     icon: 'kick',
@@ -118,7 +123,7 @@ export const ALL_ABILITIES = {
   },
   whirlwind: {
     name: 'Whirlwind',
-    type: 'Channeling',
+    type: TYPE.Channeling,
     description: 'Quickly spin and deal damage each tick.',
     ticks: 10,
     chainLink: 10,
@@ -133,7 +138,7 @@ export const ALL_ABILITIES = {
   },
   lacerate: {
     name: 'Lacerate',
-    type: 'WindUp',
+    type: TYPE.WindUp,
     description: 'Bleeds your opponent for 20% of your total damage.',
     ticks: 2,
     icon: 'lacerate',
@@ -147,7 +152,7 @@ export const ALL_ABILITIES = {
   },
   demoralizingShout: {
     name: 'Demoralizing Shout',
-    type: 'WindUp',
+    type: TYPE.WindUp,
     description: 'Weakens your opponent. They take 50% more damage for the duration of the effect.',
     ticks: 2,
     icon: 'demoShout',
@@ -161,7 +166,7 @@ export const ALL_ABILITIES = {
   },
   cheesyTactics: {
     name: 'Cheesy Tactics',
-    type: 'Channeling',
+    type: TYPE.Channeling,
     description: 'Restores some health.',
     ticks: 9,
     chainLink: 3,
@@ -176,7 +181,7 @@ export const ALL_ABILITIES = {
   },
   bite: {
     name: 'Bite',
-    type: 'WindUp',
+    type: TYPE.WindUp,
     description: 'A vicious bite.<br />',
     ticks: 2,
     icon: 'bite',
@@ -190,7 +195,7 @@ export const ALL_ABILITIES = {
   },
   harden: {
     name: 'Harden',
-    type: 'WindUp',
+    type: TYPE.WindUp,
     description: "If armor isn't depleted regain all armor.",
     ticks: 1,
     icon: 'fillArmor',
@@ -204,7 +209,7 @@ export const ALL_ABILITIES = {
   },
   playingTheVictim: {
     name: 'Playing the Victim',
-    type: 'WindUp',
+    type: TYPE.WindUp,
     description: '',
     ticks: 12,
     icon: 'cross',

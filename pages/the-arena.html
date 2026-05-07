@@ -63,8 +63,8 @@
       <component src="/components/TitleBar.html" title="The arena"></component>
       <hr />
 
-      <crow vertical up left arena-table mx="-6" w="auto" mt-4>
-        <crow up left g-4 arena-header py-3 px-6 w-full>
+      <crow vertical up left arena-table mx="-6" w="auto" mt="4">
+        <crow up left g="4" arena-header py="3" px="6" w="full">
           <arena-col-name>name</arena-col-name>
           <arena-col-level text-center>level</arena-col-level>
           <arena-col-loot>loot</arena-col-loot>
@@ -74,10 +74,10 @@
         <!-- each arenaFights as fight, i -->
         <a href="/the-arena/@[fight.id]"
           onclick="arenaClick(event, @[$.bossHighscore + 5 < fight.minLevel], @[fight.boss && $.bossHighscore >= fight.minLevel])"
-          arena-row flex g-4 py-3 px-6 w-full even="@[i % 2 === 0]" boss="@[fight.boss]"
+          arena-row flex g="4" py="3" px="6" w="full" even="@[i % 2 === 0]" boss="@[fight.boss]"
           locked="@[$.bossHighscore + 5 < fight.minLevel]"
           completed="@[fight.boss && $.bossHighscore >= fight.minLevel]">
-          <crow left arena-col-name cinzel g-2>
+          <crow left arena-col-name cinzel g="2">
             <!-- if $.bossHighscore + 5 < fight.minLevel -->
             <span>?</span>
             <!-- /if -->
@@ -126,7 +126,7 @@
   <style>
     page[the-arena] [arena-header] {
       align-items: center;
-      font-size: 0.72rem;
+      font-size: calc(var(--unit) * 3);
       letter-spacing: 0.14em;
       text-transform: uppercase;
       color: oklch(from var(--foreground) l c h / 0.5);
@@ -169,7 +169,7 @@
       align-items: center;
       text-decoration: none;
       color: var(--foreground);
-      font-size: 0.875rem;
+      font-size: calc(var(--unit) * 4);
       transition: background 200ms ease;
     }
 
@@ -259,7 +259,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.75rem;
+      font-size: calc(var(--unit) * 3);
     }
 
     page[the-arena] [arena-enemy-img] {
@@ -273,7 +273,7 @@
       filter: grayscale(1);
     }
 
-    @media (width <= 768px) {
+    @media (width <= calc(var(--unit) * 192)) {
       page[the-arena] [arena-header],
       page[the-arena] [arena-row] {
         gap: calc(var(--unit) * 2);

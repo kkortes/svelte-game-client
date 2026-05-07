@@ -1,11 +1,5 @@
-<script type="module">
-  // Dismiss handler — clear overlay on backdrop click or Escape.
-  // Bare modes (Combat, AccountProgression) handle their own dismiss.
-  window.dismissOverlay = () => { $.overlay = {}; };
-</script>
-
 <modal-root open="@[Object.keys(overlay).length]" bare="@[overlay.name === 'Combat' || overlay.name === 'AccountProgression']"
-  onclick="dismissOverlay()">
+  onclick="$.overlay = {}">
 
   <!-- Lightweight modes: always in DOM, hidden when inactive.
        Content stays during fade-out animation — no flicker. -->
@@ -20,8 +14,8 @@
     </game-menu-mode>
 
     <dialog-mode hidden="@[!['confirm','codeOfConduct','releaseNotes'].includes(overlay.name)]">
-      <card dialog-card p-6 sm:p="2" relative>
-        <button tertiary absolute t="1" r="1" dialog-close onclick="dismissOverlay()">
+      <card dialog-card p="6" sm:p="2" relative>
+        <button tertiary absolute t="1" r="1" dialog-close onclick="$.overlay = {}">
           <icon cross></icon>
         </button>
 
@@ -29,10 +23,10 @@
           <typography>
             <p>@[overlay.text || 'Are you sure?']</p>
           </typography>
-          <crow g-2 right mt-4>
-            <button tertiary onclick="dismissOverlay()">Cancel</button>
+          <crow g="2" right mt="4">
+            <button tertiary onclick="$.overlay = {}">Cancel</button>
             <button primary
-              onclick="if($.overlay.confirm) $.overlay.confirm(); dismissOverlay();">Confirm</button>
+              onclick="if($.overlay.confirm) $.overlay.confirm(); $.overlay = {}">Confirm</button>
           </crow>
         </confirm-content>
 
@@ -90,39 +84,39 @@
 </modal-root>
 
 <style>
-  [battle-brawlers] game-menu-mode,
-  [battle-brawlers] dialog-mode,
-  [battle-brawlers] confirm-content,
-  [battle-brawlers] coc-content,
-  [battle-brawlers] release-content {
+  game-menu-mode,
+  dialog-mode,
+  confirm-content,
+  coc-content,
+  release-content {
     display: contents;
   }
 
-  [battle-brawlers] game-menu-mode[hidden],
-  [battle-brawlers] dialog-mode[hidden],
-  [battle-brawlers] confirm-content[hidden],
-  [battle-brawlers] coc-content[hidden],
-  [battle-brawlers] release-content[hidden] {
+  game-menu-mode[hidden],
+  dialog-mode[hidden],
+  confirm-content[hidden],
+  coc-content[hidden],
+  release-content[hidden] {
     display: none;
   }
 
-  [battle-brawlers] [dialog-card] {
+  [dialog-card] {
     min-width: min(calc(var(--unit) * 75), 100%);
     max-width: calc(var(--unit) * 120);
     border-radius: var(--radius);
   }
 
-  [battle-brawlers] [dialog-close] {
+  [dialog-close] {
     color: var(--destructive);
     background: oklch(from var(--destructive) l c h / 0.1);
   }
 
-  [battle-brawlers] [dialog-close]:hover {
+  [dialog-close]:hover {
     background: oklch(from var(--destructive) l c h / 0.2);
   }
 
-  @media (width <=768px) {
-    [battle-brawlers] [dialog-card] {
+  @media (width <=calc(var(--unit) * 192)) {
+    [dialog-card] {
       min-width: 0;
       max-width: none;
     }

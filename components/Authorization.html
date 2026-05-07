@@ -8,7 +8,7 @@
 
 
 <center-full auth-padding>
-  <auth-scene w-full>
+  <auth-scene w="full">
     <card auth-form glass>
       <!-- if this.mode === 'login' -->
       <component src="/components/Login.html" email="@[this.email]" password="@[this.password]">
@@ -25,7 +25,7 @@
       </component>
       <!-- /if -->
 
-      <crow g-2 mt="4">
+      <crow g="2" mt="4">
         <!-- if this.mode !== 'login' -->
         <button secondary type="button" onclick="$.this.mode = 'login'">
           Login

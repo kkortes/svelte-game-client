@@ -7,7 +7,7 @@
 </modal-root>
 
 <style>
-  [battle-brawlers] modal-root {
+  modal-root {
     position: fixed;
     inset: 0;
     z-index: 1;
@@ -25,13 +25,13 @@
     transition: opacity 200ms ease-out, transform 200ms ease-out;
   }
 
-  [battle-brawlers] modal-root[open] {
+  modal-root[open] {
     opacity: 1;
     pointer-events: auto;
     transform: scale(1);
   }
 
-  [battle-brawlers] modal-panel {
+  modal-panel {
     display: block;
     position: relative;
     width: fit-content;
@@ -42,7 +42,7 @@
     overflow-x: hidden;
   }
 
-  [battle-brawlers] modal-root[bare] {
+  modal-root[bare] {
     display: block;
     background: transparent;
     box-shadow: none;

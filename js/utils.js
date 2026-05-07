@@ -1,7 +1,7 @@
 import seedRandom from 'seedrandom';
 import { COMBAT_TICK_TIME, COMBAT_RING_BASE_RADIUS } from '/js/constants/APP.js';
 import EQUIPMENT from '/js/constants/EQUIPMENT.js';
-import ABILITIES from '/js/constants/ABILITIES.js';
+import ABILITIES, { TYPE } from '/js/constants/ABILITIES.js';
 import CHARACTERS from '/js/constants/CHARACTERS.js';
 import { deepAdd } from '/js/helpers.js';
 import { getLevelByExperience } from '/js/level.js';
@@ -122,7 +122,7 @@ export const prepareCombatant = (characterRef, teamCount, combatantCount, teamIn
               .map((_, i) => {
                 const { chainLink, ...ab } = ability;
 
-                ab.type = 'WindUp';
+                ab.type = TYPE.WindUp;
                 ab.ticks = ability.ticks / ability.chainLink;
                 if (i + 1 !== ability.chainLink) {
                   ab.chainTo = i + 1;

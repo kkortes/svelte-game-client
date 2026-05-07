@@ -29,7 +29,7 @@
 
     window.brawlerCards = RECRUITABLE_CHARACTERS.map(ref => {
       const char = CHARACTERS(ref, true);
-      const element = ALL_ELEMENTS[char.element] || { color: { primary: '#888', secondary: '#aaa' } };
+      const element = ALL_ELEMENTS[char.element] || { color: { primary: 'var(--bb-stone)', secondary: 'var(--bb-stone)' } };
       const stats = calculateCombatStatsByCharacter(char);
       const cs = char.combatStats;
       return {
@@ -84,7 +84,7 @@
       <component src="/components/TitleBar.html" title="Brawlers"></component>
       <hr />
 
-      <crow vertical cinzel text-center mx-auto py-8>
+      <crow vertical cinzel text-center mx="auto" py="8">
         <!-- if characters.length === 0 -->
         <span>Select your first brawler</span>
         <!-- /if -->
@@ -96,12 +96,12 @@
         <!-- /if -->
       </crow>
 
-      <crow brawlers-grid g-4 sm:g="3">
+      <crow brawlers-grid g="4" sm:g="3">
         <!-- each brawlerCards as card, idx -->
-        <brawler-card flex down flex-none p-2 overflow-hidden onclick="pickCharacter(@[idx])"
+        <brawler-card flex down f="none" p="2" overflow-hidden onclick="pickCharacter(@[idx])"
           style="--card-primary: @[card.primary]; --card-secondary: @[card.secondary]"
           recruited="@[characters.some(c => c.id === card.id)]">
-          <span cinzel brawler-name text-center w-full>@[card.name]</span>
+          <span cinzel brawler-name text-center w="full">@[card.name]</span>
           <hr />
           <crow left up brawler-row>
             <component src="/components/CharacterAvatar.html" image="@[card.image]"
@@ -150,7 +150,7 @@
         oklch(0.96 0.005 85);
     }
 
-    @media (width <=768px) {
+    @media (width <=calc(var(--unit) * 192)) {
       page[brawlers] brawler-card {
         width: 100%;
       }
@@ -163,7 +163,7 @@
     }
 
     page[brawlers] [brawler-name] {
-      font-size: 1.5rem;
+      font-size: calc(var(--unit) * 6);
       position: relative;
       z-index: 1;
     }

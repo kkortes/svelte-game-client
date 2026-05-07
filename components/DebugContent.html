@@ -45,15 +45,15 @@
   };
 </script>
 
-<crow vertical g-4 left>
+<crow vertical g="4" left>
   <component src="/components/TitleBar.html" title="Debug"></component>
   <hr />
 
-  <card debug-card w-full>
-    <crow vertical g-4>
+  <card debug-card w="full">
+    <crow vertical g="4">
       <crow justify-between align-center>
         <span text-sm text-muted>Teams</span>
-        <crow g-2 align-center>
+        <crow g="2" align-center>
           <span text-sm font-medium>@[this.debugTeamCount]</span>
           <input type="range" min="1" max="8" value="@[this.debugTeamCount]"
             oninput="$.this.debugTeamCount = +this.value" />
@@ -61,13 +61,13 @@
       </crow>
       <crow justify-between align-center>
         <span text-sm text-muted>Combatants per team</span>
-        <crow g-2 align-center>
+        <crow g="2" align-center>
           <span text-sm font-medium>@[this.debugCombatantCount]</span>
           <input type="range" min="1" max="6" value="@[this.debugCombatantCount]"
             oninput="$.this.debugCombatantCount = +this.value" />
         </crow>
       </crow>
-      <crow g-2>
+      <crow g="2">
         <button primary onclick="initializeCombat()">Initialize Combat</button>
         <button primary onclick="startCombat()" disabled="@[combat?.duration !== 0]">Start
           Combat</button>
@@ -76,8 +76,8 @@
     </crow>
   </card>
 
-  <card debug-card w-full>
-    <crow vertical g-4>
+  <card debug-card w="full">
+    <crow vertical g="4">
       <crow justify-between>
         <span text-sm text-muted>Characters</span>
         <span text-sm font-medium>@[characters.length]</span>

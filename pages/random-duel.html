@@ -85,21 +85,21 @@
       </component>
       <hr />
 
-      <crow py-4>
-        <crow pvp-mystery flex-none>
+      <crow py="4">
+        <crow pvp-mystery f="none">
           ?
         </crow>
       </crow>
 
-      <crow vertical w-full g-2 mt-4>
+      <crow vertical w="full" g="2" mt="4">
         <!-- each brawlerSlots as slot, i -->
         <component src="/components/BrawlerSlot.html" slot="@[slot]"></component>
         <!-- /each -->
       </crow>
     </page-content>
 
-    <stay reverse w-full sm:b="8" p="3">
-      <button mx-auto primary onclick="runPvpCombat()"
+    <stay reverse w="full" sm:b="8" p="3">
+      <button mx="auto" primary onclick="runPvpCombat()"
         disabled="@[selectedBrawlers.length === 0 || combat.duration !== 0]">
         Fight
       </button>
@@ -111,7 +111,7 @@
       height: calc(var(--unit) * 40);
       border-radius: 50%;
       background: rgba(0, 0, 0, 0.25);
-      font-size: 6rem;
+      font-size: calc(var(--unit) * 24);
       color: white;
     }
 

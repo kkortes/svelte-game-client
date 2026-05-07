@@ -1,6 +1,6 @@
-<ability-bar block w-full px-1 py-2 small="@[small]">
-  <ability-track block relative w-full small="@[small]">
-    <ability-grid w-full>
+<ability-bar block w="full" px="1" py="2" small="@[small]">
+  <ability-track block relative w="full" small="@[small]">
+    <ability-grid w="full">
       <ability-cell></ability-cell>
       <ability-cell></ability-cell>
       <ability-cell></ability-cell>
@@ -25,21 +25,21 @@
     <!-- if !minimalistic -->
     <ability-marker-sequence absolute
       style="left: calc((100% / var(--grid-cells)) * @[lasttick]);">
-      <ability-marker-label absolute vertical right g-1>
+      <ability-marker-label absolute vertical right g="1">
         <strong>Ability&nbsp;sequence</strong>
         <span>@[lasttick]&nbsp;ticks</span>
       </ability-marker-label>
     </ability-marker-sequence>
     <!-- /if -->
 
-    <ability-overlay absolute t-0 l-0 r-0 b-0>
+    <ability-overlay absolute t="0" l="0" r="0" b="0">
       <!-- each abilities as ability -->
-      <ability-segment relative flex flex-none dnd-item="@[!dndDisabled]" basic="@[ability.basic]"
+      <ability-segment relative flex f="none" dnd-item="@[!dndDisabled]" basic="@[ability.basic]"
         overflow="@[ability.overflow]"
         data-ability="@[JSON.stringify(ability)]"
         onmouseenter="showTooltip(abilityTooltipProps(JSON.parse(this.dataset.ability)), this, { direction: 'up', lock: true })"
         style="width: calc(((100% / var(--grid-cells)) * @[ability.ticks]) + 1px);">
-        <ability-icon w-full h-full>
+        <ability-icon w="full" h="full">
           <icon @[ability.icon]></icon>
         </ability-icon>
       </ability-segment>
@@ -49,65 +49,65 @@
 </ability-bar>
 
 <style>
-  [battle-brawlers] ability-track {
+  ability-track {
     --grid-cells: 15;
   }
 
-  [battle-brawlers] ability-track[small] {
+  ability-track[small] {
     --grid-cells: 12;
   }
 
-  [battle-brawlers] ability-grid {
+  ability-grid {
     display: grid;
     grid-template-columns: repeat(var(--grid-cells), 1fr);
   }
 
-  [battle-brawlers] ability-grid ability-cell {
+  ability-grid ability-cell {
     display: block;
     aspect-ratio: 2 / 3;
-    border: 1px dashed #d1d5db;
+    border: 1px dashed var(--gray-300);
     margin-left: -1px;
   }
 
-  [battle-brawlers] ability-track[small] ability-cell:nth-child(n+13) {
+  ability-track[small] ability-cell:nth-child(n+13) {
     display: none;
   }
 
-  [battle-brawlers] ability-marker-12 {
+  ability-marker-12 {
     top: calc(var(--unit) * -2);
     bottom: calc(var(--unit) * -4);
     left: calc((100% / var(--grid-cells)) * 12);
     width: 1px;
-    border-right: 1px solid #6b7280;
+    border-right: 1px solid var(--gray-500);
     transform: translateX(-0.5px);
     transition: all 200ms;
   }
 
-  [battle-brawlers] ability-marker-sequence {
+  ability-marker-sequence {
     top: calc(var(--unit) * -2);
     bottom: calc(var(--unit) * -2);
     width: 1px;
-    border-right: 1px dashed #6b7280;
+    border-right: 1px dashed var(--gray-500);
     transform: translateX(-0.5px);
     transition: all 200ms;
   }
 
-  [battle-brawlers] ability-marker-label {
+  ability-marker-label {
     bottom: 100%;
     right: calc(var(--unit) * 1);
     align-items: flex-end;
     text-align: right;
-    font-size: 0.75rem;
+    font-size: calc(var(--unit) * 3);
     line-height: 0.9;
     white-space: nowrap;
   }
 
-  [battle-brawlers] ability-marker-label strong {
-    color: #000;
-    line-height: 0.75rem;
+  ability-marker-label strong {
+    color: var(--black);
+    line-height: calc(var(--unit) * 3);
   }
 
-  [battle-brawlers] ability-overlay {
+  ability-overlay {
     border-radius: calc(var(--unit) * 2);
     display: flex;
     flex-direction: row;
@@ -115,43 +115,43 @@
     justify-content: flex-start;
   }
 
-  [battle-brawlers] ability-segment {
+  ability-segment {
     align-items: center;
     justify-content: center;
     height: 100%;
     margin-left: -1px;
-    border: 1px solid #6b7280;
-    background: #ffffff;
+    border: 1px solid var(--gray-500);
+    background: var(--white);
     border-radius: calc(var(--unit) * 1);
     z-index: 10;
   }
 
-  [battle-brawlers] ability-segment[basic] {
-    border-color: #d1d5db;
-    background: #f3f4f6;
+  ability-segment[basic] {
+    border-color: var(--gray-300);
+    background: var(--gray-light);
     z-index: auto;
   }
 
-  [battle-brawlers] ability-segment[overflow] {
-    border-color: #fca5a5;
-    background: #fee2e2;
+  ability-segment[overflow] {
+    border-color: var(--red-300);
+    background: var(--red-100);
   }
 
-  [battle-brawlers] ability-icon {
+  ability-icon {
     display: grid;
     place-items: center;
   }
 
-  [battle-brawlers] ability-icon icon {
+  ability-icon icon {
     grid-area: 1 / 1;
-    font-size: clamp(0.875rem, 3vw, 1.875rem);
+    font-size: clamp(calc(var(--unit) * 4), 3vw, calc(var(--unit) * 8));
   }
 
-  [battle-brawlers] ability-segment[basic] ability-icon icon {
-    color: #9ca3af;
+  ability-segment[basic] ability-icon icon {
+    color: var(--gray-400);
   }
 
-  [battle-brawlers] ability-segment[overflow] ability-icon icon {
-    color: #fca5a5;
+  ability-segment[overflow] ability-icon icon {
+    color: var(--red-300);
   }
 </style>

@@ -1,36 +1,54 @@
-<hr w-full />
+<script type="module">
+  window.devHealParty = () => {
+    $.characters.forEach((c) => {
+      try {
+        const ch = CHARACTERS(c, true);
+        const stats = calculateCombatStatsByCharacter(ch);
+        c.overrides.combatStats.currentHealth = stats.maxHealth;
+      } catch {}
+    });
+    $.characters = [...$.characters];
+  };
+
+  window.devDamageParty = () => {
+    $.characters.forEach((c) => {
+      try {
+        const ch = CHARACTERS(c, true);
+        c.overrides.combatStats.currentHealth = ch.combatStats.currentHealth - 5;
+      } catch {}
+    });
+    $.characters = [...$.characters];
+  };
+</script>
+
+<hr w="full" />
 
 <crow vertical>
-  <crow up sm py-4 w-full>
-    <crow vertical left g-1 p-2>
-      <crow g-1>
-        <button primary
-          onclick="$.characters.forEach(c => { try { const ch = CHARACTERS(c, true); const s = calculateCombatStatsByCharacter(ch); c.overrides.combatStats.currentHealth = s.maxHealth; } catch {} }); $.characters = [...$.characters]">Heal
-          party</button>
-        <button primary
-          onclick="$.characters.forEach(c => { try { const ch = CHARACTERS(c, true); c.overrides.combatStats.currentHealth = ch.combatStats.currentHealth - 5; } catch {} }); $.characters = [...$.characters]">Damage
-          party</button>
+  <crow up sm py="4" w="full">
+    <crow vertical left g="1" p="2">
+      <crow g="1">
+        <button primary onclick="devHealParty()">Heal party</button>
+        <button primary onclick="devDamageParty()">Damage party</button>
       </crow>
-      <crow g-1>
+      <crow g="1">
         <button primary onclick="$.experience += 40">Gain exp</button>
         <button primary onclick="$.experience = 0">Reset exp</button>
       </crow>
-      <crow g-1>
+      <crow g="1">
         <button primary onclick="$.coins += 100">Gain coins</button>
         <button primary onclick="$.coins = 0">Reset coins</button>
       </crow>
-      <crow g-1>
+      <crow g="1">
         <button primary onclick="$.bossHighscore += 1">Increase boss</button>
         <button primary onclick="$.bossHighscore = 0">Reset boss</button>
       </crow>
       <button primary onclick="$.characters = []">Reset characters</button>
       <button primary onclick="$.accountRewards = 1">Reset rewards</button>
-      <button primary danger onclick="localStorage.clear(); location.reload()">Clear
-        localStorage</button>
+      <button primary danger onclick="localStorage.clear(); location.reload()">Clear localStorage</button>
     </crow>
-    <crow vertical left p-2>
+    <crow vertical left p="2">
       <span>My Server: @[new Date(clock.server).toLocaleString()]</span>
-      <crow vertical up left mt-2>
+      <crow vertical up left mt="2">
         <a href="/debug" primary>Debug</a>
         <a href="/styleguide" primary>Styleguide</a>
         <a href="/global-components" primary>Global Components</a>
@@ -39,11 +57,9 @@
         <a href="/character-scaling" primary>Character Scaling</a>
       </crow>
     </crow>
-    <crow vertical left g-1 p-2>
-      <button secondary onclick="document.dispatchEvent(new CustomEvent('pauseCombat'))">Pause
-        combat</button>
-      <button secondary onclick="document.dispatchEvent(new CustomEvent('resumeCombat'))">Resume
-        combat</button>
+    <crow vertical left g="1" p="2">
+      <button secondary onclick="document.dispatchEvent(new CustomEvent('pauseCombat'))">Pause combat</button>
+      <button secondary onclick="document.dispatchEvent(new CustomEvent('resumeCombat'))">Resume combat</button>
       <span>Elapsed ms: @[elapsedMilliseconds.toFixed(0)]</span>
       <span>Duration: @[combat.duration]</span>
     </crow>

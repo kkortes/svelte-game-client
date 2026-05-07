@@ -1,7 +1,8 @@
 import { ABILITY_PRIORITY, COMBAT_TICK_TIME } from '/js/constants/APP.js';
 import { calculateCombatStatsByCharacter, prepareCombatant, seededRandom } from '/js/utils.js';
-import _VFX from '/js/constants/VFX.js';
-import _SFX from '/js/constants/SFX.js';
+import VFX from '/js/constants/VFX.js';
+import SFX from '/js/constants/SFX.js';
+import { TYPE } from '/js/constants/ABILITIES.js';
 import CHARACTERS from '/js/constants/CHARACTERS.js';
 import { ALL_FIGHTS } from '/js/constants/FIGHTS.js';
 
@@ -157,7 +158,7 @@ const tickStatusEffects = (combatants, now) => {
       const weakenedDamage = (1 + combatant.statuses.isVulnerable.value) * bleedDamage;
       const finalDamage = Math.floor(weakenedDamage);
       combatant.combatStats.currentHealth -= finalDamage;
-      bufferAnimation(combatant, { ..._VFX.hurt, amount: finalDamage }, now);
+      bufferAnimation(combatant, { ...VFX.hurt, amount: finalDamage }, now);
       combatant.statuses.isBleeding.ticks -= 1;
     } else {
       combatant.statuses.isBleeding.value = 0;
@@ -237,7 +238,7 @@ export const generateCombat = (teams, seed = `${Math.random()}`, fightId) => {
         amount: 0
       };
 
-      const isWindUp = currentAbility.type === 'WindUp';
+      const isWindUp = currentAbility.type === TYPE.WindUp;
       const isStunned = combatant.statuses.isStunned;
       const isBlocking = target.statuses.isBlocking;
 
@@ -265,8 +266,8 @@ export const generateCombat = (teams, seed = `${Math.random()}`, fightId) => {
           combatant.combatStats.currentHealth += actualHealingDone;
 
           if (actualHealingDone > 0) {
-            bufferAudio(audio, _SFX.chew, now - 200);
-            bufferAnimation(combatant, { ..._VFX.heal, amount: actualHealingDone }, now);
+            bufferAudio(audio, SFX.chew, now - 200);
+            bufferAnimation(combatant, { ...VFX.heal, amount: actualHealingDone }, now);
           }
 
           const isBlocked = isLucky(
@@ -282,11 +283,11 @@ export const generateCombat = (teams, seed = `${Math.random()}`, fightId) => {
           );
 
           if (isBlocking || isBlocked) {
-            bufferAudio(audio, _SFX.block, now - 100);
-            bufferAnimation(target, _VFX.attackBlocked, now);
+            bufferAudio(audio, SFX.block, now - 100);
+            bufferAnimation(target, VFX.attackBlocked, now);
           } else if (isDodged) {
-            bufferAudio(audio, _SFX.dodge, now - 100);
-            bufferAnimation(target, _VFX.attackDodged, now);
+            bufferAudio(audio, SFX.dodge, now - 100);
+            bufferAnimation(target, VFX.attackDodged, now);
           } else {
             const isCritical = isLucky(
               combatant.combatStats.criticalChance,
@@ -315,9 +316,9 @@ export const generateCombat = (teams, seed = `${Math.random()}`, fightId) => {
                 damage.amount = 0;
               }
 
-              bufferAnimation(target, { ..._VFX.armorHurt, amount: armorDamage, isCritical }, now);
+              bufferAnimation(target, { ...VFX.armorHurt, amount: armorDamage, isCritical }, now);
               if (overflow <= 0) {
-                bufferAudio(audio, _SFX.armorHit, now - 200);
+                bufferAudio(audio, SFX.armorHit, now - 200);
               }
             }
 
@@ -325,7 +326,7 @@ export const generateCombat = (teams, seed = `${Math.random()}`, fightId) => {
 
             let playAudio = false;
             if (damage.amount > 0) {
-              bufferAnimation(target, { ..._VFX.hurt, ...damage }, now);
+              bufferAnimation(target, { ...VFX.hurt, ...damage }, now);
               playAudio = true;
             }
 

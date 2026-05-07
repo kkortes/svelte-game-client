@@ -217,9 +217,9 @@
     flex: 1;
     min-height: 0;
     overflow: hidden;
-    font-size: 0.6875rem;
-    background: #1e1e1e;
-    color: #d4d4d4;
+    font-size: calc(var(--unit) * 3);
+    background: var(--inspector-bg);
+    color: var(--inspector-text);
     font-family: 'Geist Mono', 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
   }
 
@@ -232,16 +232,16 @@
     justify-content: space-between;
     gap: calc(var(--unit) * 4);
     padding: calc(var(--unit) * 2.5) calc(var(--unit) * 3);
-    background: #252526;
-    border-bottom: 1px solid #3c3c3c;
+    background: var(--inspector-header-bg);
+    border-bottom: 1px solid var(--inspector-border);
   }
 
   data-inspector-title {
     font-weight: 500;
-    font-size: 0.6875rem;
+    font-size: calc(var(--unit) * 3);
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: #969696;
+    color: var(--inspector-text-muted);
   }
 
   data-inspector-actions {
@@ -253,22 +253,22 @@
     height: calc(var(--unit) * 6);
     padding: 0 calc(var(--unit) * 2);
     font-family: inherit;
-    font-size: 0.6875rem;
-    color: #969696;
+    font-size: calc(var(--unit) * 3);
+    color: var(--inspector-text-muted);
     background: transparent;
-    border: 1px solid #3c3c3c;
+    border: 1px solid var(--inspector-border);
     border-radius: calc(var(--unit) * 1);
     cursor: pointer;
   }
 
   [data-inspector-copy]:hover {
-    color: #d4d4d4;
-    background: #2a2d2e;
-    border-color: #505050;
+    color: var(--inspector-text);
+    background: var(--inspector-row-hover);
+    border-color: var(--inspector-divider-strong);
   }
 
   data-inspector-lines {
-    --scrollbar-width: 16px;
+    --scrollbar-width: calc(var(--unit) * 4);
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -276,7 +276,7 @@
     overflow-x: hidden;
     margin-right: calc(var(--scrollbar-width) * -1);
     line-height: 1.5;
-    scrollbar-color: #424242 transparent;
+    scrollbar-color: var(--inspector-divider) transparent;
   }
 
   data-inspector-lines::-webkit-scrollbar {
@@ -284,8 +284,8 @@
   }
 
   data-inspector-lines::-webkit-scrollbar-thumb {
-    background: #424242;
-    border-radius: 4px;
+    background: var(--inspector-divider);
+    border-radius: calc(var(--unit) * 1);
   }
 
   data-inspector-lines::-webkit-scrollbar-track {
@@ -303,7 +303,7 @@
   }
 
   data-inspector-row:hover {
-    background: #2a2d2e;
+    background: var(--inspector-row-hover);
   }
 
   data-inspector-row[expandable] {
@@ -313,7 +313,7 @@
   data-inspector-key {
     display: inline-block;
     flex-shrink: 0;
-    color: #9cdcfe;
+    color: var(--inspector-key);
   }
 
   data-inspector-value {
@@ -322,10 +322,10 @@
     text-align: right;
     word-break: break-word;
     white-space: normal;
-    color: #ce9178;
+    color: var(--inspector-string);
   }
 
   data-inspector-value[bracket] {
-    color: #569cd6;
+    color: var(--inspector-bracket);
   }
 </style>

@@ -1,5 +1,5 @@
-<card dialog-card p-6 sm:p="2" relative>
-  <button tertiary absolute t="1" r="1" dialog-close onclick="dismissOverlay()">
+<card dialog-card p="6" sm:p="2" relative>
+  <button tertiary absolute t="1" r="1" dialog-close onclick="$.overlay = {}">
     <icon cross></icon>
   </button>
 
@@ -7,8 +7,8 @@
     <h3>Options</h3>
   </typography>
 
-  <crow vertical g-4 mt-4>
-    <crow justify-between w-full align-center g-2>
+  <crow vertical g="4" mt="4">
+    <crow justify-between w="full" align-center g="2">
       <span cinzel>Audio settings</span>
       <button secondary
         onclick="$.settings = { ...$.settings, volume: { master: 0.5, ambient: 0.25, sfx: 0.5, combat: 1 } }">
@@ -36,13 +36,13 @@
 
     <hr menu-divider />
 
-    <crow g-2 vertical w-full>
-      <button secondary w-full onclick="$.overlay = { name: 'releaseNotes' }">
+    <crow g="2" vertical w="full">
+      <button secondary w="full" onclick="$.overlay = { name: 'releaseNotes' }">
         Release notes
       </button>
       <!-- if token -->
-      <button primary w-full
-        onclick="document.cookie = 'token=; Max-Age=0'; window.location.href = '/'">
+      <button primary w="full"
+        onclick="document.cookie = 'token=; Max-Age=0'; location.href = '/'">
         Logout
       </button>
       <!-- /if -->
@@ -51,7 +51,7 @@
 </card>
 
 <style>
-  [battle-brawlers] audio-grid {
+  audio-grid {
     display: grid;
     grid-template-columns: auto 1fr;
     gap: var(--unit) calc(var(--unit) * 3);
@@ -59,7 +59,7 @@
     width: 100%;
   }
 
-  [battle-brawlers] audio-grid input[type="range"] {
+  audio-grid input[type="range"] {
     width: 100%;
     min-width: 0;
   }

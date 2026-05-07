@@ -1,16 +1,16 @@
-<crow coins g-1 flex-none>
+<crow coins g="1" f="none">
   <!-- Future: multi-denomination (copper/silver/gold/platinum) breakdown
-  <crow coin-line="@[amount % 100]" g-1 flex-none>
+  <crow coin-line="@[amount % 100]" g="1" f="none">
     @[amount % 100]×<icon coin coin-copper></icon>
   </crow>
-  <crow coin-line="@[Math.floor((amount % 10000) / 100)]" g-1 flex-none>
+  <crow coin-line="@[Math.floor((amount % 10000) / 100)]" g="1" f="none">
     @[Math.floor((amount % 10000) / 100)]×<icon coin coin-silver></icon>
   </crow>
-  <crow coin-line="@[Math.floor((amount % 1000000) / 10000)]" g-1 flex-none>
+  <crow coin-line="@[Math.floor((amount % 1000000) / 10000)]" g="1" f="none">
     @[Math.floor((amount % 1000000) / 10000)]×<icon coin coin-gold></icon>
   </crow>
   -->
-  <crow coin-line="@[Math.floor(amount / 100)]" g-1 flex-none>
+  <crow coin-line="@[Math.floor(amount / 100)]" g="1" f="none">
     @[Math.floor(amount / 100)]×<icon coin coin-platinum></icon>
   </crow>
 </crow>

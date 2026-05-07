@@ -80,16 +80,16 @@
   window.toggleEquipScaling = (checked) => { s.equipScaling = checked; compute(s); };
 </script>
 
-<crow vertical g-4 left>
+<crow vertical g="4" left>
   <component src="/components/TitleBar.html" title="Character Scaling"></component>
   <hr />
 
-  <crow left g-4>
-    <label crow left g-2 for="charScaling" text-sm>
+  <crow left g="4">
+    <label crow left g="2" for="charScaling" text-sm>
       <input type="checkbox" id="charScaling" checked onchange="toggleCharScaling(this.checked)" />
       Character scaling
     </label>
-    <label crow left g-2 for="equipScaling" text-sm>
+    <label crow left g="2" for="equipScaling" text-sm>
       <input type="checkbox" id="equipScaling" checked onchange="toggleEquipScaling(this.checked)" />
       Equipment scaling
     </label>
@@ -101,10 +101,10 @@
     <!-- /each -->
   </select>
 
-  <crow vertical left g-2 w-full>
+  <crow vertical left g="2" w="full">
     <!-- each this.charPool as ch -->
-    <crow left justify-between g-2 w-full>
-      <crow left g-2>
+    <crow left justify-between g="2" w="full">
+      <crow left g="2">
         <span>level @[ch.level]</span>
         <component src="/components/EquipmentLink.html" level="@[ch.charLevel]" name="@[ch.name]">
         </component>
@@ -115,13 +115,13 @@
     <!-- /each -->
   </crow>
 
-  <crow vertical left g-2 w-full p-4 char-equipment-block>
+  <crow vertical left g="2" w="full" p="4" char-equipment-block>
     <h5>Equipment</h5>
     <hr />
     <!-- each this.charEquipmentSlots as s -->
-    <crow left justify-between g-2 w-full>
-      <crow left g-2>
-        <span flex-none slot-label w="20">@[s.slotLabel]</span>
+    <crow left justify-between g="2" w="full">
+      <crow left g="2">
+        <span f="none" slot-label w="20">@[s.slotLabel]</span>
         <!-- if s.hasEquipment -->
         <component src="/components/EquipmentLink.html" level="@[s.level]" name="@[s.name]">
         </component>

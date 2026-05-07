@@ -28,3 +28,6 @@ _unused
 
 # Dist
 dist
+
+# Test artifacts
+test-results

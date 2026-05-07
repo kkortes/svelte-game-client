@@ -1,14 +1,14 @@
-<card dialog-card p-6 sm:p="2" relative>
-  <button tertiary absolute t="1" r="1" dialog-close onclick="dismissOverlay()">
+<card dialog-card p="6" sm:p="2" relative>
+  <button tertiary absolute t="1" r="1" dialog-close onclick="$.overlay = {}">
     <icon cross></icon>
   </button>
 
   <typography>
     <p>@[overlay.text || 'Are you sure?']</p>
   </typography>
-  <crow g-2 right mt-4>
-    <button tertiary onclick="dismissOverlay()">Cancel</button>
+  <crow g="2" right mt="4">
+    <button tertiary onclick="$.overlay = {}">Cancel</button>
     <button primary
-      onclick="if($.overlay.confirm) $.overlay.confirm(); dismissOverlay();">Confirm</button>
+      onclick="if($.overlay.confirm) $.overlay.confirm(); $.overlay = {};">Confirm</button>
   </crow>
 </card>

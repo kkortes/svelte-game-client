@@ -1,71 +1,63 @@
 # Battle Brawlers — Vibe + Stylecheat Rewrite
 
-When a prompt looks dictated — missing punctuation, run-on sentences, transcription artifacts (random tokens like 'asfas'), filler words ('um', 'so'), or conversational/spoken phrasing — interpret intent loosely, normalize obvious transcription errors, and ask for clarification when ambiguous. When voice is detected, append the request as a one-line bullet under `## Todo` instead of acting on it immediately.
+Strategy auto-battler. Currently a Multi-Page App with Vite middleware mapping URLs to `pages/*.html`; **subject to change** — could become an SPA later, so don't lean on MPA assumptions in feature code. The game must work responsively down to ~360px wide; reach for Stylecheat's three media queries (`sm:` ≤768px, `md:` 768–1024px, `lg:` >1024px) before any custom `@media`.
 
-## Todo
+## Project todo
 
-Autonomous work queue. Add tasks as one-line bullets (verbs like Do / Fix / Create / Refactor).
-When invoked with `/loop` (no interval), work top-to-bottom: pick the first item, complete it,
-remove it from this list, commit the edit to CLAUDE.md, then continue with the next item.
-When the list is empty, stop the loop.
+Long-running discussion / structural items. Add a one-line bullet when something belongs on the roadmap.
 
-<!-- Add tasks below this line -->
-
-## Overview
-
-Strategy auto-battler rewritten from SvelteKit + Tailwind to Vibe + Stylecheat. Branch: `chore/major-rewrite-to-stylecheat-and-vibe`.
-
-## Testing
-
-- Don't use Playwright MCP unless explicitly asked
-- The user tests in the browser manually and reports issues
+- Decide what to do about dense one-liners inside templates: when does inline `@[…]` cross over into "move it into a `<script>` tag at the top of the file"? Track examples we run into.
+- Consider whether Vibe needs a "derived reactivity" primitive (a few component scripts want a value computed from `$` outside a binding context).
+- MPA → SPA migration is on the table; flag any code that hard-codes navigation as a full reload.
 
 ## Reference
 
-The **`main` branch** contains the original SvelteKit implementation. Use `git show main:<path>` or `git ls-tree main <dir>` to inspect without switching branches. The original is the source of truth for all functionality and design.
-
+The **`game/battle-brawlers`** branch is the per-game working branch and the source of truth for the original SvelteKit implementation. Use `git show game/battle-brawlers:<path>` or `git ls-tree game/battle-brawlers <dir>` to inspect without switching branches.
 
 ## Stack
 
 - **Runtime**: Vibe (`@ape-egg/vibe`) — runtime-first reactive framework
-- **CSS**: Stylecheat (hybrid build) — attribute-based CSS framework
-- **Dev server**: Vite (`bunx vite`, port 3001) via `vite-plugin-vibe` for HMR. A custom `mpa-routes` middleware in `vite.config.js` maps URLs to `pages/*.html` (including dynamic routes like `/brawlers/:i` → `pages/brawler-detail.html`)
-- **Vibe source**: Symlinked from `/Users/kortes/Projects/webdev/vibe/node_modules/@ape-egg/vibe` (also `vite-plugin-vibe`)
+- **CSS**: Stylecheat (hybrid build) — attribute-based CSS framework. We use `ChromeOnlyModifiers.css` (the `[g] { gap: calc(attr(g type(<number>)) * var(--unit)); }` form), **not** `Modifiers.css` (the `g-4`/`p-2` form).
+- **Dev server**: Vite via `vite-plugin-vibe` for HMR. A custom `mpa-routes` middleware in `vite.config.js` maps URLs to `pages/*.html` (including dynamic routes like `/brawlers/:i` → `pages/brawler-detail.html`).
+- **Vibe source**: Symlinked from `/Users/kortes/Projects/webdev/vibe/nodemodules/@ape-egg/vibe` (also `vite-plugin-vibe`).
+
+## Testing
+
+- Don't use Playwright MCP unless explicitly asked.
+- The user tests in the browser manually and reports issues.
 
 ## Conventions
 
-- **No comments anywhere** — no JS comments (`//`, `/* */`), no CSS comments (`/* */`), no HTML comments (`<!-- -->`). The only exception is **Vibe syntax comments**: `<!-- if -->`, `<!-- else -->`, `<!-- /if -->`, `<!-- each -->`, `<!-- /each -->` — these are reactive directives, not comments. Code should be self-documenting through naming; if a comment feels necessary, rename or restructure instead.
-- **No `class=""` attributes** — use individual HTML attributes instead
+- **JS comments are OK** when they explain *why*, not *what*. `// TODO: ...` is the official marker for "do later" — git tracks who/when.
+- **No `class=""` attributes** — use individual HTML attributes instead.
 - **No `style=""` attributes** — use custom attributes with CSS custom properties via `<element attr="@[value]">` instead of `style="--var: @[value]"`. Only acceptable for truly unavoidable cases like tooltip absolute positioning.
-- **No `<div>` elements** — use semantic or custom element names instead: `<page-home>`, `<fight-row>`, `<ability-cell>`, `<xp-bar>`, `<coin-stack>`, etc. Divs say nothing about what they are.
-- **Attribute-based styling**: use Stylecheat attributes (`g-4`, `text-sm`, `vertical`, `primary`, etc.) or custom attributes
-- **Scoped styles**: each page/component has a `<style>` block scoped with `[page-name]` or `[component-name]`
-- **Page structure**: `<script type="module">` at top, `<page-xxx>` wrapper (custom element, not div), `<style>` at bottom
-- **State access**: use `$` (not `window.$`) — it's a global property
-- **Routing (MPA, not SPA)**: there is no client-side router. Each `pages/*.html` is a full standalone HTML entry that imports `/js/boot.js`. Navigation is a full page reload. Route info (`route`, `routeParams`, `pageName`, `pageSection`) is parsed from `window.location.pathname` in `js/boot.js` and seeded onto `$` before Vibe boots. Vite's `mpa-routes` middleware resolves URLs to the right `pages/*.html` file.
-- **Component scripts**: `<script type="module">` in Vibe components have imports STRIPPED by processComponent — put logic that needs imports in `/js/boot.js` (which each page's entry script imports) and expose it on `window` for components to read
-- **Dynamic values**: for per-element dynamic values (colors, widths, positions), use custom attributes that map to CSS custom properties: `<element color="@[val]">` with CSS `[color] { --color: attr(color); }` or use `data-*` attributes. Where CSS `attr()` is insufficient, a minimal `style="--var: @[val]"` is acceptable as last resort.
-- **Stylecheat boolean attributes**: Non-`data-*`/`aria-*`/`on*` attributes bound with a pure `@[expr]` become proper boolean-like attributes — Vibe sets the attribute (empty value) when truthy and removes it when falsy. So `<modal-root open="@[when]">` with CSS `modal-root[open]` / `modal-root:not([open])` works directly. No `data-` prefix needed.
-- **No string methods with quotes in `@[...]` inside `src` attributes**: `@[x.replace('.png', '-mugshot.png')]` fails because single quotes inside Vibe expressions conflict with HTML attribute parsing. Precompute the value in JS instead.
-- **`onerror` on images with `@[...]` src**: Vibe briefly sets `src` to the literal `@[expr]` string before resolving, causing a 404. Guard onerror handlers: `onerror="if(!this.src.includes('@['))this.style.display='none'"`
-- **Responsive**: the entire game must work on smartphone (down to ~360px). Use Stylecheat responsive modifiers (`sm:` ≤768px, `md:` 768–1024px, `lg:` >1024px) — e.g. `sm:vertical`, `sm:hide`, `sm:block`, `sm:g-2`. Prefer attribute-based responsive variants over `@media` queries; fall back to `@media (width <= 768px)` only when Stylecheat doesn't cover the case (custom sizing, layout rewrites).
+- **No `<div>` elements** — use semantic or custom element names: `<page-home>`, `<fight-row>`, `<ability-cell>`, `<xp-bar>`, `<coin-stack>`, etc.
+- **Component naming convention**: reuse the wrapper element's name for inner pieces — `<tooltip>` / `<tooltip-content>` / `<tooltip-title>`, `<combatant-card>` / `<combatant-header>` / `<combatant-name>`. Predictable, self-documenting.
+- **Attribute-based styling**: prefer Stylecheat attributes (`g="4"`, `p="2"`, `vertical`, `primary`, `absolute`, `flex`, `down`, etc.). Use ChromeOnly forms — `g="4"` not `g-4`.
+- **Stylecheat over custom CSS**: when Stylecheat offers a modifier (e.g. `<element absolute>` for `position: absolute`), use it instead of writing the rule yourself.
+- **Local component styles**: each component's own `<style>` block lives at the bottom of the same file, scoped with `[component-name]` (or no scope when the inner element name is already unique). If the styles fit a more global theme concept, lift them into `css/index.css`.
+- **Scoped styles**: if a page/component needs custom styles Stylecheat can't offer, scope with `[page-name]` or `[component-name]` in a `<style>` block at the bottom of the file. Keep things isolated to where they belong.
+- **Page structure**: `<script type="module">` at top, `<page-xxx>` wrapper (custom element, not div), `<style>` at bottom.
+- **State access**: use `$` (not `window.$`) — it's a global property.
+- **Function calls on elements**: `onclick="fn()"` — never `onclick="window.fn()"`. Same applies to functions exposed on `window`: call them by bare name from the markup.
+- **Component scripts**: `<script type="module">` in Vibe components have imports STRIPPED by processComponent — put logic that needs imports in `/js/boot.js` (which each page's entry script imports) and expose it on `window` for components to read.
+- **`data-*` prefix should be avoided at all cost**. Use plain attributes instead: in CSS use `status-chip[stunned]`, in HTML use `<element @[status]>` (Vibe sets a boolean-like attribute named after the resolved value). The exception is genuine HTML data semantics like `data-src` on lazy-loaded images.
+- **Stylecheat boolean attributes**: Non-`data-*`/`aria-*`/`on*` attributes bound with a pure `@[expr]` become proper boolean-like attributes — Vibe sets the attribute (empty value) when truthy and removes it when falsy. So `<modal-root open="@[when]">` with CSS `modal-root[open]` / `modal-root:not([open])` works directly.
 
-## File Structure
+## File Conventions
 
-```
-pages/                  — standalone HTML entries, one per route (home, brawlers, the-arena, …). Each imports /js/boot.js and mounts <component src="/components/Layout.html">
-css/index.css           — theme variables, fonts, global styles
-css/stylecheat.css      — Stylecheat hybrid build
-js/boot.js              — app bootstrap: parses route, seeds $, wires services, registers lifecycle listeners
-js/app.js               — initial global state shape
-js/                     — core modules (app state, game logic, services)
-js/constants/           — game data (abilities, characters, equipment, fights)
-components/             — Vibe HTML components (Layout, Authorization, Sidebar, Topbar, …)
-static/                 — images, audio, favicon
-svelte-game-server/     — WebSocket game server (unchanged)
-vite.config.js          — Vite config + mpa-routes middleware (URL → pages/*.html)
-```
+- Every file ends with a trailing newline.
+- No hex color codes outside `css/index.css`. Always reference `var(--color-name)`. If a color doesn't exist as a var yet, add it to `css/index.css` first.
+- For any `px` greater than `1px`, use `calc(var(--unit) * N)` instead.
+- No `rem`. Use `calc(var(--unit) * N)`.
+- Imports: package imports first, then relative project imports.
 
 ## Game Server
 
-Run from `svelte-game-server/`: `bun run index.js` (port 1337). Config in `js/config.js`.
+The WebSocket backend lives in `svelte-game-server/`. Frontend integration:
+
+- Connection lives on `$.socket` (see `js/connectSocket.js`); lifecycle is managed centrally — features should consume `$.socket` rather than open new connections.
+- Game state seeded onto `$` flows from the server through the message handlers in `js/connectSocket.js`. New backend events should plug into the same place so reactive bindings stay coherent.
+- Auth happens via `$.token`; the server validates it on the websocket handshake. Don't store credentials elsewhere.
+- Constants (`js/constants/*`) must match the server's expectations — when the backend renames or adds a key, update the constant file in lockstep.
+- Helpers belong in `/js/helpers.js`. Tiny utilities (formatters, parsers) should not get their own files.

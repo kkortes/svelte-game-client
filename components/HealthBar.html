@@ -1,4 +1,4 @@
-<health-bar relative block w-full left="@[card.facingRight]">
+<health-bar relative block w="full" left="@[card.facingRight]">
   <component src="/components/Bar.html" center color="green"
     current="@[Math.max(0, card.currentHealth)]"
     max="@[card.maxHealth]"></component>
@@ -9,7 +9,7 @@
   <!-- /if -->
 
   <!-- each card.floaters as f -->
-  <hp-floater data-type="@[f.vfxName]" crit="@[f.isCritical]"
+  <hp-floater absolute @[f.vfxName] crit="@[f.isCritical]"
     style="--rnd: @[f.random]; --dir: @[f.dir]; --y-offset: @[f.vfxName === 'armorHurt' ? '160px' : '0px']; --scale: @[f.isCritical ? 2 : 1];">
     <hp-floater-x>
       <hp-floater-y>
@@ -22,44 +22,43 @@
 </health-bar>
 
 <style>
-  [battle-brawlers] hp-floater {
-    position: absolute;
-    top: 4px;
+  hp-floater {
+    top: calc(var(--unit) * 1);
     left: 100%;
     font-family: var(--font-display, sans-serif);
     font-weight: 800;
     pointer-events: none;
-    color: #fecaca;
+    color: var(--floater-default);
     opacity: 0;
     animation: hp-floater-fade 1000ms ease-in forwards;
     white-space: nowrap;
   }
 
-  [battle-brawlers] health-bar[left] hp-floater {
+  health-bar[left] hp-floater {
     left: auto;
     right: 100%;
   }
 
-  [battle-brawlers] hp-floater[data-type="armorHurt"] {
-    color: white;
+  hp-floater[armorHurt] {
+    color: var(--white);
   }
 
-  [battle-brawlers] hp-floater[data-type="heal"] {
-    color: #bbf7d0;
+  hp-floater[heal] {
+    color: var(--floater-heal);
     animation: hp-floater-heal-fade 800ms ease-out forwards;
   }
 
-  [battle-brawlers] hp-floater-x {
+  hp-floater-x {
     display: inline-block;
     animation: hp-floater-x 200ms ease-in forwards;
   }
 
-  [battle-brawlers] hp-floater-y {
+  hp-floater-y {
     display: inline-block;
     animation: hp-floater-y 1000ms linear forwards;
   }
 
-  [battle-brawlers] hp-floater[data-type="heal"] hp-floater-y {
+  hp-floater[heal] hp-floater-y {
     animation: hp-floater-heal-y 800ms cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
   }
 </style>

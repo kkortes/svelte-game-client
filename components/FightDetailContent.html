@@ -4,7 +4,7 @@
   import { generateCombat, prepareTeams } from '/js/combat.js';
   import { calculateCombatStatsByCharacter } from '/js/utils.js';
   import ABILITIES from '/js/constants/ABILITIES.js';
-  import formatDescription from '/js/formatDescription.js';
+  import { formatDescription } from '/js/helpers.js';
   window.formatDescription = formatDescription;
 
   const fightId = $.page.params.fightId;
@@ -145,7 +145,7 @@
     </crow>
 
     <crow vertical up left fight-info-col>
-      <crow left text-lg mb-4>
+      <crow left text-lg mb="4">
         <component src="/components/CoreStats.html" hp="@[enemy.maxHealth]"
           armor="@[enemy.maxArmor]" damage="@[enemy.damage]"></component>
       </crow>
@@ -164,15 +164,15 @@
       </component>
     </crow>
 
-    <fight-enemy-image block flex-none relative>
-      <img t-0 r-0 b-0 l-0 absolute w-full data-src="/static/images/races/@[enemy.image]" alt="" />
+    <fight-enemy-image block f="none" relative>
+      <img t="0" r="0" b="0" l="0" absolute w="full" data-src="/static/images/races/@[enemy.image]" alt="" />
     </fight-enemy-image>
   </crow>
   <!-- /each -->
 
   <hr />
 
-  <crow vertical w-full g-2>
+  <crow vertical w="full" g="2">
     <!-- each this.brawlerSlots as slot, i -->
     <component src="/components/BrawlerSlot.html" slot="@[slot]"></component>
     <!-- /each -->
@@ -181,17 +181,17 @@
   <!-- /if -->
 
   <!-- if !this.currentFight -->
-  <crow vertical g-4 fight-empty>
+  <crow vertical g="4" fight-empty>
     <p text-muted>Fight not found.</p>
-    <a href="/the-arena">&#x2039; Back</a>
+    <component src="/components/BackButton.html" href="/the-arena"></component>
   </crow>
   <!-- /if -->
 
 </page-content>
 
 <!-- if this.currentFight -->
-<stay reverse w-full sm:b="8" p="3">
-  <button mx-auto primary onclick="startFight()"
+<stay reverse w="full" sm:b="8" p="3">
+  <button mx="auto" primary onclick="startFight()"
     disabled="@[selectedBrawlers.length === 0 || combat.duration !== 0]">
     Fight
   </button>

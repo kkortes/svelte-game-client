@@ -11,7 +11,7 @@
 </script>
 
 <form onsubmit="event.preventDefault(); authRegister($.email, $.password).then(() => { $.mode = 'login' })">
-  <crow g-2 mb-3>
+  <crow g="2" mb="3">
     <input type="email" placeholder="Email" value="@[email]" oninput="$.email = this.value"
       required auth-input />
     <input type="password" placeholder="Password" value="@[password]"

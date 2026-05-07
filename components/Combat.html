@@ -72,7 +72,7 @@
 </combat-backdrop>
 
 <style>
-  [battle-brawlers] combat-backdrop {
+  combat-backdrop {
     position: fixed;
     inset: 0;
     z-index: 1;
@@ -83,10 +83,10 @@
     box-shadow: inset 0 0 10vw rgba(0, 0, 0, 1);
   }
 
-  [battle-brawlers] combat-stage {
+  combat-stage {
     position: relative;
-    width: min(90vmin, 700px);
-    height: min(90vmin, 700px);
+    width: min(90vmin, calc(var(--unit) * 175));
+    height: min(90vmin, calc(var(--unit) * 175));
     aspect-ratio: 1 / 1;
   }
 </style>

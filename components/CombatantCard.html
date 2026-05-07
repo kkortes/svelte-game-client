@@ -1,4 +1,4 @@
-<combatant-slot combatant-slot="@[card.cardId]"
+<combatant-slot absolute combatant-slot="@[card.cardId]"
   facing-right="@[card.facingRight]"
   style="
     --c-x: @[card.x]px;
@@ -6,7 +6,7 @@
     --c-z: @[card.z];
     --c-scale: @[card.scale];
   ">
-  <combatant-card combat-card="@[card.cardId]" flex down>
+  <combatant-card absolute combat-card="@[card.cardId]" flex down>
     <combatant-header flex>
       <combatant-name>@[card.name]</combatant-name>
     </combatant-header>
@@ -17,32 +17,32 @@
 
     <component src="/components/CombatantAbilityBar.html" card="@[card]"></component>
 
-    <combatant-statuses flex down facing-right="@[card.facingRight]">
+    <combatant-statuses absolute flex down facing-right="@[card.facingRight]">
       <!-- each card.statusEffects as s -->
-      <status-chip data-status="@[s.key]">
+      <status-chip @[s.key]>
         <icon @[s.key]></icon>
         <status-ticks>@[s.ticks]</status-ticks>
       </status-chip>
       <!-- /each -->
       <!-- each card.statusStacks as s -->
-      <status-chip data-status="@[s.key]" stack>
+      <status-chip @[s.key] stack>
         <icon @[s.key]></icon>
         <status-ticks>@[s.value]/@[s.max]</status-ticks>
       </status-chip>
       <!-- /each -->
     </combatant-statuses>
 
-    <combatant-badge damage-badge>
+    <combatant-badge absolute damage-badge>
       <icon 1h1h></icon>
       <!-- if card.damage > 0 -->
-      <badge-value>@[card.damage]</badge-value>
+      <badge-value absolute>@[card.damage]</badge-value>
       <!-- /if -->
     </combatant-badge>
 
-    <combatant-badge armor-badge>
+    <combatant-badge absolute armor-badge>
       <icon maxArmor></icon>
       <!-- if card.currentArmor > 0 -->
-      <badge-value>@[card.currentArmor]</badge-value>
+      <badge-value absolute>@[card.currentArmor]</badge-value>
       <!-- /if -->
     </combatant-badge>
   </combatant-card>
@@ -51,8 +51,7 @@
 </combatant-slot>
 
 <style>
-  [battle-brawlers] combatant-slot {
-    position: absolute;
+  combatant-slot {
     top: 50%;
     left: 50%;
     width: 0;
@@ -61,107 +60,103 @@
     transform: translate(-50%, -50%);
   }
 
-  [battle-brawlers] combatant-card {
-    position: absolute;
+  combatant-card {
     left: var(--c-x);
-    top: calc(var(--c-y) - 20px);
+    top: calc(var(--c-y) - calc(var(--unit) * 5));
     transform: translate(-50%, -50%) scale(var(--c-scale, 1));
-    width: 144px;
+    width: calc(var(--unit) * 36);
     pointer-events: none;
-    border-radius: 4px;
-    background: rgba(255, 255, 255, 0.45);
-    backdrop-filter: blur(3px);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    border-radius: var(--unit);
+    background: var(--combatant-card-bg);
+    backdrop-filter: blur(calc(var(--unit) * 0.75));
+    box-shadow: 0 calc(var(--unit) * 0.5) calc(var(--unit) * 1.5) var(--combatant-card-shadow);
     color: var(--foreground);
   }
 
-  [battle-brawlers] combatant-header {
+  combatant-header {
     justify-content: space-between;
     align-items: center;
-    padding: 2px 6px;
-    font-size: 0.65rem;
+    padding: calc(var(--unit) * 0.5) calc(var(--unit) * 1.5);
+    font-size: calc(var(--unit) * 2.5);
     font-weight: 700;
-    color: #57534e;
+    color: var(--combatant-name-color);
     text-transform: uppercase;
   }
 
-  [battle-brawlers] combatant-name {
+  combatant-name {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     flex: 1;
   }
 
-  [battle-brawlers] combatant-sprite-area {
+  combatant-sprite-area {
     width: 100%;
-    height: 144px;
+    height: calc(var(--unit) * 36);
   }
 
-  [battle-brawlers] combatant-statuses {
-    position: absolute;
-    top: 68px;
-    left: calc(100% - 24px);
-    gap: 4px;
+  combatant-statuses {
+    top: calc(var(--unit) * 17);
+    left: calc(100% - calc(var(--unit) * 6));
+    gap: var(--unit);
     align-items: flex-start;
   }
 
-  [battle-brawlers] combatant-statuses[facing-right] {
+  combatant-statuses[facing-right] {
     left: auto;
-    right: calc(100% - 24px);
+    right: calc(100% - calc(var(--unit) * 6));
     align-items: flex-end;
   }
 
-  [battle-brawlers] status-chip {
+  status-chip {
     display: inline-flex;
     align-items: center;
-    gap: 3px;
-    font-size: 0.65rem;
-    padding: 1px 4px;
-    border-radius: 3px;
-    background: rgba(255, 255, 255, 0.7);
-    color: #374151;
+    gap: calc(var(--unit) * 0.75);
+    font-size: calc(var(--unit) * 2.5);
+    padding: calc(var(--unit) * 0.25) var(--unit);
+    border-radius: calc(var(--unit) * 0.75);
+    background: var(--status-default-bg);
+    color: var(--slate);
   }
 
-  [battle-brawlers] status-chip icon {
-    font-size: 0.75rem;
+  status-chip icon {
+    font-size: calc(var(--unit) * 3);
   }
 
-  [battle-brawlers] status-chip[data-status="stunned"] { background: #fbbf24; color: #000; }
-  [battle-brawlers] status-chip[data-status="bleeding"] { background: #ef4444; color: #fff; }
-  [battle-brawlers] status-chip[data-status="vulnerable"] { background: #a855f7; color: #fff; }
-  [battle-brawlers] status-chip[data-status="wounded"] { background: #dc2626; color: #fff; opacity: 0.75; }
-  [battle-brawlers] status-chip[data-status="concussed"] { background: #d97706; color: #fff; opacity: 0.75; }
-  [battle-brawlers] status-chip[data-status="exposed"] { background: #7c3aed; color: #fff; opacity: 0.75; }
+  status-chip[stunned] { background: var(--status-stunned-bg); color: var(--status-stunned-fg); }
+  status-chip[bleeding] { background: var(--status-bleeding-bg); color: var(--status-bleeding-fg); }
+  status-chip[vulnerable] { background: var(--status-vulnerable-bg); color: var(--status-vulnerable-fg); }
+  status-chip[wounded] { background: var(--status-wounded-bg); color: var(--status-wounded-fg); }
+  status-chip[concussed] { background: var(--status-concussed-bg); color: var(--status-concussed-fg); }
+  status-chip[exposed] { background: var(--status-exposed-bg); color: var(--status-exposed-fg); }
 
-  [battle-brawlers] combatant-badge {
-    position: absolute;
-    bottom: 28px;
-    width: 32px;
-    height: 32px;
+  combatant-badge {
+    bottom: calc(var(--unit) * 7);
+    width: calc(var(--unit) * 8);
+    height: calc(var(--unit) * 8);
     display: grid;
     place-items: center;
     pointer-events: none;
   }
 
-  [battle-brawlers] combatant-badge[damage-badge] { left: -4px; }
-  [battle-brawlers] combatant-badge[armor-badge] { right: -4px; }
+  combatant-badge[damage-badge] { left: calc(var(--unit) * -1); }
+  combatant-badge[armor-badge] { right: calc(var(--unit) * -1); }
 
-  [battle-brawlers] combatant-slot[facing-right] combatant-badge[damage-badge] { left: auto; right: -4px; }
-  [battle-brawlers] combatant-slot[facing-right] combatant-badge[armor-badge] { right: auto; left: -4px; }
+  combatant-slot[facing-right] combatant-badge[damage-badge] { left: auto; right: calc(var(--unit) * -1); }
+  combatant-slot[facing-right] combatant-badge[armor-badge] { right: auto; left: calc(var(--unit) * -1); }
 
-  [battle-brawlers] combatant-badge icon {
-    font-size: 1.8rem;
-    --color: #b3ad9f;
+  combatant-badge icon {
+    font-size: calc(var(--unit) * 7);
+    --color: var(--stone);
   }
 
-  [battle-brawlers] combatant-badge badge-value {
-    position: absolute;
+  combatant-badge badge-value {
     inset: 0;
     display: grid;
     place-items: center;
     font-family: var(--font-display, sans-serif);
-    font-size: 1.1rem;
-    color: white;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    font-size: calc(var(--unit) * 4.5);
+    color: var(--white);
+    text-shadow: 0 1px calc(var(--unit) * 0.5) oklch(0 0 0 / 0.5);
   }
 </style>

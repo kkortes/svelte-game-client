@@ -16,7 +16,7 @@
 
     import EQUIPMENT, { ALL_EQUIPMENT } from '/js/constants/EQUIPMENT.js';
     import { slotsInPrettyName } from '/js/equipment.js';
-    import { formatCoins } from '/js/coin.js';
+    import { formatCoins } from '/js/helpers.js';
 
     window.vendorItems = Object.keys(ALL_EQUIPMENT).map(key => {
       const item = EQUIPMENT(key, true);
@@ -24,6 +24,12 @@
     });
 
     const countByType = (type) => window.vendorItems.filter(item => item.slotsIn.includes(type)).length;
+
+    window.filterVendorItems = (filter) =>
+      filter === 'all'
+        ? window.vendorItems
+        : window.vendorItems.filter(item => item.slotsIn.includes(filter));
+
     window.vendorCounts = {
       oneHand: countByType('oneHand'),
       offHand: countByType('offHand'),
@@ -106,7 +112,7 @@
 
     page[vendor] [vendor-filter] filter-label {
       font-family: var(--font-heading);
-      font-size: 0.7rem;
+      font-size: calc(var(--unit) * 3);
       font-weight: 500;
       letter-spacing: 0.22em;
       text-transform: uppercase;
@@ -135,7 +141,7 @@
     page[vendor] [vendor-filter] filter-count {
       display: block;
       font-family: var(--font-display);
-      font-size: 1.35rem;
+      font-size: calc(var(--unit) * 5);
       line-height: 1;
       letter-spacing: 0.02em;
       font-variant-numeric: tabular-nums;
@@ -160,7 +166,7 @@
       left: calc(var(--unit) * 3);
       right: calc(var(--unit) * 3);
       bottom: -1px;
-      height: 2px;
+      height: calc(var(--unit) * 0.5);
       background: linear-gradient(90deg,
           transparent 0%,
           var(--bb-orange) 22%,
@@ -189,25 +195,25 @@
       text-shadow: 0 0 calc(var(--unit) * 3.5) oklch(from var(--bb-orange) l c h / 0.55);
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: calc(var(--unit) * 192)) {
       page[vendor] [vendor-filter] {
         flex: 1 1 33%;
         padding: calc(var(--unit) * 2.5) calc(var(--unit) * 2);
       }
 
       page[vendor] [vendor-filter] filter-count {
-        font-size: 1.15rem;
+        font-size: calc(var(--unit) * 5);
       }
 
       page[vendor] [vendor-filter] filter-label {
-        font-size: 0.62rem;
+        font-size: calc(var(--unit) * 2);
         letter-spacing: 0.14em;
       }
     }
 
     page[vendor] [vendor-header] {
       align-items: center;
-      font-size: 0.72rem;
+      font-size: calc(var(--unit) * 3);
       letter-spacing: 0.14em;
       text-transform: uppercase;
       color: oklch(from var(--foreground) l c h / 0.5);
@@ -215,7 +221,7 @@
     }
 
     page[vendor] [vendor-row] {
-      font-size: 0.875rem;
+      font-size: calc(var(--unit) * 4);
       transition: background 200ms ease;
     }
 
@@ -251,7 +257,7 @@
       flex: none;
     }
 
-    @media (width <=768px) {
+    @media (width <=calc(var(--unit) * 192)) {
 
       page[vendor] vendor-col-slot,
       page[vendor] [vendor-col-slot] {

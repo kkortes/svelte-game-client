@@ -263,7 +263,7 @@
 
 <page-content>
   <!-- if this.currentCharacter -->
-  <crow vertical g-4 left>
+  <crow vertical g="4" left>
     <component src="/components/TitleBar.html" title="@[this.currentCharacter.name]"
       back="/brawlers">
       <accordion open="@[!settings.showDetailedCharacterView]">
@@ -274,7 +274,7 @@
         </accordion-content>
       </accordion>
 
-      <button class="crow" g-2 secondary onclick="toggleDetailedView()">
+      <button class="crow" g="2" secondary onclick="toggleDetailedView()">
         <icon chevron-down animate-flip flip="@[settings.showDetailedCharacterView]"></icon>
         <!-- if settings.showDetailedCharacterView -->
         Simple view
@@ -290,41 +290,41 @@
     </component>
     <hr />
 
-    <crow left up g-4 w-full main-content>
-      <crow vertical left flex-none avatar-col>
+    <crow left up g="4" w="full" main-content>
+      <crow vertical left f="none" avatar-col>
         <component src="/components/CharacterAvatar.html" image="@[this.currentCharacter.image]"
           size="@[this.currentCharacter.size]" name="@[this.currentCharacter.name]"></component>
       </crow>
 
-      <crow vertical left f-2 detail-col>
+      <crow vertical left f="2" detail-col>
         <accordion open="@[settings.showDetailedCharacterView]">
           <accordion-content>
-            <crow up left g-8 flex-none stats-panel>
+            <crow up left g="8" f="none" stats-panel>
               <crow vertical left stats-col>
                 <h5>Base Stats</h5>
                 <hr />
-                <crow stat-list vertical left g-1 w-full>
-                  <crow justify-between w-full g-2>
-                    <crow left g-2>
-                      <icon-cell flex-none>
+                <crow stat-list vertical left g="1" w="full">
+                  <crow justify-between w="full" g="2">
+                    <crow left g="2">
+                      <icon-cell f="none">
                         <icon maxHealth></icon>
                       </icon-cell>
                       <span>Health</span>
                     </crow>
                     <span>@[this.currentCombatStats.maxHealthFmt]</span>
                   </crow>
-                  <crow justify-between w-full g-2>
-                    <crow left g-2>
-                      <icon-cell flex-none>
+                  <crow justify-between w="full" g="2">
+                    <crow left g="2">
+                      <icon-cell f="none">
                         <icon maxArmor></icon>
                       </icon-cell>
                       <span>Armor</span>
                     </crow>
                     <span>@[this.currentCombatStats.maxArmorFmt]</span>
                   </crow>
-                  <crow justify-between w-full g-2>
-                    <crow left g-2>
-                      <icon-cell flex-none>
+                  <crow justify-between w="full" g="2">
+                    <crow left g="2">
+                      <icon-cell f="none">
                         <icon damage></icon>
                       </icon-cell>
                       <span>Damage</span>
@@ -337,46 +337,46 @@
 
                 <h5>Lucky Stats</h5>
                 <hr />
-                <crow stat-list vertical left g-1 w-full text-green>
-                  <crow justify-between w-full g-2>
-                    <crow left g-2>
-                      <icon-cell flex-none>
+                <crow stat-list vertical left g="1" w="full" text-green>
+                  <crow justify-between w="full" g="2">
+                    <crow left g="2">
+                      <icon-cell f="none">
                         <icon criticalChance></icon>
                       </icon-cell>
                       <span>Critical chance</span>
                     </crow>
                     <span>@[this.currentCombatStats.criticalChance]</span>
                   </crow>
-                  <crow justify-between w-full g-2>
-                    <crow left g-2>
-                      <icon-cell flex-none>
+                  <crow justify-between w="full" g="2">
+                    <crow left g="2">
+                      <icon-cell f="none">
                         <icon criticalDamage></icon>
                       </icon-cell>
                       <span>Critical damage</span>
                     </crow>
                     <span>@[this.currentCombatStats.criticalDamage]</span>
                   </crow>
-                  <crow justify-between w-full g-2>
-                    <crow left g-2>
-                      <icon-cell flex-none>
+                  <crow justify-between w="full" g="2">
+                    <crow left g="2">
+                      <icon-cell f="none">
                         <icon blockChance></icon>
                       </icon-cell>
                       <span>Block chance</span>
                     </crow>
                     <span>@[this.currentCombatStats.blockChance]</span>
                   </crow>
-                  <crow justify-between w-full g-2>
-                    <crow left g-2>
-                      <icon-cell flex-none>
+                  <crow justify-between w="full" g="2">
+                    <crow left g="2">
+                      <icon-cell f="none">
                         <icon dodgeChance></icon>
                       </icon-cell>
                       <span>Dodge chance</span>
                     </crow>
                     <span>@[this.currentCombatStats.dodgeChance]</span>
                   </crow>
-                  <crow justify-between w-full g-2>
-                    <crow left g-2>
-                      <icon-cell flex-none>
+                  <crow justify-between w="full" g="2">
+                    <crow left g="2">
+                      <icon-cell f="none">
                         <icon magicChance></icon>
                       </icon-cell>
                       <span>Magic chance</span>
@@ -389,37 +389,37 @@
               <crow vertical left stats-col>
                 <h5>Modifiers</h5>
                 <hr />
-                <crow stat-list vertical left g-1 w-full>
-                  <crow justify-between w-full g-2>
-                    <crow left g-2>
-                      <icon-cell flex-none>
+                <crow stat-list vertical left g="1" w="full">
+                  <crow justify-between w="full" g="2">
+                    <crow left g="2">
+                      <icon-cell f="none">
                         <icon maxHealth></icon>
                       </icon-cell>
                       <span>Health</span>
                     </crow>
                     <span>@[this.currentCombatStats.modifiers.maxHealth]</span>
                   </crow>
-                  <crow justify-between w-full g-2>
-                    <crow left g-2>
-                      <icon-cell flex-none>
+                  <crow justify-between w="full" g="2">
+                    <crow left g="2">
+                      <icon-cell f="none">
                         <icon maxArmor></icon>
                       </icon-cell>
                       <span>Armor</span>
                     </crow>
                     <span>@[this.currentCombatStats.modifiers.maxArmor]</span>
                   </crow>
-                  <crow justify-between w-full g-2>
-                    <crow left g-2>
-                      <icon-cell flex-none>
+                  <crow justify-between w="full" g="2">
+                    <crow left g="2">
+                      <icon-cell f="none">
                         <icon damage></icon>
                       </icon-cell>
                       <span>Damage</span>
                     </crow>
                     <span>@[this.currentCombatStats.modifiers.damage]</span>
                   </crow>
-                  <crow justify-between w-full g-2>
-                    <crow left g-2>
-                      <icon-cell flex-none>
+                  <crow justify-between w="full" g="2">
+                    <crow left g="2">
+                      <icon-cell f="none">
                         <icon resistance></icon>
                       </icon-cell>
                       <span>All resistances</span>
@@ -432,28 +432,28 @@
 
                 <h5>Resistances</h5>
                 <hr />
-                <crow stat-list vertical left g-1 w-full>
-                  <crow justify-between w-full g-2>
-                    <crow left g-2>
-                      <icon-cell flex-none>
+                <crow stat-list vertical left g="1" w="full">
+                  <crow justify-between w="full" g="2">
+                    <crow left g="2">
+                      <icon-cell f="none">
                         <icon bleeding></icon>
                       </icon-cell>
                       <span>Bleeding</span>
                     </crow>
                     <span>@[this.currentCombatStats.limits.wounded]</span>
                   </crow>
-                  <crow justify-between w-full g-2>
-                    <crow left g-2>
-                      <icon-cell flex-none>
+                  <crow justify-between w="full" g="2">
+                    <crow left g="2">
+                      <icon-cell f="none">
                         <icon stunned></icon>
                       </icon-cell>
                       <span>Stunned</span>
                     </crow>
                     <span>@[this.currentCombatStats.limits.concussed]</span>
                   </crow>
-                  <crow justify-between w-full g-2>
-                    <crow left g-2>
-                      <icon-cell flex-none>
+                  <crow justify-between w="full" g="2">
+                    <crow left g="2">
+                      <icon-cell f="none">
                         <icon vulnerable></icon>
                       </icon-cell>
                       <span>Vulnerable</span>
@@ -475,11 +475,11 @@
           </equipment-heading-content>
         </equipment-heading>
 
-        <crow vertical left w-full>
+        <crow vertical left w="full">
           <!-- each this.currentSlots as eq -->
-          <crow left justify-between w-full g-2 eq-row>
-            <crow left g-2>
-              <span flex-none eq-slot-label>@[eq.prettyName]</span>
+          <crow left justify-between w="full" g="2" eq-row>
+            <crow left g="2">
+              <span f="none" eq-slot-label>@[eq.prettyName]</span>
               <!-- if eq.disabled -->
               <span text-muted>@[eq.itemName]</span>
               <!-- /if -->
@@ -508,7 +508,7 @@
 
     <div h="20"></div>
 
-    <crow vertical left w-full g-3 ability-section>
+    <crow vertical left w="full" g="3" ability-section>
       <component small src="/components/TitleBar.html" title="Active Abilities">
         <button sm secondary onclick="tryOutBuild()">Try out build</button>
       </component>
@@ -520,9 +520,9 @@
 
       <component small src="/components/TitleBar.html" title="Available Abilities"></component>
 
-      <crow available-grid w-full g-2 p-2>
+      <crow available-grid w="full" g="2" p="2">
         <!-- each this.currentAvailableAbilities as ability -->
-        <available-ability dnd-item flex down flex-none relative basic="@[ability.basic]"
+        <available-ability dnd-item flex down f="none" relative basic="@[ability.basic]"
           data-ability="@[JSON.stringify(ability)]"
           onmouseenter="showTooltip(abilityTooltipProps(JSON.parse(this.dataset.ability)), this, { direction: 'up', lock: true })">
           <icon @[ability.icon]></icon>
@@ -539,9 +539,9 @@
   <!-- /if -->
 
   <!-- if !this.currentCharacter -->
-  <crow vertical g-4 detail-empty>
+  <crow vertical g="4" detail-empty>
     <p text-muted>No brawler found.</p>
-    <a href="/brawlers">&#x2039; Back</a>
+    <component src="/components/BackButton.html" href="/brawlers"></component>
   </crow>
   <!-- /if -->
 </page-content>

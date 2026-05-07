@@ -266,7 +266,17 @@ function preventDefault(fn) {
   };
 }
 
+const formatDescription = (text) => (text || '').replace(/<br\s*\/?>/gi, '\n').trim();
+
+const formatCoins = (amount) => ({
+  gold: 0,
+  silver: Math.floor(amount / 100),
+  copper: amount % 100
+});
+
 export {
+  formatDescription,
+  formatCoins,
   range,
   emptySlot,
   filledSlot,

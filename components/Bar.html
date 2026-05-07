@@ -1,21 +1,21 @@
-<bar-track relative w-full overflow-hidden center="@[center]" color="@[color]"
+<bar-track relative w="full" overflow-hidden center="@[center]" color="@[color]"
   percentage="@[percentage]">
   <bar-fill block
     style="width: @[Math.max(0, Math.min(100, ((current || 0) / Math.max(1, max || 1)) * 100))]%"></bar-fill>
   <!-- if loading -->
-  <crow px-2 bar-text justify-between="@[!center]">
+  <crow px="2" bar-text justify-between="@[!center]">
     <spinner w="3.5" h="3.5"></spinner>
   </crow>
   <!-- /if -->
   <!-- if !loading && timer -->
-  <crow px-2 bar-text justify-between="@[!center]">
+  <crow px="2" bar-text justify-between="@[!center]">
     <bar-timer>@[String(Math.floor(Math.max(0, (max || 0) - (current || 0)) / 60000)).padStart(2,
       '0')]:@[String(Math.floor((Math.max(0, (max || 0) - (current || 0)) % 60000) /
       1000)).padStart(2, '0')]</bar-timer>
   </crow>
   <!-- /if -->
   <!-- if !loading && !timer -->
-  <crow px-2 bar-text justify-between="@[!center]">
+  <crow px="2" bar-text justify-between="@[!center]">
     <!-- if text -->
     <span bar-label>@[text]</span>
     <!-- /if -->
@@ -27,61 +27,61 @@
 </bar-track>
 
 <style>
-  [battle-brawlers] bar-track {
+  bar-track {
     display: grid;
     height: calc(var(--unit) * 7);
-    color: #fff;
+    color: var(--white);
     background: rgb(107 114 128 / 0.5);
     box-shadow: inset 0 1px 1px rgb(0 0 0 / 0.05);
-    font-size: 0.875rem;
+    font-size: calc(var(--unit) * 4);
   }
 
-  [battle-brawlers] bar-track[center] {
+  bar-track[center] {
     height: calc(var(--unit) * 6);
     border-radius: calc(var(--unit) * 0.5);
   }
 
-  [battle-brawlers] bar-fill {
+  bar-fill {
     grid-area: 1 / 1;
     height: 100%;
-    background: #991b1b;
+    background: var(--red-800);
     transition: width 200ms ease-in-out;
   }
 
-  [battle-brawlers] bar-track[color="yellow"] bar-fill {
+  bar-track[color="yellow"] bar-fill {
     background: var(--bb-yellow);
   }
 
-  [battle-brawlers] bar-track[color="stone"] bar-fill {
+  bar-track[color="stone"] bar-fill {
     background: var(--bb-stone);
   }
 
-  [battle-brawlers] bar-track[color="green"] bar-fill {
-    background: #22c55e;
+  bar-track[color="green"] bar-fill {
+    background: var(--green-500);
   }
 
-  [battle-brawlers] bar-track[color="blue"] bar-fill {
-    background: #60a5fa;
+  bar-track[color="blue"] bar-fill {
+    background: var(--blue-400);
   }
 
-  [battle-brawlers] [bar-text] {
+  [bar-text] {
     grid-area: 1 / 1;
     text-shadow: 0 1px 1px rgb(0 0 0 / 0.5);
   }
 
-  [battle-brawlers] bar-track spinner {
-    border-width: 2px;
+  bar-track spinner {
+    border-width: calc(var(--unit) * 0.5);
   }
 
-  [battle-brawlers] bar-track [bar-value-pct] {
+  bar-track [bar-value-pct] {
     display: none;
   }
 
-  [battle-brawlers] bar-track[percentage] [bar-value-actual] {
+  bar-track[percentage] [bar-value-actual] {
     display: none;
   }
 
-  [battle-brawlers] bar-track[percentage] [bar-value-pct] {
+  bar-track[percentage] [bar-value-pct] {
     display: inline;
   }
 </style>

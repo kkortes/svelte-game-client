@@ -40,6 +40,85 @@
   --bb-pink: oklch(0.65 0.09 340);
   --bb-brown: oklch(0.5 0.1 70);
   --bb-stone: oklch(0.6 0.02 80);
+
+  --special-bg: oklch(0.85 0.1 280);
+  --special-foreground: oklch(0.4 0.15 280);
+
+  --white: #fff;
+  --black: #000;
+  --slate: #374151;
+  --stone: #b3ad9f;
+
+  --combatant-card-bg: oklch(1 0 0 / 0.45);
+  --combatant-card-shadow: oklch(0 0 0 / 0.15);
+  --combatant-name-color: #57534e;
+  --status-default-bg: oklch(1 0 0 / 0.7);
+
+  --status-stunned-bg: var(--bb-yellow);
+  --status-stunned-fg: var(--black);
+  --status-bleeding-bg: var(--bb-red);
+  --status-bleeding-fg: var(--white);
+  --status-vulnerable-bg: var(--bb-purple);
+  --status-vulnerable-fg: var(--white);
+  --status-wounded-bg: oklch(from var(--bb-red) calc(l * 0.85) c h);
+  --status-wounded-fg: var(--white);
+  --status-concussed-bg: var(--bb-orange);
+  --status-concussed-fg: var(--white);
+  --status-exposed-bg: oklch(from var(--bb-purple) calc(l * 0.95) c h);
+  --status-exposed-fg: var(--white);
+
+  --floater-default: oklch(from var(--bb-red) 0.86 0.06 h);
+  --floater-heal: oklch(from var(--bb-green) 0.88 0.1 h);
+
+  --gray-light: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+
+  --stone-300: #d6d3d1;
+  --stone-500: #78716c;
+
+  --red-100: #fee2e2;
+  --red-300: #fca5a5;
+  --red-500: #dc2626;
+  --red-800: #991b1b;
+
+  --green-500: #22c55e;
+  --green-600: #16a34a;
+
+  --blue-400: #60a5fa;
+  --blue-600: #2563eb;
+
+  --orange-600: #ea580c;
+
+  --yellow-100: #fef3c7;
+  --yellow-200: #fde68a;
+  --yellow-300: #fcd34d;
+  --yellow-400: #facc15;
+
+  --purple-600: #9333ea;
+
+  --gold-border: #b8860b;
+  --gold-highlight: #FEDB37;
+  --gold-warm: #FDB931;
+  --gold-deep: #9f7928;
+  --gold-shadow: #8A6E2F;
+  --gold-pale: #FFFFAC;
+  --gold-soft: #D1B464;
+  --gold-bronze: #5d4a1f;
+
+  --inspector-bg: #1e1e1e;
+  --inspector-header-bg: #252526;
+  --inspector-border: #3c3c3c;
+  --inspector-divider: #424242;
+  --inspector-divider-strong: #505050;
+  --inspector-text: #d4d4d4;
+  --inspector-text-muted: #969696;
+  --inspector-row-hover: #2a2d2e;
+  --inspector-key: #9cdcfe;
+  --inspector-bracket: #569cd6;
+  --inspector-string: #ce9178;
 }
 
 [data-hidden='true'] {

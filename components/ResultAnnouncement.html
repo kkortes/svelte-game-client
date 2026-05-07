@@ -1,13 +1,13 @@
 <!-- if combatEnded(combat, elapsedMilliseconds) -->
-<result-announcement onclick="event.stopPropagation()">
-  <result-panel flex down g-3 p-4>
+<result-announcement absolute onclick="event.stopPropagation()">
+  <result-panel flex down g="3" p="4">
     <component src="/components/VictoryOrLoss.html" outcome="@[combatOutcome(combat)]"></component>
 
     <!-- if combatOutcome(combat) === 'victory' -->
-    <rewards-panel flex down g-2 p-3 w-full>
+    <rewards-panel flex down g="2" p="3" w="full">
       <rewards-title>rewards</rewards-title>
       <hr />
-      <rewards-list flex down g-1>
+      <rewards-list flex down g="1">
         <!-- if combatRewardXp(combat) -->
         <reward-row>+@[combatRewardXp(combat)] XP</reward-row>
         <!-- /if -->
@@ -16,7 +16,7 @@
         <!-- /if -->
       </rewards-list>
       <hr />
-      <result-actions flex mt-1>
+      <result-actions flex mt="1">
         <button golden-btn onclick="claimCombatReward()">claim</button>
       </result-actions>
     </rewards-panel>
@@ -32,8 +32,7 @@
 <!-- /if -->
 
 <style>
-  [battle-brawlers] result-announcement {
-    position: absolute;
+  result-announcement {
     inset: 0;
     display: grid;
     place-items: center;
@@ -41,7 +40,7 @@
     animation: result-in 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 500ms both;
   }
 
-  [battle-brawlers] result-panel {
+  result-panel {
     flex-direction: column;
     height: auto;
     align-items: center;
@@ -49,52 +48,52 @@
     text-align: center;
   }
 
-  [battle-brawlers] rewards-panel {
+  rewards-panel {
     flex-direction: column;
     height: auto;
     background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(calc(var(--unit) * 2));
     border-radius: var(--radius);
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 calc(var(--unit) * 1) calc(var(--unit) * 6) rgba(0, 0, 0, 0.3);
     align-items: stretch;
   }
 
-  [battle-brawlers] rewards-title {
+  rewards-title {
     font-family: var(--font-heading, serif);
-    font-size: 1.5rem;
+    font-size: calc(var(--unit) * 6);
     color: white;
     text-align: center;
   }
 
-  [battle-brawlers] rewards-list {
+  rewards-list {
     align-items: center;
     color: white;
   }
 
-  [battle-brawlers] reward-row {
+  reward-row {
     font-weight: 600;
   }
 
-  [battle-brawlers] reward-row[boss] {
+  reward-row[boss] {
     color: oklch(0.75 0.18 70);
   }
 
-  [battle-brawlers] result-actions {
+  result-actions {
     justify-content: center;
   }
 
-  [battle-brawlers] [golden-btn] {
+  [golden-btn] {
     all: unset;
     cursor: pointer;
     font-family: var(--font-heading, serif);
-    font-size: 1.125rem;
+    font-size: calc(var(--unit) * 4);
     padding: var(--unit) calc(var(--unit) * 4);
-    border: 1px solid #b8860b;
+    border: 1px solid var(--gold-border);
     border-radius: var(--radius);
     color: white;
     overflow: hidden;
     background:
-      radial-gradient(ellipse farthest-corner at right bottom, #FEDB37 0%, #FDB931 8%, #9f7928 30%, #8A6E2F 40%, transparent 80%),
-      radial-gradient(ellipse farthest-corner at left top, #FFFFFF 0%, #FFFFAC 8%, #D1B464 25%, #5d4a1f 62.5%, #5d4a1f 100%);
+      radial-gradient(ellipse farthest-corner at right bottom, var(--gold-highlight) 0%, var(--gold-warm) 8%, var(--gold-deep) 30%, var(--gold-shadow) 40%, transparent 80%),
+      radial-gradient(ellipse farthest-corner at left top, var(--white) 0%, var(--gold-pale) 8%, var(--gold-soft) 25%, var(--gold-bronze) 62.5%, var(--gold-bronze) 100%);
   }
 </style>

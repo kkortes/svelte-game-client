@@ -2,33 +2,33 @@
   <component src="/components/AuthGate.html">
     <crow game-shell>
       <crow vertical game-main>
-        <card content-area p-0>
+        <card content-area p="0">
           <page @[page.name]>
             <slot></slot>
           </page>
 
-          <stay w-full sm:reverse tab-bar t="8.5">
-            <crow up sm:g="0" g-1 tab-row w-full py-3 sm:h="8" overflow-hidden sm:p="0">
+          <stay w="full" sm:reverse tab-bar t="8.5">
+            <crow up sm:g="0" g="1" tab-row w="full" py="3" sm:h="8" overflow-hidden sm:p="0">
               <a href="/" sm:px="6" class="button" tertiary="@[!page.name.startsWith('home')]"
                 primary="@[page.name.startsWith('home')]">
                 <icon info hide sm:block></icon><span sm:hide>Game Guide</span>
               </a>
-              <a href="/the-arena" sm:px="6" data-tab="the-arena" class="button"
+              <a href="/the-arena" sm:px="6" class="button"
                 tertiary="@[!page.name.startsWith('the-arena')]"
                 primary="@[page.name.startsWith('the-arena')]">
                 <icon damage hide sm:block></icon><span sm:hide>The Arena</span>
               </a>
-              <a href="/random-duel" sm:px="6" data-tab="random-duel" class="button"
+              <a href="/random-duel" sm:px="6" class="button"
                 tertiary="@[!page.name.startsWith('random-duel')]"
                 primary="@[page.name.startsWith('random-duel')]">
                 <icon dice hide sm:block></icon><span sm:hide>Random duel</span>
               </a>
-              <a href="/vendor" sm:px="6" data-tab="vendor" class="button"
+              <a href="/vendor" sm:px="6" class="button"
                 tertiary="@[!page.name.startsWith('vendor')]"
                 primary="@[page.name.startsWith('vendor')]">
                 <icon coin hide sm:block></icon><span sm:hide>Vendor</span>
               </a>
-              <a href="/brawlers" sm:px="6" data-tab="brawlers" class="button"
+              <a href="/brawlers" sm:px="6" class="button"
                 tertiary="@[!page.name.startsWith('brawlers')]"
                 primary="@[page.name.startsWith('brawlers')]">
                 <icon maxHealth hide sm:block></icon><span sm:hide>Brawlers</span>
@@ -89,7 +89,7 @@
     game-layout auth-form {
       position: relative;
       width: 100%;
-      max-width: 600px;
+      max-width: calc(var(--unit) * 150);
       margin-bottom: calc(var(--unit) * 10);
       padding: calc(var(--unit) * 10) calc(var(--unit) * 10) calc(var(--unit) * 6);
       border-radius: calc(var(--radius) * 0.75);
@@ -161,7 +161,7 @@
       border-top-right-radius: calc(var(--radius) * 1);
     }
 
-    [battle-brawlers] overlay-backdrop {
+    overlay-backdrop {
       z-index: 1;
       position: fixed;
       inset: 0;
@@ -177,7 +177,7 @@
       animation: overlayIn 200ms ease-out 75ms both;
     }
 
-    [battle-brawlers] dialog-backdrop {
+    dialog-backdrop {
       animation: overlayIn 150ms ease-out both;
     }
 
@@ -204,7 +204,7 @@
       display: block;
     }
 
-    [battle-brawlers] overlay-panel {
+    overlay-panel {
       display: block;
       position: relative;
       max-width: calc(var(--unit) * 175);
@@ -216,23 +216,23 @@
       overflow-x: hidden;
     }
 
-    [battle-brawlers] game-frame {
+    game-frame {
       border: calc(var(--unit) * 0.75) solid;
       border-image-source: url('/static/images/ui/frame.png');
       border-image-slice: 3;
       border-image-repeat: repeat;
       background: var(--popover);
-      box-shadow: inset 0 0 100px rgb(0 0 0 / 80%);
+      box-shadow: inset 0 0 calc(var(--unit) * 25) rgb(0 0 0 / 80%);
       color: rgb(156, 163, 175);
     }
 
 
-    [battle-brawlers] menu-label {
+    menu-label {
       width: min(calc(var(--unit) * 40), 50%);
       flex: none;
     }
 
-    [battle-brawlers] [menu-divider] {
+    [menu-divider] {
       border: 0;
       height: calc(var(--unit) * 0.25);
       background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent);
@@ -240,7 +240,7 @@
       width: 100%;
     }
 
-    [battle-brawlers] [game-frame-title] {
+    [game-frame-title] {
       position: relative;
       margin: calc(var(--unit) * -0.75) 0 0 0;
       padding: 0 calc(var(--unit) * 2);
@@ -252,11 +252,11 @@
       color: rgb(156, 163, 175);
     }
 
-    [battle-brawlers] [stretch] {
+    [stretch] {
       align-items: stretch;
     }
 
-    [battle-brawlers] [range-input] {
+    [range-input] {
       width: 60%;
     }
   </style>

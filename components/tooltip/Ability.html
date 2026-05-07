@@ -6,11 +6,11 @@
   <span tooltip-stat><strong>Wind up:</strong> @[tooltip.props.ticks] tick@[tooltip.props.ticks === 1 ? '' : 's']</span>
   <!-- /if -->
 
-  <!-- if tooltip.props.basic !== undefined -->
-  <span tooltip-tag basic="@[tooltip.props.basic]">@[tooltip.props.basic ? 'Basic' : 'Special']</span>
+  <!-- if tooltip.props.kind -->
+  <span tooltip-tag @[tooltip.props.kind]>@[tooltip.props.kind === 'basic' ? 'Basic' : 'Special']</span>
   <!-- /if -->
 
   <!-- if tooltip.props.description -->
-  <p m-0 mt-2 text-xs tooltip-desc>@[tooltip.props.description]</p>
+  <p m="0" mt="2" text-xs tooltip-desc>@[tooltip.props.description]</p>
   <!-- /if -->
 </card>

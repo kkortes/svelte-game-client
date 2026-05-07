@@ -55,13 +55,13 @@
       <component small src="/components/TitleBar.html" title="Tooltip"></component>
 
       <demo-section block>
-        <h3 m-0 mb-1>Cursor-follow (default)</h3>
-        <p m-0 mb-3 text-sm text-muted>Tooltip tracks the cursor; <code>direction</code> adds an
+        <h3 m="0" mb="1">Cursor-follow (default)</h3>
+        <p m="0" mb="3" text-sm text-muted>Tooltip tracks the cursor; <code>direction</code> adds an
           offset
           in the named side. Hover any tile.</p>
         <demo-grid>
           <!-- each tooltipDirections as dir -->
-          <demo-tile flex center cinzel py-5 px-3
+          <demo-tile flex center cinzel py="5" px="3"
             onmouseenter="showTooltip({ name: '@[dir.label]', description: '@[dir.description]' }, { direction: '@[dir.value]' })">
             @[dir.label]
           </demo-tile>
@@ -70,13 +70,13 @@
       </demo-section>
 
       <demo-section block>
-        <h3 m-0 mb-1>Locked to element</h3>
-        <p m-0 mb-3 text-sm text-muted><code>{ lock: true }</code> pins the tooltip to the element
+        <h3 m="0" mb="1">Locked to element</h3>
+        <p m="0" mb="3" text-sm text-muted><code>{ lock: true }</code> pins the tooltip to the element
           edge;
           cursor movement no longer affects position.</p>
         <demo-grid>
           <!-- each tooltipDirections as dir -->
-          <demo-tile flex center cinzel py-5 px-3
+          <demo-tile flex center cinzel py="5" px="3"
             onmouseenter="showTooltip({ name: '@[dir.label]', description: '@[dir.description]' }, { direction: '@[dir.value]', lock: true })">
             @[dir.label]
           </demo-tile>
@@ -85,8 +85,8 @@
       </demo-section>
 
       <demo-section block>
-        <h3 m-0 mb-1>Content shapes</h3>
-        <p m-0 mb-3 text-sm text-muted>The Tooltip surface renders whatever lives in its
+        <h3 m="0" mb="1">Content shapes</h3>
+        <p m="0" mb="3" text-sm text-muted>The Tooltip surface renders whatever lives in its
           <code>&lt;slot&gt;</code>.
           The shape of <code>$.tooltip.props</code> is the host's contract. Here the same
           <code>tooltip/Display.html</code> picks between Equipment, Ability and Text variants based
@@ -94,7 +94,7 @@
         </p>
         <demo-grid>
           <!-- each tooltipShapes as ex -->
-          <demo-tile flex center cinzel py-5 px-3
+          <demo-tile flex center cinzel py="5" px="3"
             onmouseenter='showTooltip(@[JSON.stringify(ex.props)], { direction: "up" })'>
             @[ex.label]
           </demo-tile>
@@ -103,13 +103,13 @@
       </demo-section>
 
       <demo-section block>
-        <h3 m-0 mb-1>Programmatic dismissal</h3>
-        <p m-0 mb-3 text-sm text-muted>Tooltips usually auto-hide on <code>mouseleave</code>, but
+        <h3 m="0" mb="1">Programmatic dismissal</h3>
+        <p m="0" mb="3" text-sm text-muted>Tooltips usually auto-hide on <code>mouseleave</code>, but
           you
           can dismiss explicitly (e.g. when starting a drag) via
           <code>window.hideTooltip()</code>.
         </p>
-        <crow g-2>
+        <crow g="2">
           <button primary
             onmouseenter="showTooltip({ name: 'Persistent', description: 'I will stay until dismissed.' }, { direction: 'up', lock: true, persist: true })">
             Hover me
@@ -121,12 +121,12 @@
       <component small src="/components/TitleBar.html" title="Notifications"></component>
 
       <demo-section block>
-        <h3 m-0 mb-1>Trigger by type</h3>
-        <p m-0 mb-3 text-sm text-muted><code>notify(payload)</code> accepts
+        <h3 m="0" mb="1">Trigger by type</h3>
+        <p m="0" mb="3" text-sm text-muted><code>notify(payload)</code> accepts
           <code>{ error | warning | success | info: '...' }</code> — the matching key sets the
           card's icon, color, and title. Auto-dismisses after 3 seconds.
         </p>
-        <crow g-2>
+        <crow g="2">
           <button secondary text-green bg-green
             disabled="@[$.notifications.find(n => n.type === 'success')]"
             onclick="notify({ success: 'Brawler recruited!' })">
@@ -150,7 +150,7 @@
   <style>
     page[global-components] demo-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(calc(var(--unit) * 35), 1fr));
       gap: calc(var(--unit) * 2);
     }
 
