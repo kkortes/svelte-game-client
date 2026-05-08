@@ -1,4 +1,4 @@
-<!-- if tooltip.props.combatStats || tooltip.props.slotsIn -->
+<!-- if tooltip.props.slotsIn -->
 <component src="/components/tooltip/Equipment.html"></component>
 <!-- /if -->
 
@@ -6,13 +6,13 @@
 <component src="/components/tooltip/Ability.html"></component>
 <!-- /if -->
 
-<!-- if !tooltip.props.combatStats && !tooltip.props.slotsIn && !tooltip.props.type -->
+<!-- if !tooltip.props.slotsIn && !tooltip.props.type -->
 <component src="/components/tooltip/Text.html"></component>
 <!-- /if -->
 
 <style>
   [tooltip-card] {
-    max-width: calc(var(--unit) * 60);
+    width: calc(var(--unit) * 60);
   }
 
   [tooltip-name] {

@@ -7,6 +7,7 @@
     calculateAvailableAbilitiesByCharacter,
     calculateTickStart,
   } from '/js/utils.js';
+  import { STAT_LABELS, REGULAR_STATS, LUCKY_STATS, MODIFIER_STATS } from '/js/constants/STATS.js';
   import { slotsInPrettyName, unequip } from '/js/equipment.js';
   import { getLevelByExperience } from '/js/level.js';
   import { generateCombat, healFull, prepareTeams } from '/js/combat.js';
@@ -25,36 +26,19 @@
 
   const fmt = (v) => (v === 0 ? '-' : v > 1 ? v : `${(v * 100).toFixed(0)}%`);
 
+  const statRow = (key, source) => ({
+    icon: key,
+    label: STAT_LABELS[key],
+    value: fmt(source[key] || 0),
+  });
+
   const buildStatGroups = (combatStats) => {
     const mods = combatStats.modifiers || {};
     const limits = combatStats.limits || {};
     return {
-      base: [
-        { icon: 'maxHealth', label: 'Health', value: fmt(combatStats.maxHealth || 0) },
-        { icon: 'maxArmor', label: 'Armor', value: fmt(combatStats.maxArmor || 0) },
-        { icon: 'damage', label: 'Damage', value: fmt(combatStats.damage || 0) },
-      ],
-      lucky: [
-        {
-          icon: 'criticalChance',
-          label: 'Critical chance',
-          value: fmt(combatStats.criticalChance || 0),
-        },
-        {
-          icon: 'criticalDamage',
-          label: 'Critical damage',
-          value: fmt(combatStats.criticalDamage || 0),
-        },
-        { icon: 'blockChance', label: 'Block chance', value: fmt(combatStats.blockChance || 0) },
-        { icon: 'dodgeChance', label: 'Dodge chance', value: fmt(combatStats.dodgeChance || 0) },
-        { icon: 'magicChance', label: 'Magic chance', value: fmt(combatStats.magicChance || 0) },
-      ],
-      modifiers: [
-        { icon: 'maxHealth', label: 'Health', value: fmt(mods.maxHealth || 0) },
-        { icon: 'maxArmor', label: 'Armor', value: fmt(mods.maxArmor || 0) },
-        { icon: 'damage', label: 'Damage', value: fmt(mods.damage || 0) },
-        { icon: 'resistance', label: 'All resistances', value: fmt(mods.resistance || 0) },
-      ],
+      base: REGULAR_STATS.map((key) => statRow(key, combatStats)),
+      lucky: LUCKY_STATS.map((key) => statRow(key, combatStats)),
+      modifiers: MODIFIER_STATS.map((key) => statRow(key, mods)),
       resistances: [
         { icon: 'bleeding', label: 'Bleeding', value: limits.wounded ?? '-' },
         { icon: 'stunned', label: 'Stunned', value: limits.concussed ?? '-' },
