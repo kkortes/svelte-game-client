@@ -45,6 +45,11 @@
       >
         <ability-icon w="full" h="full">
           <icon @[ability.icon]></icon>
+          <ability-status-overlay absolute flex>
+            <!-- each ability.statusEffects as effect -->
+            <icon @[effect]></icon>
+            <!-- /each -->
+          </ability-status-overlay>
         </ability-icon>
       </ability-segment>
       <!-- /each -->
@@ -146,16 +151,26 @@
     place-items: center;
   }
 
-  ability-icon icon {
+  ability-icon {
+    position: relative;
+  }
+
+  ability-icon > icon {
     grid-area: 1 / 1;
     font-size: clamp(calc(var(--unit) * 4), 3vw, calc(var(--unit) * 8));
   }
 
-  ability-segment[basic] ability-icon icon {
+  ability-segment[basic] ability-icon > icon {
     color: var(--gray-400);
   }
 
-  ability-segment[overflow] ability-icon icon {
+  ability-segment[overflow] ability-icon > icon {
     color: var(--red-300);
+  }
+
+  ability-status-overlay {
+    bottom: calc(var(--unit) * 0.5);
+    left: calc(var(--unit) * 0.5);
+    gap: calc(var(--unit) * 0.5);
   }
 </style>

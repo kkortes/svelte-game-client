@@ -54,17 +54,17 @@
   --combatant-name-color: #57534e;
   --status-default-bg: oklch(1 0 0 / 0.7);
 
-  --status-stunned-bg: var(--bb-yellow);
-  --status-stunned-fg: var(--black);
   --status-bleeding-bg: var(--bb-red);
   --status-bleeding-fg: var(--white);
-  --status-vulnerable-bg: var(--bb-purple);
-  --status-vulnerable-fg: var(--white);
   --status-wounded-bg: oklch(from var(--bb-red) calc(l * 0.85) c h);
   --status-wounded-fg: var(--white);
-  --status-concussed-bg: var(--bb-orange);
+  --status-stunned-bg: var(--bb-purple);
+  --status-stunned-fg: var(--white);
+  --status-concussed-bg: oklch(from var(--bb-purple) calc(l * 0.85) c h);
   --status-concussed-fg: var(--white);
-  --status-exposed-bg: oklch(from var(--bb-purple) calc(l * 0.95) c h);
+  --status-vulnerable-bg: var(--bb-blue);
+  --status-vulnerable-fg: var(--white);
+  --status-exposed-bg: oklch(from var(--bb-blue) calc(l * 0.85) c h);
   --status-exposed-fg: var(--white);
 
   --floater-default: oklch(from var(--bb-red) 0.86 0.06 h);
@@ -217,6 +217,35 @@ icon[vulnerable] {
 
 icon[exposed] {
   --color: var(--status-exposed-bg);
+}
+
+ability-status-overlay icon {
+  font-size: calc(var(--unit) * 4);
+}
+
+ability-status-overlay icon[isStunned],
+ability-status-overlay icon[isConcussed] {
+  --icon: var(--icon-stunned);
+  --color: var(--status-stunned-bg);
+}
+
+ability-status-overlay icon[isBleeding],
+ability-status-overlay icon[isWounded] {
+  --icon: var(--icon-bleeding);
+  --color: var(--status-bleeding-bg);
+}
+
+ability-status-overlay icon[isVulnerable],
+ability-status-overlay icon[isExposed] {
+  --icon: var(--icon-vulnerable);
+  --color: var(--status-vulnerable-bg);
+}
+
+ability-status-overlay icon[isConcussed],
+ability-status-overlay icon[isWounded],
+ability-status-overlay icon[isExposed] {
+  font-size: calc(var(--unit) * 2.5);
+  --color: var(--gray-400);
 }
 
 [cinzel] {

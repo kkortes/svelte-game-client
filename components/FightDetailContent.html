@@ -47,6 +47,7 @@
                 basic: !!h.basic,
                 tickStart,
                 overflow: tickStart >= 12,
+                statusEffects: h.statusEffects || [],
               };
             } catch {
               return {
@@ -57,6 +58,7 @@
                 basic: false,
                 tickStart: 0,
                 overflow: false,
+                statusEffects: [],
               };
             }
           });

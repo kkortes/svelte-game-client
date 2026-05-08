@@ -19,6 +19,7 @@
         ticks: h.ticks,
         basic: !!h.basic,
         widthPct: (h.ticks / 12) * 100,
+        statusEffects: h.statusEffects || [],
       };
     });
 
@@ -76,6 +77,11 @@
           >
             <ability-icon w="full" h="full">
               <icon @[bar.icon]></icon>
+              <ability-status-overlay absolute flex>
+                <!-- each bar.statusEffects as effect -->
+                <icon @[effect]></icon>
+                <!-- /each -->
+              </ability-status-overlay>
             </ability-icon>
           </ability-row-segment>
         </ability-row-overlay>
@@ -128,16 +134,29 @@
   }
 
   [scaling-bars] ability-icon {
+    position: relative;
     display: grid;
     place-items: center;
   }
 
-  [scaling-bars] ability-icon icon {
+  [scaling-bars] ability-icon > icon {
     grid-area: 1 / 1;
     font-size: clamp(calc(var(--unit) * 4), 3vw, calc(var(--unit) * 8));
   }
 
-  [scaling-bars] ability-row-segment[basic] ability-icon icon {
+  [scaling-bars] ability-row-segment[basic] ability-icon > icon {
     color: var(--gray-400);
+  }
+
+  [scaling-bars] ability-status-overlay {
+    grid-area: 1 / 1;
+    align-self: end;
+    justify-self: start;
+    margin: calc(var(--unit) * 0.5);
+    gap: calc(var(--unit) * 0.5);
+  }
+
+  [scaling-bars] ability-status-overlay icon {
+    grid-area: auto;
   }
 </style>
