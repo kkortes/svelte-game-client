@@ -785,6 +785,50 @@
   }
 }
 @layer elements {
+  @keyframes animate-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes animate-pulse {
+    50% {
+      transform: scale(1.15);
+    }
+  }
+  @keyframes animate-ping {
+    75%,
+    100% {
+      transform: scale(2);
+      opacity: 0;
+    }
+  }
+  @keyframes animate-shake {
+    10%,
+    90% {
+      transform: translateX(-1px);
+    }
+    20%,
+    80% {
+      transform: translateX(2px);
+    }
+    30%,
+    50%,
+    70% {
+      transform: translateX(-3px);
+    }
+    40%,
+    60% {
+      transform: translateX(3px);
+    }
+  }
+  @keyframes animate-shimmer {
+    from {
+      background-position: 200% 0;
+    }
+    to {
+      background-position: -200% 0;
+    }
+  }
   @property --n {
     syntax: '<integer>';
     inherits: true;
@@ -990,6 +1034,39 @@
     .accordion > .accordion-content,
     accordion > accordion-content {
       overflow: hidden;
+    }
+    /* ---- Animations.css ---- */
+    .animate-spin,
+    [animate-spin] {
+      animation: animate-spin 1s linear infinite;
+    }
+
+    .animate-pulse,
+    [animate-pulse] {
+      animation: animate-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    .animate-ping,
+    [animate-ping] {
+      animation: animate-ping 1.2s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+
+    .animate-shake,
+    [animate-shake] {
+      animation: animate-shake 0.8s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite;
+    }
+
+    .animate-shimmer,
+    [animate-shimmer] {
+      background-color: transparent;
+      background-image: linear-gradient(
+        90deg,
+        currentColor 0%,
+        oklch(from currentColor l c h / 0.3) 50%,
+        currentColor 100%
+      );
+      background-size: 200% 100%;
+      animation: animate-shimmer 1.5s linear infinite;
     }
     /* ---- Badge.css ---- */
     .badge,

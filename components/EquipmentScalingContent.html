@@ -39,7 +39,7 @@
   <label>
     <select onchange="changeEquip(this.value)">
       <!-- each this.equipChoices as choice -->
-      <option value="@[choice]">@[choice]</option>
+      <option value="@[choice]" selected="@[choice === this.chosenEquip]">@[choice]</option>
       <!-- /each -->
     </select>
   </label>

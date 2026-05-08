@@ -40,6 +40,7 @@
               const tickStart = tickCursor;
               tickCursor += h.ticks;
               return {
+                id: h.id,
                 name: h.name,
                 ticks: h.ticks,
                 icon: h.icon,
@@ -48,7 +49,15 @@
                 overflow: tickStart >= 12,
               };
             } catch {
-              return { name: '?', ticks: 0, icon: '', basic: false, tickStart: 0, overflow: false };
+              return {
+                id: null,
+                name: '?',
+                ticks: 0,
+                icon: '',
+                basic: false,
+                tickStart: 0,
+                overflow: false,
+              };
             }
           });
           const lastTick = tickCursor;

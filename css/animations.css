@@ -1,13 +1,3 @@
-[animate-spin] {
-  animation: spin 1000ms linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 @keyframes slide-in {
   from {
     transform: translateX(100%);

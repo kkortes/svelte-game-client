@@ -159,6 +159,30 @@ export default () => {
       direction: 'up',
     });
   };
+
+  window.showCharacterScalingTooltip = (el, charId, charLevel, equipLevel) => {
+    const ref = CHARACTERS(charId, false, {
+      overrides: {
+        level: charLevel,
+        equipment: {
+          mainHand: { overrides: { level: equipLevel } },
+          offHand: { overrides: { level: equipLevel } },
+          armor: { overrides: { level: equipLevel } },
+        },
+      },
+    });
+    const char = CHARACTERS(ref, true);
+    const stats = calculateCombatStatsByCharacter(char);
+    window.showTooltip(
+      {
+        name: char.name,
+        level: char.level || 0,
+        combatStats: stats,
+      },
+      el.querySelector('eq-link') || el,
+      { direction: 'up' },
+    );
+  };
   window.ALL_FIGHTS = ALL_FIGHTS;
   window.INITIAL_COMBAT = INITIAL_COMBAT;
   window.calculateCombatStatsByCharacter = calculateCombatStatsByCharacter;

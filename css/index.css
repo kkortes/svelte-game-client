@@ -195,6 +195,30 @@ icon[damage] {
   --color: oklch(from var(--bb-green) 0.42 0.2 h);
 }
 
+icon[bleeding] {
+  --color: var(--status-bleeding-bg);
+}
+
+icon[wounded] {
+  --color: var(--status-wounded-bg);
+}
+
+icon[stunned] {
+  --color: var(--status-stunned-bg);
+}
+
+icon[concussed] {
+  --color: var(--status-concussed-bg);
+}
+
+icon[vulnerable] {
+  --color: var(--status-vulnerable-bg);
+}
+
+icon[exposed] {
+  --color: var(--status-exposed-bg);
+}
+
 [cinzel] {
   font-family: var(--font-heading);
 }
@@ -232,23 +256,23 @@ eq-link {
   --eq-color: rgb(156, 163, 175);
 }
 
-eq-link[tier='green'] {
+eq-link[green] {
   --eq-color: #16a34a;
 }
 
-eq-link[tier='blue'] {
+eq-link[blue] {
   --eq-color: #2563eb;
 }
 
-eq-link[tier='purple'] {
+eq-link[purple] {
   --eq-color: #9333ea;
 }
 
-eq-link[tier='orange'] {
+eq-link[orange] {
   --eq-color: #ea580c;
 }
 
-eq-link[tier='red'] {
+eq-link[red] {
   --eq-color: #dc2626;
 }
 

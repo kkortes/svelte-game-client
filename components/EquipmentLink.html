@@ -1,5 +1,10 @@
 <eq-link
-  tier="@[level >= 25 ? 'red' : level >= 20 ? 'orange' : level >= 15 ? 'purple' : level >= 10 ? 'blue' : level >= 5 ? 'green' : 'gray']"
+  gray="@[level < 5]"
+  green="@[level >= 5 && level < 10]"
+  blue="@[level >= 10 && level < 15]"
+  purple="@[level >= 15 && level < 20]"
+  orange="@[level >= 20 && level < 25]"
+  red="@[level >= 25]"
 >
   <eq-bg-center></eq-bg-center>
   <eq-bg-left></eq-bg-left>

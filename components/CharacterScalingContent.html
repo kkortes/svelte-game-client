@@ -124,7 +124,7 @@
   <label>
     <select onchange="changeChar(this.value)">
       <!-- each this.charChoices as choice -->
-      <option value="@[choice]">@[choice]</option>
+      <option value="@[choice]" selected="@[choice === this.chosenChar]">@[choice]</option>
       <!-- /each -->
     </select>
   </label>
@@ -134,8 +134,15 @@
     <crow left justify-between g="2" w="full">
       <crow left g="2">
         <span>level @[ch.level]</span>
-        <component src="/components/EquipmentLink.html" level="@[ch.charLevel]" name="@[ch.name]">
-        </component>
+        <eq-tooltip-target
+          onmouseenter="showCharacterScalingTooltip(this, '@[this.chosenChar]', @[this.charScaling ? ch.level : 1], @[this.equipScaling ? ch.level : 0])"
+        >
+          <component
+            src="/components/EquipmentLink.html"
+            level="@[ch.charLevel]"
+            name="@[ch.name]"
+          ></component>
+        </eq-tooltip-target>
       </crow>
       <component
         src="/components/CoreStats.html"
