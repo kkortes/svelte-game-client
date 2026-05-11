@@ -29,13 +29,6 @@
     persistOpenPaths();
   };
 
-  const isHiddenKey = (key) => {
-    if (key === 'vibeStateInspector' || key === 'vibeStateInspectorEverOpened') return true;
-    const root = document.querySelector('state-inspector');
-    if (root && root.querySelector(`[data-vibe-component-id="${key}"]`)) return true;
-    return false;
-  };
-
   const isObject = (v) => v !== null && typeof v === 'object';
 
   const summarize = (v) => {
@@ -66,41 +59,115 @@
   const childPath = (parentPath, indexOrKey) =>
     parentPath ? `${parentPath}/${indexOrKey}` : `${indexOrKey}`;
 
-  const walk = (value, depth, path, key, rows, ancestors, opens, visible) => {
-    const expandable = isObject(value);
-    const open = expandable && !!opens[path];
-    rows.push({ path, key, depth, expandable, open, visible, summary: summarize(value) });
-    if (!expandable || ancestors.has(value)) return;
-    ancestors.add(value);
-    const childVisible = visible && open;
-    if (Array.isArray(value)) {
-      value.forEach((item, i) => {
-        walk(
-          item,
-          depth + 1,
-          childPath(path, i),
-          `#${i + 1}`,
-          rows,
-          ancestors,
-          opens,
-          childVisible,
-        );
-      });
-    } else {
-      sortedEntries(value).forEach(([k, v]) => {
-        walk(v, depth + 1, childPath(path, k), k, rows, ancestors, opens, childVisible);
+  const buildHiddenKeyCheck = () => {
+    const root = document.querySelector('state-inspector');
+    const componentKeys = new Set();
+    if (root) {
+      root.querySelectorAll('[data-vibe-component-id]').forEach((el) => {
+        const id = el.getAttribute('data-vibe-component-id');
+        if (id) componentKeys.add(id);
       });
     }
-    ancestors.delete(value);
+    return (key) =>
+      key === 'vibeStateInspector' ||
+      key === 'vibeStateInspectorEverOpened' ||
+      componentKeys.has(key);
   };
 
-  let latestData = null;
+  // Single-slot memo. Vibe evaluates the each/title/button bindings up to 4×
+  // per reactive tick (affected old+new, updateIteration old+new). All four
+  // calls share the same `data` reference inside their respective state, so
+  // memoizing on identity collapses three full-tree walks into one per state.
+  let cache = null;
 
-  // Walks every reachable expandable path regardless of current open state.
-  // Used by alt-click recursive toggle and the all-open button.
+  const computeInspectorState = (data, opens) => {
+    if (cache && cache.data === data && cache.opens === opens) return cache;
+
+    const safeOpens = opens && typeof opens === 'object' ? opens : {};
+    const empty = {
+      data,
+      opens,
+      rows: [],
+      shallowCount: 0,
+      totalCount: 0,
+      allOpenLabel: 'Open all',
+    };
+    if (!data || typeof data !== 'object') {
+      cache = empty;
+      return cache;
+    }
+
+    const isHiddenKey = buildHiddenKeyCheck();
+    const rows = [];
+    let totalCount = 0;
+    let hasExpandable = false;
+    let allOpen = true;
+    const ancestors = new Set();
+
+    const walk = (value, depth, path, key, visible) => {
+      const expandable = isObject(value);
+      const open = expandable && !!safeOpens[path];
+
+      if (visible) {
+        rows.push({ path, key, depth, expandable, open, summary: summarize(value) });
+      }
+
+      if (!expandable) {
+        totalCount++;
+        return;
+      }
+
+      hasExpandable = true;
+      if (!open) allOpen = false;
+
+      if (ancestors.has(value)) return;
+      ancestors.add(value);
+
+      const childVisible = visible && open;
+
+      if (Array.isArray(value)) {
+        for (let i = 0; i < value.length; i++) {
+          walk(value[i], depth + 1, childPath(path, i), `#${i + 1}`, childVisible);
+        }
+      } else {
+        const entries = sortedEntries(value);
+        for (let n = 0; n < entries.length; n++) {
+          walk(
+            entries[n][1],
+            depth + 1,
+            childPath(path, entries[n][0]),
+            entries[n][0],
+            childVisible,
+          );
+        }
+      }
+      ancestors.delete(value);
+    };
+
+    const rootEntries = sortedEntries(data).filter(([k]) => !isHiddenKey(k));
+    for (let n = 0; n < rootEntries.length; n++) {
+      walk(rootEntries[n][1], 0, rootEntries[n][0], rootEntries[n][0], true);
+    }
+
+    cache = {
+      data,
+      opens,
+      rows,
+      shallowCount: rootEntries.length,
+      totalCount,
+      allOpenLabel: hasExpandable && allOpen ? 'Close all' : 'Open all',
+    };
+    return cache;
+  };
+
+  window.dataInspectorState = computeInspectorState;
+
+  // Click handlers walk the live state directly — alt-click expansion needs
+  // to reach into branches that aren't currently visible.
   const collectExpandablePaths = (data) => {
     const paths = [];
     const ancestors = new Set();
+    const isHiddenKey = buildHiddenKeyCheck();
     const visit = (value, path) => {
       if (!isObject(value) || ancestors.has(value)) return;
       if (path) paths.push(path);
@@ -119,41 +186,6 @@
     return paths;
   };
 
-  const countItems = (val) => {
-    if (!isObject(val)) return 1;
-    if (Array.isArray(val)) return val.reduce((n, v) => n + countItems(v), 0);
-    return Object.values(val).reduce((n, v) => n + countItems(v), 0);
-  };
-
-  window.dataInspectorRows = (data, opens) => {
-    if (!data || typeof data !== 'object') return [];
-    latestData = data;
-    const rows = [];
-    const ancestors = new Set();
-    const safeOpens = opens && typeof opens === 'object' ? opens : {};
-    sortedEntries(data)
-      .filter(([k]) => !isHiddenKey(k))
-      .forEach(([k, v]) => walk(v, 0, k, k, rows, ancestors, safeOpens, true));
-    return rows;
-  };
-
-  window.dataInspectorShallowCount = (data) =>
-    data && typeof data === 'object' ? Object.keys(data).filter((k) => !isHiddenKey(k)).length : 0;
-
-  window.dataInspectorTotalCount = (data) => {
-    if (!data || typeof data !== 'object') return 0;
-    return Object.keys(data)
-      .filter((k) => !isHiddenKey(k))
-      .reduce((n, k) => n + countItems(data[k]), 0);
-  };
-
-  const allExpandableOpen = (data) => {
-    const all = collectExpandablePaths(data);
-    return all.length > 0 && all.every(isOpen);
-  };
-
-  window.dataInspectorAllOpenLabel = (data) => (allExpandableOpen(data) ? 'Close all' : 'Open all');
-
   window.toggleInspectorPath = (e) => {
     const row = e.currentTarget;
     if (!row?.hasAttribute('expandable')) return;
@@ -165,8 +197,7 @@
     else delete next[path];
 
     if (e.altKey) {
-      // Toggle every descendant expandable path to the same target state.
-      collectExpandablePaths(latestData || window.$).forEach((p) => {
+      collectExpandablePaths(window.$).forEach((p) => {
         if (!p.startsWith(`${path}/`)) return;
         if (nextOpen) next[p] = true;
         else delete next[p];
@@ -177,12 +208,13 @@
   };
 
   window.toggleInspectorAll = () => {
-    const data = latestData || window.$;
-    if (allExpandableOpen(data)) {
+    const all = collectExpandablePaths(window.$);
+    const everythingOpen = all.length > 0 && all.every(isOpen);
+    if (everythingOpen) {
       setOpenPaths({});
     } else {
       const next = { ...s.openPaths };
-      collectExpandablePaths(data).forEach((p) => {
+      all.forEach((p) => {
         next[p] = true;
       });
       setOpenPaths(next);
@@ -199,31 +231,29 @@
 <data-inspector>
   <data-inspector-header>
     <data-inspector-title
-      >Vibe state (@[window.dataInspectorShallowCount(data)] |
-      @[window.dataInspectorTotalCount(data)])</data-inspector-title
+      >Vibe state (@[window.dataInspectorState(data, this.openPaths).shallowCount] |
+      @[window.dataInspectorState(data, this.openPaths).totalCount])</data-inspector-title
     >
     <data-inspector-actions>
-      <button onclick="toggleInspectorAll()">@[window.dataInspectorAllOpenLabel(data)]</button>
+      <button onclick="toggleInspectorAll()">
+        @[window.dataInspectorState(data, this.openPaths).allOpenLabel]
+      </button>
       <button onclick="copyDataInspectorJson()">Copy JSON</button>
     </data-inspector-actions>
   </data-inspector-header>
   <data-inspector-lines>
-    <!-- each window.dataInspectorRows(data, this.openPaths) as row (row.path) -->
-    <accordion open="@[row.visible]">
-      <accordion-content>
-        <data-inspector-row
-          data-path="@[row.path]"
-          expandable="@[row.expandable]"
-          open="@[row.open]"
-          onclick="toggleInspectorPath(event)"
-        >
-          <data-inspector-key style="padding-left: calc(@[row.depth] * 1ch)"
-            >@[row.key]</data-inspector-key
-          >
-          <data-inspector-value bracket="@[row.expandable]">@[row.summary]</data-inspector-value>
-        </data-inspector-row>
-      </accordion-content>
-    </accordion>
+    <!-- each window.dataInspectorState(data, this.openPaths).rows as row (row.path) -->
+    <data-inspector-row
+      data-path="@[row.path]"
+      expandable="@[row.expandable]"
+      open="@[row.open]"
+      onclick="toggleInspectorPath(event)"
+    >
+      <data-inspector-key style="padding-left: calc(@[row.depth] * 1ch)"
+        >@[row.key]</data-inspector-key
+      >
+      <data-inspector-value bracket="@[row.expandable]">@[row.summary]</data-inspector-value>
+    </data-inspector-row>
     <!-- /each -->
   </data-inspector-lines>
 </data-inspector>
