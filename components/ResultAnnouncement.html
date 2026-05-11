@@ -1,18 +1,72 @@
+<script type="module">
+  const local = { rewardsShown: 0 };
+  component(local);
+  const id = Object.keys(window.__vibeComponents).find((k) => window.__vibeComponents[k] === local);
+  const s = $[id];
+
+  let intervalId = null;
+  const tickRewards = () => {
+    s.rewardsShown += 1;
+    if (s.rewardsShown > 10) {
+      clearInterval(intervalId);
+      intervalId = null;
+    }
+  };
+
+  let stingerPlayedFor = null;
+  $.on('afterUpdate', (current, prev) => {
+    const ended =
+      current.combat?.duration > 0 && current.elapsedMilliseconds >= current.combat.duration;
+    if (ended && stingerPlayedFor !== current.combat) {
+      stingerPlayedFor = current.combat;
+      s.rewardsShown = 0;
+      clearInterval(intervalId);
+      intervalId = setInterval(tickRewards, 500);
+      const stinger =
+        window.combatOutcome(current.combat) === 'victory'
+          ? 'Victory Stinger 1'
+          : 'Stinger - Ominous Timpani';
+      try {
+        new window.Howl({
+          src: [window.AUDIO[stinger]],
+          volume: (current.settings?.volume?.sfx ?? 1) * (current.settings?.volume?.master ?? 0.5),
+        }).play();
+      } catch {}
+    }
+    if (!ended) {
+      stingerPlayedFor = null;
+      if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+        s.rewardsShown = 0;
+      }
+    }
+  });
+</script>
+
 <!-- if combatEnded(combat, elapsedMilliseconds) -->
 <result-announcement absolute onclick="event.stopPropagation()">
   <result-panel flex down g="3" p="4">
     <component src="/components/VictoryOrLoss.html" outcome="@[combatOutcome(combat)]"></component>
 
     <!-- if combatOutcome(combat) === 'victory' -->
-    <rewards-panel flex down g="2" p="3" w="full">
+    <rewards-panel vertical up g="2" p="3" w="full" pending="@[this.rewardsShown <= 2]">
       <rewards-title>rewards</rewards-title>
       <hr />
-      <rewards-list flex down g="1">
+      <rewards-list vertical up g="1">
         <!-- if combatRewardXp(combat) -->
-        <reward-row>+@[combatRewardXp(combat)] XP</reward-row>
+        <reward-row pending="@[this.rewardsShown <= 3]">
+          <!-- if this.rewardsShown > 3 -->+@[combatRewardXp(combat)] XP<!-- /if -->
+          <!-- if this.rewardsShown <= 3 --><icon stunned animate-spin></icon
+          ><!-- /if -->
+        </reward-row>
         <!-- /if -->
         <!-- if combatRewardBoss(combat, bossHighscore) -->
-        <reward-row boss>Boss defeated!</reward-row>
+        <reward-row boss pending="@[this.rewardsShown <= 4]">
+          <!-- if this.rewardsShown > 4 -->Boss defeated!<!-- /if -->
+          <!-- if this.rewardsShown <= 4 --><icon stunned animate-spin></icon
+          ><!-- /if -->
+        </reward-row>
         <!-- /if -->
       </rewards-list>
       <hr />
@@ -23,7 +77,7 @@
     <!-- /if -->
 
     <!-- if combatOutcome(combat) !== 'victory' -->
-    <result-actions flex>
+    <result-actions flex pending="@[this.rewardsShown <= 2]">
       <button secondary onclick="closeCombatOverlay()">Go back</button>
     </result-actions>
     <!-- /if -->
@@ -36,7 +90,7 @@
     inset: 0;
     display: grid;
     place-items: center;
-    z-index: 100;
+    pointer-events: none;
     animation: result-in 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 500ms both;
   }
 
@@ -46,36 +100,56 @@
     align-items: center;
     min-width: calc(var(--unit) * 70);
     text-align: center;
+    pointer-events: auto;
   }
 
   rewards-panel {
-    flex-direction: column;
-    height: auto;
     background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(calc(var(--unit) * 2));
     border-radius: var(--radius);
     box-shadow: 0 calc(var(--unit) * 1) calc(var(--unit) * 6) rgba(0, 0, 0, 0.3);
-    align-items: stretch;
   }
 
   rewards-title {
     font-family: var(--font-heading, serif);
     font-size: calc(var(--unit) * 6);
-    color: white;
+    color: var(--foreground);
     text-align: center;
   }
 
   rewards-list {
     align-items: center;
-    color: white;
+    color: var(--foreground);
+    text-align: center;
   }
 
   reward-row {
-    font-weight: 600;
+    text-align: center;
   }
 
   reward-row[boss] {
     color: oklch(0.75 0.18 70);
+  }
+
+  result-announcement [pending],
+  result-announcement rewards-panel,
+  result-announcement reward-row,
+  result-announcement result-actions {
+    transition:
+      opacity 250ms ease,
+      transform 250ms ease;
+  }
+
+  result-announcement [pending] {
+    opacity: 0;
+    transform: translateY(calc(var(--unit) * -1));
+    pointer-events: none;
+  }
+
+  reward-row icon[stunned] {
+    font-size: calc(var(--unit) * 4);
+    --color: var(--white);
+    animation-direction: reverse;
   }
 
   result-actions {

@@ -100,17 +100,29 @@ const enrichCombatant = (c, ti, ci, elapsed, scale) => {
     .sort((a, b) => b.value - a.value);
 
   // Flatten ability cells (for ability bar). Each cell: width px = 12 * ticks.
-  const abilityCells = abilitiesCopied.map((a, i) => ({
-    idx: i,
-    icon: a.icon || 'claw',
-    ticks: a.ticks || 1,
-    width: 12 * (a.ticks || 1),
-    chainLink: a.chainLink || 0,
-  }));
-  const abilityBarWidth = abilityCells.reduce((acc, a) => acc + a.width, 0) + 2;
+  const abilityCells = abilitiesCopied.map((a, i) => {
+    const chainLink = a.chainLink || 0;
+    const chainDividers =
+      chainLink > 1
+        ? Array.from(
+            { length: chainLink - 1 },
+            (_, j) => `${(((j + 1) / chainLink) * 100).toFixed(4)}%`,
+          )
+        : [];
+    return {
+      idx: i,
+      id: a.id || '',
+      icon: a.icon || 'claw',
+      ticks: a.ticks || 1,
+      width: 12 * (a.ticks || 1),
+      chainLink,
+      chainDividers,
+    };
+  });
+  const abilityBarWidth = abilityCells.reduce((acc, a) => acc + a.width, 0);
 
-  // Knocked-out: filter grayscale
-  const knockedOut = !!c.statuses?.knockedOut;
+  // Knocked-out: filter grayscale (status flag is set mid-combat; HP fallback covers post-combat / restored states)
+  const knockedOut = !!c.statuses?.knockedOut || (c.combatStats?.currentHealth || 0) <= 0;
 
   // Precompute image URL (main is `/images/races/{image}`, here `/static/images/races/{image}`)
   const imageUrl = c.image ? `/static/images/races/${c.image}` : '';

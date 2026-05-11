@@ -24,7 +24,11 @@
   };
 
   window.debugStartCombat = () => {
-    $.combat = generateCombat(JSON.parse(JSON.stringify($.combat.teamsStartState)), 'myseed');
+    $.combat = generateCombat(
+      JSON.parse(JSON.stringify($.combat.teamsStartState)),
+      'myseed',
+      'broodmother',
+    );
   };
 
   window.debugReset = () => {
@@ -51,9 +55,11 @@
 
   $.on('afterUpdate', (current, prev) => {
     if (current.characters === prev.characters) return;
-    const inCombat =
-      current.combat?.duration > 0 && current.elapsedMilliseconds < current.combat.duration;
-    if (!inCombat) window.debugInitialize();
+    // Skip re-init while combat has been started (running or showing results).
+    // teamsEndState is populated by generateCombat and cleared by resetCombat.
+    const combatStarted =
+      current.combat?.duration > 0 || (current.combat?.teamsEndState?.length || 0) > 0;
+    if (!combatStarted) window.debugInitialize();
   });
 </script>
 
@@ -88,7 +94,7 @@
     "
   />
 
-  <button onclick="debugReset()">Reset</button>
+  <button primary onclick="debugReset()">Reset</button>
   <button primary onclick="debugStartCombat()" disabled="@[combat?.duration !== 0]">
     Start combat
   </button>

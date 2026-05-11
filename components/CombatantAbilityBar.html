@@ -7,7 +7,13 @@
     <!-- base layer -->
     <ability-row flex base>
       <!-- each card.abilityCells as cell -->
-      <ability-cell style="--cell-width: @[cell.width]px">
+      <ability-cell
+        style="--cell-width: @[cell.width]px"
+        onmouseenter="showAbilityTooltip(this, '@[cell.id]', @[cell.ticks])"
+      >
+        <!-- each cell.chainDividers as d -->
+        <chain-divider absolute style="left: @[d]"></chain-divider>
+        <!-- /each -->
         <icon @[cell.icon]></icon>
       </ability-cell>
       <!-- /each -->
@@ -20,7 +26,13 @@
       style="--progress: @[Math.min (100, (card.individualProgress * 100))]%"
     >
       <!-- each card.abilityCells as cell -->
-      <ability-cell style="--cell-width: @[cell.width]px">
+      <ability-cell
+        style="--cell-width: @[cell.width]px"
+        onmouseenter="showAbilityTooltip(this, '@[cell.id]', @[cell.ticks])"
+      >
+        <!-- each cell.chainDividers as d -->
+        <chain-divider absolute top style="left: @[d]"></chain-divider>
+        <!-- /each -->
         <icon @[cell.icon]></icon>
       </ability-cell>
       <!-- /each -->
@@ -62,6 +74,7 @@
     display: grid;
     place-items: center;
     position: relative;
+    pointer-events: auto;
   }
 
   ability-cell:not(:last-child) {
@@ -79,5 +92,17 @@
 
   ability-row[top] ability-cell icon {
     --color: var(--stone-300);
+  }
+
+  chain-divider {
+    top: 0;
+    bottom: 0;
+    width: 0;
+    border-right: 0.5px dashed var(--stone-500);
+    pointer-events: none;
+  }
+
+  chain-divider[top] {
+    border-right-color: var(--stone-400);
   }
 </style>

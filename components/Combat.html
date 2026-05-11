@@ -48,31 +48,18 @@
       }
     }
 
-    try {
-      new window.Howl({
-        src: [window.AUDIO['Victory Stinger 1']],
-        volume: $.settings.volume.sfx * $.settings.volume.master,
-      }).play();
-    } catch {}
-
     combat._rewarded = true;
     resetCombat();
   };
 
   window.closeCombatOverlay = () => {
-    try {
-      new window.Howl({
-        src: [window.AUDIO['Stinger - Ominous Timpani']],
-        volume: $.settings.volume.sfx * $.settings.volume.master,
-      }).play();
-    } catch {}
     resetCombat();
   };
 </script>
 
 <combat-stage>
   <component src="/components/CombatArena.html">
-    <!-- each combatCards as card -->
+    <!-- each combatCards as card (card.cardId) -->
     <component src="/components/CombatantCard.html" card="@[card]"></component>
     <!-- /each -->
   </component>

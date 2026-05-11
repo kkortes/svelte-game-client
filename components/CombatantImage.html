@@ -30,6 +30,7 @@
     <sprite-hurt-mask absolute style="--img: url('@[card.imageUrl]')"></sprite-hurt-mask>
     <sprite-block absolute>
       <img src="/static/images/shield.png" alt="" />
+      <sprite-block-flash absolute></sprite-block-flash>
     </sprite-block>
   </sprite-inner>
 </combatant-sprite>
@@ -74,6 +75,7 @@
     background-color: transparent;
     mix-blend-mode: multiply;
     opacity: 0;
+    transform: scaleX(var(--dir));
     -webkit-mask: var(--img) no-repeat bottom / auto 100%;
     mask: var(--img) no-repeat bottom / auto 100%;
   }
@@ -95,9 +97,25 @@
     width: 50%;
   }
 
-  combatant-sprite[block] sprite-block,
+  sprite-block-flash {
+    inset: 0;
+    background-color: transparent;
+    mix-blend-mode: multiply;
+    opacity: 0;
+    -webkit-mask: url('/static/images/shield.png') no-repeat center / 50% auto;
+    mask: url('/static/images/shield.png') no-repeat center / 50% auto;
+  }
+
+  combatant-sprite[block] sprite-block {
+    opacity: 1;
+  }
+
   combatant-sprite[attack-blocked] sprite-block {
     opacity: 1;
+  }
+
+  combatant-sprite[attack-blocked] sprite-block-flash {
+    animation: attack-blocked 340ms ease;
   }
 
   combatant-sprite {

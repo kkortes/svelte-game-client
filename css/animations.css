@@ -1,3 +1,15 @@
+@keyframes attack-blocked {
+  0%,
+  100% {
+    background-color: transparent;
+    opacity: 0;
+  }
+  25% {
+    background-color: gray;
+    opacity: 1;
+  }
+}
+
 @keyframes animate-bounce {
   0%,
   100% {
@@ -159,7 +171,7 @@
 
 @keyframes halo-spin {
   to {
-    transform: translate(-50%, -50%) rotate(360deg);
+    transform: rotate(360deg);
   }
 }
 

@@ -1,20 +1,30 @@
-<victory-or-loss relative w="full" outcome="@[outcome]">
-  <!-- if outcome === 'victory' -->
-  <victory-halo absolute></victory-halo>
-  <!-- /if -->
-  <outcome-icon block>
+<victory-or-loss
+  relative
+  w="full"
+  victory="@[outcome === 'victory']"
+  defeat="@[outcome === 'defeat']"
+  draw="@[outcome === 'draw']"
+>
+  <stack>
     <!-- if outcome === 'victory' -->
-    <icon victory></icon>
+    <victory-halo>
+      <halo-inner block></halo-inner>
+    </victory-halo>
     <!-- /if -->
-    <!-- if outcome !== 'victory' -->
-    <icon defeat></icon>
-    <!-- /if -->
-  </outcome-icon>
-  <outcome-label>
-    <!-- if outcome === 'victory' -->VICTORY<!-- /if -->
-    <!-- if outcome === 'defeat' -->DEFEAT<!-- /if -->
-    <!-- if outcome === 'draw' -->DRAW<!-- /if -->
-  </outcome-label>
+    <outcome-icon block>
+      <!-- if outcome === 'victory' -->
+      <icon victory></icon>
+      <!-- /if -->
+      <!-- if outcome !== 'victory' -->
+      <icon defeat></icon>
+      <!-- /if -->
+    </outcome-icon>
+    <outcome-label>
+      <!-- if outcome === 'victory' -->VICTORY<!-- /if -->
+      <!-- if outcome === 'defeat' -->DEFEAT<!-- /if -->
+      <!-- if outcome === 'draw' -->DRAW<!-- /if -->
+    </outcome-label>
+  </stack>
 </victory-or-loss>
 
 <style>
@@ -24,12 +34,15 @@
   }
 
   victory-halo {
+    position: absolute;
     pointer-events: none;
-    top: 50%;
-    left: 50%;
     width: 200%;
     aspect-ratio: 1 / 1;
-    transform: translate(-50%, -50%);
+  }
+
+  halo-inner {
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
     opacity: 0.25;
     animation: halo-spin 10000ms linear infinite;
@@ -45,20 +58,36 @@
 
   outcome-icon {
     font-size: calc(var(--unit) * 20);
+    line-height: 1;
   }
 
   outcome-icon icon {
     font-size: calc(var(--unit) * 24);
     --color: var(--gray-400);
-    filter: drop-shadow(0 calc(var(--unit) * 0.5) calc(var(--unit) * 1) rgba(0, 0, 0, 0.3));
   }
 
-  victory-or-loss[outcome='victory'] outcome-icon icon {
-    --color: var(--yellow-200);
-    filter: drop-shadow(0 calc(var(--unit) * 0.5) calc(var(--unit) * 1) rgba(0, 0, 0, 0.3));
+  victory-or-loss[victory] outcome-icon icon {
+    background:
+      radial-gradient(
+        ellipse farthest-corner at right bottom,
+        var(--gold-highlight) 0%,
+        var(--gold-warm) 8%,
+        var(--gold-deep) 30%,
+        var(--gold-shadow) 40%,
+        transparent 80%
+      ),
+      radial-gradient(
+        ellipse farthest-corner at left top,
+        var(--white) 0%,
+        var(--gold-pale) 8%,
+        var(--gold-soft) 25%,
+        var(--gold-bronze) 62.5%,
+        var(--gold-bronze) 100%
+      );
   }
 
   outcome-label {
+    isolation: isolate;
     font-family: var(--font-accent, var(--font-heading, sans-serif));
     font-size: calc(var(--unit) * 10);
     letter-spacing: 0.05em;
@@ -67,7 +96,7 @@
     text-shadow: 0 calc(var(--unit) * 0.5) calc(var(--unit) * 1) rgba(0, 0, 0, 0.3);
   }
 
-  victory-or-loss[outcome='victory'] outcome-label {
+  victory-or-loss[victory] outcome-label {
     color: var(--yellow-100);
     -webkit-text-stroke: 1px var(--yellow-300);
   }

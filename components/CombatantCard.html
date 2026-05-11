@@ -18,30 +18,34 @@
     <combatant-statuses absolute flex down facing-right="@[card.facingRight]">
       <!-- each card.statusEffects as s -->
       <status-chip @[s.key]>
-        <icon @[s.key] @[s.animation]></icon>
+        <icon-stack>
+          <icon @[s.key] @[s.animation] outline></icon>
+          <icon @[s.key] @[s.animation]></icon>
+        </icon-stack>
         <status-ticks>@[s.ticks]</status-ticks>
         <status-text>@[s.text]</status-text>
       </status-chip>
       <!-- /each -->
       <!-- each card.statusStacks as s -->
       <status-chip @[s.key] stack>
-        <icon @[s.key] @[s.animation]></icon>
+        <icon-stack>
+          <icon @[s.key] @[s.animation] outline></icon>
+          <icon @[s.key] @[s.animation]></icon>
+        </icon-stack>
         <status-ticks>@[s.value]/@[s.max]</status-ticks>
         <status-text>@[s.text]</status-text>
       </status-chip>
       <!-- /each -->
     </combatant-statuses>
 
-    <combatant-badge absolute damage-badge>
+    <combatant-badge absolute damage-badge active="@[card.damage > 0]">
       <icon h1h1></icon>
       <badge-value absolute fat-number>@[card.damage]</badge-value>
     </combatant-badge>
 
-    <combatant-badge absolute armor-badge>
+    <combatant-badge absolute armor-badge active="@[card.currentArmor > 0]">
       <icon maxArmor></icon>
-      <!-- if card.currentArmor > 0 -->
       <badge-value absolute fat-number>@[card.currentArmor]</badge-value>
-      <!-- /if -->
     </combatant-badge>
   </card>
 
@@ -115,12 +119,23 @@
     flex-direction: row-reverse;
   }
 
-  status-chip icon {
+  status-chip icon-stack {
+    display: grid;
+    place-items: center;
+  }
+
+  status-chip icon-stack icon {
+    grid-area: 1 / 1;
     font-size: calc(var(--unit) * 5);
   }
 
-  status-chip[stack] icon {
+  status-chip[stack] icon-stack icon {
     font-size: calc(var(--unit) * 4);
+  }
+
+  status-chip icon[outline] {
+    --color: rgba(0, 0, 0, 0.7);
+    transform: scale(1.1);
   }
 
   status-chip status-ticks {
@@ -179,5 +194,9 @@
     font-family: var(--font-display, sans-serif);
     font-size: calc(var(--unit) * 6);
     color: var(--white);
+  }
+
+  combatant-badge:not([active]) badge-value {
+    display: none;
   }
 </style>
