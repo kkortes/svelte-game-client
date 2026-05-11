@@ -33,6 +33,7 @@
     v && typeof v === 'object' && !(v instanceof Element) && typeof v.x !== 'number';
 
   window.showTooltip = (props, arg2, arg3) => {
+    if (window.__dndDragging) return;
     detach();
 
     let options;
@@ -182,7 +183,27 @@
     height: auto;
     left: 0;
     top: 0;
-    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      opacity 180ms ease-out,
+      transform 180ms ease-out;
+  }
+
+  tooltip-body[up] {
+    transform: translateY(calc(var(--unit) * -4));
+  }
+
+  tooltip-body[down] {
+    transform: translateY(calc(var(--unit) * 4));
+  }
+
+  tooltip-body[left] {
+    transform: translateX(calc(var(--unit) * -4));
+  }
+
+  tooltip-body[right] {
+    transform: translateX(calc(var(--unit) * 4));
   }
 
   tooltip-body > slot {
@@ -190,7 +211,8 @@
   }
 
   tooltip-body[positioned] {
-    visibility: visible;
+    opacity: 1;
+    transform: translate(0, 0);
   }
 
   tooltip-pointer {

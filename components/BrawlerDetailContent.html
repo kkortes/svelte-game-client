@@ -254,25 +254,17 @@
   import('/js/dnd.js').then(({ default: dnd }) => {
     dnd.init();
 
-    const dndFlags = { draggingBasic: false };
-
     const characterRef = () => $.characters[Number($.page.params.characterIndex)];
     const zoneType = () => characterRef()?.uuid || 'abilities';
 
-    $.on('ready', () => {
+    const registerZones = () => {
       const abilityOverlay = document.querySelector('ability-overlay');
       const availableGrid = document.querySelector('[available-grid]');
 
-      if (abilityOverlay) {
-        dnd.zone(abilityOverlay, {
+      if (abilityOverlay && !abilityOverlay.hasAttribute('dnd-zone')) {
+        dnd.abilityBarZone(abilityOverlay, {
           items: () => s.currentAbilities,
           type: zoneType(),
-          direction: 'horizontal',
-          constrainAxisY: () => dndFlags.draggingBasic,
-          transformDraggedElement: (ghost, data) => {
-            dndFlags.draggingBasic = !!data?.basic;
-            window.hideTooltip();
-          },
           onReorder: (newItems) => {
             const ref = characterRef();
             if (!ref) return;
@@ -298,17 +290,10 @@
         });
       }
 
-      if (availableGrid) {
-        dnd.zone(availableGrid, {
+      if (availableGrid && !availableGrid.hasAttribute('dnd-zone')) {
+        dnd.availableAbilityZone(availableGrid, {
           items: () => s.currentAvailableAbilities,
           type: zoneType(),
-          direction: 'grid',
-          dropFromOthersDisabled: () => dndFlags.draggingBasic,
-          transformDraggedElement: (ghost) => {
-            const ticks = ghost.querySelector('ability-tick-count');
-            if (ticks) ticks.remove();
-            window.hideTooltip();
-          },
           onReceive: (item) => {
             const ref = characterRef();
             if (!ref) return;
@@ -317,7 +302,11 @@
           },
         });
       }
-    });
+    };
+
+    $.on('afterDomMutation', registerZones);
+    $.on('ready', registerZones);
+    queueMicrotask(registerZones);
   });
 </script>
 
@@ -336,7 +325,8 @@
             hp="@[this.currentCoreStats.hp]"
             armor="@[this.currentCoreStats.armor]"
             damage="@[this.currentCoreStats.damage]"
-          ></component>
+          >
+          </component>
         </accordion-content>
       </accordion>
 
@@ -410,21 +400,20 @@
           </equipment-heading-content>
         </equipment-heading>
 
-        <component
-          src="/components/CharacterEquipmentList.html"
-          slots="@[this.currentSlots]"
-        ></component>
+        <component src="/components/CharacterEquipmentList.html" slots="@[this.currentSlots]">
+        </component>
       </crow>
     </crow>
 
-    <kingstone h="20"></kingstone>
+    <kingstone h="4"></kingstone>
 
     <component
       src="/components/CharacterAbilitiesSection.html"
       abilities="@[this.currentAbilities]"
       available="@[this.currentAvailableAbilities]"
-      lasttick="@[this.currentLastTickEnd]"
-    ></component>
+      lastTick="@[this.currentLastTickEnd]"
+    >
+    </component>
   </crow>
   <!-- /if -->
 
@@ -451,7 +440,7 @@
     min-height: 0;
   }
 
-  @media (width <= 768px) {
+  @media (width <=768px) {
     [main-content] {
       flex-direction: column;
       align-items: stretch;

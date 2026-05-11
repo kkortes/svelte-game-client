@@ -3,13 +3,10 @@
     <button sm secondary onclick="tryOutBuild()">Try out build</button>
   </component>
 
-  <component
-    src="/components/AbilityBar.html"
-    abilities="@[abilities]"
-    lasttick="@[lasttick]"
-  ></component>
+  <component src="/components/AbilityBar.html" abilities="@[abilities]" lastTick="@[lastTick]">
+  </component>
 
-  <kingstone h="10"></kingstone>
+  <kingstone h="2"></kingstone>
 
   <component small src="/components/TitleBar.html" title="Available Abilities"></component>
 
@@ -83,7 +80,7 @@
     background: white;
   }
 
-  @media (width <= 768px) {
+  @media (width <=768px) {
     available-ability {
       width: calc(var(--unit) * 14);
       height: calc(var(--unit) * 14);

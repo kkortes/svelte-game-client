@@ -30,17 +30,69 @@
       page[the-arena-fightId] [fight-info-col] {
         flex: 1;
         min-width: 0;
+        justify-content: space-between;
+      }
+
+      page[the-arena-fightId] page-content[brawlers-selected] [fight-info-col] {
+        justify-content: center;
+      }
+
+      page[the-arena-fightId] fight-side-stats {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 0;
+        opacity: 0;
+        transition:
+          width 200ms ease-out,
+          opacity 200ms ease-out;
+      }
+
+      page[the-arena-fightId] page-content[brawlers-selected] fight-side-stats {
+        width: calc(var(--unit) * 24);
+        opacity: 1;
+      }
+
+      page[the-arena-fightId] accordion[fight-info] {
+        grid-template-rows: 1fr;
+      }
+
+      page[the-arena-fightId] page-content[brawlers-selected] accordion[fight-info] {
+        grid-template-rows: 0fr;
       }
 
       page[the-arena-fightId] fight-enemy-image {
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
         width: calc(var(--unit) * 40);
+        align-self: flex-start;
         pointer-events: none;
         transform: scaleX(-1);
+        overflow: hidden;
+        transition:
+          width 200ms ease-out,
+          aspect-ratio 200ms ease-out;
+      }
+
+      page[the-arena-fightId] fight-enemy-image > img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      page[the-arena-fightId] page-content[brawlers-selected] fight-enemy-image {
+        width: calc(var(--unit) * 24);
+        aspect-ratio: 1;
       }
 
       @media (width <= 768px) {
         page[the-arena-fightId] fight-enemy-image {
           width: calc(var(--unit) * 24);
+        }
+
+        page[the-arena-fightId] page-content[brawlers-selected] fight-enemy-image {
+          width: calc(var(--unit) * 16);
         }
       }
 

@@ -199,40 +199,49 @@
           </crow>
           <!-- /if -->
           <!-- each characters.map(hydrateBrawler) as brawler (brawler.uuid), i -->
-          <a href="/brawlers/@[i]" onclick="selectBrawler(event, brawler.uuid, @[i])" brawler-link>
-            <crow
-              left
-              brawler-row
-              active="@[Number(page.params.characterIndex) === i || selectedBrawlers.includes(brawler.uuid)]"
+          <brawler-box
+            relative
+            active="@[Number(page.params.characterIndex) === i || selectedBrawlers.includes(brawler.uuid)]"
+          >
+            <a
+              href="/brawlers/@[i]"
+              onclick="selectBrawler(event, brawler.uuid, @[i])"
+              brawler-link
             >
-              <brawler-avatar-outer>
-                <brawler-avatar-inner glass>
-                  <img data-src="/static/images/races/@[brawler.mugshot]" alt="" brawler-img />
-                </brawler-avatar-inner>
-              </brawler-avatar-outer>
-              <crow vertical left brawler-info>
-                <component
-                  src="/components/Bar.html"
-                  text="@[brawler.name]"
-                  current="@[brawler.currentHealth]"
-                  max="@[brawler.maxHealth]"
-                  percentage="1"
-                >
-                </component>
-                <ability-accordion>
-                  <ability-accordion-content>
-                    <ability-preview style="width: calc((12px * @[brawler.totalTicks]) + 2px)">
-                      <!-- each brawler.abilities as ab -->
-                      <ability-preview-cell style="width: calc(12px * @[ab.ticks])">
-                        <icon @[ab.icon]></icon>
-                      </ability-preview-cell>
-                      <!-- /each -->
-                    </ability-preview>
-                  </ability-accordion-content>
-                </ability-accordion>
+              <crow left brawler-row>
+                <brawler-avatar-outer>
+                  <brawler-avatar-inner glass>
+                    <img data-src="/static/images/races/@[brawler.mugshot]" alt="" brawler-img />
+                  </brawler-avatar-inner>
+                </brawler-avatar-outer>
+                <crow vertical left brawler-info>
+                  <component
+                    src="/components/Bar.html"
+                    text="@[brawler.name]"
+                    current="@[brawler.currentHealth]"
+                    max="@[brawler.maxHealth]"
+                    percentage="1"
+                  >
+                  </component>
+                  <accordion>
+                    <accordion-content>
+                      <ability-preview style="width: calc((12px * @[brawler.totalTicks]) + 2px)">
+                        <!-- each brawler.abilities as ab -->
+                        <ability-preview-cell style="width: calc(12px * @[ab.ticks])">
+                          <icon @[ab.icon]></icon>
+                        </ability-preview-cell>
+                        <!-- /each -->
+                      </ability-preview>
+                    </accordion-content>
+                  </accordion>
+                </crow>
               </crow>
-            </crow>
-          </a>
+            </a>
+            <brawler-menu>
+              <brawler-menu-pointer></brawler-menu-pointer>
+              <button primary sm onclick="selectBrawler(event, '@[brawler.uuid]')">Select</button>
+            </brawler-menu>
+          </brawler-box>
           <!-- /each -->
         </crow>
       </brawler-list>
@@ -248,6 +257,10 @@
   brawler-list {
     display: block;
     margin-inline: calc(var(--unit) * -4);
+  }
+
+  brawler-box {
+    display: block;
   }
 
   [brawler-link] {
@@ -267,7 +280,7 @@
       backdrop-filter 150ms;
   }
 
-  [brawler-row][active] {
+  brawler-box[active] [brawler-row] {
     background: rgba(255, 255, 255, 0.5);
     box-shadow: 0 calc(var(--unit) * 1) calc(var(--unit) * 1.5) -1px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(calc(var(--unit) * 1));
@@ -304,33 +317,25 @@
     overflow-x: hidden;
   }
 
-  ability-accordion {
-    display: grid;
-    grid-template-rows: 0fr;
-    transition: grid-template-rows 200ms ease-out;
-    width: 100%;
-  }
-
-  brawler-list:hover ability-accordion,
-  brawler-list[max-brawlers] ability-accordion,
-  brawler-list [brawler-row][active] ability-accordion {
+  brawler-list:hover accordion,
+  brawler-list[max-brawlers] accordion,
+  brawler-list brawler-box[active] accordion {
     grid-template-rows: 1fr;
   }
 
-  ability-accordion-content {
-    overflow: hidden;
+  brawler-list accordion-content {
     padding-right: 1px;
   }
 
   brawler-list:hover bar-track[percentage] [bar-value-pct],
   brawler-list[max-brawlers] bar-track[percentage] [bar-value-pct],
-  brawler-list [brawler-row][active] bar-track[percentage] [bar-value-pct] {
+  brawler-list brawler-box[active] bar-track[percentage] [bar-value-pct] {
     display: none;
   }
 
   brawler-list:hover bar-track[percentage] [bar-value-actual],
   brawler-list[max-brawlers] bar-track[percentage] [bar-value-actual],
-  brawler-list [brawler-row][active] bar-track[percentage] [bar-value-actual] {
+  brawler-list brawler-box[active] bar-track[percentage] [bar-value-actual] {
     display: inline;
   }
 
@@ -354,5 +359,66 @@
 
   ability-preview-cell:last-child {
     border-right: none;
+  }
+
+  brawler-menu {
+    position: absolute;
+    left: calc(100% - var(--unit) * 3.5);
+    top: 50%;
+    display: flex;
+    align-items: center;
+    padding: calc(var(--unit) * 2);
+    background: linear-gradient(
+      90deg,
+      oklch(from var(--bb-brown) 0.96 0.025 h / 0.6) 0%,
+      oklch(from var(--bb-brown) 0.93 0.035 h / 0.85) 100%
+    );
+    border: 1px solid oklch(from var(--bb-brown) l c h / 0.2);
+    border-radius: calc(var(--unit) * 1);
+    box-shadow: calc(var(--unit) * 0.5) 0 calc(var(--unit) * 2) -2px
+      oklch(from var(--bb-brown) l c h / 0.22);
+    backdrop-filter: blur(calc(var(--unit) * 1.5));
+    transform: translate(-100%, -50%);
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      transform 280ms cubic-bezier(0.34, 1.56, 0.64, 1),
+      opacity 200ms ease-out;
+  }
+
+  brawler-menu > button {
+    pointer-events: auto;
+  }
+
+  brawler-menu-pointer {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: calc(var(--unit) * 3);
+    height: calc(var(--unit) * 3);
+    background: oklch(from var(--bb-brown) 0.96 0.025 h / 0.78);
+    border: 1px solid oklch(from var(--bb-brown) l c h / 0.2);
+    transform: translate(-50%, -50%) rotate(45deg);
+    clip-path: polygon(0% 0%, 0% 100%, 100% 100%);
+  }
+
+  brawler-list[max-brawlers] brawler-menu {
+    transform: translate(0, -50%);
+    opacity: 1;
+  }
+
+  brawler-box[active] brawler-menu {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.55) 0%,
+      rgba(255, 255, 255, 0.85) 100%
+    );
+    border-color: oklch(from var(--bb-brown) l c h / 0.3);
+    box-shadow: 0 calc(var(--unit) * 1) calc(var(--unit) * 2.5) -1px rgba(0, 0, 0, 0.12);
+  }
+
+  brawler-box[active] brawler-menu-pointer {
+    background: rgba(255, 255, 255, 0.78);
+    border-color: oklch(from var(--bb-brown) l c h / 0.3);
   }
 </style>

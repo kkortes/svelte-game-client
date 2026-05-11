@@ -34,8 +34,14 @@ const animateFLIP = (entries, duration = SHIFT_DURATION) => {
 };
 
 const getInsertIndex = (zoneEl, x, y, direction) => {
+  // Mirror moveDrag's visibleChildren filter — include hidden source items
+  // here and the returned index gets shifted up by one for sources at the
+  // start of the zone, which then overshoots the insert position.
   const children = [...zoneEl.children].filter(
-    (c) => !c.hasAttribute('dnd-ghost') && !c.hasAttribute('dnd-placeholder'),
+    (c) =>
+      !c.hasAttribute('dnd-ghost') &&
+      !c.hasAttribute('dnd-placeholder') &&
+      c.style.display !== 'none',
   );
   if (!children.length) return 0;
 
@@ -72,13 +78,16 @@ const createPlaceholder = (sourceEl) => {
   const ph = document.createElement('div');
   ph.setAttribute('dnd-placeholder', '');
   const rect = sourceEl.getBoundingClientRect();
+  const cs = getComputedStyle(sourceEl);
   ph.style.cssText = `
     width: ${rect.width}px;
     height: ${rect.height}px;
+    margin: ${cs.marginTop} ${cs.marginRight} ${cs.marginBottom} ${cs.marginLeft};
     border: 2px dashed var(--border, #ccc);
     border-radius: var(--radius, 4px);
     opacity: 0.5;
     transition: all ${SHIFT_DURATION}ms ${EASE};
+    box-sizing: border-box;
   `;
   return ph;
 };
@@ -109,11 +118,24 @@ const startDrag = (e, itemEl, zoneEl) => {
   const itemIndex = children.indexOf(itemEl);
   if (itemIndex === -1) return;
 
+  window.__dndDragging = true;
+  if (typeof window.hideTooltip === 'function') window.hideTooltip();
+
   const touch = e.touches ? e.touches[0] : e;
   const rect = itemEl.getBoundingClientRect();
 
   const ghost = createGhost(itemEl);
   const placeholder = createPlaceholder(itemEl);
+
+  // Allow the source zone to mutate the ghost / stash flags. This is where
+  // BrawlerDetailContent sets `draggingBasic`, which then gates
+  // `constrainAxisY` (basics stay in the ability bar) and
+  // `dropFromOthersDisabled` (available-grid won't accept basics).
+  if (typeof config.transformDraggedElement === 'function') {
+    try {
+      config.transformDraggedElement(ghost, items[itemIndex], itemIndex);
+    } catch {}
+  }
 
   positionGhost(ghost, touch.clientX, touch.clientY, rect);
 
@@ -150,15 +172,49 @@ const moveDrag = (e) => {
   const touch = e.touches ? e.touches[0] : e;
   const { ghost, placeholder, sourceRect, sourceConfig } = dragState;
 
-  positionGhost(ghost, touch.clientX, touch.clientY, sourceRect);
+  // When the source zone says "lock Y" (e.g. basic abilities can't leave the
+  // ability bar), pin the ghost's Y to the source row so the cursor can only
+  // slide horizontally along the source row.
+  const constrainY =
+    typeof sourceConfig.constrainAxisY === 'function'
+      ? !!sourceConfig.constrainAxisY()
+      : !!sourceConfig.constrainAxisY;
+  const effX = touch.clientX;
+  const effY = constrainY ? sourceRect.top + sourceRect.height / 2 : touch.clientY;
 
-  // Find which zone we're over
-  const zoneUnder = findZoneUnder(touch.clientX, touch.clientY);
+  positionGhost(ghost, effX, effY, sourceRect);
+
+  // Find which zone we're over using the constrained position
+  const zoneUnder = findZoneUnder(effX, effY);
 
   if (zoneUnder && zoneUnder.config.group === sourceConfig.group) {
+    // Target zone can refuse drops from other zones (e.g. the available-
+    // abilities grid refuses basics being dragged from the ability bar).
+    if (zoneUnder.el !== dragState.sourceZone) {
+      const refuse =
+        typeof zoneUnder.config.dropFromOthersDisabled === 'function'
+          ? !!zoneUnder.config.dropFromOthersDisabled()
+          : !!zoneUnder.config.dropFromOthersDisabled;
+      if (refuse) return;
+    }
+
     const targetZone = zoneUnder.el;
     const direction = zoneUnder.config.direction || 'horizontal';
-    const newIndex = getInsertIndex(targetZone, touch.clientX, touch.clientY, direction);
+    const rawIndex = getInsertIndex(targetZone, touch.clientX, touch.clientY, direction);
+
+    // When the cursor is inside the source's ORIGINAL bounds, force the
+    // placeholder to the source slot. Without this, neighbors that
+    // shifted to fill the gap put their midpoints right where the source
+    // used to be, so the user can never just hover over the original
+    // location and have items reflow around the drop.
+    const srcRect = dragState.sourceRect;
+    const inSourceBounds =
+      targetZone === dragState.sourceZone &&
+      touch.clientX >= srcRect.left &&
+      touch.clientX <= srcRect.right &&
+      touch.clientY >= srcRect.top &&
+      touch.clientY <= srcRect.bottom;
+    const newIndex = inSourceBounds ? dragState.sourceIndex : rawIndex;
 
     // Move placeholder to target zone if needed
     if (targetZone !== dragState.currentZone || newIndex !== dragState.currentIndex) {
@@ -238,6 +294,7 @@ const endDrag = () => {
 
     dragState = null;
     activeZone = null;
+    window.__dndDragging = false;
   }, SNAP_DURATION);
 };
 
@@ -280,6 +337,11 @@ const bindMoveEnd = () => {
   );
 };
 
+// Shared across ability-bar and available-grid zones so a basic dragged out of
+// the bar both stays on its row (constrainAxisY) and is refused by the grid
+// (dropFromOthersDisabled).
+let draggingBasic = false;
+
 // Public API
 const dnd = {
   zone(element, config) {
@@ -291,6 +353,36 @@ const dnd = {
       zones.delete(element);
       element.removeAttribute('dnd-zone');
     };
+  },
+
+  abilityBarZone(element, { items, type, onReorder, onReceive }) {
+    return dnd.zone(element, {
+      items,
+      type,
+      direction: 'horizontal',
+      constrainAxisY: () => draggingBasic,
+      transformDraggedElement: (_ghost, data) => {
+        draggingBasic = !!data?.basic;
+        if (typeof window.hideTooltip === 'function') window.hideTooltip();
+      },
+      onReorder,
+      onReceive,
+    });
+  },
+
+  availableAbilityZone(element, { items, type, onReceive }) {
+    return dnd.zone(element, {
+      items,
+      type,
+      direction: 'grid',
+      dropFromOthersDisabled: () => draggingBasic,
+      transformDraggedElement: (ghost) => {
+        const ticks = ghost.querySelector('ability-tick-count');
+        if (ticks) ticks.remove();
+        if (typeof window.hideTooltip === 'function') window.hideTooltip();
+      },
+      onReceive,
+    });
   },
 
   init() {

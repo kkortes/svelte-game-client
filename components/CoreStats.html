@@ -1,20 +1,30 @@
-<crow vertical="@[vertical]" left g="2">
-  <crow vertical="@[vertical]" g="2">
+<crow left core-stats vertical-pairs="@[vertical]" g="2">
+  <crow vertical="@[vertical]">
     <icon maxHealth></icon>
     <span>@[hp]</span>
   </crow>
   <!-- if !vertical -->
   <span text-muted>/</span>
   <!-- /if -->
-  <crow vertical="@[vertical]" g="2">
+  <crow vertical="@[vertical]">
     <icon maxArmor></icon>
     <span>@[armor]</span>
   </crow>
   <!-- if !vertical -->
   <span text-muted>/</span>
   <!-- /if -->
-  <crow vertical="@[vertical]" g="2">
+  <crow vertical="@[vertical]">
     <icon damage></icon>
     <span>@[damage]</span>
   </crow>
 </crow>
+
+<style>
+  [core-stats] > crow {
+    gap: calc(var(--unit) * 1);
+  }
+
+  [core-stats][vertical-pairs] > crow {
+    gap: 0;
+  }
+</style>

@@ -2,7 +2,10 @@
   import { ALL_FIGHTS } from '/js/constants/FIGHTS.js';
   import CHARACTERS from '/js/constants/CHARACTERS.js';
   import { generateCombat, prepareTeams } from '/js/combat.js';
-  import { calculateCombatStatsByCharacter } from '/js/utils.js';
+  import {
+    calculateAvailableAbilitiesByCharacter,
+    calculateCombatStatsByCharacter,
+  } from '/js/utils.js';
   import ABILITIES from '/js/constants/ABILITIES.js';
   import { formatDescription } from '/js/helpers.js';
   window.formatDescription = formatDescription;
@@ -93,40 +96,75 @@
     $.selectedBrawlers = [];
   }
 
-  const localState = { currentFight, brawlerSlots: [] };
-  component(localState);
-  const componentId = Object.keys(window.__vibeComponents).find(
-    (k) => window.__vibeComponents[k] === localState,
-  );
-  const s = $[componentId];
+  $.currentFight = currentFight;
+  $.brawlerSlots = [];
 
   window.updateFightSlots = () => {
     const count = currentFight?.allowedNumberOfCharacters || 1;
     const C = window.CHARACTERS || CHARACTERS;
     const A = window.ABILITIES_FN || ABILITIES;
-    s.brawlerSlots = Array.from({ length: count }, (_, i) => {
+    $.brawlerSlots = Array.from({ length: count }, (_, i) => {
       const uuid = $.selectedBrawlers[i];
       if (!uuid) return { empty: true, index: i };
       const ref = $.characters.find((c) => c.uuid === uuid);
       if (!ref) return { empty: true, index: i };
       try {
         const char = C(ref, true);
+        const stats = calculateCombatStatsByCharacter(char);
+        let tickCursor = 0;
         const abilities = char.abilities
           .map((a) => {
             try {
               const h = A(a, true);
-              return { icon: h.icon, ticks: h.ticks };
+              const tickStart = tickCursor;
+              tickCursor += h.ticks;
+              return {
+                id: h.id,
+                name: h.name,
+                ticks: h.ticks,
+                icon: h.icon,
+                basic: !!h.basic,
+                tickStart,
+                overflow: tickStart >= char.maxTicks,
+                statusEffects: h.statusEffects || [],
+              };
             } catch {
               return null;
             }
           })
           .filter(Boolean);
+        const availableAbilities = calculateAvailableAbilitiesByCharacter(char)
+          .map((a) => {
+            try {
+              const h = A(a, true);
+              return {
+                uuid: a.uuid,
+                id: h.id,
+                name: h.name,
+                ticks: h.ticks,
+                icon: h.icon,
+                basic: !!h.basic,
+                statusEffects: h.statusEffects || [],
+              };
+            } catch {
+              return null;
+            }
+          })
+          .filter((a) => a && !a.basic);
+        const characterIndex = $.characters.findIndex((c) => c.uuid === char.uuid);
         return {
           empty: false,
+          uuid: char.uuid,
+          characterIndex,
           name: char.name,
           image: char.image,
           mugshot: char.image.replace('.png', '-mugshot.png'),
+          hp: stats.maxHealth,
+          armor: stats.maxArmor,
+          damage: stats.damage,
           abilities,
+          availableAbilities,
+          lastTick: tickCursor,
           index: i,
         };
       } catch {
@@ -135,6 +173,49 @@
     });
   };
   window.updateFightSlots();
+
+  import('/js/dnd.js').then(({ default: dnd }) => {
+    dnd.init();
+    const registered = new WeakSet();
+
+    const registerSlotZones = () => {
+      document
+        .querySelectorAll('brawler-slot[data-brawler-uuid] ability-overlay')
+        .forEach((overlay) => {
+          if (registered.has(overlay)) return;
+          const uuid = overlay.closest('brawler-slot')?.dataset?.brawlerUuid;
+          if (!uuid) return;
+          registered.add(overlay);
+          dnd.abilityBarZone(overlay, {
+            items: () => {
+              const ref = $.characters.find((c) => c.uuid === uuid);
+              return (ref?.overrides?.abilities || []).map((a) => {
+                try {
+                  return { ...a, basic: !!ABILITIES(a, true).basic };
+                } catch {
+                  return { ...a, basic: false };
+                }
+              });
+            },
+            type: 'fight-slot-' + uuid,
+            onReorder: (newItems) => {
+              const ref = $.characters.find((c) => c.uuid === uuid);
+              if (!ref) return;
+              ref.overrides.abilities = newItems.map((a) => ({
+                id: a.id,
+                uuid: a.uuid,
+                overrides: a.overrides,
+              }));
+              window.updateFightSlots();
+            },
+          });
+        });
+    };
+
+    $.on('afterDomMutation', registerSlotZones);
+    $.on('ready', registerSlotZones);
+    queueMicrotask(registerSlotZones);
+  });
 
   window.startFight = () => {
     if (!currentFight) return;
@@ -179,22 +260,22 @@
   };
 </script>
 
-<page-content>
-  <!-- if this.currentFight -->
-  <component src="/components/TitleBar.html" title="@[this.currentFight.name]" back="/the-arena">
+<page-content brawlers-selected="@[selectedBrawlers.length > 0]">
+  <!-- if currentFight -->
+  <component src="/components/TitleBar.html" title="@[currentFight.name]" back="/the-arena">
     <badge>
-      @[this.currentFight.allowedNumberOfCharacters]&nbsp;vs&nbsp;@[this.currentFight.enemies.length]
+      @[currentFight.allowedNumberOfCharacters]&nbsp;vs&nbsp;@[currentFight.enemies.length]
     </badge>
-    <!-- if this.currentFight.boss -->
+    <!-- if currentFight.boss -->
     <badge bg="var(--red)">Bossfight</badge>
     <badge bg="var(--slate)">Luck disabled</badge>
     <!-- /if -->
   </component>
   <hr />
 
-  <!-- each this.currentFight.enemies as enemy, i -->
+  <!-- each currentFight.enemies as enemy, i -->
   <crow left fight-enemy-row>
-    <crow w="0" overflow-hidden>
+    <fight-side-stats f="none" overflow-hidden>
       <component
         src="/components/CoreStats.html"
         hp="@[enemy.maxHealth]"
@@ -202,46 +283,48 @@
         damage="@[enemy.damage]"
         vertical
       ></component>
-    </crow>
+    </fight-side-stats>
 
     <crow vertical up left fight-info-col>
-      <crow left text-lg mb="4">
+      <accordion fight-info>
+        <accordion-content>
+          <fight-info-inner block pb="8">
+            <crow left text-lg mb="4">
+              <component
+                src="/components/CoreStats.html"
+                hp="@[enemy.maxHealth]"
+                armor="@[enemy.maxArmor]"
+                damage="@[enemy.damage]"
+              ></component>
+            </crow>
+            <!-- if enemy.description -->
+            <p text-sm fight-enemy-description>@[enemy.description]</p>
+            <!-- /if -->
+          </fight-info-inner>
+        </accordion-content>
+      </accordion>
+
+      <crow vertical left up w="full" relative>
+        <accordion fight-info>
+          <accordion-content>
+            <crow left justify-between w="full">
+              <h5>Abilities</h5>
+            </crow>
+          </accordion-content>
+        </accordion>
         <component
-          src="/components/CoreStats.html"
-          hp="@[enemy.maxHealth]"
-          armor="@[enemy.maxArmor]"
-          damage="@[enemy.damage]"
-        ></component>
+          src="/components/AbilityBar.html"
+          abilities="@[enemy.abilities]"
+          lastTick="@[enemy.lastTick]"
+          dndDisabled
+          minimalistic
+        >
+        </component>
       </crow>
-
-      <enemy-description h="60">
-        <!-- if enemy.description -->
-        <p text-sm fight-enemy-description>@[enemy.description]</p>
-        <!-- /if -->
-      </enemy-description>
-
-      <h5>Abilities</h5>
-      <component
-        src="/components/AbilityBar.html"
-        abilities="@[enemy.abilities]"
-        lasttick="@[enemy.lastTick]"
-        dndDisabled
-        minimalistic
-      >
-      </component>
     </crow>
 
-    <fight-enemy-image block f="none" relative>
-      <img
-        t="0"
-        r="0"
-        b="0"
-        l="0"
-        absolute
-        w="full"
-        data-src="/static/images/races/@[enemy.image]"
-        alt=""
-      />
+    <fight-enemy-image block f="none">
+      <img w="full" data-src="/static/images/races/@[enemy.image]" alt="" />
     </fight-enemy-image>
   </crow>
   <!-- /each -->
@@ -249,14 +332,13 @@
   <hr />
 
   <crow vertical w="full" g="2">
-    <!-- each this.brawlerSlots as slot, i -->
+    <!-- each brawlerSlots as slot, i -->
     <component src="/components/BrawlerSlot.html" slot="@[slot]"></component>
     <!-- /each -->
   </crow>
-
   <!-- /if -->
 
-  <!-- if !this.currentFight -->
+  <!-- if !currentFight -->
   <crow vertical g="4" fight-empty>
     <p text-muted>Fight not found.</p>
     <component src="/components/BackButton.html" href="/the-arena"></component>
@@ -264,7 +346,7 @@
   <!-- /if -->
 </page-content>
 
-<!-- if this.currentFight -->
+<!-- if currentFight -->
 <stay reverse w="full" sm:b="8" p="3">
   <button
     mx="auto"

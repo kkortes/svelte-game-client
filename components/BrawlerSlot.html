@@ -1,5 +1,5 @@
 <!-- if slot.empty -->
-<crow brawler-slot-empty text-center w="full" f="none">
+<crow vertical brawler-slot-empty w="full" f="none" text-center>
   <!-- if slot.index === 0 -->
   <h5>select a brawler</h5>
   <!-- /if -->
@@ -9,27 +9,68 @@
 </crow>
 <!-- /if -->
 <!-- if !slot.empty -->
-<crow brawler-slot-filled left g="2" w="full" f="none" py="2" px="4">
-  <brawler-slot-avatar glass block w="12" h="12" f="none" overflow-hidden>
-    <img
-      data-src="/static/images/races/@[slot.mugshot]"
-      alt=""
-      brawler-slot-img
-      w="full"
-      h="full"
-    />
-  </brawler-slot-avatar>
-  <crow vertical left brawler-slot-info>
-    <span font-medium text-sm>@[slot.name]</span>
-    <brawler-slot-abilities flex>
-      <!-- each slot.abilities as ab -->
-      <brawler-slot-ability flex f="none" style="width: calc(12px * @[ab.ticks])">
-        <icon @[ab.icon]></icon>
-      </brawler-slot-ability>
-      <!-- /each -->
-    </brawler-slot-abilities>
+<brawler-slot block w="full" f="none" data-brawler-uuid="@[slot.uuid]">
+  <crow left brawler-slot-row w="full" overflow-hidden>
+    <brawler-slot-side relative f="none">
+      <img
+        data-src="/static/images/races/@[slot.mugshot]"
+        alt=""
+        brawler-slot-mugshot
+        absolute
+        t="0"
+        l="0"
+        r="0"
+      />
+      <component
+        src="/components/CoreStats.html"
+        hp="@[slot.hp]"
+        armor="@[slot.armor]"
+        damage="@[slot.damage]"
+        vertical
+      ></component>
+    </brawler-slot-side>
+
+    <crow brawler-slot-bar w="full" relative>
+      <component
+        src="/components/AbilityBar.html"
+        abilities="@[slot.abilities]"
+        lastTick="@[slot.lastTick]"
+        minimalistic
+      ></component>
+    </crow>
+
+    <crow brawler-slot-actions f="none" g="1">
+      <label brawler-slot-toggle secondary sm>
+        <input type="checkbox" inventory-toggle hidden />
+        <icon chevron-down animate-flip></icon>
+      </label>
+      <button
+        secondary
+        sm
+        brawler-slot-remove
+        onclick="
+          $.selectedBrawlers = $.selectedBrawlers.filter((u) => u !== '@[slot.uuid]');
+          if (window.updateFightSlots) updateFightSlots();
+        "
+      >
+        <icon cross></icon>
+      </button>
+    </crow>
   </crow>
-</crow>
+
+  <accordion>
+    <accordion-content>
+      <crow left justify-between w="full" my="2">
+        <h5>Available abilities</h5>
+        <a class="button" href="/brawlers/@[slot.characterIndex]" secondary sm>Character sheet</a>
+      </crow>
+      <component
+        src="/components/AbilityInventory.html"
+        abilities="@[slot.availableAbilities]"
+      ></component>
+    </accordion-content>
+  </accordion>
+</brawler-slot>
 <!-- /if -->
 
 <style>
@@ -38,45 +79,73 @@
     border: 1px dashed var(--border);
   }
 
-  [brawler-slot-filled] {
-    height: calc(var(--unit) * 19.5);
-    border: 1px solid var(--border);
-    background: rgba(255, 255, 255, 0.3);
+  brawler-slot > input[inventory-toggle] {
+    display: none;
   }
 
-  brawler-slot-avatar {
-    border-radius: calc(var(--unit) * 1);
-    border: 1px solid rgba(75, 85, 99, 1);
+  [brawler-slot-row] {
+    align-items: stretch;
+    justify-content: stretch;
   }
 
-  [brawler-slot-img] {
-    object-fit: cover;
-  }
-
-  [brawler-slot-info] {
-    flex: 1;
-    min-width: 0;
-    overflow: hidden;
-  }
-
-  brawler-slot-abilities {
-    border: 0.5px solid rgb(120, 113, 108);
-    border-radius: 0 0 calc(var(--unit) * 1) calc(var(--unit) * 1);
-    background: rgb(214, 211, 209);
-    overflow: hidden;
-    max-width: calc(var(--unit) * 45);
-  }
-
-  brawler-slot-ability {
+  brawler-slot-side {
+    width: calc(var(--unit) * 24);
+    display: flex;
     align-items: center;
     justify-content: center;
-    height: calc(var(--unit) * 5);
-    border-right: 0.5px solid rgb(120, 113, 108);
-    color: rgb(120, 113, 108);
-    font-size: calc(var(--unit) * 3);
+    padding: 0 calc(var(--unit) * 1);
   }
 
-  brawler-slot-ability:last-child {
-    border-right: none;
+  [brawler-slot-mugshot] {
+    width: 100%;
+    opacity: 0.2;
+    pointer-events: none;
+  }
+
+  [brawler-slot-bar] {
+    flex: 1;
+    min-width: 0;
+    align-items: center;
+  }
+
+  [brawler-slot-actions] {
+    width: calc(var(--unit) * 24);
+    align-items: center;
+    justify-content: center;
+  }
+
+  [brawler-slot-toggle],
+  [brawler-slot-remove] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    width: calc(var(--unit) * 10);
+    height: calc(var(--unit) * 10);
+    padding: 0;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--foreground);
+    border-radius: calc(var(--unit) * 1);
+    font-size: calc(var(--unit) * 5);
+    line-height: 0;
+  }
+
+  [brawler-slot-toggle] icon {
+    transition: transform 200ms ease-out;
+  }
+
+  brawler-slot:has(input[inventory-toggle]:checked) [brawler-slot-toggle] icon {
+    transform: scaleY(-1);
+  }
+
+  [brawler-slot-remove] {
+    color: var(--red);
+    background: oklch(from var(--red) l c h / 0.1);
+    border-color: oklch(from var(--red) l c h / 0.3);
+  }
+
+  brawler-slot:has(input[inventory-toggle]:checked) accordion {
+    grid-template-rows: 1fr;
   }
 </style>

@@ -16,13 +16,18 @@
       import { getLevelByExperience, getExperienceRangeForLevel } from '/js/level.js';
       import { generateCombat, healFull, prepareTeams } from '/js/combat.js';
       import CHARACTERS from '/js/constants/CHARACTERS.js';
+      import ABILITIES from '/js/constants/ABILITIES.js';
+      import {
+        calculateAvailableAbilitiesByCharacter,
+        calculateCombatStatsByCharacter,
+      } from '/js/utils.js';
 
       const count = Math.floor(getLevelByExperience($.experience) / 5) + 1;
       $.maxBrawlers = count;
 
       window.updateFightSlots = () => {
         const C = window.CHARACTERS || CHARACTERS;
-        const A = window.ABILITIES_FN;
+        const A = window.ABILITIES_FN || ABILITIES;
         $.brawlerSlots = Array.from({ length: count }, (_, i) => {
           const uuid = $.selectedBrawlers[i];
           if (!uuid) return { empty: true, index: i };
@@ -30,24 +35,61 @@
           if (!ref) return { empty: true, index: i };
           try {
             const char = C(ref, true);
-            const abilities = A
-              ? char.abilities
-                  .map((a) => {
-                    try {
-                      const h = A(a, true);
-                      return { icon: h.icon, ticks: h.ticks };
-                    } catch {
-                      return null;
-                    }
-                  })
-                  .filter(Boolean)
-              : [];
+            const stats = calculateCombatStatsByCharacter(char);
+            let tickCursor = 0;
+            const abilities = char.abilities
+              .map((a) => {
+                try {
+                  const h = A(a, true);
+                  const tickStart = tickCursor;
+                  tickCursor += h.ticks;
+                  return {
+                    id: h.id,
+                    name: h.name,
+                    ticks: h.ticks,
+                    icon: h.icon,
+                    basic: !!h.basic,
+                    tickStart,
+                    overflow: tickStart >= char.maxTicks,
+                    statusEffects: h.statusEffects || [],
+                  };
+                } catch {
+                  return null;
+                }
+              })
+              .filter(Boolean);
+            const availableAbilities = calculateAvailableAbilitiesByCharacter(char)
+              .map((a) => {
+                try {
+                  const h = A(a, true);
+                  return {
+                    uuid: a.uuid,
+                    id: h.id,
+                    name: h.name,
+                    ticks: h.ticks,
+                    icon: h.icon,
+                    basic: !!h.basic,
+                    statusEffects: h.statusEffects || [],
+                  };
+                } catch {
+                  return null;
+                }
+              })
+              .filter((a) => a && !a.basic);
+            const characterIndex = $.characters.findIndex((c) => c.uuid === char.uuid);
             return {
               empty: false,
+              uuid: char.uuid,
+              characterIndex,
               name: char.name,
               image: char.image,
               mugshot: char.image.replace('.png', '-mugshot.png'),
+              hp: stats.maxHealth,
+              armor: stats.maxArmor,
+              damage: stats.damage,
               abilities,
+              availableAbilities,
+              lastTick: tickCursor,
               index: i,
             };
           } catch {
@@ -56,6 +98,49 @@
         });
       };
       window.updateFightSlots();
+
+      import('/js/dnd.js').then(({ default: dnd }) => {
+        dnd.init();
+        const registered = new WeakSet();
+
+        const registerSlotZones = () => {
+          document
+            .querySelectorAll('brawler-slot[data-brawler-uuid] ability-overlay')
+            .forEach((overlay) => {
+              if (registered.has(overlay)) return;
+              const uuid = overlay.closest('brawler-slot')?.dataset?.brawlerUuid;
+              if (!uuid) return;
+              registered.add(overlay);
+              dnd.abilityBarZone(overlay, {
+                items: () => {
+                  const ref = $.characters.find((c) => c.uuid === uuid);
+                  return (ref?.overrides?.abilities || []).map((a) => {
+                    try {
+                      return { ...a, basic: !!ABILITIES(a, true).basic };
+                    } catch {
+                      return { ...a, basic: false };
+                    }
+                  });
+                },
+                type: 'fight-slot-' + uuid,
+                onReorder: (newItems) => {
+                  const ref = $.characters.find((c) => c.uuid === uuid);
+                  if (!ref) return;
+                  ref.overrides.abilities = newItems.map((a) => ({
+                    id: a.id,
+                    uuid: a.uuid,
+                    overrides: a.overrides,
+                  }));
+                  window.updateFightSlots();
+                },
+              });
+            });
+        };
+
+        $.on('afterDomMutation', registerSlotZones);
+        $.on('ready', registerSlotZones);
+        queueMicrotask(registerSlotZones);
+      });
 
       window.runPvpCombat = async () => {
         const selected = $.characters.filter((c) => $.selectedBrawlers.includes(c.uuid));
