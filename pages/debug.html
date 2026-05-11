@@ -20,12 +20,8 @@
       </page-content>
     </component>
     <style>
-      body {
+      body:not([dark]) {
         background-image: url('/static/images/arena.png');
-      }
-
-      page[debug] [debug-card] {
-        max-width: calc(var(--unit) * 125);
       }
     </style>
   </body>

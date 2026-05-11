@@ -1,43 +1,42 @@
 <script type="module">
   import { generateCombat, prepareTeams } from '/js/combat.js';
   import { seededRandom, calculateCombatStatsByCharacter } from '/js/utils.js';
-  import CHARACTERS from '/js/constants/CHARACTERS.js';
-  import { ALL_CHARACTERS } from '/js/constants/CHARACTERS.js';
+  import CHARACTERS, { ALL_CHARACTERS } from '/js/constants/CHARACTERS.js';
   import { INITIAL_COMBAT } from '/js/app.js';
 
-  const state = { debugTeamCount: 2, debugCombatantCount: 1 };
+  const state = { teamCount: 2, combatantCount: 1 };
   component(state);
+  const id = Object.keys(window.__vibeComponents).find((k) => window.__vibeComponents[k] === state);
+  const s = $[id];
 
   const npcKeys = Object.keys(ALL_CHARACTERS).filter((k) => ALL_CHARACTERS[k].race === 'creature');
 
-  window.initializeCombat = () => {
-    const teams = Array.from({ length: state.debugTeamCount }, (_, teamIndex) =>
-      Array.from({ length: state.debugCombatantCount }, (_, i) => {
-        const key = npcKeys[seededRandom(0, npcKeys.length - 1, `debug_${teamIndex}_${i}`)];
+  window.debugInitialize = () => {
+    const teams = Array.from({ length: s.teamCount }, (_, ti) =>
+      Array.from({ length: s.combatantCount }, (_, ci) => {
+        const key = npcKeys[seededRandom(0, npcKeys.length - 1, `debug_${ti}_${ci}`)];
         return CHARACTERS(key);
       }),
     );
-
     if ($.characters[0]) teams[0][0] = $.characters[0];
-
     const prepared = prepareTeams(...teams);
     $.combat = { ...structuredClone(INITIAL_COMBAT), teamsStartState: prepared };
   };
 
-  window.startCombat = () => {
-    $.combat = generateCombat($.combat.teamsStartState, 'myseed');
+  window.debugStartCombat = () => {
+    $.combat = generateCombat(JSON.parse(JSON.stringify($.combat.teamsStartState)), 'myseed');
   };
 
-  window.resetState = () => {
+  window.debugReset = () => {
     if ($.characters[0]) {
-      const combatStats = calculateCombatStatsByCharacter(CHARACTERS($.characters[0], true));
+      const cs = calculateCombatStatsByCharacter(CHARACTERS($.characters[0], true));
       $.characters = $.characters.map((c, i) =>
         i === 0
           ? {
               ...c,
               overrides: {
                 ...c.overrides,
-                combatStats: { ...c.overrides?.combatStats, currentHealth: combatStats.maxHealth },
+                combatStats: { ...c.overrides?.combatStats, currentHealth: cs.maxHealth },
               },
             }
           : c,
@@ -46,75 +45,77 @@
     $.combat = structuredClone(INITIAL_COMBAT);
     $.liveTeams = [];
     $.elapsedMilliseconds = 0;
-    $.inventory = [];
-    $.coins = 400;
   };
+
+  window.debugInitialize();
 </script>
 
-<crow vertical g="4" left>
-  <component src="/components/TitleBar.html" title="Debug"></component>
-  <hr />
+<debug-stage>
+  <!-- if combat.teamsStartState.length -->
+  <component src="/components/Combat.html"></component>
+  <!-- /if -->
+</debug-stage>
 
-  <card debug-card w="full">
-    <crow vertical g="4">
-      <crow justify-between align-center>
-        <span text-sm text-muted>Teams</span>
-        <crow g="2" align-center>
-          <span text-sm font-medium>@[this.debugTeamCount]</span>
-          <input
-            type="range"
-            min="1"
-            max="8"
-            value="@[this.debugTeamCount]"
-            oninput="$.this.debugTeamCount = +this.value"
-          />
-        </crow>
-      </crow>
-      <crow justify-between align-center>
-        <span text-sm text-muted>Combatants per team</span>
-        <crow g="2" align-center>
-          <span text-sm font-medium>@[this.debugCombatantCount]</span>
-          <input
-            type="range"
-            min="1"
-            max="6"
-            value="@[this.debugCombatantCount]"
-            oninput="$.this.debugCombatantCount = +this.value"
-          />
-        </crow>
-      </crow>
-      <crow g="2">
-        <button primary onclick="initializeCombat()">Initialize Combat</button>
-        <button primary onclick="startCombat()" disabled="@[combat?.duration !== 0]">
-          Start Combat
-        </button>
-        <button destructive onclick="resetState()">Reset</button>
-      </crow>
-    </crow>
-  </card>
+<debug-panel>
+  <span text-sm>Teams @[this.teamCount]</span>
+  <input
+    type="range"
+    min="1"
+    max="8"
+    value="@[this.teamCount]"
+    oninput="
+      $.this.teamCount = +this.value;
+      debugInitialize();
+    "
+  />
 
-  <card debug-card w="full">
-    <crow vertical g="4">
-      <crow justify-between>
-        <span text-sm text-muted>Characters</span>
-        <span text-sm font-medium>@[characters.length]</span>
-      </crow>
-      <crow justify-between>
-        <span text-sm text-muted>Inventory</span>
-        <span text-sm font-medium>@[inventory.length]</span>
-      </crow>
-      <crow justify-between>
-        <span text-sm text-muted>Coins</span>
-        <span text-sm font-medium>@[coins]</span>
-      </crow>
-      <crow justify-between>
-        <span text-sm text-muted>Experience</span>
-        <span text-sm font-medium>@[experience]</span>
-      </crow>
-      <crow justify-between>
-        <span text-sm text-muted>Combat duration</span>
-        <span text-sm font-medium>@[combat?.duration ?? 'N/A']</span>
-      </crow>
-    </crow>
-  </card>
-</crow>
+  <span text-sm>Combatants @[this.combatantCount]</span>
+  <input
+    type="range"
+    min="1"
+    max="6"
+    value="@[this.combatantCount]"
+    oninput="
+      $.this.combatantCount = +this.value;
+      debugInitialize();
+    "
+  />
+
+  <button onclick="debugReset()">Reset</button>
+  <button primary onclick="debugStartCombat()" disabled="@[combat?.duration !== 0]">
+    Start combat
+  </button>
+</debug-panel>
+
+<style>
+  debug-stage {
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+  }
+
+  debug-panel {
+    position: fixed;
+    left: calc(var(--unit) * 5);
+    top: 50%;
+    transform: translateY(-50%);
+    width: calc(var(--unit) * 40);
+    padding: calc(var(--unit) * 2);
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--unit) * 2);
+    background: oklch(1 0 0 / 0.7);
+    border-radius: var(--radius);
+    z-index: 2;
+    backdrop-filter: blur(4px);
+  }
+
+  debug-panel button {
+    width: 100%;
+  }
+
+  debug-panel input[type='range'] {
+    width: 100%;
+    min-width: 0;
+  }
+</style>

@@ -4,7 +4,7 @@
   facing-right="@[card.facingRight]"
   style="--c-x: @[card.x]px; --c-y: @[card.y]px; --c-z: @[card.z]; --c-scale: @[card.scale]"
 >
-  <combatant-card absolute combat-card="@[card.cardId]" flex down>
+  <card absolute glass combat-card="@[card.cardId]">
     <combatant-header flex>
       <combatant-name>@[card.name]</combatant-name>
     </combatant-header>
@@ -31,19 +31,17 @@
     </combatant-statuses>
 
     <combatant-badge absolute damage-badge>
-      <icon 1h1h></icon>
-      <!-- if card.damage > 0 -->
-      <badge-value absolute>@[card.damage]</badge-value>
-      <!-- /if -->
+      <icon h1h1></icon>
+      <badge-value absolute fat-number>@[card.damage]</badge-value>
     </combatant-badge>
 
     <combatant-badge absolute armor-badge>
       <icon maxArmor></icon>
       <!-- if card.currentArmor > 0 -->
-      <badge-value absolute>@[card.currentArmor]</badge-value>
+      <badge-value absolute fat-number>@[card.currentArmor]</badge-value>
       <!-- /if -->
     </combatant-badge>
-  </combatant-card>
+  </card>
 
   <component src="/components/CombatantImage.html" card="@[card]"></component>
 </combatant-slot>
@@ -58,24 +56,22 @@
     transform: translate(-50%, -50%);
   }
 
-  combatant-card {
+  card[combat-card] {
     left: var(--c-x);
     top: calc(var(--c-y) - calc(var(--unit) * 5));
     transform: translate(-50%, -50%) scale(var(--c-scale, 1));
     width: calc(var(--unit) * 36);
+    padding: 0;
     pointer-events: none;
     border-radius: calc(var(--unit) * 1);
-    background: var(--combatant-card-bg);
-    backdrop-filter: blur(calc(var(--unit) * 0.75));
-    box-shadow: 0 calc(var(--unit) * 0.5) calc(var(--unit) * 1.5) var(--combatant-card-shadow);
     color: var(--foreground);
   }
 
   combatant-header {
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     padding: calc(var(--unit) * 0.5) calc(var(--unit) * 1.5);
-    font-size: calc(var(--unit) * 2.5);
+    font-size: calc(var(--unit) * 4);
     font-weight: 700;
     color: var(--combatant-name-color);
     text-transform: uppercase;
@@ -85,12 +81,12 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    flex: 1;
+    text-align: center;
   }
 
   combatant-sprite-area {
     width: 100%;
-    height: calc(var(--unit) * 36);
+    height: calc(var(--unit) * 40);
   }
 
   combatant-statuses {
@@ -148,31 +144,31 @@
 
   combatant-badge {
     bottom: calc(var(--unit) * 7);
-    width: calc(var(--unit) * 8);
-    height: calc(var(--unit) * 8);
+    width: calc(var(--unit) * 10);
+    height: calc(var(--unit) * 10);
     display: grid;
     place-items: center;
     pointer-events: none;
   }
 
   combatant-badge[damage-badge] {
-    left: calc(var(--unit) * -1);
+    left: 0;
   }
   combatant-badge[armor-badge] {
-    right: calc(var(--unit) * -1);
+    right: 0;
   }
 
   combatant-slot[facing-right] combatant-badge[damage-badge] {
     left: auto;
-    right: calc(var(--unit) * -1);
+    right: 0;
   }
   combatant-slot[facing-right] combatant-badge[armor-badge] {
     right: auto;
-    left: calc(var(--unit) * -1);
+    left: 0;
   }
 
   combatant-badge icon {
-    font-size: calc(var(--unit) * 7);
+    font-size: calc(var(--unit) * 7.5);
     --color: var(--stone);
   }
 
@@ -181,8 +177,7 @@
     display: grid;
     place-items: center;
     font-family: var(--font-display, sans-serif);
-    font-size: calc(var(--unit) * 4.5);
+    font-size: calc(var(--unit) * 6);
     color: var(--white);
-    text-shadow: 0 1px calc(var(--unit) * 0.5) oklch(0 0 0 / 0.5);
   }
 </style>

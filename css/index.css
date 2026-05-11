@@ -49,8 +49,6 @@
   --slate: #374151;
   --stone: #b3ad9f;
 
-  --combatant-card-bg: oklch(1 0 0 / 0.45);
-  --combatant-card-shadow: oklch(0 0 0 / 0.15);
   --combatant-name-color: #57534e;
   --status-default-bg: oklch(1 0 0 / 0.7);
 
@@ -67,8 +65,8 @@
   --status-exposed-bg: oklch(from var(--bb-blue) calc(l * 0.85) c h);
   --status-exposed-fg: var(--white);
 
-  --floater-default: oklch(from var(--bb-red) 0.86 0.06 h);
-  --floater-heal: oklch(from var(--bb-green) 0.88 0.1 h);
+  --floater-default: var(--red-300);
+  --floater-heal: var(--green-300);
 
   --gray-light: #f3f4f6;
   --gray-200: #e5e7eb;
@@ -84,6 +82,7 @@
   --red-500: #dc2626;
   --red-800: #991b1b;
 
+  --green-300: #86efac;
   --green-500: #22c55e;
   --green-600: #16a34a;
 

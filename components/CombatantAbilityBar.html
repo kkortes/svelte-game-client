@@ -37,7 +37,7 @@
   ability-bar-grid {
     display: grid;
     border-radius: 0 0 calc(var(--unit) * 0.75) calc(var(--unit) * 0.75);
-    border: 0.5px solid var(--stone-500);
+    border-top: 0.5px solid var(--stone-500);
   }
 
   ability-row {
@@ -61,8 +61,11 @@
     height: 100%;
     display: grid;
     place-items: center;
-    border-right: 0.5px solid var(--stone-500);
     position: relative;
+  }
+
+  ability-cell:not(:last-child) {
+    border-right: 0.5px solid var(--stone-500);
   }
 
   ability-cell icon {
@@ -70,7 +73,7 @@
     --color: var(--stone-500);
   }
 
-  ability-row[top] ability-cell {
+  ability-row[top] ability-cell:not(:last-child) {
     border-right-color: var(--stone-300);
   }
 

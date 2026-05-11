@@ -2,23 +2,14 @@
   <component
     src="/components/Bar.html"
     center
-    color="green"
     current="@[Math.max(0, card.currentHealth)]"
     max="@[card.maxHealth]"
   ></component>
-  <!-- if card.maxArmor > 0 -->
-  <component
-    src="/components/Bar.html"
-    center
-    color="blue"
-    current="@[Math.max(0, card.currentArmor)]"
-    max="@[card.maxArmor]"
-  ></component>
-  <!-- /if -->
 
   <!-- each card.floaters as f -->
   <hp-floater
     absolute
+    fat-number
     @[f.vfxName]
     crit="@[f.isCritical]"
     style="

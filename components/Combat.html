@@ -70,30 +70,18 @@
   };
 </script>
 
-<combat-backdrop onclick="event.stopPropagation()">
-  <combat-stage>
-    <component src="/components/CombatArena.html">
-      <!-- each combatCards as card -->
-      <component src="/components/CombatantCard.html" card="@[card]"></component>
-      <!-- /each -->
-    </component>
-    <component src="/components/ResultAnnouncement.html"></component>
-  </combat-stage>
-</combat-backdrop>
+<combat-stage>
+  <component src="/components/CombatArena.html">
+    <!-- each combatCards as card -->
+    <component src="/components/CombatantCard.html" card="@[card]"></component>
+    <!-- /each -->
+  </component>
+  <component src="/components/ResultAnnouncement.html"></component>
+</combat-stage>
 
 <style>
-  combat-backdrop {
-    position: fixed;
-    inset: 0;
-    z-index: 1;
-    display: grid;
-    place-items: center;
-    overflow: hidden;
-    background: url('/static/images/arena.png') center / cover no-repeat;
-    box-shadow: inset 0 0 10vw rgba(0, 0, 0, 1);
-  }
-
   combat-stage {
+    display: block;
     position: relative;
     width: min(90vmin, calc(var(--unit) * 175));
     height: min(90vmin, calc(var(--unit) * 175));

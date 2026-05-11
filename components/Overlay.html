@@ -93,7 +93,9 @@
   ></kingstone>
 
   <!-- if overlay.name === 'Combat' -->
-  <component src="/components/Combat.html"></component>
+  <combat-frame onclick="event.stopPropagation()">
+    <component src="/components/Combat.html"></component>
+  </combat-frame>
   <!-- /if -->
 
   <!-- if overlay.name === 'AccountProgression' -->
@@ -138,5 +140,16 @@
       min-width: 0;
       max-width: none;
     }
+  }
+
+  combat-frame {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    background: url('/static/images/arena.png') center / cover no-repeat;
+    box-shadow: inset 0 0 10vw rgba(0, 0, 0, 1);
   }
 </style>

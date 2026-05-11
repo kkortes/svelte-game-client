@@ -60,6 +60,8 @@ const enrichCombatant = (c, ti, ci, elapsed, scale) => {
 
   // Single active attack animation class (gated by not-stunned)
   const attackClass = !isStunned && attackAnim ? attackAnim.vfxName : '';
+  const attackAnimationName = attackClass ? `bb-${attackClass}` : 'none';
+  const attackAnimationDuration = attackClass === 'whirlwind' ? '500ms' : `${attackDuration}ms`;
   const hurtActive = !!activeByName('hurt');
   const blockActive = !!activeByName('block');
   const attackBlockedActive = !!activeByName('attackBlocked');
@@ -148,6 +150,8 @@ const enrichCombatant = (c, ti, ci, elapsed, scale) => {
     // Sprite offsets / vars for position transform
     spriteHeight,
     attackClass,
+    attackAnimationName,
+    attackAnimationDuration,
     attackStartX,
     attackStartY,
     attackEndX,
@@ -197,19 +201,19 @@ export const init = () => {
 
     // Retrigger attack animation by toggling animation-name via a DOM tickle.
     // Walk through enriched combatants and compare attackAnimId to what we last set.
-    cards.forEach((c) => {
+    cards.forEach((c, idx) => {
       const last = retriggered.get(c.cardId);
       if (c.attackAnimId && c.attackAnimId !== last) {
         retriggered.set(c.cardId, c.attackAnimId);
-        window.retriggerCombatantAnim?.(c.cardId);
+        window.retriggerCombatantAnim?.(idx);
       } else if (!c.attackAnimId && last) {
         retriggered.set(c.cardId, '');
       }
     });
   };
 
-  window.retriggerCombatantAnim = (cardId) => {
-    const el = document.querySelector(`[data-combatant-wrap="${cardId}"]`);
+  window.retriggerCombatantAnim = (idx) => {
+    const el = document.querySelectorAll('combatant-sprite')[idx];
     if (!el) return;
     // Vibe's hydrate does setAttribute('style', ...) every flush, wiping any inline
     // animation-name we set. Force a reflow so the browser commits the 'none' state
@@ -292,6 +296,17 @@ export const init = () => {
       $.liveTeams = current.combat.teamsStartState;
       updateCombatDisplay();
       animationId = requestAnimationFrame(loop);
+      return;
+    }
+
+    if (
+      !animationId &&
+      !current.combat?.duration &&
+      current.combat?.teamsStartState !== prev.combat?.teamsStartState
+    ) {
+      $.elapsedMilliseconds = 0;
+      $.liveTeams = current.combat?.teamsStartState || [];
+      updateCombatDisplay();
     }
   });
 };

@@ -1,5 +1,10 @@
 <game-layout>
   <component src="/components/AuthGate.html">
+    <!-- if page.name === 'debug' -->
+    <slot></slot>
+    <!-- /if -->
+
+    <!-- if page.name !== 'debug' -->
     <crow game-shell>
       <crow vertical game-main>
         <card content-area p="0">
@@ -64,6 +69,7 @@
 
       <!-- <component src="/components/Armory.html"></component> -->
     </crow>
+    <!-- /if -->
   </component>
 
   <component src="/components/Overlay.html"></component>
