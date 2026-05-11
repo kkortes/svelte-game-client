@@ -14,7 +14,8 @@
   };
 
   let stingerPlayedFor = null;
-  $.on('afterUpdate', (current, prev) => {
+  window.__resultAnnouncementUnsub?.();
+  window.__resultAnnouncementUnsub = $.on('afterUpdate', (current, prev) => {
     const ended =
       current.combat?.duration > 0 && current.elapsedMilliseconds >= current.combat.duration;
     if (ended && stingerPlayedFor !== current.combat) {

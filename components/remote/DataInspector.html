@@ -108,9 +108,7 @@
       const expandable = isObject(value);
       const open = expandable && !!safeOpens[path];
 
-      if (visible) {
-        rows.push({ path, key, depth, expandable, open, summary: summarize(value) });
-      }
+      rows.push({ path, key, depth, expandable, open, visible, summary: summarize(value) });
 
       if (!expandable) {
         totalCount++;
@@ -243,17 +241,21 @@
   </data-inspector-header>
   <data-inspector-lines>
     <!-- each window.dataInspectorState(data, this.openPaths).rows as row (row.path) -->
-    <data-inspector-row
-      data-path="@[row.path]"
-      expandable="@[row.expandable]"
-      open="@[row.open]"
-      onclick="toggleInspectorPath(event)"
-    >
-      <data-inspector-key style="padding-left: calc(@[row.depth] * 1ch)"
-        >@[row.key]</data-inspector-key
-      >
-      <data-inspector-value bracket="@[row.expandable]">@[row.summary]</data-inspector-value>
-    </data-inspector-row>
+    <accordion open="@[row.visible]">
+      <accordion-content>
+        <data-inspector-row
+          data-path="@[row.path]"
+          expandable="@[row.expandable]"
+          open="@[row.open]"
+          onclick="toggleInspectorPath(event)"
+        >
+          <data-inspector-key style="padding-left: calc(@[row.depth] * 1ch)"
+            >@[row.key]</data-inspector-key
+          >
+          <data-inspector-value bracket="@[row.expandable]">@[row.summary]</data-inspector-value>
+        </data-inspector-row>
+      </accordion-content>
+    </accordion>
     <!-- /each -->
   </data-inspector-lines>
 </data-inspector>
