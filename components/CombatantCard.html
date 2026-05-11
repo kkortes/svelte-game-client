@@ -18,14 +18,16 @@
     <combatant-statuses absolute flex down facing-right="@[card.facingRight]">
       <!-- each card.statusEffects as s -->
       <status-chip @[s.key]>
-        <icon @[s.key]></icon>
+        <icon @[s.key] @[s.animation]></icon>
         <status-ticks>@[s.ticks]</status-ticks>
+        <status-text>@[s.text]</status-text>
       </status-chip>
       <!-- /each -->
       <!-- each card.statusStacks as s -->
       <status-chip @[s.key] stack>
-        <icon @[s.key]></icon>
+        <icon @[s.key] @[s.animation]></icon>
         <status-ticks>@[s.value]/@[s.max]</status-ticks>
+        <status-text>@[s.text]</status-text>
       </status-chip>
       <!-- /each -->
     </combatant-statuses>
@@ -92,7 +94,7 @@
   combatant-statuses {
     top: calc(var(--unit) * 17);
     left: calc(100% - calc(var(--unit) * 6));
-    gap: calc(var(--unit) * 1);
+    gap: calc(var(--unit) * 2);
     align-items: flex-start;
   }
 
@@ -105,41 +107,39 @@
   status-chip {
     display: inline-flex;
     align-items: center;
-    gap: calc(var(--unit) * 0.75);
-    font-size: calc(var(--unit) * 2.5);
-    padding: calc(var(--unit) * 0.25) calc(var(--unit) * 1);
-    border-radius: calc(var(--unit) * 0.75);
-    background: var(--status-default-bg);
-    color: var(--slate);
+    gap: calc(var(--unit) * 1.5);
+    color: var(--gray-700);
+  }
+
+  combatant-statuses[facing-right] status-chip {
+    flex-direction: row-reverse;
   }
 
   status-chip icon {
-    font-size: calc(var(--unit) * 3);
+    font-size: calc(var(--unit) * 5);
   }
 
-  status-chip[stunned] {
-    background: var(--status-stunned-bg);
-    color: var(--status-stunned-fg);
+  status-chip[stack] icon {
+    font-size: calc(var(--unit) * 4);
   }
-  status-chip[bleeding] {
-    background: var(--status-bleeding-bg);
-    color: var(--status-bleeding-fg);
+
+  status-chip status-ticks {
+    font-size: calc(var(--unit) * 4);
+    color: var(--gray-800);
+    line-height: 1;
+    min-width: calc(var(--unit) * 5);
+    text-align: center;
   }
-  status-chip[vulnerable] {
-    background: var(--status-vulnerable-bg);
-    color: var(--status-vulnerable-fg);
+
+  status-chip[stack] status-ticks {
+    font-size: calc(var(--unit) * 3);
+    min-width: auto;
   }
-  status-chip[wounded] {
-    background: var(--status-wounded-bg);
-    color: var(--status-wounded-fg);
-  }
-  status-chip[concussed] {
-    background: var(--status-concussed-bg);
-    color: var(--status-concussed-fg);
-  }
-  status-chip[exposed] {
-    background: var(--status-exposed-bg);
-    color: var(--status-exposed-fg);
+
+  status-chip status-text {
+    font-size: calc(var(--unit) * 2.5);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
   }
 
   combatant-badge {

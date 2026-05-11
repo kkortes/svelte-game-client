@@ -48,6 +48,13 @@
   };
 
   window.debugInitialize();
+
+  $.on('afterUpdate', (current, prev) => {
+    if (current.characters === prev.characters) return;
+    const inCombat =
+      current.combat?.duration > 0 && current.elapsedMilliseconds < current.combat.duration;
+    if (!inCombat) window.debugInitialize();
+  });
 </script>
 
 <debug-stage>

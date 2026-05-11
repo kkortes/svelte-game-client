@@ -1,14 +1,9 @@
-import { COMBAT_TICK_TIME, COMBAT_RING_BASE_RADIUS } from '/js/constants/APP.js';
+import { COMBAT_TICK_TIME } from '/js/constants/APP.js';
+import STATUS_EFFECTS from '/js/constants/STATUS_EFFECTS.js';
 
-// Ring geometry — main scales down cards when the ring gets crowded.
-const getGeometry = (
-  n,
-  { baseRadius = COMBAT_RING_BASE_RADIUS, itemWidth = 140, gap = 0 } = {},
-) => {
-  const cBase = 2 * Math.PI * baseRadius;
-  const cItem = Math.max(1, n) * (itemWidth + gap);
-  return { scale: Math.min(1, cBase / cItem) };
-};
+const getGeometry = (n) => ({
+  scale: 1 / (1 + Math.log2(Math.max(1, n / 8))),
+});
 
 // Compute enriched per-combatant render props from the raw liveTeams shape.
 const enrichCombatant = (c, ti, ci, elapsed, scale) => {
@@ -83,31 +78,24 @@ const enrichCombatant = (c, ti, ci, elapsed, scale) => {
       dir: facingRight ? -1 : 1,
     }));
 
-  const statusEffects = [
-    { key: 'bleeding', ticks: c.statuses?.isBleeding?.ticks || 0 },
-    { key: 'stunned', ticks: c.statuses?.isStunned?.ticks || 0 },
-    { key: 'vulnerable', ticks: c.statuses?.isVulnerable?.ticks || 0 },
-  ]
+  const statusEffects = ['isBleeding', 'isStunned', 'isVulnerable']
+    .map((k) => ({
+      key: STATUS_EFFECTS[k].icon,
+      text: STATUS_EFFECTS[k].text,
+      animation: STATUS_EFFECTS[k].animation,
+      ticks: c.statuses?.[k]?.ticks || 0,
+    }))
     .filter((s) => s.ticks > 0)
     .sort((a, b) => a.ticks - b.ticks);
 
-  const statusStacks = [
-    {
-      key: 'wounded',
-      value: c.statuses?.isWounded?.value || 0,
-      max: c.statuses?.isWounded?.max || 0,
-    },
-    {
-      key: 'concussed',
-      value: c.statuses?.isConcussed?.value || 0,
-      max: c.statuses?.isConcussed?.max || 0,
-    },
-    {
-      key: 'exposed',
-      value: c.statuses?.isExposed?.value || 0,
-      max: c.statuses?.isExposed?.max || 0,
-    },
-  ]
+  const statusStacks = ['isWounded', 'isConcussed', 'isExposed']
+    .map((k) => ({
+      key: STATUS_EFFECTS[k].icon,
+      text: STATUS_EFFECTS[k].text,
+      animation: STATUS_EFFECTS[k].animation,
+      value: c.statuses?.[k]?.value || 0,
+      max: c.statuses?.[k]?.max || 0,
+    }))
     .filter((s) => s.value > 0 && s.max > 0)
     .sort((a, b) => b.value - a.value);
 
@@ -186,16 +174,15 @@ export const init = () => {
     const teams = $.liveTeams;
     if (!teams?.length) return;
 
-    const totalCombatants =
-      teams.reduce((a, t) => (t.combatants?.length || 0) + a, 0) * teams.length;
+    const totalCombatants = teams.reduce((a, t) => a + (t.combatants?.length || 0), 0);
     const { scale } = getGeometry(totalCombatants);
 
     const elapsed = $.elapsedMilliseconds;
 
-    const cards = [
-      ...(teams[0]?.combatants || []).map((c, i) => enrichCombatant(c, 0, i, elapsed, scale)),
-      ...(teams[1]?.combatants || []).map((c, i) => enrichCombatant(c, 1, i, elapsed, scale)),
-    ];
+    const cards = teams.flatMap(
+      (team, ti) =>
+        team.combatants?.map((c, ci) => enrichCombatant(c, ti, ci, elapsed, scale)) || [],
+    );
 
     $.combatCards = cards;
 
