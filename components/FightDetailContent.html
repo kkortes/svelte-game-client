@@ -353,7 +353,7 @@
     mx="auto"
     primary
     onclick="startFight()"
-    disabled="@[selectedBrawlers.length === 0 || combat.duration !== 0]"
+    disabled="@[selectedBrawlers.length === 0 || combat.duration !== 0 || anySelectedBrawlerKnockedOut()]"
   >
     Fight
   </button>

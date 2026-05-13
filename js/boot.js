@@ -39,6 +39,7 @@ const loadGameState = async (token) => {
       if (gameState.coins !== undefined) $.coins = gameState.coins;
       if (gameState.accountRewards) $.accountRewards = gameState.accountRewards;
     }
+    $.gameStateLoaded = true;
     if (serverTimestampSnapshot) {
       $.clock = {
         ...$.clock,
@@ -98,6 +99,17 @@ export default () => {
   window.EQUIPMENT = EQUIPMENT;
   window.equipmentTooltipProps = equipmentTooltipProps;
   window.abilityTooltipProps = abilityTooltipProps;
+
+  window.anySelectedBrawlerKnockedOut = () =>
+    $.selectedBrawlers.some((uuid) => {
+      const ref = $.characters.find((c) => c.uuid === uuid);
+      if (!ref) return false;
+      try {
+        return CHARACTERS(ref, true).combatStats.currentHealth <= 0;
+      } catch {
+        return false;
+      }
+    });
 
   window.showAbilityTooltip = (el, id, ticks) => {
     const a = ABILITIES(id, true, ticks ? { overrides: { ticks } } : undefined);

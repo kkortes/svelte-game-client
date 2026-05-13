@@ -16,31 +16,32 @@
       import { ALL_FIGHTS } from '/js/constants/FIGHTS.js';
       import CHARACTERS from '/js/constants/CHARACTERS.js';
       import { getExperienceReward } from '/js/level.js';
+      import { runCombatSimulations } from '/js/utils.js';
 
-      window.arenaFights = [...ALL_FIGHTS]
+      const SIMULATION_COUNT = 10;
+
+      const baseFights = [...ALL_FIGHTS]
         .sort((a, b) => {
           if (a.minLevel !== b.minLevel) return a.minLevel - b.minLevel;
           if (a.boss !== b.boss) return a.boss ? 1 : -1;
           return a.maxLevel - b.maxLevel;
         })
         .map((fight) => {
-          const enemies = fight.characters.map((charRef) => {
+          const enemyRefs = fight.characters.map((charRef) => ({
+            ...charRef,
+            overrides: {
+              ...charRef?.overrides,
+              level: fight.minLevel,
+              equipment: {
+                mainHand: { overrides: { level: fight.minLevel } },
+                offHand: { overrides: { level: fight.minLevel } },
+                armor: { overrides: { level: fight.minLevel } },
+              },
+            },
+          }));
+          const enemies = enemyRefs.map((ref) => {
             try {
-              const hydrated = CHARACTERS(
-                {
-                  ...charRef,
-                  overrides: {
-                    ...charRef?.overrides,
-                    level: fight.minLevel,
-                    equipment: {
-                      mainHand: { overrides: { level: fight.minLevel } },
-                      offHand: { overrides: { level: fight.minLevel } },
-                      armor: { overrides: { level: fight.minLevel } },
-                    },
-                  },
-                },
-                true,
-              );
+              const hydrated = CHARACTERS(ref, true);
               return { image: hydrated.image, name: hydrated.name };
             } catch {
               return { image: '', name: '?' };
@@ -63,8 +64,40 @@
               fight.boss,
             ),
             enemies,
+            enemyRefs,
+            winPercent: null,
           };
         });
+
+      const computeWinPercents = () => {
+        const ally = $.characters[0];
+        if (!ally) {
+          $.arenaFights = baseFights;
+          return;
+        }
+        const allyClone = JSON.parse(JSON.stringify(ally));
+        $.arenaFights = baseFights.map((fight) => ({
+          ...fight,
+          winPercent:
+            (runCombatSimulations(
+              SIMULATION_COUNT,
+              [allyClone],
+              fight.enemyRefs,
+              undefined,
+              fight.id,
+            ) /
+              SIMULATION_COUNT) *
+            100,
+        }));
+      };
+
+      $.arenaFights = baseFights;
+      if ($.gameStateLoaded) computeWinPercents();
+      $.on('afterUpdate', (current, prev) => {
+        if (current.gameStateLoaded && current.characters !== prev.characters) {
+          computeWinPercents();
+        }
+      });
 
       window.arenaClick = (e, isLocked, bossCompleted) => {
         if (isLocked || bossCompleted) {
@@ -84,6 +117,9 @@
             <arena-col-name>name</arena-col-name>
             <arena-col-level text-center>level</arena-col-level>
             <arena-col-loot>loot</arena-col-loot>
+            <!-- if window.isDev -->
+            <arena-col-win text-right>win</arena-col-win>
+            <!-- /if -->
             <crow arena-col-preview right></crow>
           </crow>
 
@@ -125,6 +161,17 @@
               <!-- /if -->
             </arena-col-loot>
 
+            <!-- if window.isDev -->
+            <arena-col-win text-right text-sm>
+              <!-- if fight.winPercent !== null -->
+              @[fight.winPercent]%
+              <!-- /if -->
+              <!-- if fight.winPercent === null -->
+              —
+              <!-- /if -->
+            </arena-col-win>
+            <!-- /if -->
+
             <crow arena-col-preview right>
               <!-- each fight.enemies as enemy -->
               <arena-enemy-wrap boss="@[fight.boss]">
@@ -163,10 +210,14 @@
       page[the-arena] [arena-col-name] {
         display: flex;
         flex: 1;
+        min-width: 0;
       }
 
       page[the-arena] [arena-col-name] [fight-name] {
-        line-height: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        min-width: 0;
       }
 
       page[the-arena] arena-col-level {
@@ -180,6 +231,12 @@
       }
 
       page[the-arena] arena-col-loot {
+        display: block;
+        width: calc(var(--unit) * 12);
+        flex: none;
+      }
+
+      page[the-arena] arena-col-win {
         display: block;
         width: calc(var(--unit) * 12);
         flex: none;
@@ -199,7 +256,8 @@
       }
 
       page[the-arena] [arena-row] arena-col-level,
-      page[the-arena] [arena-row] arena-col-loot {
+      page[the-arena] [arena-row] arena-col-loot,
+      page[the-arena] [arena-row] arena-col-win {
         font-variant-numeric: tabular-nums;
         color: var(--muted-foreground);
       }
@@ -298,39 +356,25 @@
         filter: grayscale(1);
       }
 
-      @media (width <= 768px) {
+      @media (width <= 767px) {
+        page[the-arena] [arena-table] {
+          margin-left: calc(var(--unit) * -3);
+          margin-right: calc(var(--unit) * -3);
+        }
+      }
+
+      @media (width <= 480px) {
         page[the-arena] [arena-header],
         page[the-arena] [arena-row] {
           gap: calc(var(--unit) * 2);
-          padding: calc(var(--unit) * 3) calc(var(--unit) * 3);
+          padding: calc(var(--unit) * 3) calc(var(--unit) * 6) calc(var(--unit) * 3)
+            calc(var(--unit) * 3);
         }
 
         page[the-arena] arena-col-level,
-        page[the-arena] arena-col-loot {
+        page[the-arena] arena-col-loot,
+        page[the-arena] arena-col-win {
           width: calc(var(--unit) * 10);
-        }
-
-        page[the-arena] [arena-col-preview] {
-          width: calc(var(--unit) * 14);
-        }
-
-        page[the-arena] arena-enemy-wrap {
-          width: calc(var(--unit) * 4);
-        }
-
-        page[the-arena] arena-enemy-wrap[boss] {
-          width: calc(var(--unit) * 8);
-        }
-
-        page[the-arena] [arena-enemy-box] {
-          width: calc(var(--unit) * 6);
-          margin: calc(var(--unit) * -1.5) 0 calc(var(--unit) * -1.5) calc(var(--unit) * 1);
-        }
-
-        page[the-arena] arena-enemy-wrap[boss] [arena-enemy-box] {
-          width: calc(var(--unit) * 10);
-          margin-top: calc(var(--unit) * -3);
-          margin-bottom: calc(var(--unit) * -3);
         }
 
         page[the-arena] [arena-row][boss] {

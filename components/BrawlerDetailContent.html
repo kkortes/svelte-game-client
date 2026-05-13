@@ -86,7 +86,7 @@
     const characterRef = $.characters[index];
 
     if (!characterRef) {
-      target.currentCharacter = null;
+      if ($.gameStateLoaded) window.location.href = '/brawlers';
       return;
     }
 
@@ -414,13 +414,6 @@
       lastTick="@[this.currentLastTickEnd]"
     >
     </component>
-  </crow>
-  <!-- /if -->
-
-  <!-- if !this.currentCharacter -->
-  <crow vertical g="4" detail-empty>
-    <p text-muted>No brawler found.</p>
-    <component src="/components/BackButton.html" href="/brawlers"></component>
   </crow>
   <!-- /if -->
 </page-content>

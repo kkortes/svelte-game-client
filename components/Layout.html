@@ -150,7 +150,7 @@
       }
     }
 
-    game-layout sidebar[armory] {
+    /* game-layout sidebar[armory] {
       order: 1;
       transition:
         opacity 200ms,
@@ -164,7 +164,7 @@
       opacity: 1;
       transform: translateX(0);
       pointer-events: auto;
-    }
+    } */
 
     game-layout [game-main] {
       flex: 1;
@@ -186,6 +186,12 @@
       background: var(--background);
       border-top-left-radius: calc(var(--radius) * 1);
       border-top-right-radius: calc(var(--radius) * 1);
+    }
+
+    @media (width <= 768px) {
+      game-layout [tab-bar] [tab-row] > a {
+        flex: 1;
+      }
     }
 
     overlay-backdrop {

@@ -42,6 +42,7 @@ export default {
   bossHighscore: 0,
   characters: [],
   inventory: [],
+  gameStateLoaded: false,
   socket: undefined,
   token: undefined,
   selectedBrawlers: [],

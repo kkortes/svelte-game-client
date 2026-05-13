@@ -237,10 +237,12 @@
                 </crow>
               </crow>
             </a>
+            <!-- if maxBrawlers -->
             <brawler-menu>
               <brawler-menu-pointer></brawler-menu-pointer>
               <button primary sm onclick="selectBrawler(event, '@[brawler.uuid]')">Select</button>
             </brawler-menu>
+            <!-- /if -->
           </brawler-box>
           <!-- /each -->
         </crow>
@@ -378,16 +380,7 @@
     box-shadow: calc(var(--unit) * 0.5) 0 calc(var(--unit) * 2) -2px
       oklch(from var(--bb-brown) l c h / 0.22);
     backdrop-filter: blur(calc(var(--unit) * 1.5));
-    transform: translate(-100%, -50%);
-    opacity: 0;
-    pointer-events: none;
-    transition:
-      transform 280ms cubic-bezier(0.34, 1.56, 0.64, 1),
-      opacity 200ms ease-out;
-  }
-
-  brawler-menu > button {
-    pointer-events: auto;
+    transform: translate(0, -50%);
   }
 
   brawler-menu-pointer {
@@ -400,11 +393,6 @@
     border: 1px solid oklch(from var(--bb-brown) l c h / 0.2);
     transform: translate(-50%, -50%) rotate(45deg);
     clip-path: polygon(0% 0%, 0% 100%, 100% 100%);
-  }
-
-  brawler-list[max-brawlers] brawler-menu {
-    transform: translate(0, -50%);
-    opacity: 1;
   }
 
   brawler-box[active] brawler-menu {

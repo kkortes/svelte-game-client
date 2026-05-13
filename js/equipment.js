@@ -42,6 +42,7 @@ export const dismantle = (itemRef) => {
   const index = $.inventory.findIndex(({ uuid }) => uuid === itemRef.uuid);
   if (index === -1) return;
   $.inventory.splice(index, 1);
+  $.inventory = [...$.inventory];
 };
 
 export const equip = (equipmentRef) => {
@@ -86,8 +87,11 @@ export const equip = (equipmentRef) => {
 
   correctHealth(characterRef, calculateCombatStatsByCharacter(character).maxHealth);
 
-  // Re-navigate to refresh page (recompute derived data like abilities)
-  window.location.reload();
+  // Fresh array references so Vibe's afterUpdate sees the change and
+  // recomputes derived state (BrawlerDetailContent's setupCharacter, the
+  // Armory's <!-- each inventory -->, etc.).
+  $.characters = [...$.characters];
+  $.inventory = [...$.inventory];
 };
 
 export const unequip = (equipmentRef, slot) => {
@@ -102,8 +106,8 @@ export const unequip = (equipmentRef, slot) => {
 
   correctHealth(characterRef, calculateCombatStatsByCharacter(character).maxHealth);
 
-  // Re-navigate to refresh page
-  window.location.reload();
+  $.characters = [...$.characters];
+  $.inventory = [...$.inventory];
 };
 
 export const slotsInPrettyName = (slotsIn) =>

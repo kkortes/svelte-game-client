@@ -457,7 +457,7 @@ progress-bar > div {
   margin: 0 auto;
 }
 
-[dnd-zone] {
+[available-grid][dnd-zone] {
   min-height: calc(var(--unit) * 10);
 }
 
